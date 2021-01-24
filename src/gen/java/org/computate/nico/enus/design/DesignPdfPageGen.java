@@ -127,6 +127,62 @@ public abstract class DesignPdfPageGen<DEV> extends DesignPdfGenPage {
 		}
 	}
 
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetDesignPdfPage(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetDesignPdfPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+			default:
+				return DesignPdfGenPage.staticSetDesignPdfGenPage(entityVar,  siteRequest_, o);
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrDesignPdfPage(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrDesignPdfPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+			default:
+				return DesignPdfGenPage.staticSolrDesignPdfGenPage(entityVar,  siteRequest_, o);
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrDesignPdfPage(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrDesignPdfPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+			default:
+				return DesignPdfGenPage.staticSolrStrDesignPdfGenPage(entityVar,  siteRequest_, o);
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqDesignPdfPage(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqDesignPdfPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+			default:
+				return DesignPdfGenPage.staticSolrFqDesignPdfGenPage(entityVar,  siteRequest_, o);
+		}
+	}
+
 	/////////////
 	// define //
 	/////////////
@@ -139,8 +195,8 @@ public abstract class DesignPdfPageGen<DEV> extends DesignPdfGenPage {
 				if(o == null)
 					o = defineDesignPdfPage(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}

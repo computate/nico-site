@@ -311,6 +311,9 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			o.htmDesignHidden("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmParentDesignKeys("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -332,6 +335,9 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("POST");
 			o.htmDesignHidden("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmParentDesignKeys("POST");
@@ -379,15 +385,13 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			o.htmDesignHidden("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmParentDesignKeys("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlPartKeys("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("PUTCopy");
-			o.htmUserId("PUTCopy");
-			o.htmUserKey("PUTCopy");
 		} g("div");
 	}
 
@@ -405,15 +409,13 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			o.htmDesignHidden("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmParentDesignKeys("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlPartKeys("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("PATCH");
-			o.htmUserId("PATCH");
-			o.htmUserKey("PATCH");
 		} g("div");
 	}
 
@@ -431,6 +433,9 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("Search");
 			o.htmDesignHidden("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmParentDesignKeys("Search");
@@ -725,6 +730,11 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 					sx("refresh this page design");
 				} g("button");
 			}
+		}
+		if(
+				siteRequest_.getUserResourceRoles().contains("SiteAdmin")
+				|| siteRequest_.getUserRealmRoles().contains("SiteAdmin")
+				) {
 
 			{ e("button")
 				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")

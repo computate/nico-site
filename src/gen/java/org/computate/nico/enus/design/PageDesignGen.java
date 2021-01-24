@@ -9,8 +9,8 @@ import org.computate.nico.enus.context.SiteContextEnUS;
 import org.computate.nico.enus.design.PageDesign;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
-import io.vertx.core.logging.LoggerFactory;
 import java.text.NumberFormat;
+import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
@@ -109,11 +109,14 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		this.pageDesignKey = pageDesignKey;
 		this.pageDesignKeyWrap.alreadyInitialized = true;
 	}
-	public PageDesign setPageDesignKey(String o) {
-		if(NumberUtils.isParsable(o))
-			this.pageDesignKey = Long.parseLong(o);
+	public void setPageDesignKey(String o) {
+		this.pageDesignKey = PageDesign.staticSetPageDesignKey(siteRequest_, o);
 		this.pageDesignKeyWrap.alreadyInitialized = true;
-		return (PageDesign)this;
+	}
+	public static Long staticSetPageDesignKey(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
 	}
 	protected PageDesign pageDesignKeyInit() {
 		if(!pageDesignKeyWrap.alreadyInitialized) {
@@ -125,8 +128,20 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return (PageDesign)this;
 	}
 
+	public static Long staticSolrPageDesignKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPageDesignKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPageDesignKey(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrPageDesignKey(siteRequest_, PageDesign.staticSolrPageDesignKey(siteRequest_, PageDesign.staticSetPageDesignKey(siteRequest_, o)));
+	}
+
 	public Long solrPageDesignKey() {
-		return pageDesignKey;
+		return PageDesign.staticSolrPageDesignKey(siteRequest_, pageDesignKey);
 	}
 
 	public String strPageDesignKey() {
@@ -178,6 +193,17 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		this.childDesignKeys = childDesignKeys;
 		this.childDesignKeysWrap.alreadyInitialized = true;
 	}
+	public void setChildDesignKeys(String o) {
+		Long l = PageDesign.staticSetChildDesignKeys(siteRequest_, o);
+		if(l != null)
+			addChildDesignKeys(l);
+		this.childDesignKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetChildDesignKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
 	public PageDesign addChildDesignKeys(Long...objets) {
 		for(Long o : objets) {
 			addChildDesignKeys(o);
@@ -189,13 +215,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			this.childDesignKeys.add(o);
 		return (PageDesign)this;
 	}
-	public PageDesign setChildDesignKeys(JsonArray objets) {
+	public void setChildDesignKeys(JsonArray objets) {
 		childDesignKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
 			Long o = objets.getLong(i);
 			addChildDesignKeys(o);
 		}
-		return (PageDesign)this;
 	}
 	public PageDesign addChildDesignKeys(String o) {
 		if(NumberUtils.isParsable(o)) {
@@ -212,8 +237,24 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return (PageDesign)this;
 	}
 
+	public static Long staticSolrChildDesignKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrChildDesignKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqChildDesignKeys(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrChildDesignKeys(siteRequest_, PageDesign.staticSolrChildDesignKeys(siteRequest_, PageDesign.staticSetChildDesignKeys(siteRequest_, o)));
+	}
+
 	public List<Long> solrChildDesignKeys() {
-		return childDesignKeys;
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : childDesignKeys) {
+			l.add(PageDesign.staticSolrChildDesignKeys(siteRequest_, o));
+		}
+		return l;
 	}
 
 	public String strChildDesignKeys() {
@@ -265,6 +306,17 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		this.parentDesignKeys = parentDesignKeys;
 		this.parentDesignKeysWrap.alreadyInitialized = true;
 	}
+	public void setParentDesignKeys(String o) {
+		Long l = PageDesign.staticSetParentDesignKeys(siteRequest_, o);
+		if(l != null)
+			addParentDesignKeys(l);
+		this.parentDesignKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetParentDesignKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
 	public PageDesign addParentDesignKeys(Long...objets) {
 		for(Long o : objets) {
 			addParentDesignKeys(o);
@@ -276,13 +328,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			this.parentDesignKeys.add(o);
 		return (PageDesign)this;
 	}
-	public PageDesign setParentDesignKeys(JsonArray objets) {
+	public void setParentDesignKeys(JsonArray objets) {
 		parentDesignKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
 			Long o = objets.getLong(i);
 			addParentDesignKeys(o);
 		}
-		return (PageDesign)this;
 	}
 	public PageDesign addParentDesignKeys(String o) {
 		if(NumberUtils.isParsable(o)) {
@@ -299,8 +350,24 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return (PageDesign)this;
 	}
 
+	public static Long staticSolrParentDesignKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrParentDesignKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqParentDesignKeys(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrParentDesignKeys(siteRequest_, PageDesign.staticSolrParentDesignKeys(siteRequest_, PageDesign.staticSetParentDesignKeys(siteRequest_, o)));
+	}
+
 	public List<Long> solrParentDesignKeys() {
-		return parentDesignKeys;
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : parentDesignKeys) {
+			l.add(PageDesign.staticSolrParentDesignKeys(siteRequest_, o));
+		}
+		return l;
 	}
 
 	public String strParentDesignKeys() {
@@ -330,15 +397,26 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
 			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-				e("input")
-					.a("type", "text")
-					.a("placeholder", "parent designs")
-					.a("class", "value suggestParentDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
-					.a("name", "setParentDesignKeys")
-					.a("id", classApiMethodMethod, "_parentDesignKeys")
-					.a("autocomplete", "off")
-					.a("oninput", "suggestPageDesignParentDesignKeys($(this).val() ? searchPageDesignFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'childDesignKeys:" + pk + "'}", "], $('#listPageDesignParentDesignKeys_", classApiMethodMethod, "'), ", pk, "); ")
-				.fg();
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_parentDesignKeys_clear")
+						.a("class", "parentDesignKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_parentDesignKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "parent designs")
+				.a("class", "value suggestParentDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setParentDesignKeys")
+				.a("id", classApiMethodMethod, "_parentDesignKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestPageDesignParentDesignKeys($(this).val() ? searchPageDesignFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'childDesignKeys:" + pk + "'}", "], $('#listPageDesignParentDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
 
 		} else {
 			e("span").a("class", "varPageDesign", pk, "ParentDesignKeys ").f().sx(htmParentDesignKeys()).g("span");
@@ -378,14 +456,16 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), PageDesign.ROLES)
 										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), PageDesign.ROLES)
 										) {
-									{ e("div").a("class", "w3-cell-row ").f();
-										e("button")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
-											.a("id", classApiMethodMethod, "_parentDesignKeys_add")
-											.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postPageDesignVals({ childDesignKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "parentDesignKeys')); });")
-											.f().sx("add a page design")
-										.g("button");
-									} g("div");
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+												.a("id", classApiMethodMethod, "_parentDesignKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postPageDesignVals({ childDesignKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "parentDesignKeys')); });")
+												.f().sx("add a page design")
+											.g("button");
+										} g("div");
+									}
 								}
 							} g("div");
 						} g("div");
@@ -424,6 +504,17 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		this.htmlPartKeys = htmlPartKeys;
 		this.htmlPartKeysWrap.alreadyInitialized = true;
 	}
+	public void setHtmlPartKeys(String o) {
+		Long l = PageDesign.staticSetHtmlPartKeys(siteRequest_, o);
+		if(l != null)
+			addHtmlPartKeys(l);
+		this.htmlPartKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetHtmlPartKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
 	public PageDesign addHtmlPartKeys(Long...objets) {
 		for(Long o : objets) {
 			addHtmlPartKeys(o);
@@ -435,13 +526,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			this.htmlPartKeys.add(o);
 		return (PageDesign)this;
 	}
-	public PageDesign setHtmlPartKeys(JsonArray objets) {
+	public void setHtmlPartKeys(JsonArray objets) {
 		htmlPartKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
 			Long o = objets.getLong(i);
 			addHtmlPartKeys(o);
 		}
-		return (PageDesign)this;
 	}
 	public PageDesign addHtmlPartKeys(String o) {
 		if(NumberUtils.isParsable(o)) {
@@ -458,8 +548,24 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return (PageDesign)this;
 	}
 
+	public static Long staticSolrHtmlPartKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlPartKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlPartKeys(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrHtmlPartKeys(siteRequest_, PageDesign.staticSolrHtmlPartKeys(siteRequest_, PageDesign.staticSetHtmlPartKeys(siteRequest_, o)));
+	}
+
 	public List<Long> solrHtmlPartKeys() {
-		return htmlPartKeys;
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : htmlPartKeys) {
+			l.add(PageDesign.staticSolrHtmlPartKeys(siteRequest_, o));
+		}
+		return l;
 	}
 
 	public String strHtmlPartKeys() {
@@ -489,15 +595,26 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
 			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-				e("input")
-					.a("type", "text")
-					.a("placeholder", "parts")
-					.a("class", "value suggestHtmlPartKeys w3-input w3-border w3-cell w3-cell-middle ")
-					.a("name", "setHtmlPartKeys")
-					.a("id", classApiMethodMethod, "_htmlPartKeys")
-					.a("autocomplete", "off")
-					.a("oninput", "suggestPageDesignHtmlPartKeys($(this).val() ? searchHtmlPartFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'pageDesignKeys:" + pk + "'}", "], $('#listPageDesignHtmlPartKeys_", classApiMethodMethod, "'), ", pk, "); ")
-				.fg();
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_htmlPartKeys_clear")
+						.a("class", "htmlPartKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_htmlPartKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "parts")
+				.a("class", "value suggestHtmlPartKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setHtmlPartKeys")
+				.a("id", classApiMethodMethod, "_htmlPartKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestPageDesignHtmlPartKeys($(this).val() ? searchHtmlPartFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'pageDesignKeys:" + pk + "'}", "], $('#listPageDesignHtmlPartKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
 
 		} else {
 			e("span").a("class", "varPageDesign", pk, "HtmlPartKeys ").f().sx(htmHtmlPartKeys()).g("span");
@@ -537,14 +654,16 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), HtmlPart.ROLES)
 										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), HtmlPart.ROLES)
 										) {
-									{ e("div").a("class", "w3-cell-row ").f();
-										e("button")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
-											.a("id", classApiMethodMethod, "_htmlPartKeys_add")
-											.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postHtmlPartVals({ pageDesignKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "htmlPartKeys')); });")
-											.f().sx("add an HTML part")
-										.g("button");
-									} g("div");
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+												.a("id", classApiMethodMethod, "_htmlPartKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postHtmlPartVals({ pageDesignKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "htmlPartKeys')); });")
+												.f().sx("add an HTML part")
+											.g("button");
+										} g("div");
+									}
 								}
 							} g("div");
 						} g("div");
@@ -577,10 +696,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	public String getPageDesignCompleteName() {
 		return pageDesignCompleteName;
 	}
-
-	public void setPageDesignCompleteName(String pageDesignCompleteName) {
-		this.pageDesignCompleteName = pageDesignCompleteName;
+	public void setPageDesignCompleteName(String o) {
+		this.pageDesignCompleteName = PageDesign.staticSetPageDesignCompleteName(siteRequest_, o);
 		this.pageDesignCompleteNameWrap.alreadyInitialized = true;
+	}
+	public static String staticSetPageDesignCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected PageDesign pageDesignCompleteNameInit() {
 		if(!pageDesignCompleteNameWrap.alreadyInitialized) {
@@ -592,8 +713,20 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return (PageDesign)this;
 	}
 
+	public static String staticSolrPageDesignCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrPageDesignCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPageDesignCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrPageDesignCompleteName(siteRequest_, PageDesign.staticSolrPageDesignCompleteName(siteRequest_, PageDesign.staticSetPageDesignCompleteName(siteRequest_, o)));
+	}
+
 	public String solrPageDesignCompleteName() {
-		return pageDesignCompleteName;
+		return PageDesign.staticSolrPageDesignCompleteName(siteRequest_, pageDesignCompleteName);
 	}
 
 	public String strPageDesignCompleteName() {
@@ -710,10 +843,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		this.designHidden = designHidden;
 		this.designHiddenWrap.alreadyInitialized = true;
 	}
-	public PageDesign setDesignHidden(String o) {
-		this.designHidden = Boolean.parseBoolean(o);
+	public void setDesignHidden(String o) {
+		this.designHidden = PageDesign.staticSetDesignHidden(siteRequest_, o);
 		this.designHiddenWrap.alreadyInitialized = true;
-		return (PageDesign)this;
+	}
+	public static Boolean staticSetDesignHidden(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
 	}
 	protected PageDesign designHiddenInit() {
 		if(!designHiddenWrap.alreadyInitialized) {
@@ -725,8 +860,20 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return (PageDesign)this;
 	}
 
+	public static Boolean staticSolrDesignHidden(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrDesignHidden(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqDesignHidden(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrDesignHidden(siteRequest_, PageDesign.staticSolrDesignHidden(siteRequest_, PageDesign.staticSetDesignHidden(siteRequest_, o)));
+	}
+
 	public Boolean solrDesignHidden() {
-		return designHidden;
+		return PageDesign.staticSolrDesignHidden(siteRequest_, designHidden);
 	}
 
 	public String strDesignHidden() {
@@ -812,6 +959,148 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	/////////////////////
+	// pageContentType //
+	/////////////////////
+
+	/**	 The entity pageContentType
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String pageContentType;
+	@JsonIgnore
+	public Wrap<String> pageContentTypeWrap = new Wrap<String>().p(this).c(String.class).var("pageContentType").o(pageContentType);
+
+	/**	<br/> The entity pageContentType
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageContentType">Find the entity pageContentType in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _pageContentType(Wrap<String> c);
+
+	public String getPageContentType() {
+		return pageContentType;
+	}
+	public void setPageContentType(String o) {
+		this.pageContentType = PageDesign.staticSetPageContentType(siteRequest_, o);
+		this.pageContentTypeWrap.alreadyInitialized = true;
+	}
+	public static String staticSetPageContentType(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected PageDesign pageContentTypeInit() {
+		if(!pageContentTypeWrap.alreadyInitialized) {
+			_pageContentType(pageContentTypeWrap);
+			if(pageContentType == null)
+				setPageContentType(pageContentTypeWrap.o);
+		}
+		pageContentTypeWrap.alreadyInitialized(true);
+		return (PageDesign)this;
+	}
+
+	public static String staticSolrPageContentType(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrPageContentType(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPageContentType(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrPageContentType(siteRequest_, PageDesign.staticSolrPageContentType(siteRequest_, PageDesign.staticSetPageContentType(siteRequest_, o)));
+	}
+
+	public String solrPageContentType() {
+		return PageDesign.staticSolrPageContentType(siteRequest_, pageContentType);
+	}
+
+	public String strPageContentType() {
+		return pageContentType == null ? "" : pageContentType;
+	}
+
+	public String jsonPageContentType() {
+		return pageContentType == null ? "" : pageContentType;
+	}
+
+	public String nomAffichagePageContentType() {
+		return "content type";
+	}
+
+	public String htmTooltipPageContentType() {
+		return null;
+	}
+
+	public String htmPageContentType() {
+		return pageContentType == null ? "" : StringEscapeUtils.escapeHtml4(strPageContentType());
+	}
+
+	public void inputPageContentType(String classApiMethodMethod) {
+		PageDesign s = (PageDesign)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "content type")
+				.a("id", classApiMethodMethod, "_pageContentType");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setPageContentType classPageDesign inputPageDesign", pk, "PageContentType w3-input w3-border ");
+					a("name", "setPageContentType");
+				} else {
+					a("class", "valuePageContentType w3-input w3-border classPageDesign inputPageDesign", pk, "PageContentType w3-input w3-border ");
+					a("name", "pageContentType");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPageContentType', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_pageContentType')); }, function() { addError($('#", classApiMethodMethod, "_pageContentType')); }); ");
+				}
+				a("value", strPageContentType())
+			.fg();
+
+		} else {
+			e("span").a("class", "varPageDesign", pk, "PageContentType ").f().sx(htmPageContentType()).g("span");
+		}
+	}
+
+	public void htmPageContentType(String classApiMethodMethod) {
+		PageDesign s = (PageDesign)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "PageDesignPageContentType").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+							e("label").a("for", classApiMethodMethod, "_pageContentType").a("class", "").f().sx("content type").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputPageContentType(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_pageContentType')); $('#", classApiMethodMethod, "_pageContentType').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#PageDesignForm :input[name=pk]').val() }], 'setPageContentType', null, function() { addGlow($('#", classApiMethodMethod, "_pageContentType')); }, function() { addError($('#", classApiMethodMethod, "_pageContentType')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	//////////////
 	// initDeep //
 	//////////////
@@ -839,6 +1128,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		htmlPartKeysInit();
 		pageDesignCompleteNameInit();
 		designHiddenInit();
+		pageContentTypeInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -889,6 +1179,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				return oPageDesign.pageDesignCompleteName;
 			case "designHidden":
 				return oPageDesign.designHidden;
+			case "pageContentType":
+				return oPageDesign.pageContentType;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -934,6 +1226,118 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		}
 	}
 
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetPageDesign(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetPageDesign(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "pageDesignKey":
+			return PageDesign.staticSetPageDesignKey(siteRequest_, o);
+		case "childDesignKeys":
+			return PageDesign.staticSetChildDesignKeys(siteRequest_, o);
+		case "parentDesignKeys":
+			return PageDesign.staticSetParentDesignKeys(siteRequest_, o);
+		case "htmlPartKeys":
+			return PageDesign.staticSetHtmlPartKeys(siteRequest_, o);
+		case "pageDesignCompleteName":
+			return PageDesign.staticSetPageDesignCompleteName(siteRequest_, o);
+		case "designHidden":
+			return PageDesign.staticSetDesignHidden(siteRequest_, o);
+		case "pageContentType":
+			return PageDesign.staticSetPageContentType(siteRequest_, o);
+			default:
+				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrPageDesign(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrPageDesign(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "pageDesignKey":
+			return PageDesign.staticSolrPageDesignKey(siteRequest_, (Long)o);
+		case "childDesignKeys":
+			return PageDesign.staticSolrChildDesignKeys(siteRequest_, (Long)o);
+		case "parentDesignKeys":
+			return PageDesign.staticSolrParentDesignKeys(siteRequest_, (Long)o);
+		case "htmlPartKeys":
+			return PageDesign.staticSolrHtmlPartKeys(siteRequest_, (Long)o);
+		case "pageDesignCompleteName":
+			return PageDesign.staticSolrPageDesignCompleteName(siteRequest_, (String)o);
+		case "designHidden":
+			return PageDesign.staticSolrDesignHidden(siteRequest_, (Boolean)o);
+		case "pageContentType":
+			return PageDesign.staticSolrPageContentType(siteRequest_, (String)o);
+			default:
+				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrPageDesign(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrPageDesign(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "pageDesignKey":
+			return PageDesign.staticSolrStrPageDesignKey(siteRequest_, (Long)o);
+		case "childDesignKeys":
+			return PageDesign.staticSolrStrChildDesignKeys(siteRequest_, (Long)o);
+		case "parentDesignKeys":
+			return PageDesign.staticSolrStrParentDesignKeys(siteRequest_, (Long)o);
+		case "htmlPartKeys":
+			return PageDesign.staticSolrStrHtmlPartKeys(siteRequest_, (Long)o);
+		case "pageDesignCompleteName":
+			return PageDesign.staticSolrStrPageDesignCompleteName(siteRequest_, (String)o);
+		case "designHidden":
+			return PageDesign.staticSolrStrDesignHidden(siteRequest_, (Boolean)o);
+		case "pageContentType":
+			return PageDesign.staticSolrStrPageContentType(siteRequest_, (String)o);
+			default:
+				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqPageDesign(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqPageDesign(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "pageDesignKey":
+			return PageDesign.staticSolrFqPageDesignKey(siteRequest_, o);
+		case "childDesignKeys":
+			return PageDesign.staticSolrFqChildDesignKeys(siteRequest_, o);
+		case "parentDesignKeys":
+			return PageDesign.staticSolrFqParentDesignKeys(siteRequest_, o);
+		case "htmlPartKeys":
+			return PageDesign.staticSolrFqHtmlPartKeys(siteRequest_, o);
+		case "pageDesignCompleteName":
+			return PageDesign.staticSolrFqPageDesignCompleteName(siteRequest_, o);
+		case "designHidden":
+			return PageDesign.staticSolrFqDesignHidden(siteRequest_, o);
+		case "pageContentType":
+			return PageDesign.staticSolrFqPageContentType(siteRequest_, o);
+			default:
+				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
 	/////////////
 	// define //
 	/////////////
@@ -946,8 +1350,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				if(o == null)
 					o = definePageDesign(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}
@@ -963,6 +1367,11 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			case "designHidden":
 				if(val != null)
 					setDesignHidden(val);
+				saves.add(var);
+				return val;
+			case "pageContentType":
+				if(val != null)
+					setPageContentType(val);
 				saves.add(var);
 				return val;
 			default:
@@ -1010,6 +1419,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				Boolean designHidden = (Boolean)solrDocument.get("designHidden_stored_boolean");
 				if(designHidden != null)
 					oPageDesign.setDesignHidden(designHidden);
+			}
+
+			if(saves.contains("pageContentType")) {
+				String pageContentType = (String)solrDocument.get("pageContentType_stored_string");
+				if(pageContentType != null)
+					oPageDesign.setPageContentType(pageContentType);
 			}
 		}
 
@@ -1114,6 +1529,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			document.addField("designHidden_indexed_boolean", designHidden);
 			document.addField("designHidden_stored_boolean", designHidden);
 		}
+		if(pageContentType != null) {
+			document.addField("pageContentType_indexed_string", pageContentType);
+			document.addField("pageContentType_stored_string", pageContentType);
+		}
 		super.indexCluster(document);
 
 	}
@@ -1149,6 +1568,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				return "pageDesignCompleteName_indexed_string";
 			case "designHidden":
 				return "designHidden_indexed_boolean";
+			case "pageContentType":
+				return "pageContentType_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -1202,6 +1623,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		if(designHidden != null)
 			oPageDesign.setDesignHidden(designHidden);
 
+		String pageContentType = (String)solrDocument.get("pageContentType_stored_string");
+		if(pageContentType != null)
+			oPageDesign.setPageContentType(pageContentType);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -1226,6 +1651,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				apiRequest.addVars("pageDesignCompleteName");
 			if(!Objects.equals(designHidden, original.getDesignHidden()))
 				apiRequest.addVars("designHidden");
+			if(!Objects.equals(pageContentType, original.getPageContentType()))
+				apiRequest.addVars("pageContentType");
 			super.apiRequestCluster();
 		}
 	}
@@ -1235,7 +1662,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), pageDesignKey, childDesignKeys, parentDesignKeys, htmlPartKeys, pageDesignCompleteName, designHidden);
+		return Objects.hash(super.hashCode(), pageDesignKey, childDesignKeys, parentDesignKeys, htmlPartKeys, pageDesignCompleteName, designHidden, pageContentType);
 	}
 
 	////////////
@@ -1254,7 +1681,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				&& Objects.equals( parentDesignKeys, that.parentDesignKeys )
 				&& Objects.equals( htmlPartKeys, that.htmlPartKeys )
 				&& Objects.equals( pageDesignCompleteName, that.pageDesignCompleteName )
-				&& Objects.equals( designHidden, that.designHidden );
+				&& Objects.equals( designHidden, that.designHidden )
+				&& Objects.equals( pageContentType, that.pageContentType );
 	}
 
 	//////////////
@@ -1271,6 +1699,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		sb.append( ", htmlPartKeys: " ).append(htmlPartKeys);
 		sb.append( ", pageDesignCompleteName: \"" ).append(pageDesignCompleteName).append( "\"" );
 		sb.append( ", designHidden: " ).append(designHidden);
+		sb.append( ", pageContentType: \"" ).append(pageContentType).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}
