@@ -1,0 +1,211 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: nico-site
+    deploymentconfig: nico-site
+#  strategy:
+#    activeDeadlineSeconds: 21600
+#    resources: {}
+#    rollingParams:
+#      intervalSeconds: 1
+#      maxSurge: 25%
+#      maxUnavailable: 25%
+#      timeoutSeconds: 600
+#      updatePeriodSeconds: 1
+#    type: Rolling
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: nico-site
+        deploymentconfig: nico-site
+    spec:
+      containers:
+        - imagePullPolicy: Always
+          name: nico-site
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8081
+              name: cluster
+              protocol: TCP
+            - containerPort: 9779
+              name: prometheus
+              protocol: TCP
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1000Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /opt/keystore
+              name: volume-keystore
+              readOnly: true
+          env:
+            - name: authRealm
+              valueFrom:
+                secretKeyRef:
+                  key: authRealm
+                  name: nico-site-secret
+            - name: authResource
+              valueFrom:
+                secretKeyRef:
+                  key: authResource
+                  name: nico-site-secret
+            - name: authSecret
+              valueFrom:
+                secretKeyRef:
+                  key: authSecret
+                  name: nico-site-secret
+            - name: authUrl
+              valueFrom:
+                secretKeyRef:
+                  key: authUrl
+                  name: nico-site-secret
+
+            - name: emailAuth
+              valueFrom:
+                secretKeyRef:
+                  key: emailAuth
+                  name: nico-site-secret
+            - name: emailFrom
+              valueFrom:
+                secretKeyRef:
+                  key: emailFrom
+                  name: nico-site-secret
+            - name: emailHost
+              valueFrom:
+                secretKeyRef:
+                  key: emailHost
+                  name: nico-site-secret
+            - name: emailPassword
+              valueFrom:
+                secretKeyRef:
+                  key: emailPassword
+                  name: nico-site-secret
+            - name: emailPort
+              valueFrom:
+                secretKeyRef:
+                  key: emailPort
+                  name: nico-site-secret
+            - name: emailSsl
+              valueFrom:
+                secretKeyRef:
+                  key: emailSsl
+                  name: nico-site-secret
+            - name: emailUsername
+              valueFrom:
+                secretKeyRef:
+                  key: emailUsername
+                  name: nico-site-secret
+            - name: jdbcHost
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcHost
+                  name: nico-site-secret
+            - name: jdbcPort
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcPort
+                  name: nico-site-secret
+            - name: jdbcDatabase
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcDatabase
+                  name: nico-site-secret
+            - name: jdbcUsername
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcUsername
+                  name: nico-site-secret
+            - name: jdbcPassword
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcPassword
+                  name: nico-site-secret
+            - name: sslAlias
+              valueFrom:
+                secretKeyRef:
+                  key: sslAlias
+                  name: nico-site-secret
+            - name: sslJksPassword
+              valueFrom:
+                secretKeyRef:
+                  key: sslJksPassword
+                  name: nico-site-secret
+            - name: sslJksPath
+              valueFrom:
+                secretKeyRef:
+                  key: sslJksPath
+                  name: nico-site-secret
+            - name: sslKeystorePath
+              valueFrom:
+                secretKeyRef:
+                  key: sslKeystorePath
+                  name: nico-site-secret
+            - name: openshiftService
+              value: "nico-site"
+            - name: clusterPort
+              value: "8081"
+            - name: zookeeperHostName
+              value: "{{ZOOKEEPER_HOST_NAME}}"
+            - name: zookeeperPort
+              value: "{{ZOOKEEPER_PORT}}"
+            - name: solrHostName
+              value: "{{SOLR_HOST_NAME}}"
+            - name: solrPort
+              value: "{{SOLR_PORT}}"
+            - name: solrUrl
+              value: "http://{{SOLR_HOST_NAME}}:{{SOLR_PORT}}/solr/{{NICO_SITE_SOLR_COLLECTION}}"
+            - name: siteHostName
+              value: "{{NICO_SITE_SITE_HOST_NAME_ENUS}}"
+            - name: sitePort
+              value: "{{NICO_SITE_SITE_PORT}}"
+            - name: siteBaseUrl
+              value: "{{NICO_SITE_SITE_BASE_URL_ENUS}}"
+            - name: numberExecutors
+              value: "{{NICO_SITE_NUMBER_EXECUTORS}}"
+            - name: staticBaseUrl
+              value: "{{NICO_SITE_STATIC_BASE_URL}}"
+            - name: siteZone
+              value: "{{NICO_SITE_SITE_ZONE}}"
+            - name: JAVA_MAIN_CLASS
+              value: "{{NICO_SITE_JAVA_MAIN_CLASS_ENUS}}"
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: volume-keystore
+          secret:
+            defaultMode: 420
+            secretName: nico-site-keystore
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - nico-site
+        from:
+          kind: ImageStreamTag
+          name: 'nico-site:latest'
+          namespace: {{NICO_SITE_NAMESPACE}}
+      type: ImageChange
+    - type: ConfigChange
+

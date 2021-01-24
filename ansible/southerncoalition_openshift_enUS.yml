@@ -1,0 +1,8 @@
+---
+- name: Install the nico-site pod on OpenShift
+  gather_facts: no
+  hosts: localhost
+  connection: local
+  roles: 
+    - nico_site_openshift_enUS
+

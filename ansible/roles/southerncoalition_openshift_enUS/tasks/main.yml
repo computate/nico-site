@@ -1,0 +1,70 @@
+---
+- name: Install nico-site image stream on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_image_stream.yml.j2') }}"
+- name: Install nico-site secret on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site-secret
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_secret.j2') }}"
+- name: Install nico-site keystore secrets on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site-keystore
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_keystore.j2') }}"
+- name: Install nico-site build config on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_build_config.yml.j2') }}"
+- name: Install NICO_SITE deployment config on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_deployment_config.yml.j2') }}"
+- name: Install NICO_SITE service on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_service.yml.j2') }}"
+- name: Install NICO_SITE route on OpenShift
+  k8s: 
+    validate_certs: false
+    state: present
+    name: nico-site
+    host: "{{NICO_SITE_HOST}}"
+    api_key: "{{NICO_SITE_TOKEN}}"
+    namespace: "{{NICO_SITE_NAMESPACE}}"
+    definition: "{{ lookup('template', 'nico_site_route.yml.j2') }}"
+- name: Create Solr collection
+  shell: "oc login {{NICO_SITE_HOST}} --token={{REDHAT_OPENSHIFT_TOKEN}} && oc exec $(oc get pod -l app=computate-solr -o jsonpath='{.items[0].metadata.name}') -n NICO_SITE -- /opt/solr/bin/solr create_collection -c site -n computate || true"
+  register: create_collection
+- name: Print create_collection command
+  debug:
+    var: create_collection

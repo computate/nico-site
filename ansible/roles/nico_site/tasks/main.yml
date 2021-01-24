@@ -1,0 +1,116 @@
+- name: Install {{NICO_SITE_NAME}} dependencies
+  package:
+    name: [git,java-latest-openjdk-devel,java-latest-openjdk]
+  become: yes
+- name: Create the {{NICO_SITE_NAME}} source directory {{NICO_SITE_SRC}}
+  file:
+    name: "{{NICO_SITE_SRC}}"
+    state: directory
+    owner: "{{USER_NAME}}"
+    group: "{{USER_NAME}}"
+  become: yes
+- name: Check for the {{NICO_SITE_NAME}} pom.xml
+  stat:
+    path: "{{NICO_SITE_SRC}}/pom.xml"
+  register: pom_xml
+- name: Clone the {{NICO_SITE_NAME}} source code
+  git:
+    repo: "{{NICO_SITE_REPO}}"
+    dest: "{{NICO_SITE_SRC}}"
+  when: pom_xml.stat.exists == False
+- name: Create the {{NICO_SITE_NAME}}-static source directory {{NICO_SITE_SRC}}-static
+  file:
+    name: "{{NICO_SITE_SRC}}-static"
+    state: directory
+    owner: "{{USER_NAME}}"
+    group: "{{USER_NAME}}"
+  become: yes
+- name: Check for the {{NICO_SITE_NAME}}-static css dir
+  stat:
+    path: "{{NICO_SITE_SRC}}-static/css"
+  register: static_css
+- name: Clone the {{ NICO_SITE_REPO | replace('.git', '-static.git') }} source code
+  git:
+    repo: "{{ NICO_SITE_REPO | replace('.git', '-static.git') }}"
+    dest: "{{ NICO_SITE_SRC }}-static"
+  when: static_css.stat.exists == False
+- name: Create the {{NICO_SITE_NAME}} systemd service {{NICO_SITE_SYSTEMD}}. 
+  template:
+    src: nico_site_service.j2
+    dest: "{{NICO_SITE_SYSTEMD}}"
+  become: yes
+- name: Create the {{NICO_SITE_NAME}} config dir. 
+  file:
+    name: "{{NICO_SITE_SRC}}/config"
+    state: directory
+    owner: "{{USER_NAME}}"
+    group: "{{USER_NAME}}"
+- name: Create the {{NICO_SITE_NAME}} enUS config. 
+  template:
+    src: nico_site_config_enUS.config.j2
+    dest: "{{NICO_SITE_SRC}}/config/nico-site.config"
+    owner: "{{USER_NAME}}"
+    group: "{{USER_NAME}}"
+  become: yes
+- name: Reload the services. 
+  systemd:
+    daemon_reload: yes
+  become: yes
+- name: Start and enable the {{NICO_SITE_NAME}} service. 
+  service:
+    name: "{{NICO_SITE_SERVICE}}"
+    enabled: yes
+    state: restarted
+  become: yes
+- name: Create enUS database user
+  postgresql_user:
+    name: "{{NICO_SITE_DB_USER_ENUS}}"
+    password: "{{NICO_SITE_DB_PASSWORD_ENUS}}"
+    login_unix_socket: /tmp
+    login_user: "{{POSTGRES_BECOME_USER}}"
+    db: postgres
+  become: true
+  become_user: "{{POSTGRES_BECOME_USER}}"
+- name: Create enUS database
+  postgresql_db:
+    name: "{{NICO_SITE_DB_NAME_ENUS}}"
+    owner: "{{NICO_SITE_DB_USER_ENUS}}"
+    login_unix_socket: /tmp
+    login_user: "{{POSTGRES_BECOME_USER}}"
+    db: postgres
+  become: true
+  become_user: "{{POSTGRES_BECOME_USER}}"
+- name: Restart the postgresql service. 
+  service:
+    name: "{{POSTGRES_SERVICE}}"
+    state: restarted
+  become: yes
+- name: Check for existing solr collection enUS
+  shell: "{{SOLR_OPT}}/server/scripts/cloud-scripts/zkcli.sh -zkhost localhost:{{ZOOKEEPER_PORT}} -cmd ls /collections/{{NICO_SITE_SOLR_COLLECTION_ENUS}}"
+  ignore_errors: yes
+  register: SOLR_COLLECTION_EXISTS_ENUS
+  changed_when: false
+- name: Create collection in solr enUS
+  shell: "{{SOLR_OPT}}/bin/solr create_collection -n computate -c {{NICO_SITE_SOLR_COLLECTION_ENUS}}"
+  when: SOLR_COLLECTION_EXISTS_ENUS.rc != 0
+- name: Create the keystore directory {{SSL_KEYSTORE_PATH}}
+  file:
+    name: "{{SSL_KEYSTORE_PATH}}"
+    state: directory
+    owner: "{{USER_NAME}}"
+    group: "{{USER_NAME}}"
+  become: yes
+- name: Create the {{NICO_SITE_NAME}} keystore properties {{SSL_KEYSTORE_PATH}}/{{SSL_PROPERTIES_FILENAME}}
+  template:
+    src: nico_site_keystore.properties.j2
+    dest: "{{SSL_KEYSTORE_PATH}}/{{NICO_SITE_SSL_PROPERTIES_FILENAME}}"
+- name: Create the {{NICO_SITE_NAME}} keystore jks {{SSL_JKS_PATH}}
+  shell: echo {{SSL_JKS_BASE64}} | base64 -d > {{SSL_JKS_PATH}}
+- name: Build the source code in /usr/local/src/computate
+  shell: "mvn clean install"
+  args: 
+    chdir: "/usr/local/src/computate"
+- name: Build the source code in {{NICO_SITE_SRC}}
+  shell: "mvn clean install"
+  args: 
+    chdir: "{{NICO_SITE_SRC}}"
