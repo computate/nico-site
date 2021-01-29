@@ -458,7 +458,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 		if(listPageDesign == null || listPageDesign.size() == 0) {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/email").a("class", "w3-bar-item w3-btn w3-center w3-block w3-khaki w3-hover-khaki ").f();
+				{ e("a").a("href", "/email").a("class", "w3-bar-item w3-btn w3-center w3-block w3-red w3-hover-red ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("page designs").g("span");
@@ -466,7 +466,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			} g("h1");
 			e("div").a("class", "w3-padding-16 w3-card-4 w3-light-grey ").f();
 			{ e("h2").f();
-				{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-khaki ").f();
+				{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-red ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("no page design found").g("span");
@@ -477,7 +477,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			siteRequest_.setRequestPk(o.getPk());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
-					{ e("a").a("href", "/email").a("class", "w3-bar-item w3-btn w3-center w3-block w3-khaki w3-hover-khaki ").f();
+					{ e("a").a("href", "/email").a("class", "w3-bar-item w3-btn w3-center w3-block w3-red w3-hover-red ").f();
 						if(contextIconCssClasses != null)
 							e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 						e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -487,14 +487,14 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			e("div").a("class", "w3-padding-16 w3-card-4 w3-light-grey ").f();
 			if(StringUtils.isNotEmpty(pageH2)) {
 				{ e("h2").f();
-					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-khaki ").f();
+					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-red ").f();
 						e("span").a("class", " ").f().sx(pageH2).g("span");
 					} g("span");
 				} g("h2");
 			}
 			if(StringUtils.isNotEmpty(pageH3)) {
 				{ e("h3").f();
-					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-khaki ").f();
+					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-red ").f();
 						e("span").a("class", " ").f().sx(pageH3).g("span");
 					} g("span");
 				} g("h3");
@@ -502,7 +502,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 		} else {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/email").a("class", "w3-bar-item w3-btn w3-center w3-block w3-khaki w3-hover-khaki ").f();
+				{ e("a").a("href", "/email").a("class", "w3-bar-item w3-btn w3-center w3-block w3-red w3-hover-red ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -633,7 +633,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 	}
 
 	public void thead1DesignEmailGenPage() {
-		{ e("thead").a("class", "w3-khaki w3-hover-khaki ").f();
+		{ e("thead").a("class", "w3-red w3-hover-red ").f();
 			thead2DesignEmailGenPage();
 		} g("thead");
 	}
@@ -687,7 +687,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 	}
 
 	public void tfoot1DesignEmailGenPage() {
-		{ e("tfoot").a("class", "w3-khaki w3-hover-khaki ").f();
+		{ e("tfoot").a("class", "w3-red w3-hover-red ").f();
 			tfoot2DesignEmailGenPage();
 		} g("tfoot");
 	}
@@ -723,7 +723,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 
 			if(listPageDesign != null && listPageDesign.size() == 1) {
 				{ e("button")
-					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 						.a("id", "refreshThisDesignEmailGenPage")
 						.a("onclick", "patchPageDesignVals( [ {name: 'fq', value: 'pk:' + " + siteRequest_.getRequestPk() + " } ], {}, function() { addGlow($('#refreshThisDesignEmailGenPage')); }, function() { addError($('#refreshThisDesignEmailGenPage')); }); return false; ").f();
 						e("i").a("class", "fas fa-sync-alt ").f().g("i");
@@ -737,7 +737,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 				) {
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 				.a("onclick", "$('#putimportPageDesignModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-file-import ").f().g("i");
@@ -746,7 +746,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			{ e("div").a("id", "putimportPageDesignModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-khaki ").f();
+						{ e("header").a("class", "w3-container w3-red ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putimportPageDesignModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Import page designs").g("h2");
 						} g("header");
@@ -759,7 +759,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 								htmlFormPUTImportPageDesign(o);
 							} g("div");
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-khaki ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-red ")
 								.a("onclick", "putimportPageDesign($('#putimportPageDesignForm')); ")
 								.f().sx("Import page designs")
 							.g("button");
@@ -771,7 +771,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 				.a("onclick", "$('#putmergePageDesignModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-code-merge ").f().g("i");
@@ -780,7 +780,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			{ e("div").a("id", "putmergePageDesignModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-khaki ").f();
+						{ e("header").a("class", "w3-container w3-red ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putmergePageDesignModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Merge page designs").g("h2");
 						} g("header");
@@ -793,7 +793,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 								htmlFormPUTMergePageDesign(o);
 							} g("div");
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-khaki ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-red ")
 								.a("onclick", "putmergePageDesign($('#putmergePageDesignForm')); ")
 								.f().sx("Merge page designs")
 							.g("button");
@@ -805,7 +805,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 				.a("onclick", "$('#putcopyPageDesignModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-copy ").f().g("i");
@@ -814,7 +814,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			{ e("div").a("id", "putcopyPageDesignModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-khaki ").f();
+						{ e("header").a("class", "w3-container w3-red ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putcopyPageDesignModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Duplicate page designs").g("h2");
 						} g("header");
@@ -827,7 +827,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 								htmlFormPUTCopyPageDesign(o);
 							} g("div");
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-khaki ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-red ")
 								.a("onclick", "putcopyPageDesign($('#putcopyPageDesignForm'), ", pageDesign_ == null ? "null" : pageDesign_.getPk(), "); ")
 								.f().sx("Duplicate page designs")
 							.g("button");
@@ -839,7 +839,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 				.a("onclick", "$('#postPageDesignModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-file-plus ").f().g("i");
@@ -848,7 +848,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			{ e("div").a("id", "postPageDesignModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-khaki ").f();
+						{ e("header").a("class", "w3-container w3-red ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#postPageDesignModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Create a page design").g("h2");
 						} g("header");
@@ -861,7 +861,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 								htmlFormPOSTPageDesign(o);
 							} g("div");
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-khaki ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-red ")
 								.a("onclick", "postPageDesign($('#postPageDesignForm')); ")
 								.f().sx("Create a page design")
 							.g("button");
@@ -873,7 +873,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 				.a("onclick", "$('#patchPageDesignModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-edit ").f().g("i");
@@ -882,7 +882,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 			{ e("div").a("id", "patchPageDesignModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-khaki ").f();
+						{ e("header").a("class", "w3-container w3-red ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#patchPageDesignModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Modify page designs").g("h2");
 						} g("header");
@@ -892,7 +892,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 
 							htmlFormPATCHPageDesign(o);
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-khaki ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-red ")
 								.a("onclick", "patchPageDesign(null, $('#patchPageDesignFormValues'), ", Optional.ofNullable(pageDesign_).map(PageDesign::getPk).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
 								.f().sx("Modify page designs")
 							.g("button");
@@ -965,7 +965,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), DesignEmailGenPage.ROLES)
 					) {
 					{ p.e("div").a("class", "").f();
-						{ p.e("button").a("id", "refreshAllDesignEmailGenPage", id).a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ").a("onclick", "patchPageDesignVals([], {}, function() { addGlow($('#refreshAllDesignEmailGenPage", id, "')); }, function() { addError($('#refreshAllDesignEmailGenPage", id, "')); }); ").f();
+						{ p.e("button").a("id", "refreshAllDesignEmailGenPage", id).a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ").a("onclick", "patchPageDesignVals([], {}, function() { addGlow($('#refreshAllDesignEmailGenPage", id, "')); }, function() { addError($('#refreshAllDesignEmailGenPage", id, "')); }); ").f();
 							p.e("i").a("class", "fas fa-sync-alt ").f().g("i");
 							p.sx("refresh all the page designs");
 						} p.g("button");
@@ -992,7 +992,7 @@ public class DesignEmailGenPage extends DesignEmailGenPageGen<PageLayout> {
 					p.a("value", query2);
 				p.fg();
 				{ p.e("button")
-					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-red ")
 					.a("onclick", "window.location.href = '/email?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
 					.f();
 					p.e("i").a("class", "fas fa-search ").f().g("i");

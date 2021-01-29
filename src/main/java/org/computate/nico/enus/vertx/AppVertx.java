@@ -24,6 +24,7 @@ import org.computate.nico.enus.html.part.HtmlPartEnUSGenApiService;
 import org.computate.nico.enus.java.LocalDateSerializer;
 import org.computate.nico.enus.java.LocalTimeSerializer;
 import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import org.computate.nico.enus.pet.SitePetEnUSGenApiService;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUserEnUSGenApiService;
 
@@ -641,6 +642,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
 
+		ClusterEnUSGenApiService.registerService(siteContextEnUS, vertx);
+		SitePetEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		ClusterEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		SiteUserEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		PageDesignEnUSGenApiService.registerService(siteContextEnUS, vertx);

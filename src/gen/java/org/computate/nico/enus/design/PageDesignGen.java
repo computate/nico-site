@@ -75,7 +75,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	public static final String PageDesign_ANameAdjective = "a page design";
 	public static final String PageDesign_NameAdjectiveSingular = "page design";
 	public static final String PageDesign_NameAdjectivePlural = "page designs";
-	public static final String PageDesign_Color = "khaki";
+	public static final String PageDesign_Color = "red";
 	public static final String PageDesign_IconGroup = "regular";
 	public static final String PageDesign_IconName = "drafting-compass";
 	public static final Integer PageDesign_Rows = 100;
@@ -784,7 +784,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "PageDesignPageDesignCompleteName").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+						{ e("div").a("class", "w3-cell-row w3-red ").f();
 							e("label").a("for", classApiMethodMethod, "_pageDesignCompleteName").a("class", "").f().sx("name").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -800,7 +800,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-red ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_pageDesignCompleteName')); $('#", classApiMethodMethod, "_pageDesignCompleteName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#PageDesignForm :input[name=pk]').val() }], 'setPageDesignCompleteName', null, function() { addGlow($('#", classApiMethodMethod, "_pageDesignCompleteName')); }, function() { addError($('#", classApiMethodMethod, "_pageDesignCompleteName')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -944,7 +944,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "PageDesignDesignHidden").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+						{ e("div").a("class", "w3-cell-row w3-red ").f();
 							e("label").a("for", classApiMethodMethod, "_designHidden").a("class", "").f().sx("hidden").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -1070,7 +1070,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "PageDesignPageContentType").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+						{ e("div").a("class", "w3-cell-row w3-red ").f();
 							e("label").a("for", classApiMethodMethod, "_pageContentType").a("class", "").f().sx("content type").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -1086,7 +1086,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-red ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_pageContentType')); $('#", classApiMethodMethod, "_pageContentType').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#PageDesignForm :input[name=pk]').val() }], 'setPageContentType', null, function() { addGlow($('#", classApiMethodMethod, "_pageContentType')); }, function() { addError($('#", classApiMethodMethod, "_pageContentType')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");

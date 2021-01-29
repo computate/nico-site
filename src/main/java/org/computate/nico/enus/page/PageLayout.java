@@ -27,6 +27,7 @@ import org.computate.nico.enus.design.PageDesignGenPage;
 import org.computate.nico.enus.enrollment.EnrollmentGenPage;
 import org.computate.nico.enus.html.part.HtmlPart;
 import org.computate.nico.enus.html.part.HtmlPartGenPage;
+import org.computate.nico.enus.pet.PetGenPage;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.wrap.Wrap;
@@ -251,10 +252,8 @@ public class PageLayout extends PageLayoutGen<Object> {
 		e("script").a("src", staticBaseUrl, "/js/site-enUS.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/sockjs.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/vertx-eventbus.js").f().g("script");
-		e("script").a("src", staticBaseUrl, "/js/enUS/SiteUserPage.js").f().g("script");
-		e("script").a("src", staticBaseUrl, "/js/enUS/SiteStatePage.js").f().g("script");
-		e("script").a("src", staticBaseUrl, "/js/enUS/SiteAgencyPage.js").f().g("script");
-		e("script").a("src", staticBaseUrl, "/js/enUS/ReportCardPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/EnrollmentPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/PetPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/moment.min.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/jqDatePicker.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/jquery.serialize-object.js").f().g("script");
@@ -396,6 +395,16 @@ public class PageLayout extends PageLayoutGen<Object> {
 					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES_ADMIN)
 					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES_ADMIN)
 					) {
+	
+				{ e("div").a("class", "w3-dropdown-hover ").f();
+					{ e("div").a("class", "w3-button w3-hover-red ").f();
+							e("i").a("class", "fas fa-dog ").f().g("i");
+							sx("Pets");
+					} g("div");
+					{ e("div").a("class", "w3-dropdown-content w3-card-4 w3-padding ").f();
+						PetGenPage.htmlSuggestedPetGenPage(this, id, null);
+					} g("div");
+				} g("div");
 	
 				{ e("div").a("class", "w3-dropdown-hover ").f();
 					{ e("div").a("class", "w3-button w3-hover-khaki ").f();

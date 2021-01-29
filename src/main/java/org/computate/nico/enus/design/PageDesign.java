@@ -54,7 +54,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * ApiUriHomePageSearchPage.enUS: /
  * 
  * AName.enUS: a page design
- * Color: khaki
+ * Color: red
  * IconGroup: regular
  * IconName: drafting-compass
  * NameVar.frFR: design-page
