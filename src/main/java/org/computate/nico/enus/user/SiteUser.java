@@ -45,7 +45,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * RoleUser: true
  * Role.frFR: SiteAdmin
  * Role.enUS: SiteAdmin
- */            
+ */           
 public class SiteUser extends SiteUserGen<Cluster> {   
 
 	/**
@@ -90,6 +90,7 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 */
 	protected void _userEmail(Wrap<String> c) {
 	}
@@ -98,6 +99,7 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 */
 	protected void _userFirstName(Wrap<String> c) {
 	}
@@ -106,6 +108,7 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 */
 	protected void _userLastName(Wrap<String> c) {
 	}
@@ -114,6 +117,7 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 */
 	protected void _userFullName(Wrap<String> c) {
 	}
@@ -132,20 +136,8 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * Stored: true
 	 * Define: true
 	 * HtmlRow: 3
-	 * HtmlCell: 4
-	 * NomAffichage.enUS: customer profile ID
-	 */
-	protected void _customerProfileId(Wrap<String> c) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 3
 	 * HtmlCell: 1
-	 * NomAffichage.enUS: receive email
+	 * DisplayName.enUS: receive email
 	 */
 	protected void _userReceiveEmails(Wrap<Boolean> c) {
 		c.o(false);
@@ -178,7 +170,7 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	}
 
 	@Override protected void  _objectTitle(Wrap<String> c) {
-		c.o(userFullName + " " + userEmail + " " + userName);
+		c.o(userFullName + " " + userName);
 	}
 
 	public void  htmlBody() {

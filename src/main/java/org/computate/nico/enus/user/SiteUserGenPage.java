@@ -142,7 +142,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserReceiveEmails("Page");
 			o.htmSeeArchived("Page");
 			o.htmSeeDeleted("Page");
-			o.htmCustomerProfileId("Page");
 		} g("div");
 	}
 
@@ -161,7 +160,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserReceiveEmails("POST");
 			o.htmSeeArchived("POST");
 			o.htmSeeDeleted("POST");
-			o.htmCustomerProfileId("POST");
 		} g("div");
 	}
 
@@ -202,7 +200,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserReceiveEmails("PUTCopy");
 			o.htmSeeArchived("PUTCopy");
 			o.htmSeeDeleted("PUTCopy");
-			o.htmCustomerProfileId("PUTCopy");
 		} g("div");
 	}
 
@@ -219,7 +216,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserReceiveEmails("PATCH");
 			o.htmSeeArchived("PATCH");
 			o.htmSeeDeleted("PATCH");
-			o.htmCustomerProfileId("PATCH");
 		} g("div");
 	}
 
@@ -238,7 +234,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserReceiveEmails("Search");
 			o.htmSeeArchived("Search");
 			o.htmSeeDeleted("Search");
-			o.htmCustomerProfileId("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
@@ -248,6 +243,10 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmUserName("Search");
+			o.htmUserEmail("Search");
+			o.htmUserFirstName("Search");
+			o.htmUserLastName("Search");
+			o.htmUserFullName("Search");
 		} g("div");
 	}
 

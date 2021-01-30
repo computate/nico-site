@@ -60,9 +60,52 @@ public class SitePet extends SitePetGen<Cluster> {
 	 * Define: true
 	 * HtmlRow: 3
 	 * HtmlCell: 1
-	 * DisplayName.enUS: start year
+	 * DisplayName.enUS: name of pet:
 	 */           
 	protected void _petName(Wrap<String> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 4
+	 * HtmlCell: 1
+	 * Multiline: true
+	 * DisplayName.enUS: How much does your pet eat?
+	 */           
+	protected void _petFoodAmount(Wrap<String> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 1
+	 * Multiline: true
+	 * DisplayName.enUS: What does your pet eat?
+	 */           
+	protected void _petFood(Wrap<String> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 1
+	 * DisplayName.enUS: Is your pet sick, or need medication?
+	 */           
+	protected void _petSick(Wrap<Boolean> w) {
+	}
+	
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(petName);
 	}
 }
  	

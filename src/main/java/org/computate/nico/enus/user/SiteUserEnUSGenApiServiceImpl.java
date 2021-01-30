@@ -110,7 +110,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			{
 				userSiteUser(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteUser(siteRequest, false, true, "/api/user", "Search", c -> {
+						aSearchSiteUser(siteRequest, false, true, false, "/api/user", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteUser> listSiteUser = c.result();
 								searchSiteUserResponse(listSiteUser, d -> {
@@ -228,67 +228,59 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSiteUser(siteRequest, false, true, "/api/user", "PATCH", d -> {
+											aSearchSiteUser(siteRequest, false, true, true, "/api/user", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<SiteUser> listSiteUser = d.result();
 
-													if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															eventHandler.handle(Future.succeededFuture(
-																new OperationResponse(401, "UNAUTHORIZED", 
-																	Buffer.buffer().appendString(
-																		new JsonObject()
-																			.put("errorCode", "401")
-																			.put("errorMessage", "roles required: " + String.join(", ", roles2))
-																			.encodePrettily()
-																		), new CaseInsensitiveHeaders()
-																)
-															));
-														}
-													}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorSiteUser(siteRequest, eventHandler, Future.failedFuture(message));
+													} else {
 
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(listSiteUser.getRows());
-													apiRequest.setNumFound(listSiteUser.getQueryResponse().getResults().getNumFound());
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest);
-													siteRequest.setApiRequest_(apiRequest);
-													siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-													SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteUser.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-													Date date = null;
-													if(facets != null)
+														ApiRequest apiRequest = new ApiRequest();
+														apiRequest.setRows(listSiteUser.getRows());
+														apiRequest.setNumFound(listSiteUser.getQueryResponse().getResults().getNumFound());
+														apiRequest.setNumPATCH(0L);
+														apiRequest.initDeepApiRequest(siteRequest);
+														siteRequest.setApiRequest_(apiRequest);
+														siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteUser.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
+														Date date = null;
+														if(facets != null)
 														date = (Date)facets.get("max_modified");
-													String dt;
-													if(date == null)
-														dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-													else
-														dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-													listSiteUser.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
+														String dt;
+														if(date == null)
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														else
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
+														listSiteUser.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
-													try {
-														listPATCHSiteUser(apiRequest, listSiteUser, dt, e -> {
-															if(e.succeeded()) {
-																patchSiteUserResponse(siteRequest, f -> {
-																	if(f.succeeded()) {
-																		LOGGER.info(String.format("patchSiteUser succeeded. "));
-																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																	} else {
-																		LOGGER.error(String.format("patchSiteUser failed. ", f.cause()));
-																		errorSiteUser(siteRequest, null, f);
-																	}
-																});
-															} else {
-																LOGGER.error(String.format("patchSiteUser failed. ", e.cause()));
-																errorSiteUser(siteRequest, null, e);
-															}
-														});
-													} catch(Exception ex) {
-														LOGGER.error(String.format("patchSiteUser failed. ", ex));
-														errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+														try {
+															listPATCHSiteUser(apiRequest, listSiteUser, dt, e -> {
+																if(e.succeeded()) {
+																	patchSiteUserResponse(siteRequest, f -> {
+																		if(f.succeeded()) {
+																			LOGGER.info(String.format("patchSiteUser succeeded. "));
+																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
+																		} else {
+																			LOGGER.error(String.format("patchSiteUser failed. ", f.cause()));
+																			errorSiteUser(siteRequest, null, f);
+																		}
+																	});
+																} else {
+																	LOGGER.error(String.format("patchSiteUser failed. ", e.cause()));
+																	errorSiteUser(siteRequest, null, e);
+																}
+															});
+														} catch(Exception ex) {
+															LOGGER.error(String.format("patchSiteUser failed. ", ex));
+															errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+														}
 													}
 										} else {
 													LOGGER.error(String.format("patchSiteUser failed. ", d.cause()));
@@ -620,30 +612,114 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 							}));
 						}
 						break;
-					case "setCustomerProfileId":
+					case "setUserEmail":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
 								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "customerProfileId")
+										, Tuple.of(pk, "userEmail")
 										, b
 								-> {
 									if(b.succeeded())
 										a.handle(Future.succeededFuture());
 									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.customerProfileId failed", b.cause())));
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
 								});
 							}));
 						} else {
-							o2.setCustomerProfileId(jsonObject.getString(methodName));
+							o2.setUserEmail(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
 								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "customerProfileId", o2.jsonCustomerProfileId())
+										, Tuple.of(pk, "userEmail", o2.jsonUserEmail())
 										, b
 								-> {
 									if(b.succeeded())
 										a.handle(Future.succeededFuture());
 									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.customerProfileId failed", b.cause())));
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setUserFirstName":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "userFirstName")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setUserFirstName(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "userFirstName", o2.jsonUserFirstName())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setUserLastName":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "userLastName")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setUserLastName(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "userLastName", o2.jsonUserLastName())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setUserFullName":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "userFullName")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setUserFullName(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "userFullName", o2.jsonUserFullName())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
 								});
 							}));
 						}
@@ -1019,16 +1095,55 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 							});
 						}));
 						break;
-					case "customerProfileId":
+					case "userEmail":
 						futures.add(Future.future(a -> {
 							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "customerProfileId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, Tuple.of(pk, "userEmail", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
 									a.handle(Future.succeededFuture());
 								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.customerProfileId failed", b.cause())));
+									a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
+							});
+						}));
+						break;
+					case "userFirstName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "userFirstName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
+							});
+						}));
+						break;
+					case "userLastName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "userLastName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
+							});
+						}));
+						break;
+					case "userFullName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "userFullName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
 							});
 						}));
 						break;
@@ -1131,7 +1246,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			{
 				userSiteUser(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteUser(siteRequest, false, true, "/user", "SearchPage", c -> {
+						aSearchSiteUser(siteRequest, false, true, false, "/user", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteUser> listSiteUser = c.result();
 								searchpageSiteUserResponse(listSiteUser, d -> {
@@ -1539,6 +1654,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
+																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
 																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
@@ -1751,7 +1867,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 		}
 	}
 
-	public void aSearchSiteUser(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteUser>>> eventHandler) {
+	public void aSearchSiteUser(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteUser>>> eventHandler) {
 		try {
 			OperationRequest operationRequest = siteRequest.getOperationRequest();
 			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
@@ -1772,9 +1888,12 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			}
 
 			List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin");
+			List<String> roleLires = Arrays.asList("");
 			if(
 					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
 					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleLires))
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleLires))
 					) {
 				searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
 						+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));

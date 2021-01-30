@@ -513,7 +513,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSitePet(siteRequest, false, true, "/api/pet/copy", "PUTCopy", d -> {
+											aSearchSitePet(siteRequest, false, true, true, "/api/pet/copy", "PUTCopy", d -> {
 												if(d.succeeded()) {
 													SearchList<SitePet> listSitePet = d.result();
 													ApiRequest apiRequest = new ApiRequest();
@@ -737,6 +737,45 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value SitePet.petName failed", b.cause())));
+							});
+						}));
+						break;
+					case "petFoodAmount":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "petFoodAmount", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SitePet.petFoodAmount failed", b.cause())));
+							});
+						}));
+						break;
+					case "petFood":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "petFood", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SitePet.petFood failed", b.cause())));
+							});
+						}));
+						break;
+					case "petSick":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "petSick", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SitePet.petSick failed", b.cause())));
 							});
 						}));
 						break;
@@ -1010,6 +1049,45 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 							});
 						}));
 						break;
+					case "petFoodAmount":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "petFoodAmount", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SitePet.petFoodAmount failed", b.cause())));
+							});
+						}));
+						break;
+					case "petFood":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "petFood", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SitePet.petFood failed", b.cause())));
+							});
+						}));
+						break;
+					case "petSick":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "petSick", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SitePet.petSick failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -1090,67 +1168,59 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSitePet(siteRequest, false, true, "/api/pet", "PATCH", d -> {
+											aSearchSitePet(siteRequest, false, true, true, "/api/pet", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<SitePet> listSitePet = d.result();
 
-													if(listSitePet.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															eventHandler.handle(Future.succeededFuture(
-																new OperationResponse(401, "UNAUTHORIZED", 
-																	Buffer.buffer().appendString(
-																		new JsonObject()
-																			.put("errorCode", "401")
-																			.put("errorMessage", "roles required: " + String.join(", ", roles2))
-																			.encodePrettily()
-																		), new CaseInsensitiveHeaders()
-																)
-															));
-														}
-													}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listSitePet.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorSitePet(siteRequest, eventHandler, Future.failedFuture(message));
+													} else {
 
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(listSitePet.getRows());
-													apiRequest.setNumFound(listSitePet.getQueryResponse().getResults().getNumFound());
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest);
-													siteRequest.setApiRequest_(apiRequest);
-													siteRequest.getVertx().eventBus().publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
-													SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSitePet.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-													Date date = null;
-													if(facets != null)
+														ApiRequest apiRequest = new ApiRequest();
+														apiRequest.setRows(listSitePet.getRows());
+														apiRequest.setNumFound(listSitePet.getQueryResponse().getResults().getNumFound());
+														apiRequest.setNumPATCH(0L);
+														apiRequest.initDeepApiRequest(siteRequest);
+														siteRequest.setApiRequest_(apiRequest);
+														siteRequest.getVertx().eventBus().publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
+														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSitePet.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
+														Date date = null;
+														if(facets != null)
 														date = (Date)facets.get("max_modified");
-													String dt;
-													if(date == null)
-														dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-													else
-														dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-													listSitePet.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
+														String dt;
+														if(date == null)
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														else
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
+														listSitePet.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
-													try {
-														listPATCHSitePet(apiRequest, listSitePet, dt, e -> {
-															if(e.succeeded()) {
-																patchSitePetResponse(siteRequest, f -> {
-																	if(f.succeeded()) {
-																		LOGGER.info(String.format("patchSitePet succeeded. "));
-																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																	} else {
-																		LOGGER.error(String.format("patchSitePet failed. ", f.cause()));
-																		errorSitePet(siteRequest, null, f);
-																	}
-																});
-															} else {
-																LOGGER.error(String.format("patchSitePet failed. ", e.cause()));
-																errorSitePet(siteRequest, null, e);
-															}
-														});
-													} catch(Exception ex) {
-														LOGGER.error(String.format("patchSitePet failed. ", ex));
-														errorSitePet(siteRequest, null, Future.failedFuture(ex));
+														try {
+															listPATCHSitePet(apiRequest, listSitePet, dt, e -> {
+																if(e.succeeded()) {
+																	patchSitePetResponse(siteRequest, f -> {
+																		if(f.succeeded()) {
+																			LOGGER.info(String.format("patchSitePet succeeded. "));
+																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
+																		} else {
+																			LOGGER.error(String.format("patchSitePet failed. ", f.cause()));
+																			errorSitePet(siteRequest, null, f);
+																		}
+																	});
+																} else {
+																	LOGGER.error(String.format("patchSitePet failed. ", e.cause()));
+																	errorSitePet(siteRequest, null, e);
+																}
+															});
+														} catch(Exception ex) {
+															LOGGER.error(String.format("patchSitePet failed. ", ex));
+															errorSitePet(siteRequest, null, Future.failedFuture(ex));
+														}
 													}
 										} else {
 													LOGGER.error(String.format("patchSitePet failed. ", d.cause()));
@@ -1420,6 +1490,90 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 							}));
 						}
 						break;
+					case "setPetFoodAmount":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "petFoodAmount")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SitePet.petFoodAmount failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPetFoodAmount(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "petFoodAmount", o2.jsonPetFoodAmount())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SitePet.petFoodAmount failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPetFood":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "petFood")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SitePet.petFood failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPetFood(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "petFood", o2.jsonPetFood())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SitePet.petFood failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPetSick":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "petSick")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SitePet.petSick failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPetSick(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "petSick", o2.jsonPetSick())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SitePet.petSick failed", b.cause())));
+								});
+							}));
+						}
+						break;
 				}
 			}
 			CompositeFuture.all(futures).setHandler( a -> {
@@ -1475,7 +1629,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 			{
 				userSitePet(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSitePet(siteRequest, false, true, "/api/pet/{id}", "GET", c -> {
+						aSearchSitePet(siteRequest, false, true, false, "/api/pet/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<SitePet> listSitePet = c.result();
 								getSitePetResponse(listSitePet, d -> {
@@ -1545,7 +1699,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 			{
 				userSitePet(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSitePet(siteRequest, false, true, "/api/pet", "Search", c -> {
+						aSearchSitePet(siteRequest, false, true, false, "/api/pet", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<SitePet> listSitePet = c.result();
 								searchSitePetResponse(listSitePet, d -> {
@@ -1655,7 +1809,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 			{
 				userSitePet(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSitePet(siteRequest, false, true, "/api/admin/pet", "AdminSearch", c -> {
+						aSearchSitePet(siteRequest, false, true, false, "/api/admin/pet", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<SitePet> listSitePet = c.result();
 								adminsearchSitePetResponse(listSitePet, d -> {
@@ -1770,7 +1924,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 			{
 				userSitePet(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSitePet(siteRequest, false, true, "/pet", "SearchPage", c -> {
+						aSearchSitePet(siteRequest, false, true, false, "/pet", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<SitePet> listSitePet = c.result();
 								searchpageSitePetResponse(listSitePet, d -> {
@@ -2178,6 +2332,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
+																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
 																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
@@ -2390,7 +2545,7 @@ public class SitePetEnUSGenApiServiceImpl implements SitePetEnUSGenApiService {
 		}
 	}
 
-	public void aSearchSitePet(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<SitePet>>> eventHandler) {
+	public void aSearchSitePet(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SitePet>>> eventHandler) {
 		try {
 			OperationRequest operationRequest = siteRequest.getOperationRequest();
 			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
