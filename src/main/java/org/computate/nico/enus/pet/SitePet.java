@@ -70,8 +70,8 @@ public class SitePet extends SitePetGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 4
-	 * HtmlCell: 1
+	 * HtmlRow: 3
+	 * HtmlCell: 2
 	 * Multiline: true
 	 * DisplayName.enUS: How much does your pet eat?
 	 */           
@@ -83,7 +83,7 @@ public class SitePet extends SitePetGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 5
+	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * Multiline: true
 	 * DisplayName.enUS: What does your pet eat?
@@ -96,11 +96,62 @@ public class SitePet extends SitePetGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 6
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 2
 	 * DisplayName.enUS: Is your pet sick, or need medication?
 	 */           
 	protected void _petSick(Wrap<Boolean> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 1
+	 * Multiline: true
+	 * DisplayName.enUS: Additional notes for medication:
+	 */           
+	protected void _petMedNote(Wrap<String> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 2
+	 * Multiline: true
+	 * DisplayName.enUS: What would get your pet in trouble?
+	 */           
+	protected void _petTrouble(Wrap<String> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 1
+	 * DisplayName.enUS: Do you want updates, if you do how many?
+	 */           
+	protected void _update(Wrap<Boolean> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 2
+	 * Multiline: true
+	 * DisplayName.enUS: How many updates? (If any.)
+	 */           
+	protected void _petAmount(Wrap<String> w) {
 	}
 	
 	@Override

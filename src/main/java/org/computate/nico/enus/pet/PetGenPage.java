@@ -140,15 +140,19 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetName("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFoodAmount("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFood("Page");
+			o.htmPetSick("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmPetSick("Page");
+			o.htmPetMedNote("Page");
+			o.htmPetTrouble("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUpdate("Page");
+			o.htmPetAmount("Page");
 		} g("div");
 	}
 
@@ -165,15 +169,19 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetName("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFoodAmount("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFood("POST");
+			o.htmPetSick("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmPetSick("POST");
+			o.htmPetMedNote("POST");
+			o.htmPetTrouble("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUpdate("POST");
+			o.htmPetAmount("POST");
 		} g("div");
 	}
 
@@ -212,15 +220,19 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetName("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFoodAmount("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFood("PUTCopy");
+			o.htmPetSick("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmPetSick("PUTCopy");
+			o.htmPetMedNote("PUTCopy");
+			o.htmPetTrouble("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUpdate("PUTCopy");
+			o.htmPetAmount("PUTCopy");
 		} g("div");
 	}
 
@@ -235,15 +247,19 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetName("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFoodAmount("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFood("PATCH");
+			o.htmPetSick("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmPetSick("PATCH");
+			o.htmPetMedNote("PATCH");
+			o.htmPetTrouble("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUpdate("PATCH");
+			o.htmPetAmount("PATCH");
 		} g("div");
 	}
 
@@ -260,15 +276,19 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetName("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFoodAmount("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPetFood("Search");
+			o.htmPetSick("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmPetSick("Search");
+			o.htmPetMedNote("Search");
+			o.htmPetTrouble("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUpdate("Search");
+			o.htmPetAmount("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
