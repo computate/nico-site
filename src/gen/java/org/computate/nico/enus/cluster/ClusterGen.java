@@ -9,6 +9,7 @@ import org.computate.nico.enus.writer.AllWriter;
 import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
+import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import java.time.ZoneOffset;
 import io.vertx.core.logging.Logger;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.List;
+import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -174,6 +176,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pk == null ? "" : pk.toString();
 	}
 
+	public Long sqlPk() {
+		return pk;
+	}
+
 	public String jsonPk() {
 		return pk == null ? "" : pk.toString();
 	}
@@ -285,6 +291,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return inheritPk == null ? "" : inheritPk.toString();
 	}
 
+	public Long sqlInheritPk() {
+		return inheritPk;
+	}
+
 	public String jsonInheritPk() {
 		return inheritPk == null ? "" : inheritPk.toString();
 	}
@@ -325,14 +335,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			.fg();
 
 		} else {
-			if(
-					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLE_READS)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLE_READS)
-					) {
 				s.e("span").a("class", "varCluster", pk, "InheritPk ").f().sx(htmInheritPk()).g("span");
-			}
 		}
 	}
 
@@ -430,6 +433,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return id == null ? "" : id;
 	}
 
+	public String sqlId() {
+		return id;
+	}
+
 	public String jsonId() {
 		return id == null ? "" : id;
 	}
@@ -519,6 +526,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strCreated() {
 		return created == null ? "" : created.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
+	}
+
+	public OffsetDateTime sqlCreated() {
+		return created == null ? null : created.toOffsetDateTime();
 	}
 
 	public String jsonCreated() {
@@ -637,6 +648,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public OffsetDateTime sqlModified() {
+		return modified == null ? null : modified.toOffsetDateTime();
+	}
+
 	public String jsonModified() {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -743,6 +758,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return archived == null ? "" : archived.toString();
 	}
 
+	public Boolean sqlArchived() {
+		return archived;
+	}
+
 	public String jsonArchived() {
 		return archived == null ? "" : archived.toString();
 	}
@@ -797,14 +816,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			}
 
 		} else {
-			if(
-					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLE_READS)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLE_READS)
-					) {
 				s.e("span").a("class", "varCluster", pk, "Archived ").f().sx(htmArchived()).g("span");
-			}
 		}
 	}
 
@@ -894,6 +906,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return deleted == null ? "" : deleted.toString();
 	}
 
+	public Boolean sqlDeleted() {
+		return deleted;
+	}
+
 	public String jsonDeleted() {
 		return deleted == null ? "" : deleted.toString();
 	}
@@ -948,14 +964,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			}
 
 		} else {
-			if(
-					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLE_READS)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLE_READS)
-					) {
 				s.e("span").a("class", "varCluster", pk, "Deleted ").f().sx(htmDeleted()).g("span");
-			}
 		}
 	}
 
@@ -1040,6 +1049,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
 
+	public String sqlClassCanonicalName() {
+		return classCanonicalName;
+	}
+
 	public String jsonClassCanonicalName() {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
@@ -1114,6 +1127,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strClassSimpleName() {
 		return classSimpleName == null ? "" : classSimpleName;
+	}
+
+	public String sqlClassSimpleName() {
+		return classSimpleName;
 	}
 
 	public String jsonClassSimpleName() {
@@ -1213,6 +1230,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
 
+	public List<String> sqlClassCanonicalNames() {
+		return classCanonicalNames;
+	}
+
 	public String jsonClassCanonicalNames() {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
@@ -1289,6 +1310,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return sessionId == null ? "" : sessionId;
 	}
 
+	public String sqlSessionId() {
+		return sessionId;
+	}
+
 	public String jsonSessionId() {
 		return sessionId == null ? "" : sessionId;
 	}
@@ -1363,6 +1388,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strUserId() {
 		return userId == null ? "" : userId;
+	}
+
+	public String sqlUserId() {
+		return userId;
 	}
 
 	public String jsonUserId() {
@@ -1470,6 +1499,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strUserKey() {
 		return userKey == null ? "" : userKey.toString();
+	}
+
+	public Long sqlUserKey() {
+		return userKey;
 	}
 
 	public String jsonUserKey() {
@@ -1592,6 +1625,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return saves == null ? "" : saves.toString();
 	}
 
+	public List<String> sqlSaves() {
+		return saves;
+	}
+
 	public String jsonSaves() {
 		return saves == null ? "" : saves.toString();
 	}
@@ -1666,6 +1703,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strObjectTitle() {
 		return objectTitle == null ? "" : objectTitle;
+	}
+
+	public String sqlObjectTitle() {
+		return objectTitle;
 	}
 
 	public String jsonObjectTitle() {
@@ -1765,6 +1806,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strObjectId() {
 		return objectId == null ? "" : objectId;
+	}
+
+	public String sqlObjectId() {
+		return objectId;
 	}
 
 	public String jsonObjectId() {
@@ -1869,6 +1914,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectNameVar == null ? "" : objectNameVar;
 	}
 
+	public String sqlObjectNameVar() {
+		return objectNameVar;
+	}
+
 	public String jsonObjectNameVar() {
 		return objectNameVar == null ? "" : objectNameVar;
 	}
@@ -1943,6 +1992,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strObjectSuggest() {
 		return objectSuggest == null ? "" : objectSuggest;
+	}
+
+	public String sqlObjectSuggest() {
+		return objectSuggest;
 	}
 
 	public String jsonObjectSuggest() {
@@ -2021,6 +2074,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectText == null ? "" : objectText;
 	}
 
+	public String sqlObjectText() {
+		return objectText;
+	}
+
 	public String jsonObjectText() {
 		return objectText == null ? "" : objectText;
 	}
@@ -2095,6 +2152,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strPageUrlId() {
 		return pageUrlId == null ? "" : pageUrlId;
+	}
+
+	public String sqlPageUrlId() {
+		return pageUrlId;
 	}
 
 	public String jsonPageUrlId() {
@@ -2173,6 +2234,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageUrlPk == null ? "" : pageUrlPk;
 	}
 
+	public String sqlPageUrlPk() {
+		return pageUrlPk;
+	}
+
 	public String jsonPageUrlPk() {
 		return pageUrlPk == null ? "" : pageUrlPk;
 	}
@@ -2249,6 +2314,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageUrlApi == null ? "" : pageUrlApi;
 	}
 
+	public String sqlPageUrlApi() {
+		return pageUrlApi;
+	}
+
 	public String jsonPageUrlApi() {
 		return pageUrlApi == null ? "" : pageUrlApi;
 	}
@@ -2323,6 +2392,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strPageH1() {
 		return pageH1 == null ? "" : pageH1;
+	}
+
+	public String sqlPageH1() {
+		return pageH1;
 	}
 
 	public String jsonPageH1() {
@@ -2415,6 +2488,10 @@ public abstract class ClusterGen<DEV> extends Object {
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
+			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
 			}
 		}
 		return o;
@@ -2760,41 +2837,102 @@ public abstract class ClusterGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object defineCluster(String var, String val) {
-		switch(var) {
-			case "inheritPk":
+		switch(var.toLowerCase()) {
+			case "inheritpk":
 				if(val != null)
 					setInheritPk(val);
-				saves.add(var);
+				saves.add("inheritPk");
 				return val;
 			case "created":
 				if(val != null)
 					setCreated(val);
-				saves.add(var);
+				saves.add("created");
 				return val;
 			case "modified":
 				if(val != null)
 					setModified(val);
-				saves.add(var);
+				saves.add("modified");
 				return val;
 			case "archived":
 				if(val != null)
 					setArchived(val);
-				saves.add(var);
+				saves.add("archived");
 				return val;
 			case "deleted":
 				if(val != null)
 					setDeleted(val);
-				saves.add(var);
+				saves.add("deleted");
 				return val;
-			case "userId":
+			case "userid":
 				if(val != null)
 					setUserId(val);
-				saves.add(var);
+				saves.add("userId");
 				return val;
-			case "userKey":
+			case "userkey":
 				if(val != null)
 					setUserKey(val);
-				saves.add(var);
+				saves.add("userKey");
+				return val;
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineCluster(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineCluster(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "inheritpk":
+				if(val instanceof Long)
+					setInheritPk((Long)val);
+				saves.add("inheritPk");
+				return val;
+			case "created":
+				if(val instanceof ZonedDateTime)
+					setCreated((ZonedDateTime)val);
+				else if(val instanceof OffsetDateTime)
+					setCreated(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+				saves.add("created");
+				return val;
+			case "modified":
+				if(val instanceof ZonedDateTime)
+					setModified((ZonedDateTime)val);
+				else if(val instanceof OffsetDateTime)
+					setModified(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+				saves.add("modified");
+				return val;
+			case "archived":
+				if(val instanceof Boolean)
+					setArchived((Boolean)val);
+				saves.add("archived");
+				return val;
+			case "deleted":
+				if(val instanceof Boolean)
+					setDeleted((Boolean)val);
+				saves.add("deleted");
+				return val;
+			case "userid":
+				if(val instanceof String)
+					setUserId((String)val);
+				saves.add("userId");
+				return val;
+			case "userkey":
+				if(val instanceof Long)
+					setUserKey((Long)val);
+				saves.add("userKey");
 				return val;
 			default:
 				return null;

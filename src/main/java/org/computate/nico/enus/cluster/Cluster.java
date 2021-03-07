@@ -46,7 +46,7 @@ import org.computate.nico.enus.xml.UtilXml;
  * Role.frFR: SiteAdmin
  * Role.enUS: SiteAdmin
  * RoleRead.enUS: User
- */
+ */ 
 public class Cluster extends ClusterGen<Object> {     
 
 	/**

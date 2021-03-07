@@ -179,9 +179,16 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlVarHtml("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlVarBase64Decode("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlExclude("Page");
 			o.htmPdfExclude("Page");
 			o.htmLoginLogout("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("Page");
+			o.htmMapTo("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("Page");
@@ -242,9 +249,16 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlVarHtml("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlVarBase64Decode("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlExclude("POST");
 			o.htmPdfExclude("POST");
 			o.htmLoginLogout("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("POST");
+			o.htmMapTo("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("POST");
@@ -327,9 +341,16 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlVarHtml("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlVarBase64Decode("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlExclude("PUTCopy");
 			o.htmPdfExclude("PUTCopy");
 			o.htmLoginLogout("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("PUTCopy");
+			o.htmMapTo("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("PUTCopy");
@@ -344,11 +365,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmSort8("PUTCopy");
 			o.htmSort9("PUTCopy");
 			o.htmSort10("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("PUTCopy");
-			o.htmUserId("PUTCopy");
-			o.htmUserKey("PUTCopy");
 		} g("div");
 	}
 
@@ -393,9 +409,16 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlVarHtml("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlVarBase64Decode("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlExclude("PATCH");
 			o.htmPdfExclude("PATCH");
 			o.htmLoginLogout("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("PATCH");
+			o.htmMapTo("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("PATCH");
@@ -410,11 +433,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmSort8("PATCH");
 			o.htmSort9("PATCH");
 			o.htmSort10("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("PATCH");
-			o.htmUserId("PATCH");
-			o.htmUserKey("PATCH");
 		} g("div");
 	}
 
@@ -452,9 +470,16 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlVarHtml("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlVarBase64Decode("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmHtmlExclude("Search");
 			o.htmPdfExclude("Search");
 			o.htmLoginLogout("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("Search");
+			o.htmMapTo("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("Search");
@@ -535,7 +560,7 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listHtmlPart.getQueryResponse().getResults().getNumFound();
@@ -617,6 +642,7 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1HtmlPartGenPage();
+			} g("div");
 		}
 
 		if(listHtmlPart != null && listHtmlPart.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -644,7 +670,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsHtmlPartGenPage();
-		g("div");
 	}
 
 	public void table1HtmlPartGenPage() {
@@ -746,7 +771,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listHtmlPart != null && listHtmlPart.size() == 1) {
 				{ e("button")
@@ -757,6 +781,11 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 					sx("refresh this HTML part");
 				} g("button");
 			}
+		}
+		if(
+				siteRequest_.getUserResourceRoles().contains("SiteAdmin")
+				|| siteRequest_.getUserRealmRoles().contains("SiteAdmin")
+				) {
 
 			{ e("button")
 				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
@@ -924,7 +953,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedHtmlPartGenPage(this, null, listHtmlPart);
 	}

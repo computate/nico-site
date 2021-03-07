@@ -13,6 +13,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.String;
 import io.vertx.core.logging.Logger;
@@ -69,6 +70,9 @@ public abstract class SearchResultGen<DEV> extends Object {
 		this.siteRequest_ = siteRequest_;
 		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
+	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SearchResult siteRequest_Init() {
 		if(!siteRequest_Wrap.alreadyInitialized) {
 			_siteRequest_(siteRequest_Wrap);
@@ -106,6 +110,9 @@ public abstract class SearchResultGen<DEV> extends Object {
 	public void setSolrDocument(SolrDocument solrDocument) {
 		this.solrDocument = solrDocument;
 		this.solrDocumentWrap.alreadyInitialized = true;
+	}
+	public static SolrDocument staticSetSolrDocument(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SearchResult solrDocumentInit() {
 		if(!solrDocumentWrap.alreadyInitialized) {
@@ -146,11 +153,14 @@ public abstract class SearchResultGen<DEV> extends Object {
 		this.resultIndex = resultIndex;
 		this.resultIndexWrap.alreadyInitialized = true;
 	}
-	public SearchResult setResultIndex(String o) {
-		if(NumberUtils.isParsable(o))
-			this.resultIndex = Long.parseLong(o);
+	public void setResultIndex(String o) {
+		this.resultIndex = SearchResult.staticSetResultIndex(siteRequest_, o);
 		this.resultIndexWrap.alreadyInitialized = true;
-		return (SearchResult)this;
+	}
+	public static Long staticSetResultIndex(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
 	}
 	protected SearchResult resultIndexInit() {
 		if(!resultIndexWrap.alreadyInitialized) {
@@ -162,12 +172,28 @@ public abstract class SearchResultGen<DEV> extends Object {
 		return (SearchResult)this;
 	}
 
+	public static Long staticSolrResultIndex(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrResultIndex(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqResultIndex(SiteRequestEnUS siteRequest_, String o) {
+		return SearchResult.staticSolrStrResultIndex(siteRequest_, SearchResult.staticSolrResultIndex(siteRequest_, SearchResult.staticSetResultIndex(siteRequest_, o)));
+	}
+
 	public Long solrResultIndex() {
-		return resultIndex;
+		return SearchResult.staticSolrResultIndex(siteRequest_, resultIndex);
 	}
 
 	public String strResultIndex() {
 		return resultIndex == null ? "" : resultIndex.toString();
+	}
+
+	public Long sqlResultIndex() {
+		return resultIndex;
 	}
 
 	public String jsonResultIndex() {
@@ -240,6 +266,10 @@ public abstract class SearchResultGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -282,6 +312,70 @@ public abstract class SearchResultGen<DEV> extends Object {
 		}
 	}
 
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetSearchResult(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetSearchResult(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "resultIndex":
+			return SearchResult.staticSetResultIndex(siteRequest_, o);
+			default:
+				return null;
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrSearchResult(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrSearchResult(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "resultIndex":
+			return SearchResult.staticSolrResultIndex(siteRequest_, (Long)o);
+			default:
+				return null;
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrSearchResult(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrSearchResult(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "resultIndex":
+			return SearchResult.staticSolrStrResultIndex(siteRequest_, (Long)o);
+			default:
+				return null;
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqSearchResult(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqSearchResult(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "resultIndex":
+			return SearchResult.staticSolrFqResultIndex(siteRequest_, o);
+			default:
+				return null;
+		}
+	}
+
 	/////////////
 	// define //
 	/////////////
@@ -294,15 +388,37 @@ public abstract class SearchResultGen<DEV> extends Object {
 				if(o == null)
 					o = defineSearchResult(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
 	public Object defineSearchResult(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSearchResult(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSearchResult(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

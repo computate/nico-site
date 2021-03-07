@@ -13,6 +13,7 @@ import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.logging.Logger;
 import org.computate.nico.enus.wrap.Wrap;
@@ -68,6 +69,9 @@ public abstract class HtmlPartGenPageGen<DEV> extends PageLayout {
 		this.listHtmlPart = listHtmlPart;
 		this.listHtmlPartWrap.alreadyInitialized = true;
 	}
+	public static SearchList<HtmlPart> staticSetListHtmlPart(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected HtmlPartGenPage listHtmlPartInit() {
 		if(!listHtmlPartWrap.alreadyInitialized) {
 			_listHtmlPart(listHtmlPartWrap);
@@ -107,6 +111,9 @@ public abstract class HtmlPartGenPageGen<DEV> extends PageLayout {
 	public void setHtmlPart_(HtmlPart htmlPart_) {
 		this.htmlPart_ = htmlPart_;
 		this.htmlPart_Wrap.alreadyInitialized = true;
+	}
+	public static HtmlPart staticSetHtmlPart_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected HtmlPartGenPage htmlPart_Init() {
 		if(!htmlPart_Wrap.alreadyInitialized) {
@@ -175,6 +182,10 @@ public abstract class HtmlPartGenPageGen<DEV> extends PageLayout {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -215,6 +226,62 @@ public abstract class HtmlPartGenPageGen<DEV> extends PageLayout {
 		}
 	}
 
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetHtmlPartGenPage(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetHtmlPartGenPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+			default:
+				return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, o);
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrHtmlPartGenPage(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrHtmlPartGenPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+			default:
+				return PageLayout.staticSolrPageLayout(entityVar,  siteRequest_, o);
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrHtmlPartGenPage(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrHtmlPartGenPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+			default:
+				return PageLayout.staticSolrStrPageLayout(entityVar,  siteRequest_, o);
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqHtmlPartGenPage(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqHtmlPartGenPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+			default:
+				return PageLayout.staticSolrFqPageLayout(entityVar,  siteRequest_, o);
+		}
+	}
+
 	/////////////
 	// define //
 	/////////////
@@ -227,15 +294,37 @@ public abstract class HtmlPartGenPageGen<DEV> extends PageLayout {
 				if(o == null)
 					o = defineHtmlPartGenPage(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
 	public Object defineHtmlPartGenPage(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return super.definePageLayout(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineHtmlPartGenPage(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineHtmlPartGenPage(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return super.definePageLayout(var, val);
 		}

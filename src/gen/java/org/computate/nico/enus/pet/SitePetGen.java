@@ -15,7 +15,9 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.computate.nico.enus.user.SiteUser;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
 import java.lang.String;
@@ -37,6 +39,7 @@ import org.apache.solr.common.SolrDocument;
 import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -146,6 +149,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petKey == null ? "" : petKey.toString();
 	}
 
+	public Long sqlPetKey() {
+		return petKey;
+	}
+
 	public String jsonPetKey() {
 		return petKey == null ? "" : petKey.toString();
 	}
@@ -160,6 +167,349 @@ public abstract class SitePetGen<DEV> extends Cluster {
 
 	public String htmPetKey() {
 		return petKey == null ? "" : StringEscapeUtils.escapeHtml4(strPetKey());
+	}
+
+	//////////////
+	// userKeys //
+	//////////////
+
+	/**	 The entity userKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> userKeys = new ArrayList<Long>();
+	@JsonIgnore
+	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("userKeys").o(userKeys);
+
+	/**	<br/> The entity userKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKeys">Find the entity userKeys in Solr</a>
+	 * <br/>
+	 * @param userKeys is the entity already constructed. 
+	 **/
+	protected abstract void _userKeys(List<Long> c);
+
+	public List<Long> getUserKeys() {
+		return userKeys;
+	}
+
+	public void setUserKeys(List<Long> userKeys) {
+		this.userKeys = userKeys;
+		this.userKeysWrap.alreadyInitialized = true;
+	}
+	public void setUserKeys(String o) {
+		Long l = SitePet.staticSetUserKeys(siteRequest_, o);
+		if(l != null)
+			addUserKeys(l);
+		this.userKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetUserKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SitePet addUserKeys(Long...objets) {
+		for(Long o : objets) {
+			addUserKeys(o);
+		}
+		return (SitePet)this;
+	}
+	public SitePet addUserKeys(Long o) {
+		if(o != null && !userKeys.contains(o))
+			this.userKeys.add(o);
+		return (SitePet)this;
+	}
+	public void setUserKeys(JsonArray objets) {
+		userKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addUserKeys(o);
+		}
+	}
+	public SitePet addUserKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addUserKeys(p);
+		}
+		return (SitePet)this;
+	}
+	protected SitePet userKeysInit() {
+		if(!userKeysWrap.alreadyInitialized) {
+			_userKeys(userKeys);
+		}
+		userKeysWrap.alreadyInitialized(true);
+		return (SitePet)this;
+	}
+
+	public static Long staticSolrUserKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrUserKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqUserKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SitePet.staticSolrStrUserKeys(siteRequest_, SitePet.staticSolrUserKeys(siteRequest_, SitePet.staticSetUserKeys(siteRequest_, o)));
+	}
+
+	public List<Long> solrUserKeys() {
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : userKeys) {
+			l.add(SitePet.staticSolrUserKeys(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strUserKeys() {
+		return userKeys == null ? "" : userKeys.toString();
+	}
+
+	public List<Long> sqlUserKeys() {
+		return userKeys;
+	}
+
+	public String jsonUserKeys() {
+		return userKeys == null ? "" : userKeys.toString();
+	}
+
+	public String nomAffichageUserKeys() {
+		return "users";
+	}
+
+	public String htmTooltipUserKeys() {
+		return null;
+	}
+
+	public String htmUserKeys() {
+		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
+	}
+
+	public void inputUserKeys(String classApiMethodMethod) {
+		SitePet s = (SitePet)this;
+	}
+
+	public void htmUserKeys(String classApiMethodMethod) {
+		SitePet s = (SitePet)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("class", "").f().sx("users").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row  ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varSitePet", pk, "UserKeys ").f().sx(strUserKeys()).g("span");
+								} g("div");
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			}
+		} g("div");
+	}
+
+	////////////////////
+	// enrollmentKeys //
+	////////////////////
+
+	/**	 The entity enrollmentKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> enrollmentKeys = new ArrayList<Long>();
+	@JsonIgnore
+	public Wrap<List<Long>> enrollmentKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("enrollmentKeys").o(enrollmentKeys);
+
+	/**	<br/> The entity enrollmentKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentKeys">Find the entity enrollmentKeys in Solr</a>
+	 * <br/>
+	 * @param enrollmentKeys is the entity already constructed. 
+	 **/
+	protected abstract void _enrollmentKeys(List<Long> l);
+
+	public List<Long> getEnrollmentKeys() {
+		return enrollmentKeys;
+	}
+
+	public void setEnrollmentKeys(List<Long> enrollmentKeys) {
+		this.enrollmentKeys = enrollmentKeys;
+		this.enrollmentKeysWrap.alreadyInitialized = true;
+	}
+	public void setEnrollmentKeys(String o) {
+		Long l = SitePet.staticSetEnrollmentKeys(siteRequest_, o);
+		if(l != null)
+			addEnrollmentKeys(l);
+		this.enrollmentKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SitePet addEnrollmentKeys(Long...objets) {
+		for(Long o : objets) {
+			addEnrollmentKeys(o);
+		}
+		return (SitePet)this;
+	}
+	public SitePet addEnrollmentKeys(Long o) {
+		if(o != null && !enrollmentKeys.contains(o))
+			this.enrollmentKeys.add(o);
+		return (SitePet)this;
+	}
+	public void setEnrollmentKeys(JsonArray objets) {
+		enrollmentKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addEnrollmentKeys(o);
+		}
+	}
+	public SitePet addEnrollmentKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addEnrollmentKeys(p);
+		}
+		return (SitePet)this;
+	}
+	protected SitePet enrollmentKeysInit() {
+		if(!enrollmentKeysWrap.alreadyInitialized) {
+			_enrollmentKeys(enrollmentKeys);
+		}
+		enrollmentKeysWrap.alreadyInitialized(true);
+		return (SitePet)this;
+	}
+
+	public static Long staticSolrEnrollmentKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrEnrollmentKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SitePet.staticSolrStrEnrollmentKeys(siteRequest_, SitePet.staticSolrEnrollmentKeys(siteRequest_, SitePet.staticSetEnrollmentKeys(siteRequest_, o)));
+	}
+
+	public List<Long> solrEnrollmentKeys() {
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : enrollmentKeys) {
+			l.add(SitePet.staticSolrEnrollmentKeys(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strEnrollmentKeys() {
+		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
+	}
+
+	public List<Long> sqlEnrollmentKeys() {
+		return enrollmentKeys;
+	}
+
+	public String jsonEnrollmentKeys() {
+		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
+	}
+
+	public String nomAffichageEnrollmentKeys() {
+		return "pets";
+	}
+
+	public String htmTooltipEnrollmentKeys() {
+		return null;
+	}
+
+	public String htmEnrollmentKeys() {
+		return enrollmentKeys == null ? "" : StringEscapeUtils.escapeHtml4(strEnrollmentKeys());
+	}
+
+	public void inputEnrollmentKeys(String classApiMethodMethod) {
+		SitePet s = (SitePet)this;
+		if(
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+		) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_enrollmentKeys_clear")
+						.a("class", "enrollmentKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_enrollmentKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "pets")
+				.a("class", "valueObjectSuggest suggestEnrollmentKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setEnrollmentKeys")
+				.a("id", classApiMethodMethod, "_enrollmentKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestSitePetEnrollmentKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'petKeys:" + pk + "'}", "], $('#listSitePetEnrollmentKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
+	}
+
+	public void htmEnrollmentKeys(String classApiMethodMethod) {
+		SitePet s = (SitePet)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetEnrollmentKeys").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/enrollment?fq=petKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-red w3-hover-red ").f();
+								e("i").a("class", "fad fa-clipboard-list ").f().g("i");
+								sx("pets");
+							} g("a");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this pet");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputEnrollmentKeys(classApiMethodMethod);
+								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSitePetEnrollmentKeys_", classApiMethodMethod).f();
+								} g("ul");
+								{
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
+												.a("id", classApiMethodMethod, "_enrollmentKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSiteEnrollmentVals({ petKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "enrollmentKeys')); });")
+												.f().sx("add an enrollment")
+											.g("button");
+										} g("div");
+									}
+								}
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////
@@ -222,6 +572,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petName == null ? "" : petName;
 	}
 
+	public String sqlPetName() {
+		return petName;
+	}
+
 	public String jsonPetName() {
 		return petName == null ? "" : petName;
 	}
@@ -241,9 +595,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetName(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "name of pet:")
@@ -282,9 +638,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 								inputPetName(classApiMethodMethod);
 							} g("div");
 							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									userKeys.contains(siteRequest_.getUserKey())
+									|| Objects.equals(sessionId, siteRequest_.getSessionId())
+									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
+							) {
 								if("Page".equals(classApiMethodMethod)) {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
@@ -364,6 +722,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petFoodAmount == null ? "" : petFoodAmount;
 	}
 
+	public String sqlPetFoodAmount() {
+		return petFoodAmount;
+	}
+
 	public String jsonPetFoodAmount() {
 		return petFoodAmount == null ? "" : petFoodAmount;
 	}
@@ -383,9 +745,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetFoodAmount(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			e("textarea")
 				.a("placeholder", "How much does your pet eat?")
 				.a("id", classApiMethodMethod, "_petFoodAmount");
@@ -422,9 +786,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 								inputPetFoodAmount(classApiMethodMethod);
 							} g("div");
 							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									userKeys.contains(siteRequest_.getUserKey())
+									|| Objects.equals(sessionId, siteRequest_.getSessionId())
+									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
+							) {
 								if("Page".equals(classApiMethodMethod)) {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
@@ -504,6 +870,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petFood == null ? "" : petFood;
 	}
 
+	public String sqlPetFood() {
+		return petFood;
+	}
+
 	public String jsonPetFood() {
 		return petFood == null ? "" : petFood;
 	}
@@ -523,9 +893,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetFood(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			e("textarea")
 				.a("placeholder", "What does your pet eat?")
 				.a("id", classApiMethodMethod, "_petFood");
@@ -562,9 +934,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 								inputPetFood(classApiMethodMethod);
 							} g("div");
 							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									userKeys.contains(siteRequest_.getUserKey())
+									|| Objects.equals(sessionId, siteRequest_.getSessionId())
+									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
+							) {
 								if("Page".equals(classApiMethodMethod)) {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
@@ -649,6 +1023,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petSick == null ? "" : petSick.toString();
 	}
 
+	public Boolean sqlPetSick() {
+		return petSick;
+	}
+
 	public String jsonPetSick() {
 		return petSick == null ? "" : petSick.toString();
 	}
@@ -668,9 +1046,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetSick(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			if("Page".equals(classApiMethodMethod)) {
 				e("input")
 					.a("type", "checkbox")
@@ -788,6 +1168,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petMedNote == null ? "" : petMedNote;
 	}
 
+	public String sqlPetMedNote() {
+		return petMedNote;
+	}
+
 	public String jsonPetMedNote() {
 		return petMedNote == null ? "" : petMedNote;
 	}
@@ -807,9 +1191,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetMedNote(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			e("textarea")
 				.a("placeholder", "Additional notes for medication:")
 				.a("id", classApiMethodMethod, "_petMedNote");
@@ -846,9 +1232,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 								inputPetMedNote(classApiMethodMethod);
 							} g("div");
 							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									userKeys.contains(siteRequest_.getUserKey())
+									|| Objects.equals(sessionId, siteRequest_.getSessionId())
+									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
+							) {
 								if("Page".equals(classApiMethodMethod)) {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
@@ -928,6 +1316,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petTrouble == null ? "" : petTrouble;
 	}
 
+	public String sqlPetTrouble() {
+		return petTrouble;
+	}
+
 	public String jsonPetTrouble() {
 		return petTrouble == null ? "" : petTrouble;
 	}
@@ -947,9 +1339,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetTrouble(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			e("textarea")
 				.a("placeholder", "What would get your pet in trouble?")
 				.a("id", classApiMethodMethod, "_petTrouble");
@@ -986,9 +1380,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 								inputPetTrouble(classApiMethodMethod);
 							} g("div");
 							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									userKeys.contains(siteRequest_.getUserKey())
+									|| Objects.equals(sessionId, siteRequest_.getSessionId())
+									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
+							) {
 								if("Page".equals(classApiMethodMethod)) {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
@@ -1073,6 +1469,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return update == null ? "" : update.toString();
 	}
 
+	public Boolean sqlUpdate() {
+		return update;
+	}
+
 	public String jsonUpdate() {
 		return update == null ? "" : update.toString();
 	}
@@ -1092,9 +1492,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputUpdate(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			if("Page".equals(classApiMethodMethod)) {
 				e("input")
 					.a("type", "checkbox")
@@ -1212,6 +1614,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petAmount == null ? "" : petAmount;
 	}
 
+	public String sqlPetAmount() {
+		return petAmount;
+	}
+
 	public String jsonPetAmount() {
 		return petAmount == null ? "" : petAmount;
 	}
@@ -1231,9 +1637,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void inputPetAmount(String classApiMethodMethod) {
 		SitePet s = (SitePet)this;
 		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
+		) {
 			e("textarea")
 				.a("placeholder", "How many updates? (If any.)")
 				.a("id", classApiMethodMethod, "_petAmount");
@@ -1270,9 +1678,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 								inputPetAmount(classApiMethodMethod);
 							} g("div");
 							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									userKeys.contains(siteRequest_.getUserKey())
+									|| Objects.equals(sessionId, siteRequest_.getSessionId())
+									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
+							) {
 								if("Page".equals(classApiMethodMethod)) {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
@@ -1314,6 +1724,8 @@ public abstract class SitePetGen<DEV> extends Cluster {
 
 	public void initSitePet() {
 		petKeyInit();
+		userKeysInit();
+		enrollmentKeysInit();
 		petNameInit();
 		petFoodAmountInit();
 		petFoodInit();
@@ -1354,6 +1766,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -1362,6 +1778,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(var) {
 			case "petKey":
 				return oSitePet.petKey;
+			case "userKeys":
+				return oSitePet.userKeys;
+			case "enrollmentKeys":
+				return oSitePet.enrollmentKeys;
 			case "petName":
 				return oSitePet.petName;
 			case "petFoodAmount":
@@ -1403,6 +1823,11 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public Object attributeSitePet(String var, Object val) {
 		SitePet oSitePet = (SitePet)this;
 		switch(var) {
+			case "enrollmentKeys":
+				oSitePet.addEnrollmentKeys((Long)val);
+				if(!saves.contains("enrollmentKeys"))
+					saves.add("enrollmentKeys");
+				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -1419,6 +1844,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "petKey":
 			return SitePet.staticSetPetKey(siteRequest_, o);
+		case "userKeys":
+			return SitePet.staticSetUserKeys(siteRequest_, o);
+		case "enrollmentKeys":
+			return SitePet.staticSetEnrollmentKeys(siteRequest_, o);
 		case "petName":
 			return SitePet.staticSetPetName(siteRequest_, o);
 		case "petFoodAmount":
@@ -1451,6 +1880,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "petKey":
 			return SitePet.staticSolrPetKey(siteRequest_, (Long)o);
+		case "userKeys":
+			return SitePet.staticSolrUserKeys(siteRequest_, (Long)o);
+		case "enrollmentKeys":
+			return SitePet.staticSolrEnrollmentKeys(siteRequest_, (Long)o);
 		case "petName":
 			return SitePet.staticSolrPetName(siteRequest_, (String)o);
 		case "petFoodAmount":
@@ -1483,6 +1916,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "petKey":
 			return SitePet.staticSolrStrPetKey(siteRequest_, (Long)o);
+		case "userKeys":
+			return SitePet.staticSolrStrUserKeys(siteRequest_, (Long)o);
+		case "enrollmentKeys":
+			return SitePet.staticSolrStrEnrollmentKeys(siteRequest_, (Long)o);
 		case "petName":
 			return SitePet.staticSolrStrPetName(siteRequest_, (String)o);
 		case "petFoodAmount":
@@ -1515,6 +1952,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "petKey":
 			return SitePet.staticSolrFqPetKey(siteRequest_, o);
+		case "userKeys":
+			return SitePet.staticSolrFqUserKeys(siteRequest_, o);
+		case "enrollmentKeys":
+			return SitePet.staticSolrFqEnrollmentKeys(siteRequest_, o);
 		case "petName":
 			return SitePet.staticSolrFqPetName(siteRequest_, o);
 		case "petFoodAmount":
@@ -1556,46 +1997,108 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineSitePet(String var, String val) {
-		switch(var) {
-			case "petName":
+		switch(var.toLowerCase()) {
+			case "petname":
 				if(val != null)
 					setPetName(val);
-				saves.add(var);
+				saves.add("petName");
 				return val;
-			case "petFoodAmount":
+			case "petfoodamount":
 				if(val != null)
 					setPetFoodAmount(val);
-				saves.add(var);
+				saves.add("petFoodAmount");
 				return val;
-			case "petFood":
+			case "petfood":
 				if(val != null)
 					setPetFood(val);
-				saves.add(var);
+				saves.add("petFood");
 				return val;
-			case "petSick":
+			case "petsick":
 				if(val != null)
 					setPetSick(val);
-				saves.add(var);
+				saves.add("petSick");
 				return val;
-			case "petMedNote":
+			case "petmednote":
 				if(val != null)
 					setPetMedNote(val);
-				saves.add(var);
+				saves.add("petMedNote");
 				return val;
-			case "petTrouble":
+			case "pettrouble":
 				if(val != null)
 					setPetTrouble(val);
-				saves.add(var);
+				saves.add("petTrouble");
 				return val;
 			case "update":
 				if(val != null)
 					setUpdate(val);
-				saves.add(var);
+				saves.add("update");
 				return val;
-			case "petAmount":
+			case "petamount":
 				if(val != null)
 					setPetAmount(val);
-				saves.add(var);
+				saves.add("petAmount");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSitePet(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSitePet(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "petname":
+				if(val instanceof String)
+					setPetName((String)val);
+				saves.add("petName");
+				return val;
+			case "petfoodamount":
+				if(val instanceof String)
+					setPetFoodAmount((String)val);
+				saves.add("petFoodAmount");
+				return val;
+			case "petfood":
+				if(val instanceof String)
+					setPetFood((String)val);
+				saves.add("petFood");
+				return val;
+			case "petsick":
+				if(val instanceof Boolean)
+					setPetSick((Boolean)val);
+				saves.add("petSick");
+				return val;
+			case "petmednote":
+				if(val instanceof String)
+					setPetMedNote((String)val);
+				saves.add("petMedNote");
+				return val;
+			case "pettrouble":
+				if(val instanceof String)
+					setPetTrouble((String)val);
+				saves.add("petTrouble");
+				return val;
+			case "update":
+				if(val instanceof Boolean)
+					setUpdate((Boolean)val);
+				saves.add("update");
+				return val;
+			case "petamount":
+				if(val instanceof String)
+					setPetAmount((String)val);
+				saves.add("petAmount");
 				return val;
 			default:
 				return super.defineCluster(var, val);
@@ -1619,6 +2122,16 @@ public abstract class SitePetGen<DEV> extends Cluster {
 				if(petKey != null)
 					oSitePet.setPetKey(petKey);
 			}
+
+			if(saves.contains("userKeys")) {
+				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+				if(userKeys != null)
+					oSitePet.userKeys.addAll(userKeys);
+			}
+
+			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_stored_longs");
+			if(enrollmentKeys != null)
+				oSitePet.enrollmentKeys.addAll(enrollmentKeys);
 
 			if(saves.contains("petName")) {
 				String petName = (String)solrDocument.get("petName_stored_string");
@@ -1738,6 +2251,22 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			document.addField("petKey_indexed_long", petKey);
 			document.addField("petKey_stored_long", petKey);
 		}
+		if(userKeys != null) {
+			for(java.lang.Long o : userKeys) {
+				document.addField("userKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : userKeys) {
+				document.addField("userKeys_stored_longs", o);
+			}
+		}
+		if(enrollmentKeys != null) {
+			for(java.lang.Long o : enrollmentKeys) {
+				document.addField("enrollmentKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : enrollmentKeys) {
+				document.addField("enrollmentKeys_stored_longs", o);
+			}
+		}
 		if(petName != null) {
 			document.addField("petName_indexed_string", petName);
 			document.addField("petName_stored_string", petName);
@@ -1795,6 +2324,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "petKey":
 				return "petKey_indexed_long";
+			case "userKeys":
+				return "userKeys_indexed_longs";
+			case "enrollmentKeys":
+				return "enrollmentKeys_indexed_longs";
 			case "petName":
 				return "petName_indexed_string";
 			case "petFoodAmount":
@@ -1844,6 +2377,14 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		if(petKey != null)
 			oSitePet.setPetKey(petKey);
 
+		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+		if(userKeys != null)
+			oSitePet.userKeys.addAll(userKeys);
+
+		List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_stored_longs");
+		if(enrollmentKeys != null)
+			oSitePet.enrollmentKeys.addAll(enrollmentKeys);
+
 		String petName = (String)solrDocument.get("petName_stored_string");
 		if(petName != null)
 			oSitePet.setPetName(petName);
@@ -1890,6 +2431,10 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			SitePet original = (SitePet)o;
 			if(!Objects.equals(petKey, original.getPetKey()))
 				apiRequest.addVars("petKey");
+			if(!Objects.equals(userKeys, original.getUserKeys()))
+				apiRequest.addVars("userKeys");
+			if(!Objects.equals(enrollmentKeys, original.getEnrollmentKeys()))
+				apiRequest.addVars("enrollmentKeys");
 			if(!Objects.equals(petName, original.getPetName()))
 				apiRequest.addVars("petName");
 			if(!Objects.equals(petFoodAmount, original.getPetFoodAmount()))
@@ -1915,7 +2460,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), petKey, petName, petFoodAmount, petFood, petSick, petMedNote, petTrouble, update, petAmount);
+		return Objects.hash(super.hashCode(), petKey, userKeys, enrollmentKeys, petName, petFoodAmount, petFood, petSick, petMedNote, petTrouble, update, petAmount);
 	}
 
 	////////////
@@ -1930,6 +2475,8 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		SitePet that = (SitePet)o;
 		return super.equals(o)
 				&& Objects.equals( petKey, that.petKey )
+				&& Objects.equals( userKeys, that.userKeys )
+				&& Objects.equals( enrollmentKeys, that.enrollmentKeys )
 				&& Objects.equals( petName, that.petName )
 				&& Objects.equals( petFoodAmount, that.petFoodAmount )
 				&& Objects.equals( petFood, that.petFood )
@@ -1949,6 +2496,8 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("SitePet { ");
 		sb.append( "petKey: " ).append(petKey);
+		sb.append( ", userKeys: " ).append(userKeys);
+		sb.append( ", enrollmentKeys: " ).append(enrollmentKeys);
 		sb.append( ", petName: \"" ).append(petName).append( "\"" );
 		sb.append( ", petFoodAmount: \"" ).append(petFoodAmount).append( "\"" );
 		sb.append( ", petFood: \"" ).append(petFood).append( "\"" );

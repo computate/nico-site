@@ -1,5 +1,9 @@
 package org.computate.nico.enus.enrollment;
 
+import org.computate.nico.enus.user.SiteUserEnUSGenApiServiceImpl;
+import org.computate.nico.enus.user.SiteUser;
+import org.computate.nico.enus.pet.SitePetEnUSGenApiServiceImpl;
+import org.computate.nico.enus.pet.SitePet;
 import org.computate.nico.enus.config.SiteConfig;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.context.SiteContextEnUS;
@@ -38,6 +42,7 @@ import java.util.Set;
 import java.util.HashSet;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
+import org.apache.commons.lang3.math.NumberUtils;
 import io.vertx.ext.web.Router;
 import io.vertx.core.Vertx;
 import io.vertx.ext.reactivestreams.ReactiveReadStream;
@@ -62,7 +67,6 @@ import java.time.LocalTime;
 import java.sql.Timestamp;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.http.CaseInsensitiveHeaders;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.api.OperationResponse;
@@ -71,7 +75,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
 import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.auth.oauth2.KeycloakHelper;
+import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.net.URLDecoder;
@@ -108,24 +112,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		siteRequest.setRequestMethod("PUTImport");
 		try {
 			LOGGER.info(String.format("putimportSiteEnrollment started. "));
-
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), new CaseInsensitiveHeaders()
-					)
-				));
-			} else {
-
+			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
 						putimportSiteEnrollmentResponse(siteRequest, c -> {
@@ -249,7 +236,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					);
 				}
 			});
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTImportSiteEnrollment(siteRequest, eventHandler);
@@ -298,24 +285,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		siteRequest.setRequestMethod("PUTMerge");
 		try {
 			LOGGER.info(String.format("putmergeSiteEnrollment started. "));
-
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), new CaseInsensitiveHeaders()
-					)
-				));
-			} else {
-
+			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
 						putmergeSiteEnrollmentResponse(siteRequest, c -> {
@@ -437,7 +407,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					);
 				}
 			});
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTMergeSiteEnrollment(siteRequest, eventHandler);
@@ -486,24 +456,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		siteRequest.setRequestMethod("PUTCopy");
 		try {
 			LOGGER.info(String.format("putcopySiteEnrollment started. "));
-
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), new CaseInsensitiveHeaders()
-					)
-				));
-			} else {
-
+			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
 						putcopySiteEnrollmentResponse(siteRequest, c -> {
@@ -513,7 +466,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSiteEnrollment(siteRequest, false, true, "/api/enrollment/copy", "PUTCopy", d -> {
+											aSearchSiteEnrollment(siteRequest, false, true, true, "/api/enrollment/copy", "PUTCopy", d -> {
 												if(d.succeeded()) {
 													SearchList<SiteEnrollment> listSiteEnrollment = d.result();
 													ApiRequest apiRequest = new ApiRequest();
@@ -591,7 +544,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				})
 			);
 		});
-		CompositeFuture.all(futures).setHandler( a -> {
+		CompositeFuture.all(futures).onComplete( a -> {
 			if(a.succeeded()) {
 				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteEnrollment.size());
 				if(listSiteEnrollment.next()) {
@@ -680,6 +633,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -690,8 +644,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					switch(entityVar) {
 					case "inheritPk":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -703,8 +657,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						break;
 					case "archived":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -716,8 +670,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						break;
 					case "deleted":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -727,10 +681,48 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 							});
 						}));
 						break;
+					case "userKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA)
+										.execute(Tuple.of(l, "enrollmentKeys", pk, "userKeys")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("SiteUser");
+							}
+						}
+						break;
+					case "petKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA)
+										.execute(Tuple.of(l, "enrollmentKeys", pk, "petKeys")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("SitePet");
+							}
+						}
+						break;
 					}
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
@@ -778,24 +770,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		siteRequest.setRequestMethod("POST");
 		try {
 			LOGGER.info(String.format("postSiteEnrollment started. "));
-
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), new CaseInsensitiveHeaders()
-					)
-				));
-			} else {
-
+			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
 						ApiRequest apiRequest = new ApiRequest();
@@ -897,14 +872,17 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
+			SiteEnrollment o2 = new SiteEnrollment();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "sessionId", siteRequest.getSessionId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -916,8 +894,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			}
 			if(siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userId", siteRequest.getUserId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -929,8 +907,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			}
 			if(siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -939,6 +917,12 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 							a.handle(Future.failedFuture(b.cause()));
 					});
 				}));
+
+				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("userKeys")).orElse(null);
+				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
+					userKeys.add(siteRequest.getUserKey().toString());
+				else
+					jsonObject.put("userKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
 			}
 
 			if(jsonObject != null) {
@@ -947,8 +931,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					switch(entityVar) {
 					case "inheritPk":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -960,8 +944,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						break;
 					case "archived":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -973,8 +957,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						break;
 					case "deleted":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -984,10 +968,74 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 							});
 						}));
 						break;
+					case "userKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(org.computate.nico.enus.user.SiteUser.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SiteUser");
+									}
+								}
+							}
+						}
+						break;
+					case "petKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(org.computate.nico.enus.pet.SitePet.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SitePet");
+									}
+								}
+							}
+						}
+						break;
 					}
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
@@ -1037,24 +1085,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		siteRequest.setRequestMethod("PATCH");
 		try {
 			LOGGER.info(String.format("patchSiteEnrollment started. "));
-
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), new CaseInsensitiveHeaders()
-					)
-				));
-			} else {
-
+			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
 						patchSiteEnrollmentResponse(siteRequest, c -> {
@@ -1064,67 +1095,59 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSiteEnrollment(siteRequest, false, true, "/api/enrollment", "PATCH", d -> {
+											aSearchSiteEnrollment(siteRequest, false, true, true, "/api/enrollment", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<SiteEnrollment> listSiteEnrollment = d.result();
 
-													if(listSiteEnrollment.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															eventHandler.handle(Future.succeededFuture(
-																new OperationResponse(401, "UNAUTHORIZED", 
-																	Buffer.buffer().appendString(
-																		new JsonObject()
-																			.put("errorCode", "401")
-																			.put("errorMessage", "roles required: " + String.join(", ", roles2))
-																			.encodePrettily()
-																		), new CaseInsensitiveHeaders()
-																)
-															));
-														}
-													}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listSiteEnrollment.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(message));
+													} else {
 
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(listSiteEnrollment.getRows());
-													apiRequest.setNumFound(listSiteEnrollment.getQueryResponse().getResults().getNumFound());
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest);
-													siteRequest.setApiRequest_(apiRequest);
-													siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-													SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteEnrollment.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-													Date date = null;
-													if(facets != null)
+														ApiRequest apiRequest = new ApiRequest();
+														apiRequest.setRows(listSiteEnrollment.getRows());
+														apiRequest.setNumFound(listSiteEnrollment.getQueryResponse().getResults().getNumFound());
+														apiRequest.setNumPATCH(0L);
+														apiRequest.initDeepApiRequest(siteRequest);
+														siteRequest.setApiRequest_(apiRequest);
+														siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteEnrollment.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
+														Date date = null;
+														if(facets != null)
 														date = (Date)facets.get("max_modified");
-													String dt;
-													if(date == null)
-														dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-													else
-														dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-													listSiteEnrollment.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
+														String dt;
+														if(date == null)
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														else
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
+														listSiteEnrollment.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
-													try {
-														listPATCHSiteEnrollment(apiRequest, listSiteEnrollment, dt, e -> {
-															if(e.succeeded()) {
-																patchSiteEnrollmentResponse(siteRequest, f -> {
-																	if(f.succeeded()) {
-																		LOGGER.info(String.format("patchSiteEnrollment succeeded. "));
-																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																	} else {
-																		LOGGER.error(String.format("patchSiteEnrollment failed. ", f.cause()));
-																		errorSiteEnrollment(siteRequest, null, f);
-																	}
-																});
-															} else {
-																LOGGER.error(String.format("patchSiteEnrollment failed. ", e.cause()));
-																errorSiteEnrollment(siteRequest, null, e);
-															}
-														});
-													} catch(Exception ex) {
-														LOGGER.error(String.format("patchSiteEnrollment failed. ", ex));
-														errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
+														try {
+															listPATCHSiteEnrollment(apiRequest, listSiteEnrollment, dt, e -> {
+																if(e.succeeded()) {
+																	patchSiteEnrollmentResponse(siteRequest, f -> {
+																		if(f.succeeded()) {
+																			LOGGER.info(String.format("patchSiteEnrollment succeeded. "));
+																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
+																		} else {
+																			LOGGER.error(String.format("patchSiteEnrollment failed. ", f.cause()));
+																			errorSiteEnrollment(siteRequest, null, f);
+																		}
+																	});
+																} else {
+																	LOGGER.error(String.format("patchSiteEnrollment failed. ", e.cause()));
+																	errorSiteEnrollment(siteRequest, null, e);
+																}
+															});
+														} catch(Exception ex) {
+															LOGGER.error(String.format("patchSiteEnrollment failed. ", ex));
+															errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
+														}
 													}
 										} else {
 													LOGGER.error(String.format("patchSiteEnrollment failed. ", d.cause()));
@@ -1172,7 +1195,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				})
 			);
 		});
-		CompositeFuture.all(futures).setHandler( a -> {
+		CompositeFuture.all(futures).onComplete( a -> {
 			if(a.succeeded()) {
 				if(listSiteEnrollment.next(dt)) {
 					listPATCHSiteEnrollment(apiRequest, listSiteEnrollment, dt, eventHandler);
@@ -1247,16 +1270,18 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteEnrollment o2 = new SiteEnrollment();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-							, Tuple.of(pk, "userId", siteRequest.getUserId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1268,8 +1293,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1278,6 +1303,12 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 							a.handle(Future.failedFuture(b.cause()));
 					});
 				}));
+
+				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("addUserKeys")).orElse(null);
+				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
+					userKeys.add(siteRequest.getUserKey().toString());
+				else
+					jsonObject.put("addUserKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
 			}
 
 			for(String methodName : methodNames) {
@@ -1285,8 +1316,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					case "setInheritPk":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "inheritPk")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "inheritPk")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1298,8 +1329,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1313,8 +1344,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					case "setArchived":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "archived")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "archived")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1326,8 +1357,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "archived", o2.jsonArchived())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1341,8 +1372,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					case "setDeleted":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "deleted")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "deleted")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1354,8 +1385,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "deleted", o2.jsonDeleted())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1366,9 +1397,397 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 							}));
 						}
 						break;
+					case "addUserKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(org.computate.nico.enus.user.SiteUser.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+								List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
+								if(
+										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+										) {
+									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+								}
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getUserKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SiteUser");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllUserKeys":
+						JsonArray addAllUserKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllUserKeysValues != null) {
+							for(Integer i = 0; i <  addAllUserKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllUserKeysValues.getString(i));
+								if(l != null) {
+									SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(org.computate.nico.enus.user.SiteUser.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+									List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
+									if(
+											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+											) {
+										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+									}
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getUserKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("SiteUser");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setUserKeys":
+						JsonArray setUserKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setUserKeysValues2 = new JsonArray();
+						if(setUserKeysValues != null) {
+							for(Integer i = 0; i <  setUserKeysValues.size(); i++) {
+								Long l = Long.parseLong(setUserKeysValues.getString(i));
+								if(l != null) {
+									SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(org.computate.nico.enus.user.SiteUser.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+									List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
+									if(
+											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+											) {
+										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+									}
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setUserKeysValues2.add(l2);
+									if(l2 != null && !o.getUserKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("SiteUser");
+										}
+									}
+								}
+							}
+						}
+						if(o.getUserKeys() != null) {
+							for(Long l :  o.getUserKeys()) {
+								if(l != null && (setUserKeysValues == null || !setUserKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(l, "enrollmentKeys", pk, "userKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removeUserKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(org.computate.nico.enus.user.SiteUser.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+								List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
+								if(
+										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+										) {
+									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+								}
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getUserKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SiteUser");
+									}
+								}
+							}
+						}
+						break;
+					case "addPetKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(org.computate.nico.enus.pet.SitePet.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+								List<String> roles = Arrays.asList("SiteAdmin");
+								if(
+										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+										) {
+									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+								}
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getPetKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SitePet");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllPetKeys":
+						JsonArray addAllPetKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllPetKeysValues != null) {
+							for(Integer i = 0; i <  addAllPetKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllPetKeysValues.getString(i));
+								if(l != null) {
+									SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(org.computate.nico.enus.pet.SitePet.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+									List<String> roles = Arrays.asList("SiteAdmin");
+									if(
+											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+											) {
+										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+									}
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getPetKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("SitePet");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setPetKeys":
+						JsonArray setPetKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setPetKeysValues2 = new JsonArray();
+						if(setPetKeysValues != null) {
+							for(Integer i = 0; i <  setPetKeysValues.size(); i++) {
+								Long l = Long.parseLong(setPetKeysValues.getString(i));
+								if(l != null) {
+									SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(org.computate.nico.enus.pet.SitePet.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+									List<String> roles = Arrays.asList("SiteAdmin");
+									if(
+											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+											) {
+										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+									}
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setPetKeysValues2.add(l2);
+									if(l2 != null && !o.getPetKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("SitePet");
+										}
+									}
+								}
+							}
+						}
+						if(o.getPetKeys() != null) {
+							for(Long l :  o.getPetKeys()) {
+								if(l != null && (setPetKeysValues == null || !setPetKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(l, "enrollmentKeys", pk, "petKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removePetKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(org.computate.nico.enus.pet.SitePet.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+
+								List<String> roles = Arrays.asList("SiteAdmin");
+								if(
+										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+										) {
+									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+								}
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getPetKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SitePet");
+									}
+								}
+							}
+						}
+						break;
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					SiteEnrollment o3 = new SiteEnrollment();
 					o3.setSiteRequest_(o.getSiteRequest_());
@@ -1421,7 +1840,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, "/api/enrollment/{id}", "GET", c -> {
+						aSearchSiteEnrollment(siteRequest, false, true, false, "/api/enrollment/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
 								getSiteEnrollmentResponse(listSiteEnrollment, d -> {
@@ -1491,7 +1910,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, "/api/enrollment", "Search", c -> {
+						aSearchSiteEnrollment(siteRequest, false, true, false, "/api/enrollment", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
 								searchSiteEnrollmentResponse(listSiteEnrollment, d -> {
@@ -1601,7 +2020,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, "/api/admin/enrollment", "AdminSearch", c -> {
+						aSearchSiteEnrollment(siteRequest, false, true, false, "/api/admin/enrollment", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
 								adminsearchSiteEnrollmentResponse(listSiteEnrollment, d -> {
@@ -1716,7 +2135,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			{
 				userSiteEnrollment(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, "/enrollment", "SearchPage", c -> {
+						aSearchSiteEnrollment(siteRequest, false, true, false, "/enrollment", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
 								searchpageSiteEnrollmentResponse(listSiteEnrollment, d -> {
@@ -1774,7 +2193,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			AllWriter w = AllWriter.create(listSiteEnrollment.getSiteRequest_(), buffer);
 			EnrollmentPage page = new EnrollmentPage();
 			SolrDocument pageSolrDocument = new SolrDocument();
-			CaseInsensitiveHeaders requestHeaders = new CaseInsensitiveHeaders();
+			MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
 			siteRequest.setRequestHeaders(requestHeaders);
 
 			pageSolrDocument.setField("pageUri_frFR_stored_string", "/enrollment");
@@ -1853,10 +2272,9 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			String userId = siteRequest.getUserId();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_create
-					, Tuple.of(SiteEnrollment.class.getCanonicalName(), userId, created.toOffsetDateTime())
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_create)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(SiteEnrollment.class.getCanonicalName(), userId, created.toOffsetDateTime())
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -1891,7 +2309,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		ExceptionUtils.printRootCauseStackTrace(e);
 		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
 				Buffer.buffer().appendString(json.encodePrettily())
-				, new CaseInsensitiveHeaders().add("Content-Type", "application/json")
+				, MultiMap.caseInsensitiveMultiMap().add("Content-Type", "application/json")
 		);
 		SiteConfig siteConfig = siteRequest.getSiteConfig_();
 		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
@@ -2073,10 +2491,9 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						sqlTransactionSiteEnrollment(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(
-										SiteContextEnUS.SQL_selectC
-										, Tuple.of("org.computate.nico.enus.user.SiteUser", userId)
-										, Collectors.toList()
+								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+										.collecting(Collectors.toList())
+										.execute(Tuple.of("org.computate.nico.enus.user.SiteUser", userId)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -2085,7 +2502,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 											if(userValues == null) {
 												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												JsonObject jsonPrincipal = KeycloakHelper.parseToken(userVertx.getString("access_token"));
+												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
+												JsonObject jsonPrincipal = token.accessToken();
 
 												JsonObject jsonObject = new JsonObject();
 												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
@@ -2124,6 +2542,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
+																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
 																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
@@ -2151,7 +2570,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
 
 												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												JsonObject jsonPrincipal = KeycloakHelper.parseToken(userVertx.getString("access_token"));
+												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
+												JsonObject jsonPrincipal = token.accessToken();
 
 												JsonObject jsonObject = new JsonObject();
 												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
@@ -2336,84 +2756,9 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		}
 	}
 
-	public void aSearchSiteEnrollment(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteEnrollment>>> eventHandler) {
+	public void aSearchSiteEnrollment(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteEnrollment>>> eventHandler) {
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
-			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
-			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-			SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
-			searchList.setPopulate(populate);
-			searchList.setStore(store);
-			searchList.setQuery("*:*");
-			searchList.setC(SiteEnrollment.class);
-			searchList.setSiteRequest_(siteRequest);
-			if(entityList != null)
-				searchList.addFields(entityList);
-			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
-
-			String id = operationRequest.getParams().getJsonObject("path").getString("id");
-			if(id != null) {
-				searchList.addFilterQuery("(id:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
-			}
-
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
-				String entityVar = null;
-				String valueIndexed = null;
-				String varIndexed = null;
-				String valueSort = null;
-				Integer valueStart = null;
-				Integer valueRows = null;
-				String paramName = paramRequest.getKey();
-				Object paramValuesObject = paramRequest.getValue();
-				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
-
-				try {
-					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "q":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								varIndexed = "*".equals(entityVar) ? entityVar : SiteEnrollment.varSearchSiteEnrollment(entityVar);
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-								aSearchSiteEnrollmentQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "fq":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
-								aSearchSiteEnrollmentFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "sort":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-								valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-								varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
-								aSearchSiteEnrollmentSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "start":
-								valueStart = (Integer)paramObject;
-								aSearchSiteEnrollmentStart(uri, apiMethod, searchList, valueStart);
-								break;
-							case "rows":
-								valueRows = (Integer)paramObject;
-								aSearchSiteEnrollmentRows(uri, apiMethod, searchList, valueRows);
-								break;
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								aSearchSiteEnrollmentVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-								break;
-						}
-					}
-					aSearchSiteEnrollmentUri(uri, apiMethod, searchList);
-				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchSiteEnrollment failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
-				}
-			});
-			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-				searchList.addSort("created_indexed_date", ORDER.desc);
-			}
-			searchList.initDeepForClass(siteRequest);
+			SearchList<SiteEnrollment> searchList = aSearchSiteEnrollmentList(siteRequest, populate, store, modify, uri, apiMethod);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
 			LOGGER.error(String.format("aSearchSiteEnrollment failed. ", e));
@@ -2421,15 +2766,110 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 		}
 	}
 
+	public SearchList<SiteEnrollment> aSearchSiteEnrollmentList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+		OperationRequest operationRequest = siteRequest.getOperationRequest();
+		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+		SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
+		searchList.setPopulate(populate);
+		searchList.setStore(store);
+		searchList.setQuery("*:*");
+		searchList.setC(SiteEnrollment.class);
+		searchList.setSiteRequest_(siteRequest);
+		if(entityList != null)
+			searchList.addFields(entityList);
+		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
+
+		String id = operationRequest.getParams().getJsonObject("path").getString("id");
+		if(id != null && NumberUtils.isCreatable(id)) {
+			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+		} else if(id != null) {
+			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
+		}
+
+		List<String> roles = Arrays.asList("SiteAdmin");
+		List<String> roleLires = Arrays.asList("");
+		if(
+				!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+				&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+				&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleLires))
+				&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleLires))
+				) {
+			searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+					+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+		}
+
+		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			String entityVar = null;
+			String valueIndexed = null;
+			String varIndexed = null;
+			String valueSort = null;
+			Integer valueStart = null;
+			Integer valueRows = null;
+			String paramName = paramRequest.getKey();
+			Object paramValuesObject = paramRequest.getValue();
+			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+			try {
+				for(Object paramObject : paramObjects) {
+					switch(paramName) {
+						case "q":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							varIndexed = "*".equals(entityVar) ? entityVar : SiteEnrollment.varSearchSiteEnrollment(entityVar);
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+							aSearchSiteEnrollmentQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "fq":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+							aSearchSiteEnrollmentFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "sort":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+							valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+							varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+							aSearchSiteEnrollmentSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "start":
+							valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+							aSearchSiteEnrollmentStart(uri, apiMethod, searchList, valueStart);
+							break;
+						case "rows":
+							valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+							aSearchSiteEnrollmentRows(uri, apiMethod, searchList, valueRows);
+							break;
+						case "var":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							aSearchSiteEnrollmentVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+							break;
+					}
+				}
+				aSearchSiteEnrollmentUri(uri, apiMethod, searchList);
+			} catch(Exception e) {
+				ExceptionUtils.rethrow(e);
+			}
+		});
+		if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+			searchList.addSort("created_indexed_date", ORDER.desc);
+		}
+		aSearchSiteEnrollment2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+		searchList.initDeepForClass(siteRequest);
+		return searchList;
+	}
+	public void aSearchSiteEnrollment2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteEnrollment> searchList) {
+	}
+
 	public void defineSiteEnrollment(SiteEnrollment o, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_define
-					, Tuple.of(pk)
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_define)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk)
 					, defineAsync
 			-> {
 				if(defineAsync.succeeded()) {
@@ -2463,10 +2903,9 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_attribute
-					, Tuple.of(pk, pk)
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk, pk)
 					, attributeAsync
 			-> {
 				try {
@@ -2523,6 +2962,8 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				searchList.setQuery("*:*");
 				searchList.setC(SiteEnrollment.class);
 				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
+				searchList.add("json.facet", "{userKeys:{terms:{field:userKeys_indexed_longs, limit:1000}}}");
+				searchList.add("json.facet", "{petKeys:{terms:{field:petKeys_indexed_longs, limit:1000}}}");
 				searchList.setRows(1000);
 				searchList.initDeepSearchList(siteRequest);
 				List<Future> futures = new ArrayList<>();
@@ -2530,9 +2971,79 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
+
+					if("SiteUser".equals(classSimpleName2) && pk2 != null) {
+						SearchList<SiteUser> searchList2 = new SearchList<SiteUser>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(SiteUser.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						SiteUser o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							SiteUserEnUSGenApiServiceImpl service = new SiteUserEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchSiteUserFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("SiteUser %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
+
+					if("SitePet".equals(classSimpleName2) && pk2 != null) {
+						SearchList<SitePet> searchList2 = new SearchList<SitePet>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(SitePet.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						SitePet o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							SitePetEnUSGenApiServiceImpl service = new SitePetEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketSitePet", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchSitePetFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("SitePet %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
 				}
 
-				CompositeFuture.all(futures).setHandler(a -> {
+				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
 						SiteEnrollmentEnUSApiServiceImpl service = new SiteEnrollmentEnUSApiServiceImpl(siteRequest.getSiteContext_());
 						List<Future> futures2 = new ArrayList<>();
@@ -2550,7 +3061,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 							);
 						}
 
-						CompositeFuture.all(futures2).setHandler(b -> {
+						CompositeFuture.all(futures2).onComplete(b -> {
 							if(b.succeeded()) {
 								eventHandler.handle(Future.succeededFuture());
 							} else {

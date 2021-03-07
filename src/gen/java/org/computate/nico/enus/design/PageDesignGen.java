@@ -17,6 +17,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
@@ -148,6 +149,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return pageDesignKey == null ? "" : pageDesignKey.toString();
 	}
 
+	public Long sqlPageDesignKey() {
+		return pageDesignKey;
+	}
+
 	public String jsonPageDesignKey() {
 		return pageDesignKey == null ? "" : pageDesignKey.toString();
 	}
@@ -259,6 +264,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 
 	public String strChildDesignKeys() {
 		return childDesignKeys == null ? "" : childDesignKeys.toString();
+	}
+
+	public List<Long> sqlChildDesignKeys() {
+		return childDesignKeys;
 	}
 
 	public String jsonChildDesignKeys() {
@@ -374,6 +383,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return parentDesignKeys == null ? "" : parentDesignKeys.toString();
 	}
 
+	public List<Long> sqlParentDesignKeys() {
+		return parentDesignKeys;
+	}
+
 	public String jsonParentDesignKeys() {
 		return parentDesignKeys == null ? "" : parentDesignKeys.toString();
 	}
@@ -410,16 +423,15 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "parent designs")
-				.a("class", "value suggestParentDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestParentDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setParentDesignKeys")
 				.a("id", classApiMethodMethod, "_parentDesignKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestPageDesignParentDesignKeys($(this).val() ? searchPageDesignFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'childDesignKeys:" + pk + "'}", "], $('#listPageDesignParentDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestPageDesignParentDesignKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'childDesignKeys:" + pk + "'}", "], $('#listPageDesignParentDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
 		} else {
-			e("span").a("class", "varPageDesign", pk, "ParentDesignKeys ").f().sx(htmParentDesignKeys()).g("span");
 		}
 	}
 
@@ -430,7 +442,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				{ e("div").a("id", "suggest", classApiMethodMethod, "PageDesignParentDesignKeys").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/page-design?fq=childDesignKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-khaki w3-hover-khaki ").f();
+							{ e("a").a("href", "/page-design?fq=childDesignKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-red w3-hover-red ").f();
 								e("i").a("class", "far fa-drafting-compass ").f().g("i");
 								sx("parent designs");
 							} g("a");
@@ -459,7 +471,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 									if("Page".equals(classApiMethodMethod)) {
 										{ e("div").a("class", "w3-cell-row ").f();
 											e("button")
-												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
 												.a("id", classApiMethodMethod, "_parentDesignKeys_add")
 												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postPageDesignVals({ childDesignKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "parentDesignKeys')); });")
 												.f().sx("add a page design")
@@ -572,6 +584,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return htmlPartKeys == null ? "" : htmlPartKeys.toString();
 	}
 
+	public List<Long> sqlHtmlPartKeys() {
+		return htmlPartKeys;
+	}
+
 	public String jsonHtmlPartKeys() {
 		return htmlPartKeys == null ? "" : htmlPartKeys.toString();
 	}
@@ -608,16 +624,15 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "parts")
-				.a("class", "value suggestHtmlPartKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestHtmlPartKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setHtmlPartKeys")
 				.a("id", classApiMethodMethod, "_htmlPartKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestPageDesignHtmlPartKeys($(this).val() ? searchHtmlPartFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'pageDesignKeys:" + pk + "'}", "], $('#listPageDesignHtmlPartKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestPageDesignHtmlPartKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'pageDesignKeys:" + pk + "'}", "], $('#listPageDesignHtmlPartKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
 		} else {
-			e("span").a("class", "varPageDesign", pk, "HtmlPartKeys ").f().sx(htmHtmlPartKeys()).g("span");
 		}
 	}
 
@@ -731,6 +746,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 
 	public String strPageDesignCompleteName() {
 		return pageDesignCompleteName == null ? "" : pageDesignCompleteName;
+	}
+
+	public String sqlPageDesignCompleteName() {
+		return pageDesignCompleteName;
 	}
 
 	public String jsonPageDesignCompleteName() {
@@ -880,6 +899,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return designHidden == null ? "" : designHidden.toString();
 	}
 
+	public Boolean sqlDesignHidden() {
+		return designHidden;
+	}
+
 	public String jsonDesignHidden() {
 		return designHidden == null ? "" : designHidden.toString();
 	}
@@ -1017,6 +1040,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 
 	public String strPageContentType() {
 		return pageContentType == null ? "" : pageContentType;
+	}
+
+	public String sqlPageContentType() {
+		return pageContentType;
 	}
 
 	public String jsonPageContentType() {
@@ -1161,6 +1188,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -1208,18 +1239,18 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		switch(var) {
 			case "childDesignKeys":
 				oPageDesign.addChildDesignKeys((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("childDesignKeys"))
+					saves.add("childDesignKeys");
 				return val;
 			case "parentDesignKeys":
 				oPageDesign.addParentDesignKeys((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("parentDesignKeys"))
+					saves.add("parentDesignKeys");
 				return val;
 			case "htmlPartKeys":
 				oPageDesign.addHtmlPartKeys((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("htmlPartKeys"))
+					saves.add("htmlPartKeys");
 				return val;
 			default:
 				return super.attributeCluster(var, val);
@@ -1358,21 +1389,58 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object definePageDesign(String var, String val) {
-		switch(var) {
-			case "pageDesignCompleteName":
+		switch(var.toLowerCase()) {
+			case "pagedesigncompletename":
 				if(val != null)
 					setPageDesignCompleteName(val);
-				saves.add(var);
+				saves.add("pageDesignCompleteName");
 				return val;
-			case "designHidden":
+			case "designhidden":
 				if(val != null)
 					setDesignHidden(val);
-				saves.add(var);
+				saves.add("designHidden");
 				return val;
-			case "pageContentType":
+			case "pagecontenttype":
 				if(val != null)
 					setPageContentType(val);
-				saves.add(var);
+				saves.add("pageContentType");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = definePageDesign(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object definePageDesign(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "pagedesigncompletename":
+				if(val instanceof String)
+					setPageDesignCompleteName((String)val);
+				saves.add("pageDesignCompleteName");
+				return val;
+			case "designhidden":
+				if(val instanceof Boolean)
+					setDesignHidden((Boolean)val);
+				saves.add("designHidden");
+				return val;
+			case "pagecontenttype":
+				if(val instanceof String)
+					setPageContentType((String)val);
+				saves.add("pageContentType");
 				return val;
 			default:
 				return super.defineCluster(var, val);

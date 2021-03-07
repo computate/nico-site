@@ -9,14 +9,15 @@ import org.computate.nico.enus.context.SiteContextEnUS;
 import org.computate.nico.enus.design.PageDesign;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
-import io.vertx.core.logging.LoggerFactory;
 import java.text.NumberFormat;
+import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
@@ -109,11 +110,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.htmlPartKey = htmlPartKey;
 		this.htmlPartKeyWrap.alreadyInitialized = true;
 	}
-	public HtmlPart setHtmlPartKey(String o) {
-		if(NumberUtils.isParsable(o))
-			this.htmlPartKey = Long.parseLong(o);
+	public void setHtmlPartKey(String o) {
+		this.htmlPartKey = HtmlPart.staticSetHtmlPartKey(siteRequest_, o);
 		this.htmlPartKeyWrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Long staticSetHtmlPartKey(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
 	}
 	protected HtmlPart htmlPartKeyInit() {
 		if(!htmlPartKeyWrap.alreadyInitialized) {
@@ -125,12 +129,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Long staticSolrHtmlPartKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlPartKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlPartKey(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlPartKey(siteRequest_, HtmlPart.staticSolrHtmlPartKey(siteRequest_, HtmlPart.staticSetHtmlPartKey(siteRequest_, o)));
+	}
+
 	public Long solrHtmlPartKey() {
-		return htmlPartKey;
+		return HtmlPart.staticSolrHtmlPartKey(siteRequest_, htmlPartKey);
 	}
 
 	public String strHtmlPartKey() {
 		return htmlPartKey == null ? "" : htmlPartKey.toString();
+	}
+
+	public Long sqlHtmlPartKey() {
+		return htmlPartKey;
 	}
 
 	public String jsonHtmlPartKey() {
@@ -178,6 +198,17 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.pageDesignKeys = pageDesignKeys;
 		this.pageDesignKeysWrap.alreadyInitialized = true;
 	}
+	public void setPageDesignKeys(String o) {
+		Long l = HtmlPart.staticSetPageDesignKeys(siteRequest_, o);
+		if(l != null)
+			addPageDesignKeys(l);
+		this.pageDesignKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetPageDesignKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
 	public HtmlPart addPageDesignKeys(Long...objets) {
 		for(Long o : objets) {
 			addPageDesignKeys(o);
@@ -189,13 +220,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			this.pageDesignKeys.add(o);
 		return (HtmlPart)this;
 	}
-	public HtmlPart setPageDesignKeys(JsonArray objets) {
+	public void setPageDesignKeys(JsonArray objets) {
 		pageDesignKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
 			Long o = objets.getLong(i);
 			addPageDesignKeys(o);
 		}
-		return (HtmlPart)this;
 	}
 	public HtmlPart addPageDesignKeys(String o) {
 		if(NumberUtils.isParsable(o)) {
@@ -212,12 +242,32 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Long staticSolrPageDesignKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPageDesignKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPageDesignKeys(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrPageDesignKeys(siteRequest_, HtmlPart.staticSolrPageDesignKeys(siteRequest_, HtmlPart.staticSetPageDesignKeys(siteRequest_, o)));
+	}
+
 	public List<Long> solrPageDesignKeys() {
-		return pageDesignKeys;
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : pageDesignKeys) {
+			l.add(HtmlPart.staticSolrPageDesignKeys(siteRequest_, o));
+		}
+		return l;
 	}
 
 	public String strPageDesignKeys() {
 		return pageDesignKeys == null ? "" : pageDesignKeys.toString();
+	}
+
+	public List<Long> sqlPageDesignKeys() {
+		return pageDesignKeys;
 	}
 
 	public String jsonPageDesignKeys() {
@@ -243,23 +293,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
 			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-				e("input")
-					.a("type", "text")
-					.a("placeholder", "page designs")
-					.a("class", "value suggestPageDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
-					.a("name", "setPageDesignKeys")
-					.a("id", classApiMethodMethod, "_pageDesignKeys")
-					.a("autocomplete", "off")
-					.a("oninput", "suggestHtmlPartPageDesignKeys($(this).val() ? searchPageDesignFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'htmlPartKeys:" + pk + "'}", "], $('#listHtmlPartPageDesignKeys_", classApiMethodMethod, "'), ", pk, "); ")
-				.fg();
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_pageDesignKeys_clear")
+						.a("class", "pageDesignKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_pageDesignKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "page designs")
+				.a("class", "valueObjectSuggest suggestPageDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setPageDesignKeys")
+				.a("id", classApiMethodMethod, "_pageDesignKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestHtmlPartPageDesignKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'htmlPartKeys:" + pk + "'}", "], $('#listHtmlPartPageDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
 
 		} else {
-			if(
-					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-				e("span").a("class", "varHtmlPart", pk, "PageDesignKeys ").f().sx(htmPageDesignKeys()).g("span");
-			}
 		}
 	}
 
@@ -270,7 +325,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				{ e("div").a("id", "suggest", classApiMethodMethod, "HtmlPartPageDesignKeys").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/page-design?fq=htmlPartKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-khaki w3-hover-khaki ").f();
+							{ e("a").a("href", "/page-design?fq=htmlPartKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-red w3-hover-red ").f();
 								e("i").a("class", "far fa-drafting-compass ").f().g("i");
 								sx("page designs");
 							} g("a");
@@ -296,14 +351,16 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), PageDesign.ROLES)
 										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), PageDesign.ROLES)
 										) {
-									{ e("div").a("class", "w3-cell-row ").f();
-										e("button")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-khaki ")
-											.a("id", classApiMethodMethod, "_pageDesignKeys_add")
-											.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postPageDesignVals({ htmlPartKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "pageDesignKeys')); });")
-											.f().sx("add a page design")
-										.g("button");
-									} g("div");
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
+												.a("id", classApiMethodMethod, "_pageDesignKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postPageDesignVals({ htmlPartKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "pageDesignKeys')); });")
+												.f().sx("add a page design")
+											.g("button");
+										} g("div");
+									}
 								}
 							} g("div");
 						} g("div");
@@ -336,10 +393,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlLink() {
 		return htmlLink;
 	}
-
-	public void setHtmlLink(String htmlLink) {
-		this.htmlLink = htmlLink;
+	public void setHtmlLink(String o) {
+		this.htmlLink = HtmlPart.staticSetHtmlLink(siteRequest_, o);
 		this.htmlLinkWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlLink(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlLinkInit() {
 		if(!htmlLinkWrap.alreadyInitialized) {
@@ -351,12 +410,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlLink(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlLink(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlLink(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlLink(siteRequest_, HtmlPart.staticSolrHtmlLink(siteRequest_, HtmlPart.staticSetHtmlLink(siteRequest_, o)));
+	}
+
 	public String solrHtmlLink() {
-		return htmlLink;
+		return HtmlPart.staticSolrHtmlLink(siteRequest_, htmlLink);
 	}
 
 	public String strHtmlLink() {
 		return htmlLink == null ? "" : htmlLink;
+	}
+
+	public String sqlHtmlLink() {
+		return htmlLink;
 	}
 
 	public String jsonHtmlLink() {
@@ -469,10 +544,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlElement() {
 		return htmlElement;
 	}
-
-	public void setHtmlElement(String htmlElement) {
-		this.htmlElement = htmlElement;
+	public void setHtmlElement(String o) {
+		this.htmlElement = HtmlPart.staticSetHtmlElement(siteRequest_, o);
 		this.htmlElementWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlElement(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlElementInit() {
 		if(!htmlElementWrap.alreadyInitialized) {
@@ -484,12 +561,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlElement(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlElement(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlElement(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlElement(siteRequest_, HtmlPart.staticSolrHtmlElement(siteRequest_, HtmlPart.staticSetHtmlElement(siteRequest_, o)));
+	}
+
 	public String solrHtmlElement() {
-		return htmlElement;
+		return HtmlPart.staticSolrHtmlElement(siteRequest_, htmlElement);
 	}
 
 	public String strHtmlElement() {
 		return htmlElement == null ? "" : htmlElement;
+	}
+
+	public String sqlHtmlElement() {
+		return htmlElement;
 	}
 
 	public String jsonHtmlElement() {
@@ -602,10 +695,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlId() {
 		return htmlId;
 	}
-
-	public void setHtmlId(String htmlId) {
-		this.htmlId = htmlId;
+	public void setHtmlId(String o) {
+		this.htmlId = HtmlPart.staticSetHtmlId(siteRequest_, o);
 		this.htmlIdWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlIdInit() {
 		if(!htmlIdWrap.alreadyInitialized) {
@@ -617,12 +712,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlId(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlId(siteRequest_, HtmlPart.staticSolrHtmlId(siteRequest_, HtmlPart.staticSetHtmlId(siteRequest_, o)));
+	}
+
 	public String solrHtmlId() {
-		return htmlId;
+		return HtmlPart.staticSolrHtmlId(siteRequest_, htmlId);
 	}
 
 	public String strHtmlId() {
 		return htmlId == null ? "" : htmlId;
+	}
+
+	public String sqlHtmlId() {
+		return htmlId;
 	}
 
 	public String jsonHtmlId() {
@@ -735,10 +846,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlClasses() {
 		return htmlClasses;
 	}
-
-	public void setHtmlClasses(String htmlClasses) {
-		this.htmlClasses = htmlClasses;
+	public void setHtmlClasses(String o) {
+		this.htmlClasses = HtmlPart.staticSetHtmlClasses(siteRequest_, o);
 		this.htmlClassesWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlClasses(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlClassesInit() {
 		if(!htmlClassesWrap.alreadyInitialized) {
@@ -750,12 +863,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlClasses(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlClasses(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlClasses(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlClasses(siteRequest_, HtmlPart.staticSolrHtmlClasses(siteRequest_, HtmlPart.staticSetHtmlClasses(siteRequest_, o)));
+	}
+
 	public String solrHtmlClasses() {
-		return htmlClasses;
+		return HtmlPart.staticSolrHtmlClasses(siteRequest_, htmlClasses);
 	}
 
 	public String strHtmlClasses() {
 		return htmlClasses == null ? "" : htmlClasses;
+	}
+
+	public String sqlHtmlClasses() {
+		return htmlClasses;
 	}
 
 	public String jsonHtmlClasses() {
@@ -868,10 +997,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlStyle() {
 		return htmlStyle;
 	}
-
-	public void setHtmlStyle(String htmlStyle) {
-		this.htmlStyle = htmlStyle;
+	public void setHtmlStyle(String o) {
+		this.htmlStyle = HtmlPart.staticSetHtmlStyle(siteRequest_, o);
 		this.htmlStyleWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlStyle(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlStyleInit() {
 		if(!htmlStyleWrap.alreadyInitialized) {
@@ -883,12 +1014,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlStyle(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlStyle(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlStyle(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlStyle(siteRequest_, HtmlPart.staticSolrHtmlStyle(siteRequest_, HtmlPart.staticSetHtmlStyle(siteRequest_, o)));
+	}
+
 	public String solrHtmlStyle() {
-		return htmlStyle;
+		return HtmlPart.staticSolrHtmlStyle(siteRequest_, htmlStyle);
 	}
 
 	public String strHtmlStyle() {
 		return htmlStyle == null ? "" : htmlStyle;
+	}
+
+	public String sqlHtmlStyle() {
+		return htmlStyle;
 	}
 
 	public String jsonHtmlStyle() {
@@ -1001,10 +1148,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlBefore() {
 		return htmlBefore;
 	}
-
-	public void setHtmlBefore(String htmlBefore) {
-		this.htmlBefore = htmlBefore;
+	public void setHtmlBefore(String o) {
+		this.htmlBefore = HtmlPart.staticSetHtmlBefore(siteRequest_, o);
 		this.htmlBeforeWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlBefore(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlBeforeInit() {
 		if(!htmlBeforeWrap.alreadyInitialized) {
@@ -1016,12 +1165,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlBefore(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlBefore(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlBefore(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlBefore(siteRequest_, HtmlPart.staticSolrHtmlBefore(siteRequest_, HtmlPart.staticSetHtmlBefore(siteRequest_, o)));
+	}
+
 	public String solrHtmlBefore() {
-		return htmlBefore;
+		return HtmlPart.staticSolrHtmlBefore(siteRequest_, htmlBefore);
 	}
 
 	public String strHtmlBefore() {
 		return htmlBefore == null ? "" : htmlBefore;
+	}
+
+	public String sqlHtmlBefore() {
+		return htmlBefore;
 	}
 
 	public String jsonHtmlBefore() {
@@ -1132,10 +1297,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlAfter() {
 		return htmlAfter;
 	}
-
-	public void setHtmlAfter(String htmlAfter) {
-		this.htmlAfter = htmlAfter;
+	public void setHtmlAfter(String o) {
+		this.htmlAfter = HtmlPart.staticSetHtmlAfter(siteRequest_, o);
 		this.htmlAfterWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlAfter(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlAfterInit() {
 		if(!htmlAfterWrap.alreadyInitialized) {
@@ -1147,12 +1314,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlAfter(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlAfter(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlAfter(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlAfter(siteRequest_, HtmlPart.staticSolrHtmlAfter(siteRequest_, HtmlPart.staticSetHtmlAfter(siteRequest_, o)));
+	}
+
 	public String solrHtmlAfter() {
-		return htmlAfter;
+		return HtmlPart.staticSolrHtmlAfter(siteRequest_, htmlAfter);
 	}
 
 	public String strHtmlAfter() {
 		return htmlAfter == null ? "" : htmlAfter;
+	}
+
+	public String sqlHtmlAfter() {
+		return htmlAfter;
 	}
 
 	public String jsonHtmlAfter() {
@@ -1263,10 +1446,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlText() {
 		return htmlText;
 	}
-
-	public void setHtmlText(String htmlText) {
-		this.htmlText = htmlText;
+	public void setHtmlText(String o) {
+		this.htmlText = HtmlPart.staticSetHtmlText(siteRequest_, o);
 		this.htmlTextWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlText(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlTextInit() {
 		if(!htmlTextWrap.alreadyInitialized) {
@@ -1278,12 +1463,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlText(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlText(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlText(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlText(siteRequest_, HtmlPart.staticSolrHtmlText(siteRequest_, HtmlPart.staticSetHtmlText(siteRequest_, o)));
+	}
+
 	public String solrHtmlText() {
-		return htmlText;
+		return HtmlPart.staticSolrHtmlText(siteRequest_, htmlText);
 	}
 
 	public String strHtmlText() {
 		return htmlText == null ? "" : htmlText;
+	}
+
+	public String sqlHtmlText() {
+		return htmlText;
 	}
 
 	public String jsonHtmlText() {
@@ -1394,10 +1595,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlVar() {
 		return htmlVar;
 	}
-
-	public void setHtmlVar(String htmlVar) {
-		this.htmlVar = htmlVar;
+	public void setHtmlVar(String o) {
+		this.htmlVar = HtmlPart.staticSetHtmlVar(siteRequest_, o);
 		this.htmlVarWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVar(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlVarInit() {
 		if(!htmlVarWrap.alreadyInitialized) {
@@ -1409,12 +1612,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlVar(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVar(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVar(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVar(siteRequest_, HtmlPart.staticSolrHtmlVar(siteRequest_, HtmlPart.staticSetHtmlVar(siteRequest_, o)));
+	}
+
 	public String solrHtmlVar() {
-		return htmlVar;
+		return HtmlPart.staticSolrHtmlVar(siteRequest_, htmlVar);
 	}
 
 	public String strHtmlVar() {
 		return htmlVar == null ? "" : htmlVar;
+	}
+
+	public String sqlHtmlVar() {
+		return htmlVar;
 	}
 
 	public String jsonHtmlVar() {
@@ -1527,10 +1746,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlVarSpan() {
 		return htmlVarSpan;
 	}
-
-	public void setHtmlVarSpan(String htmlVarSpan) {
-		this.htmlVarSpan = htmlVarSpan;
+	public void setHtmlVarSpan(String o) {
+		this.htmlVarSpan = HtmlPart.staticSetHtmlVarSpan(siteRequest_, o);
 		this.htmlVarSpanWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVarSpan(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlVarSpanInit() {
 		if(!htmlVarSpanWrap.alreadyInitialized) {
@@ -1542,12 +1763,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlVarSpan(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVarSpan(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVarSpan(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVarSpan(siteRequest_, HtmlPart.staticSolrHtmlVarSpan(siteRequest_, HtmlPart.staticSetHtmlVarSpan(siteRequest_, o)));
+	}
+
 	public String solrHtmlVarSpan() {
-		return htmlVarSpan;
+		return HtmlPart.staticSolrHtmlVarSpan(siteRequest_, htmlVarSpan);
 	}
 
 	public String strHtmlVarSpan() {
 		return htmlVarSpan == null ? "" : htmlVarSpan;
+	}
+
+	public String sqlHtmlVarSpan() {
+		return htmlVarSpan;
 	}
 
 	public String jsonHtmlVarSpan() {
@@ -1660,10 +1897,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlVarForm() {
 		return htmlVarForm;
 	}
-
-	public void setHtmlVarForm(String htmlVarForm) {
-		this.htmlVarForm = htmlVarForm;
+	public void setHtmlVarForm(String o) {
+		this.htmlVarForm = HtmlPart.staticSetHtmlVarForm(siteRequest_, o);
 		this.htmlVarFormWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVarForm(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlVarFormInit() {
 		if(!htmlVarFormWrap.alreadyInitialized) {
@@ -1675,12 +1914,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlVarForm(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVarForm(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVarForm(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVarForm(siteRequest_, HtmlPart.staticSolrHtmlVarForm(siteRequest_, HtmlPart.staticSetHtmlVarForm(siteRequest_, o)));
+	}
+
 	public String solrHtmlVarForm() {
-		return htmlVarForm;
+		return HtmlPart.staticSolrHtmlVarForm(siteRequest_, htmlVarForm);
 	}
 
 	public String strHtmlVarForm() {
 		return htmlVarForm == null ? "" : htmlVarForm;
+	}
+
+	public String sqlHtmlVarForm() {
+		return htmlVarForm;
 	}
 
 	public String jsonHtmlVarForm() {
@@ -1793,10 +2048,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlVarInput() {
 		return htmlVarInput;
 	}
-
-	public void setHtmlVarInput(String htmlVarInput) {
-		this.htmlVarInput = htmlVarInput;
+	public void setHtmlVarInput(String o) {
+		this.htmlVarInput = HtmlPart.staticSetHtmlVarInput(siteRequest_, o);
 		this.htmlVarInputWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVarInput(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlVarInputInit() {
 		if(!htmlVarInputWrap.alreadyInitialized) {
@@ -1808,12 +2065,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlVarInput(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVarInput(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVarInput(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVarInput(siteRequest_, HtmlPart.staticSolrHtmlVarInput(siteRequest_, HtmlPart.staticSetHtmlVarInput(siteRequest_, o)));
+	}
+
 	public String solrHtmlVarInput() {
-		return htmlVarInput;
+		return HtmlPart.staticSolrHtmlVarInput(siteRequest_, htmlVarInput);
 	}
 
 	public String strHtmlVarInput() {
 		return htmlVarInput == null ? "" : htmlVarInput;
+	}
+
+	public String sqlHtmlVarInput() {
+		return htmlVarInput;
 	}
 
 	public String jsonHtmlVarInput() {
@@ -1926,10 +2199,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlVarForEach() {
 		return htmlVarForEach;
 	}
-
-	public void setHtmlVarForEach(String htmlVarForEach) {
-		this.htmlVarForEach = htmlVarForEach;
+	public void setHtmlVarForEach(String o) {
+		this.htmlVarForEach = HtmlPart.staticSetHtmlVarForEach(siteRequest_, o);
 		this.htmlVarForEachWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVarForEach(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlVarForEachInit() {
 		if(!htmlVarForEachWrap.alreadyInitialized) {
@@ -1941,12 +2216,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlVarForEach(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVarForEach(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVarForEach(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVarForEach(siteRequest_, HtmlPart.staticSolrHtmlVarForEach(siteRequest_, HtmlPart.staticSetHtmlVarForEach(siteRequest_, o)));
+	}
+
 	public String solrHtmlVarForEach() {
-		return htmlVarForEach;
+		return HtmlPart.staticSolrHtmlVarForEach(siteRequest_, htmlVarForEach);
 	}
 
 	public String strHtmlVarForEach() {
 		return htmlVarForEach == null ? "" : htmlVarForEach;
+	}
+
+	public String sqlHtmlVarForEach() {
+		return htmlVarForEach;
 	}
 
 	public String jsonHtmlVarForEach() {
@@ -2059,10 +2350,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	public String getHtmlVarHtml() {
 		return htmlVarHtml;
 	}
-
-	public void setHtmlVarHtml(String htmlVarHtml) {
-		this.htmlVarHtml = htmlVarHtml;
+	public void setHtmlVarHtml(String o) {
+		this.htmlVarHtml = HtmlPart.staticSetHtmlVarHtml(siteRequest_, o);
 		this.htmlVarHtmlWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVarHtml(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected HtmlPart htmlVarHtmlInit() {
 		if(!htmlVarHtmlWrap.alreadyInitialized) {
@@ -2074,12 +2367,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static String staticSolrHtmlVarHtml(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVarHtml(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVarHtml(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVarHtml(siteRequest_, HtmlPart.staticSolrHtmlVarHtml(siteRequest_, HtmlPart.staticSetHtmlVarHtml(siteRequest_, o)));
+	}
+
 	public String solrHtmlVarHtml() {
-		return htmlVarHtml;
+		return HtmlPart.staticSolrHtmlVarHtml(siteRequest_, htmlVarHtml);
 	}
 
 	public String strHtmlVarHtml() {
 		return htmlVarHtml == null ? "" : htmlVarHtml;
+	}
+
+	public String sqlHtmlVarHtml() {
+		return htmlVarHtml;
 	}
 
 	public String jsonHtmlVarHtml() {
@@ -2169,6 +2478,157 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	/////////////////////////
+	// htmlVarBase64Decode //
+	/////////////////////////
+
+	/**	 The entity htmlVarBase64Decode
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String htmlVarBase64Decode;
+	@JsonIgnore
+	public Wrap<String> htmlVarBase64DecodeWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarBase64Decode").o(htmlVarBase64Decode);
+
+	/**	<br/> The entity htmlVarBase64Decode
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarBase64Decode">Find the entity htmlVarBase64Decode in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _htmlVarBase64Decode(Wrap<String> c);
+
+	public String getHtmlVarBase64Decode() {
+		return htmlVarBase64Decode;
+	}
+	public void setHtmlVarBase64Decode(String o) {
+		this.htmlVarBase64Decode = HtmlPart.staticSetHtmlVarBase64Decode(siteRequest_, o);
+		this.htmlVarBase64DecodeWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlVarBase64Decode(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected HtmlPart htmlVarBase64DecodeInit() {
+		if(!htmlVarBase64DecodeWrap.alreadyInitialized) {
+			_htmlVarBase64Decode(htmlVarBase64DecodeWrap);
+			if(htmlVarBase64Decode == null)
+				setHtmlVarBase64Decode(htmlVarBase64DecodeWrap.o);
+		}
+		htmlVarBase64DecodeWrap.alreadyInitialized(true);
+		return (HtmlPart)this;
+	}
+
+	public static String staticSolrHtmlVarBase64Decode(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlVarBase64Decode(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlVarBase64Decode(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlVarBase64Decode(siteRequest_, HtmlPart.staticSolrHtmlVarBase64Decode(siteRequest_, HtmlPart.staticSetHtmlVarBase64Decode(siteRequest_, o)));
+	}
+
+	public String solrHtmlVarBase64Decode() {
+		return HtmlPart.staticSolrHtmlVarBase64Decode(siteRequest_, htmlVarBase64Decode);
+	}
+
+	public String strHtmlVarBase64Decode() {
+		return htmlVarBase64Decode == null ? "" : htmlVarBase64Decode;
+	}
+
+	public String sqlHtmlVarBase64Decode() {
+		return htmlVarBase64Decode;
+	}
+
+	public String jsonHtmlVarBase64Decode() {
+		return htmlVarBase64Decode == null ? "" : htmlVarBase64Decode;
+	}
+
+	public String nomAffichageHtmlVarBase64Decode() {
+		return "var base64 decode";
+	}
+
+	public String htmTooltipHtmlVarBase64Decode() {
+		return null;
+	}
+
+	public String htmHtmlVarBase64Decode() {
+		return htmlVarBase64Decode == null ? "" : StringEscapeUtils.escapeHtml4(strHtmlVarBase64Decode());
+	}
+
+	public void inputHtmlVarBase64Decode(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "var base64 decode")
+				.a("id", classApiMethodMethod, "_htmlVarBase64Decode");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setHtmlVarBase64Decode classHtmlPart inputHtmlPart", pk, "HtmlVarBase64Decode w3-input w3-border ");
+					a("name", "setHtmlVarBase64Decode");
+				} else {
+					a("class", "valueHtmlVarBase64Decode w3-input w3-border classHtmlPart inputHtmlPart", pk, "HtmlVarBase64Decode w3-input w3-border ");
+					a("name", "htmlVarBase64Decode");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setHtmlVarBase64Decode', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_htmlVarBase64Decode')); }, function() { addError($('#", classApiMethodMethod, "_htmlVarBase64Decode')); }); ");
+				}
+				a("value", strHtmlVarBase64Decode())
+			.fg();
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+				e("span").a("class", "varHtmlPart", pk, "HtmlVarBase64Decode ").f().sx(htmHtmlVarBase64Decode()).g("span");
+			}
+		}
+	}
+
+	public void htmHtmlVarBase64Decode(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "HtmlPartHtmlVarBase64Decode").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+							e("label").a("for", classApiMethodMethod, "_htmlVarBase64Decode").a("class", "").f().sx("var base64 decode").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputHtmlVarBase64Decode(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_htmlVarBase64Decode')); $('#", classApiMethodMethod, "_htmlVarBase64Decode').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#HtmlPartForm :input[name=pk]').val() }], 'setHtmlVarBase64Decode', null, function() { addGlow($('#", classApiMethodMethod, "_htmlVarBase64Decode')); }, function() { addError($('#", classApiMethodMethod, "_htmlVarBase64Decode')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	/////////////////
 	// htmlExclude //
 	/////////////////
@@ -2197,10 +2657,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.htmlExclude = htmlExclude;
 		this.htmlExcludeWrap.alreadyInitialized = true;
 	}
-	public HtmlPart setHtmlExclude(String o) {
-		this.htmlExclude = Boolean.parseBoolean(o);
+	public void setHtmlExclude(String o) {
+		this.htmlExclude = HtmlPart.staticSetHtmlExclude(siteRequest_, o);
 		this.htmlExcludeWrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Boolean staticSetHtmlExclude(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
 	}
 	protected HtmlPart htmlExcludeInit() {
 		if(!htmlExcludeWrap.alreadyInitialized) {
@@ -2212,12 +2674,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Boolean staticSolrHtmlExclude(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlExclude(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlExclude(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlExclude(siteRequest_, HtmlPart.staticSolrHtmlExclude(siteRequest_, HtmlPart.staticSetHtmlExclude(siteRequest_, o)));
+	}
+
 	public Boolean solrHtmlExclude() {
-		return htmlExclude;
+		return HtmlPart.staticSolrHtmlExclude(siteRequest_, htmlExclude);
 	}
 
 	public String strHtmlExclude() {
 		return htmlExclude == null ? "" : htmlExclude.toString();
+	}
+
+	public Boolean sqlHtmlExclude() {
+		return htmlExclude;
 	}
 
 	public String jsonHtmlExclude() {
@@ -2332,10 +2810,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.pdfExclude = pdfExclude;
 		this.pdfExcludeWrap.alreadyInitialized = true;
 	}
-	public HtmlPart setPdfExclude(String o) {
-		this.pdfExclude = Boolean.parseBoolean(o);
+	public void setPdfExclude(String o) {
+		this.pdfExclude = HtmlPart.staticSetPdfExclude(siteRequest_, o);
 		this.pdfExcludeWrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Boolean staticSetPdfExclude(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
 	}
 	protected HtmlPart pdfExcludeInit() {
 		if(!pdfExcludeWrap.alreadyInitialized) {
@@ -2347,12 +2827,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Boolean staticSolrPdfExclude(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrPdfExclude(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPdfExclude(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrPdfExclude(siteRequest_, HtmlPart.staticSolrPdfExclude(siteRequest_, HtmlPart.staticSetPdfExclude(siteRequest_, o)));
+	}
+
 	public Boolean solrPdfExclude() {
-		return pdfExclude;
+		return HtmlPart.staticSolrPdfExclude(siteRequest_, pdfExclude);
 	}
 
 	public String strPdfExclude() {
 		return pdfExclude == null ? "" : pdfExclude.toString();
+	}
+
+	public Boolean sqlPdfExclude() {
+		return pdfExclude;
 	}
 
 	public String jsonPdfExclude() {
@@ -2467,10 +2963,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.loginLogout = loginLogout;
 		this.loginLogoutWrap.alreadyInitialized = true;
 	}
-	public HtmlPart setLoginLogout(String o) {
-		this.loginLogout = Boolean.parseBoolean(o);
+	public void setLoginLogout(String o) {
+		this.loginLogout = HtmlPart.staticSetLoginLogout(siteRequest_, o);
 		this.loginLogoutWrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Boolean staticSetLoginLogout(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
 	}
 	protected HtmlPart loginLogoutInit() {
 		if(!loginLogoutWrap.alreadyInitialized) {
@@ -2482,12 +2980,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Boolean staticSolrLoginLogout(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrLoginLogout(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqLoginLogout(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrLoginLogout(siteRequest_, HtmlPart.staticSolrLoginLogout(siteRequest_, HtmlPart.staticSetLoginLogout(siteRequest_, o)));
+	}
+
 	public Boolean solrLoginLogout() {
-		return loginLogout;
+		return HtmlPart.staticSolrLoginLogout(siteRequest_, loginLogout);
 	}
 
 	public String strLoginLogout() {
 		return loginLogout == null ? "" : loginLogout.toString();
+	}
+
+	public Boolean sqlLoginLogout() {
+		return loginLogout;
 	}
 
 	public String jsonLoginLogout() {
@@ -2574,6 +3088,308 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	///////////////
+	// searchUri //
+	///////////////
+
+	/**	 The entity searchUri
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String searchUri;
+	@JsonIgnore
+	public Wrap<String> searchUriWrap = new Wrap<String>().p(this).c(String.class).var("searchUri").o(searchUri);
+
+	/**	<br/> The entity searchUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchUri">Find the entity searchUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _searchUri(Wrap<String> c);
+
+	public String getSearchUri() {
+		return searchUri;
+	}
+	public void setSearchUri(String o) {
+		this.searchUri = HtmlPart.staticSetSearchUri(siteRequest_, o);
+		this.searchUriWrap.alreadyInitialized = true;
+	}
+	public static String staticSetSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected HtmlPart searchUriInit() {
+		if(!searchUriWrap.alreadyInitialized) {
+			_searchUri(searchUriWrap);
+			if(searchUri == null)
+				setSearchUri(searchUriWrap.o);
+		}
+		searchUriWrap.alreadyInitialized(true);
+		return (HtmlPart)this;
+	}
+
+	public static String staticSolrSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSearchUri(siteRequest_, HtmlPart.staticSolrSearchUri(siteRequest_, HtmlPart.staticSetSearchUri(siteRequest_, o)));
+	}
+
+	public String solrSearchUri() {
+		return HtmlPart.staticSolrSearchUri(siteRequest_, searchUri);
+	}
+
+	public String strSearchUri() {
+		return searchUri == null ? "" : searchUri;
+	}
+
+	public String sqlSearchUri() {
+		return searchUri;
+	}
+
+	public String jsonSearchUri() {
+		return searchUri == null ? "" : searchUri;
+	}
+
+	public String nomAffichageSearchUri() {
+		return "search URI";
+	}
+
+	public String htmTooltipSearchUri() {
+		return null;
+	}
+
+	public String htmSearchUri() {
+		return searchUri == null ? "" : StringEscapeUtils.escapeHtml4(strSearchUri());
+	}
+
+	public void inputSearchUri(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "search URI")
+				.a("id", classApiMethodMethod, "_searchUri");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setSearchUri classHtmlPart inputHtmlPart", pk, "SearchUri w3-input w3-border ");
+					a("name", "setSearchUri");
+				} else {
+					a("class", "valueSearchUri w3-input w3-border classHtmlPart inputHtmlPart", pk, "SearchUri w3-input w3-border ");
+					a("name", "searchUri");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchUri', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchUri')); }, function() { addError($('#", classApiMethodMethod, "_searchUri')); }); ");
+				}
+				a("value", strSearchUri())
+			.fg();
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+				e("span").a("class", "varHtmlPart", pk, "SearchUri ").f().sx(htmSearchUri()).g("span");
+			}
+		}
+	}
+
+	public void htmSearchUri(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "HtmlPartSearchUri").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+							e("label").a("for", classApiMethodMethod, "_searchUri").a("class", "").f().sx("search URI").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputSearchUri(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchUri')); $('#", classApiMethodMethod, "_searchUri').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#HtmlPartForm :input[name=pk]').val() }], 'setSearchUri', null, function() { addGlow($('#", classApiMethodMethod, "_searchUri')); }, function() { addError($('#", classApiMethodMethod, "_searchUri')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	///////////
+	// mapTo //
+	///////////
+
+	/**	 The entity mapTo
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String mapTo;
+	@JsonIgnore
+	public Wrap<String> mapToWrap = new Wrap<String>().p(this).c(String.class).var("mapTo").o(mapTo);
+
+	/**	<br/> The entity mapTo
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:mapTo">Find the entity mapTo in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _mapTo(Wrap<String> c);
+
+	public String getMapTo() {
+		return mapTo;
+	}
+	public void setMapTo(String o) {
+		this.mapTo = HtmlPart.staticSetMapTo(siteRequest_, o);
+		this.mapToWrap.alreadyInitialized = true;
+	}
+	public static String staticSetMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected HtmlPart mapToInit() {
+		if(!mapToWrap.alreadyInitialized) {
+			_mapTo(mapToWrap);
+			if(mapTo == null)
+				setMapTo(mapToWrap.o);
+		}
+		mapToWrap.alreadyInitialized(true);
+		return (HtmlPart)this;
+	}
+
+	public static String staticSolrMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrMapTo(siteRequest_, HtmlPart.staticSolrMapTo(siteRequest_, HtmlPart.staticSetMapTo(siteRequest_, o)));
+	}
+
+	public String solrMapTo() {
+		return HtmlPart.staticSolrMapTo(siteRequest_, mapTo);
+	}
+
+	public String strMapTo() {
+		return mapTo == null ? "" : mapTo;
+	}
+
+	public String sqlMapTo() {
+		return mapTo;
+	}
+
+	public String jsonMapTo() {
+		return mapTo == null ? "" : mapTo;
+	}
+
+	public String nomAffichageMapTo() {
+		return "map to";
+	}
+
+	public String htmTooltipMapTo() {
+		return null;
+	}
+
+	public String htmMapTo() {
+		return mapTo == null ? "" : StringEscapeUtils.escapeHtml4(strMapTo());
+	}
+
+	public void inputMapTo(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "map to")
+				.a("id", classApiMethodMethod, "_mapTo");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setMapTo classHtmlPart inputHtmlPart", pk, "MapTo w3-input w3-border ");
+					a("name", "setMapTo");
+				} else {
+					a("class", "valueMapTo w3-input w3-border classHtmlPart inputHtmlPart", pk, "MapTo w3-input w3-border ");
+					a("name", "mapTo");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setMapTo', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_mapTo')); }, function() { addError($('#", classApiMethodMethod, "_mapTo')); }); ");
+				}
+				a("value", strMapTo())
+			.fg();
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+				e("span").a("class", "varHtmlPart", pk, "MapTo ").f().sx(htmMapTo()).g("span");
+			}
+		}
+	}
+
+	public void htmMapTo(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "HtmlPartMapTo").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+							e("label").a("for", classApiMethodMethod, "_mapTo").a("class", "").f().sx("map to").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputMapTo(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_mapTo')); $('#", classApiMethodMethod, "_mapTo').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#HtmlPartForm :input[name=pk]').val() }], 'setMapTo', null, function() { addGlow($('#", classApiMethodMethod, "_mapTo')); }, function() { addError($('#", classApiMethodMethod, "_mapTo')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	///////////
 	// sort1 //
 	///////////
@@ -2603,11 +3419,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort1 = sort1;
 		this.sort1Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort1(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort1 = Double.parseDouble(o);
+	public void setSort1(String o) {
+		this.sort1 = HtmlPart.staticSetSort1(siteRequest_, o);
 		this.sort1Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort1(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort1Init() {
 		if(!sort1Wrap.alreadyInitialized) {
@@ -2619,12 +3438,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort1(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort1(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort1(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort1(siteRequest_, HtmlPart.staticSolrSort1(siteRequest_, HtmlPart.staticSetSort1(siteRequest_, o)));
+	}
+
 	public Double solrSort1() {
-		return sort1;
+		return HtmlPart.staticSolrSort1(siteRequest_, sort1);
 	}
 
 	public String strSort1() {
 		return sort1 == null ? "" : sort1.toString();
+	}
+
+	public Double sqlSort1() {
+		return sort1;
 	}
 
 	public String jsonSort1() {
@@ -2743,11 +3578,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort2 = sort2;
 		this.sort2Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort2(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort2 = Double.parseDouble(o);
+	public void setSort2(String o) {
+		this.sort2 = HtmlPart.staticSetSort2(siteRequest_, o);
 		this.sort2Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort2(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort2Init() {
 		if(!sort2Wrap.alreadyInitialized) {
@@ -2759,12 +3597,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort2(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort2(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort2(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort2(siteRequest_, HtmlPart.staticSolrSort2(siteRequest_, HtmlPart.staticSetSort2(siteRequest_, o)));
+	}
+
 	public Double solrSort2() {
-		return sort2;
+		return HtmlPart.staticSolrSort2(siteRequest_, sort2);
 	}
 
 	public String strSort2() {
 		return sort2 == null ? "" : sort2.toString();
+	}
+
+	public Double sqlSort2() {
+		return sort2;
 	}
 
 	public String jsonSort2() {
@@ -2883,11 +3737,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort3 = sort3;
 		this.sort3Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort3(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort3 = Double.parseDouble(o);
+	public void setSort3(String o) {
+		this.sort3 = HtmlPart.staticSetSort3(siteRequest_, o);
 		this.sort3Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort3(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort3Init() {
 		if(!sort3Wrap.alreadyInitialized) {
@@ -2899,12 +3756,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort3(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort3(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort3(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort3(siteRequest_, HtmlPart.staticSolrSort3(siteRequest_, HtmlPart.staticSetSort3(siteRequest_, o)));
+	}
+
 	public Double solrSort3() {
-		return sort3;
+		return HtmlPart.staticSolrSort3(siteRequest_, sort3);
 	}
 
 	public String strSort3() {
 		return sort3 == null ? "" : sort3.toString();
+	}
+
+	public Double sqlSort3() {
+		return sort3;
 	}
 
 	public String jsonSort3() {
@@ -3023,11 +3896,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort4 = sort4;
 		this.sort4Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort4(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort4 = Double.parseDouble(o);
+	public void setSort4(String o) {
+		this.sort4 = HtmlPart.staticSetSort4(siteRequest_, o);
 		this.sort4Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort4(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort4Init() {
 		if(!sort4Wrap.alreadyInitialized) {
@@ -3039,12 +3915,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort4(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort4(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort4(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort4(siteRequest_, HtmlPart.staticSolrSort4(siteRequest_, HtmlPart.staticSetSort4(siteRequest_, o)));
+	}
+
 	public Double solrSort4() {
-		return sort4;
+		return HtmlPart.staticSolrSort4(siteRequest_, sort4);
 	}
 
 	public String strSort4() {
 		return sort4 == null ? "" : sort4.toString();
+	}
+
+	public Double sqlSort4() {
+		return sort4;
 	}
 
 	public String jsonSort4() {
@@ -3163,11 +4055,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort5 = sort5;
 		this.sort5Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort5(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort5 = Double.parseDouble(o);
+	public void setSort5(String o) {
+		this.sort5 = HtmlPart.staticSetSort5(siteRequest_, o);
 		this.sort5Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort5(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort5Init() {
 		if(!sort5Wrap.alreadyInitialized) {
@@ -3179,12 +4074,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort5(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort5(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort5(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort5(siteRequest_, HtmlPart.staticSolrSort5(siteRequest_, HtmlPart.staticSetSort5(siteRequest_, o)));
+	}
+
 	public Double solrSort5() {
-		return sort5;
+		return HtmlPart.staticSolrSort5(siteRequest_, sort5);
 	}
 
 	public String strSort5() {
 		return sort5 == null ? "" : sort5.toString();
+	}
+
+	public Double sqlSort5() {
+		return sort5;
 	}
 
 	public String jsonSort5() {
@@ -3303,11 +4214,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort6 = sort6;
 		this.sort6Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort6(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort6 = Double.parseDouble(o);
+	public void setSort6(String o) {
+		this.sort6 = HtmlPart.staticSetSort6(siteRequest_, o);
 		this.sort6Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort6(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort6Init() {
 		if(!sort6Wrap.alreadyInitialized) {
@@ -3319,12 +4233,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort6(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort6(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort6(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort6(siteRequest_, HtmlPart.staticSolrSort6(siteRequest_, HtmlPart.staticSetSort6(siteRequest_, o)));
+	}
+
 	public Double solrSort6() {
-		return sort6;
+		return HtmlPart.staticSolrSort6(siteRequest_, sort6);
 	}
 
 	public String strSort6() {
 		return sort6 == null ? "" : sort6.toString();
+	}
+
+	public Double sqlSort6() {
+		return sort6;
 	}
 
 	public String jsonSort6() {
@@ -3443,11 +4373,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort7 = sort7;
 		this.sort7Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort7(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort7 = Double.parseDouble(o);
+	public void setSort7(String o) {
+		this.sort7 = HtmlPart.staticSetSort7(siteRequest_, o);
 		this.sort7Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort7(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort7Init() {
 		if(!sort7Wrap.alreadyInitialized) {
@@ -3459,12 +4392,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort7(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort7(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort7(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort7(siteRequest_, HtmlPart.staticSolrSort7(siteRequest_, HtmlPart.staticSetSort7(siteRequest_, o)));
+	}
+
 	public Double solrSort7() {
-		return sort7;
+		return HtmlPart.staticSolrSort7(siteRequest_, sort7);
 	}
 
 	public String strSort7() {
 		return sort7 == null ? "" : sort7.toString();
+	}
+
+	public Double sqlSort7() {
+		return sort7;
 	}
 
 	public String jsonSort7() {
@@ -3583,11 +4532,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort8 = sort8;
 		this.sort8Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort8(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort8 = Double.parseDouble(o);
+	public void setSort8(String o) {
+		this.sort8 = HtmlPart.staticSetSort8(siteRequest_, o);
 		this.sort8Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort8(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort8Init() {
 		if(!sort8Wrap.alreadyInitialized) {
@@ -3599,12 +4551,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort8(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort8(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort8(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort8(siteRequest_, HtmlPart.staticSolrSort8(siteRequest_, HtmlPart.staticSetSort8(siteRequest_, o)));
+	}
+
 	public Double solrSort8() {
-		return sort8;
+		return HtmlPart.staticSolrSort8(siteRequest_, sort8);
 	}
 
 	public String strSort8() {
 		return sort8 == null ? "" : sort8.toString();
+	}
+
+	public Double sqlSort8() {
+		return sort8;
 	}
 
 	public String jsonSort8() {
@@ -3723,11 +4691,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort9 = sort9;
 		this.sort9Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort9(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort9 = Double.parseDouble(o);
+	public void setSort9(String o) {
+		this.sort9 = HtmlPart.staticSetSort9(siteRequest_, o);
 		this.sort9Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort9(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort9Init() {
 		if(!sort9Wrap.alreadyInitialized) {
@@ -3739,12 +4710,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort9(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort9(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort9(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort9(siteRequest_, HtmlPart.staticSolrSort9(siteRequest_, HtmlPart.staticSetSort9(siteRequest_, o)));
+	}
+
 	public Double solrSort9() {
-		return sort9;
+		return HtmlPart.staticSolrSort9(siteRequest_, sort9);
 	}
 
 	public String strSort9() {
 		return sort9 == null ? "" : sort9.toString();
+	}
+
+	public Double sqlSort9() {
+		return sort9;
 	}
 
 	public String jsonSort9() {
@@ -3863,11 +4850,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		this.sort10 = sort10;
 		this.sort10Wrap.alreadyInitialized = true;
 	}
-	public HtmlPart setSort10(String o) {
-		if(NumberUtils.isParsable(o))
-			this.sort10 = Double.parseDouble(o);
+	public void setSort10(String o) {
+		this.sort10 = HtmlPart.staticSetSort10(siteRequest_, o);
 		this.sort10Wrap.alreadyInitialized = true;
-		return (HtmlPart)this;
+	}
+	public static Double staticSetSort10(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Double.parseDouble(o);
+		return null;
 	}
 	protected HtmlPart sort10Init() {
 		if(!sort10Wrap.alreadyInitialized) {
@@ -3879,12 +4869,28 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return (HtmlPart)this;
 	}
 
+	public static Double staticSolrSort10(SiteRequestEnUS siteRequest_, Double o) {
+		return o;
+	}
+
+	public static String staticSolrStrSort10(SiteRequestEnUS siteRequest_, Double o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSort10(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSort10(siteRequest_, HtmlPart.staticSolrSort10(siteRequest_, HtmlPart.staticSetSort10(siteRequest_, o)));
+	}
+
 	public Double solrSort10() {
-		return sort10;
+		return HtmlPart.staticSolrSort10(siteRequest_, sort10);
 	}
 
 	public String strSort10() {
 		return sort10 == null ? "" : sort10.toString();
+	}
+
+	public Double sqlSort10() {
+		return sort10;
 	}
 
 	public String jsonSort10() {
@@ -4011,9 +5017,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		htmlVarInputInit();
 		htmlVarForEachInit();
 		htmlVarHtmlInit();
+		htmlVarBase64DecodeInit();
 		htmlExcludeInit();
 		pdfExcludeInit();
 		loginLogoutInit();
+		searchUriInit();
+		mapToInit();
 		sort1Init();
 		sort2Init();
 		sort3Init();
@@ -4056,6 +5065,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -4094,12 +5107,18 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				return oHtmlPart.htmlVarForEach;
 			case "htmlVarHtml":
 				return oHtmlPart.htmlVarHtml;
+			case "htmlVarBase64Decode":
+				return oHtmlPart.htmlVarBase64Decode;
 			case "htmlExclude":
 				return oHtmlPart.htmlExclude;
 			case "pdfExclude":
 				return oHtmlPart.pdfExclude;
 			case "loginLogout":
 				return oHtmlPart.loginLogout;
+			case "searchUri":
+				return oHtmlPart.searchUri;
+			case "mapTo":
+				return oHtmlPart.mapTo;
 			case "sort1":
 				return oHtmlPart.sort1;
 			case "sort2":
@@ -4147,11 +5166,323 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		switch(var) {
 			case "pageDesignKeys":
 				oHtmlPart.addPageDesignKeys((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("pageDesignKeys"))
+					saves.add("pageDesignKeys");
 				return val;
 			default:
 				return super.attributeCluster(var, val);
+		}
+	}
+
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetHtmlPart(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetHtmlPart(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "htmlPartKey":
+			return HtmlPart.staticSetHtmlPartKey(siteRequest_, o);
+		case "pageDesignKeys":
+			return HtmlPart.staticSetPageDesignKeys(siteRequest_, o);
+		case "htmlLink":
+			return HtmlPart.staticSetHtmlLink(siteRequest_, o);
+		case "htmlElement":
+			return HtmlPart.staticSetHtmlElement(siteRequest_, o);
+		case "htmlId":
+			return HtmlPart.staticSetHtmlId(siteRequest_, o);
+		case "htmlClasses":
+			return HtmlPart.staticSetHtmlClasses(siteRequest_, o);
+		case "htmlStyle":
+			return HtmlPart.staticSetHtmlStyle(siteRequest_, o);
+		case "htmlBefore":
+			return HtmlPart.staticSetHtmlBefore(siteRequest_, o);
+		case "htmlAfter":
+			return HtmlPart.staticSetHtmlAfter(siteRequest_, o);
+		case "htmlText":
+			return HtmlPart.staticSetHtmlText(siteRequest_, o);
+		case "htmlVar":
+			return HtmlPart.staticSetHtmlVar(siteRequest_, o);
+		case "htmlVarSpan":
+			return HtmlPart.staticSetHtmlVarSpan(siteRequest_, o);
+		case "htmlVarForm":
+			return HtmlPart.staticSetHtmlVarForm(siteRequest_, o);
+		case "htmlVarInput":
+			return HtmlPart.staticSetHtmlVarInput(siteRequest_, o);
+		case "htmlVarForEach":
+			return HtmlPart.staticSetHtmlVarForEach(siteRequest_, o);
+		case "htmlVarHtml":
+			return HtmlPart.staticSetHtmlVarHtml(siteRequest_, o);
+		case "htmlVarBase64Decode":
+			return HtmlPart.staticSetHtmlVarBase64Decode(siteRequest_, o);
+		case "htmlExclude":
+			return HtmlPart.staticSetHtmlExclude(siteRequest_, o);
+		case "pdfExclude":
+			return HtmlPart.staticSetPdfExclude(siteRequest_, o);
+		case "loginLogout":
+			return HtmlPart.staticSetLoginLogout(siteRequest_, o);
+		case "searchUri":
+			return HtmlPart.staticSetSearchUri(siteRequest_, o);
+		case "mapTo":
+			return HtmlPart.staticSetMapTo(siteRequest_, o);
+		case "sort1":
+			return HtmlPart.staticSetSort1(siteRequest_, o);
+		case "sort2":
+			return HtmlPart.staticSetSort2(siteRequest_, o);
+		case "sort3":
+			return HtmlPart.staticSetSort3(siteRequest_, o);
+		case "sort4":
+			return HtmlPart.staticSetSort4(siteRequest_, o);
+		case "sort5":
+			return HtmlPart.staticSetSort5(siteRequest_, o);
+		case "sort6":
+			return HtmlPart.staticSetSort6(siteRequest_, o);
+		case "sort7":
+			return HtmlPart.staticSetSort7(siteRequest_, o);
+		case "sort8":
+			return HtmlPart.staticSetSort8(siteRequest_, o);
+		case "sort9":
+			return HtmlPart.staticSetSort9(siteRequest_, o);
+		case "sort10":
+			return HtmlPart.staticSetSort10(siteRequest_, o);
+			default:
+				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrHtmlPart(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrHtmlPart(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "htmlPartKey":
+			return HtmlPart.staticSolrHtmlPartKey(siteRequest_, (Long)o);
+		case "pageDesignKeys":
+			return HtmlPart.staticSolrPageDesignKeys(siteRequest_, (Long)o);
+		case "htmlLink":
+			return HtmlPart.staticSolrHtmlLink(siteRequest_, (String)o);
+		case "htmlElement":
+			return HtmlPart.staticSolrHtmlElement(siteRequest_, (String)o);
+		case "htmlId":
+			return HtmlPart.staticSolrHtmlId(siteRequest_, (String)o);
+		case "htmlClasses":
+			return HtmlPart.staticSolrHtmlClasses(siteRequest_, (String)o);
+		case "htmlStyle":
+			return HtmlPart.staticSolrHtmlStyle(siteRequest_, (String)o);
+		case "htmlBefore":
+			return HtmlPart.staticSolrHtmlBefore(siteRequest_, (String)o);
+		case "htmlAfter":
+			return HtmlPart.staticSolrHtmlAfter(siteRequest_, (String)o);
+		case "htmlText":
+			return HtmlPart.staticSolrHtmlText(siteRequest_, (String)o);
+		case "htmlVar":
+			return HtmlPart.staticSolrHtmlVar(siteRequest_, (String)o);
+		case "htmlVarSpan":
+			return HtmlPart.staticSolrHtmlVarSpan(siteRequest_, (String)o);
+		case "htmlVarForm":
+			return HtmlPart.staticSolrHtmlVarForm(siteRequest_, (String)o);
+		case "htmlVarInput":
+			return HtmlPart.staticSolrHtmlVarInput(siteRequest_, (String)o);
+		case "htmlVarForEach":
+			return HtmlPart.staticSolrHtmlVarForEach(siteRequest_, (String)o);
+		case "htmlVarHtml":
+			return HtmlPart.staticSolrHtmlVarHtml(siteRequest_, (String)o);
+		case "htmlVarBase64Decode":
+			return HtmlPart.staticSolrHtmlVarBase64Decode(siteRequest_, (String)o);
+		case "htmlExclude":
+			return HtmlPart.staticSolrHtmlExclude(siteRequest_, (Boolean)o);
+		case "pdfExclude":
+			return HtmlPart.staticSolrPdfExclude(siteRequest_, (Boolean)o);
+		case "loginLogout":
+			return HtmlPart.staticSolrLoginLogout(siteRequest_, (Boolean)o);
+		case "searchUri":
+			return HtmlPart.staticSolrSearchUri(siteRequest_, (String)o);
+		case "mapTo":
+			return HtmlPart.staticSolrMapTo(siteRequest_, (String)o);
+		case "sort1":
+			return HtmlPart.staticSolrSort1(siteRequest_, (Double)o);
+		case "sort2":
+			return HtmlPart.staticSolrSort2(siteRequest_, (Double)o);
+		case "sort3":
+			return HtmlPart.staticSolrSort3(siteRequest_, (Double)o);
+		case "sort4":
+			return HtmlPart.staticSolrSort4(siteRequest_, (Double)o);
+		case "sort5":
+			return HtmlPart.staticSolrSort5(siteRequest_, (Double)o);
+		case "sort6":
+			return HtmlPart.staticSolrSort6(siteRequest_, (Double)o);
+		case "sort7":
+			return HtmlPart.staticSolrSort7(siteRequest_, (Double)o);
+		case "sort8":
+			return HtmlPart.staticSolrSort8(siteRequest_, (Double)o);
+		case "sort9":
+			return HtmlPart.staticSolrSort9(siteRequest_, (Double)o);
+		case "sort10":
+			return HtmlPart.staticSolrSort10(siteRequest_, (Double)o);
+			default:
+				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrHtmlPart(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrHtmlPart(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "htmlPartKey":
+			return HtmlPart.staticSolrStrHtmlPartKey(siteRequest_, (Long)o);
+		case "pageDesignKeys":
+			return HtmlPart.staticSolrStrPageDesignKeys(siteRequest_, (Long)o);
+		case "htmlLink":
+			return HtmlPart.staticSolrStrHtmlLink(siteRequest_, (String)o);
+		case "htmlElement":
+			return HtmlPart.staticSolrStrHtmlElement(siteRequest_, (String)o);
+		case "htmlId":
+			return HtmlPart.staticSolrStrHtmlId(siteRequest_, (String)o);
+		case "htmlClasses":
+			return HtmlPart.staticSolrStrHtmlClasses(siteRequest_, (String)o);
+		case "htmlStyle":
+			return HtmlPart.staticSolrStrHtmlStyle(siteRequest_, (String)o);
+		case "htmlBefore":
+			return HtmlPart.staticSolrStrHtmlBefore(siteRequest_, (String)o);
+		case "htmlAfter":
+			return HtmlPart.staticSolrStrHtmlAfter(siteRequest_, (String)o);
+		case "htmlText":
+			return HtmlPart.staticSolrStrHtmlText(siteRequest_, (String)o);
+		case "htmlVar":
+			return HtmlPart.staticSolrStrHtmlVar(siteRequest_, (String)o);
+		case "htmlVarSpan":
+			return HtmlPart.staticSolrStrHtmlVarSpan(siteRequest_, (String)o);
+		case "htmlVarForm":
+			return HtmlPart.staticSolrStrHtmlVarForm(siteRequest_, (String)o);
+		case "htmlVarInput":
+			return HtmlPart.staticSolrStrHtmlVarInput(siteRequest_, (String)o);
+		case "htmlVarForEach":
+			return HtmlPart.staticSolrStrHtmlVarForEach(siteRequest_, (String)o);
+		case "htmlVarHtml":
+			return HtmlPart.staticSolrStrHtmlVarHtml(siteRequest_, (String)o);
+		case "htmlVarBase64Decode":
+			return HtmlPart.staticSolrStrHtmlVarBase64Decode(siteRequest_, (String)o);
+		case "htmlExclude":
+			return HtmlPart.staticSolrStrHtmlExclude(siteRequest_, (Boolean)o);
+		case "pdfExclude":
+			return HtmlPart.staticSolrStrPdfExclude(siteRequest_, (Boolean)o);
+		case "loginLogout":
+			return HtmlPart.staticSolrStrLoginLogout(siteRequest_, (Boolean)o);
+		case "searchUri":
+			return HtmlPart.staticSolrStrSearchUri(siteRequest_, (String)o);
+		case "mapTo":
+			return HtmlPart.staticSolrStrMapTo(siteRequest_, (String)o);
+		case "sort1":
+			return HtmlPart.staticSolrStrSort1(siteRequest_, (Double)o);
+		case "sort2":
+			return HtmlPart.staticSolrStrSort2(siteRequest_, (Double)o);
+		case "sort3":
+			return HtmlPart.staticSolrStrSort3(siteRequest_, (Double)o);
+		case "sort4":
+			return HtmlPart.staticSolrStrSort4(siteRequest_, (Double)o);
+		case "sort5":
+			return HtmlPart.staticSolrStrSort5(siteRequest_, (Double)o);
+		case "sort6":
+			return HtmlPart.staticSolrStrSort6(siteRequest_, (Double)o);
+		case "sort7":
+			return HtmlPart.staticSolrStrSort7(siteRequest_, (Double)o);
+		case "sort8":
+			return HtmlPart.staticSolrStrSort8(siteRequest_, (Double)o);
+		case "sort9":
+			return HtmlPart.staticSolrStrSort9(siteRequest_, (Double)o);
+		case "sort10":
+			return HtmlPart.staticSolrStrSort10(siteRequest_, (Double)o);
+			default:
+				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqHtmlPart(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqHtmlPart(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "htmlPartKey":
+			return HtmlPart.staticSolrFqHtmlPartKey(siteRequest_, o);
+		case "pageDesignKeys":
+			return HtmlPart.staticSolrFqPageDesignKeys(siteRequest_, o);
+		case "htmlLink":
+			return HtmlPart.staticSolrFqHtmlLink(siteRequest_, o);
+		case "htmlElement":
+			return HtmlPart.staticSolrFqHtmlElement(siteRequest_, o);
+		case "htmlId":
+			return HtmlPart.staticSolrFqHtmlId(siteRequest_, o);
+		case "htmlClasses":
+			return HtmlPart.staticSolrFqHtmlClasses(siteRequest_, o);
+		case "htmlStyle":
+			return HtmlPart.staticSolrFqHtmlStyle(siteRequest_, o);
+		case "htmlBefore":
+			return HtmlPart.staticSolrFqHtmlBefore(siteRequest_, o);
+		case "htmlAfter":
+			return HtmlPart.staticSolrFqHtmlAfter(siteRequest_, o);
+		case "htmlText":
+			return HtmlPart.staticSolrFqHtmlText(siteRequest_, o);
+		case "htmlVar":
+			return HtmlPart.staticSolrFqHtmlVar(siteRequest_, o);
+		case "htmlVarSpan":
+			return HtmlPart.staticSolrFqHtmlVarSpan(siteRequest_, o);
+		case "htmlVarForm":
+			return HtmlPart.staticSolrFqHtmlVarForm(siteRequest_, o);
+		case "htmlVarInput":
+			return HtmlPart.staticSolrFqHtmlVarInput(siteRequest_, o);
+		case "htmlVarForEach":
+			return HtmlPart.staticSolrFqHtmlVarForEach(siteRequest_, o);
+		case "htmlVarHtml":
+			return HtmlPart.staticSolrFqHtmlVarHtml(siteRequest_, o);
+		case "htmlVarBase64Decode":
+			return HtmlPart.staticSolrFqHtmlVarBase64Decode(siteRequest_, o);
+		case "htmlExclude":
+			return HtmlPart.staticSolrFqHtmlExclude(siteRequest_, o);
+		case "pdfExclude":
+			return HtmlPart.staticSolrFqPdfExclude(siteRequest_, o);
+		case "loginLogout":
+			return HtmlPart.staticSolrFqLoginLogout(siteRequest_, o);
+		case "searchUri":
+			return HtmlPart.staticSolrFqSearchUri(siteRequest_, o);
+		case "mapTo":
+			return HtmlPart.staticSolrFqMapTo(siteRequest_, o);
+		case "sort1":
+			return HtmlPart.staticSolrFqSort1(siteRequest_, o);
+		case "sort2":
+			return HtmlPart.staticSolrFqSort2(siteRequest_, o);
+		case "sort3":
+			return HtmlPart.staticSolrFqSort3(siteRequest_, o);
+		case "sort4":
+			return HtmlPart.staticSolrFqSort4(siteRequest_, o);
+		case "sort5":
+			return HtmlPart.staticSolrFqSort5(siteRequest_, o);
+		case "sort6":
+			return HtmlPart.staticSolrFqSort6(siteRequest_, o);
+		case "sort7":
+			return HtmlPart.staticSolrFqSort7(siteRequest_, o);
+		case "sort8":
+			return HtmlPart.staticSolrFqSort8(siteRequest_, o);
+		case "sort9":
+			return HtmlPart.staticSolrFqSort9(siteRequest_, o);
+		case "sort10":
+			return HtmlPart.staticSolrFqSort10(siteRequest_, o);
+			default:
+				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -4167,149 +5498,336 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				if(o == null)
 					o = defineHtmlPart(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
 	public Object defineHtmlPart(String var, String val) {
-		switch(var) {
-			case "htmlLink":
+		switch(var.toLowerCase()) {
+			case "htmllink":
 				if(val != null)
 					setHtmlLink(val);
-				saves.add(var);
+				saves.add("htmlLink");
 				return val;
-			case "htmlElement":
+			case "htmlelement":
 				if(val != null)
 					setHtmlElement(val);
-				saves.add(var);
+				saves.add("htmlElement");
 				return val;
-			case "htmlId":
+			case "htmlid":
 				if(val != null)
 					setHtmlId(val);
-				saves.add(var);
+				saves.add("htmlId");
 				return val;
-			case "htmlClasses":
+			case "htmlclasses":
 				if(val != null)
 					setHtmlClasses(val);
-				saves.add(var);
+				saves.add("htmlClasses");
 				return val;
-			case "htmlStyle":
+			case "htmlstyle":
 				if(val != null)
 					setHtmlStyle(val);
-				saves.add(var);
+				saves.add("htmlStyle");
 				return val;
-			case "htmlBefore":
+			case "htmlbefore":
 				if(val != null)
 					setHtmlBefore(val);
-				saves.add(var);
+				saves.add("htmlBefore");
 				return val;
-			case "htmlAfter":
+			case "htmlafter":
 				if(val != null)
 					setHtmlAfter(val);
-				saves.add(var);
+				saves.add("htmlAfter");
 				return val;
-			case "htmlText":
+			case "htmltext":
 				if(val != null)
 					setHtmlText(val);
-				saves.add(var);
+				saves.add("htmlText");
 				return val;
-			case "htmlVar":
+			case "htmlvar":
 				if(val != null)
 					setHtmlVar(val);
-				saves.add(var);
+				saves.add("htmlVar");
 				return val;
-			case "htmlVarSpan":
+			case "htmlvarspan":
 				if(val != null)
 					setHtmlVarSpan(val);
-				saves.add(var);
+				saves.add("htmlVarSpan");
 				return val;
-			case "htmlVarForm":
+			case "htmlvarform":
 				if(val != null)
 					setHtmlVarForm(val);
-				saves.add(var);
+				saves.add("htmlVarForm");
 				return val;
-			case "htmlVarInput":
+			case "htmlvarinput":
 				if(val != null)
 					setHtmlVarInput(val);
-				saves.add(var);
+				saves.add("htmlVarInput");
 				return val;
-			case "htmlVarForEach":
+			case "htmlvarforeach":
 				if(val != null)
 					setHtmlVarForEach(val);
-				saves.add(var);
+				saves.add("htmlVarForEach");
 				return val;
-			case "htmlVarHtml":
+			case "htmlvarhtml":
 				if(val != null)
 					setHtmlVarHtml(val);
-				saves.add(var);
+				saves.add("htmlVarHtml");
 				return val;
-			case "htmlExclude":
+			case "htmlvarbase64decode":
+				if(val != null)
+					setHtmlVarBase64Decode(val);
+				saves.add("htmlVarBase64Decode");
+				return val;
+			case "htmlexclude":
 				if(val != null)
 					setHtmlExclude(val);
-				saves.add(var);
+				saves.add("htmlExclude");
 				return val;
-			case "pdfExclude":
+			case "pdfexclude":
 				if(val != null)
 					setPdfExclude(val);
-				saves.add(var);
+				saves.add("pdfExclude");
 				return val;
-			case "loginLogout":
+			case "loginlogout":
 				if(val != null)
 					setLoginLogout(val);
-				saves.add(var);
+				saves.add("loginLogout");
+				return val;
+			case "searchuri":
+				if(val != null)
+					setSearchUri(val);
+				saves.add("searchUri");
+				return val;
+			case "mapto":
+				if(val != null)
+					setMapTo(val);
+				saves.add("mapTo");
 				return val;
 			case "sort1":
 				if(val != null)
 					setSort1(val);
-				saves.add(var);
+				saves.add("sort1");
 				return val;
 			case "sort2":
 				if(val != null)
 					setSort2(val);
-				saves.add(var);
+				saves.add("sort2");
 				return val;
 			case "sort3":
 				if(val != null)
 					setSort3(val);
-				saves.add(var);
+				saves.add("sort3");
 				return val;
 			case "sort4":
 				if(val != null)
 					setSort4(val);
-				saves.add(var);
+				saves.add("sort4");
 				return val;
 			case "sort5":
 				if(val != null)
 					setSort5(val);
-				saves.add(var);
+				saves.add("sort5");
 				return val;
 			case "sort6":
 				if(val != null)
 					setSort6(val);
-				saves.add(var);
+				saves.add("sort6");
 				return val;
 			case "sort7":
 				if(val != null)
 					setSort7(val);
-				saves.add(var);
+				saves.add("sort7");
 				return val;
 			case "sort8":
 				if(val != null)
 					setSort8(val);
-				saves.add(var);
+				saves.add("sort8");
 				return val;
 			case "sort9":
 				if(val != null)
 					setSort9(val);
-				saves.add(var);
+				saves.add("sort9");
 				return val;
 			case "sort10":
 				if(val != null)
 					setSort10(val);
-				saves.add(var);
+				saves.add("sort10");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineHtmlPart(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineHtmlPart(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "htmllink":
+				if(val instanceof String)
+					setHtmlLink((String)val);
+				saves.add("htmlLink");
+				return val;
+			case "htmlelement":
+				if(val instanceof String)
+					setHtmlElement((String)val);
+				saves.add("htmlElement");
+				return val;
+			case "htmlid":
+				if(val instanceof String)
+					setHtmlId((String)val);
+				saves.add("htmlId");
+				return val;
+			case "htmlclasses":
+				if(val instanceof String)
+					setHtmlClasses((String)val);
+				saves.add("htmlClasses");
+				return val;
+			case "htmlstyle":
+				if(val instanceof String)
+					setHtmlStyle((String)val);
+				saves.add("htmlStyle");
+				return val;
+			case "htmlbefore":
+				if(val instanceof String)
+					setHtmlBefore((String)val);
+				saves.add("htmlBefore");
+				return val;
+			case "htmlafter":
+				if(val instanceof String)
+					setHtmlAfter((String)val);
+				saves.add("htmlAfter");
+				return val;
+			case "htmltext":
+				if(val instanceof String)
+					setHtmlText((String)val);
+				saves.add("htmlText");
+				return val;
+			case "htmlvar":
+				if(val instanceof String)
+					setHtmlVar((String)val);
+				saves.add("htmlVar");
+				return val;
+			case "htmlvarspan":
+				if(val instanceof String)
+					setHtmlVarSpan((String)val);
+				saves.add("htmlVarSpan");
+				return val;
+			case "htmlvarform":
+				if(val instanceof String)
+					setHtmlVarForm((String)val);
+				saves.add("htmlVarForm");
+				return val;
+			case "htmlvarinput":
+				if(val instanceof String)
+					setHtmlVarInput((String)val);
+				saves.add("htmlVarInput");
+				return val;
+			case "htmlvarforeach":
+				if(val instanceof String)
+					setHtmlVarForEach((String)val);
+				saves.add("htmlVarForEach");
+				return val;
+			case "htmlvarhtml":
+				if(val instanceof String)
+					setHtmlVarHtml((String)val);
+				saves.add("htmlVarHtml");
+				return val;
+			case "htmlvarbase64decode":
+				if(val instanceof String)
+					setHtmlVarBase64Decode((String)val);
+				saves.add("htmlVarBase64Decode");
+				return val;
+			case "htmlexclude":
+				if(val instanceof Boolean)
+					setHtmlExclude((Boolean)val);
+				saves.add("htmlExclude");
+				return val;
+			case "pdfexclude":
+				if(val instanceof Boolean)
+					setPdfExclude((Boolean)val);
+				saves.add("pdfExclude");
+				return val;
+			case "loginlogout":
+				if(val instanceof Boolean)
+					setLoginLogout((Boolean)val);
+				saves.add("loginLogout");
+				return val;
+			case "searchuri":
+				if(val instanceof String)
+					setSearchUri((String)val);
+				saves.add("searchUri");
+				return val;
+			case "mapto":
+				if(val instanceof String)
+					setMapTo((String)val);
+				saves.add("mapTo");
+				return val;
+			case "sort1":
+				if(val instanceof Double)
+					setSort1((Double)val);
+				saves.add("sort1");
+				return val;
+			case "sort2":
+				if(val instanceof Double)
+					setSort2((Double)val);
+				saves.add("sort2");
+				return val;
+			case "sort3":
+				if(val instanceof Double)
+					setSort3((Double)val);
+				saves.add("sort3");
+				return val;
+			case "sort4":
+				if(val instanceof Double)
+					setSort4((Double)val);
+				saves.add("sort4");
+				return val;
+			case "sort5":
+				if(val instanceof Double)
+					setSort5((Double)val);
+				saves.add("sort5");
+				return val;
+			case "sort6":
+				if(val instanceof Double)
+					setSort6((Double)val);
+				saves.add("sort6");
+				return val;
+			case "sort7":
+				if(val instanceof Double)
+					setSort7((Double)val);
+				saves.add("sort7");
+				return val;
+			case "sort8":
+				if(val instanceof Double)
+					setSort8((Double)val);
+				saves.add("sort8");
+				return val;
+			case "sort9":
+				if(val instanceof Double)
+					setSort9((Double)val);
+				saves.add("sort9");
+				return val;
+			case "sort10":
+				if(val instanceof Double)
+					setSort10((Double)val);
+				saves.add("sort10");
 				return val;
 			default:
 				return super.defineCluster(var, val);
@@ -4422,6 +5940,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 					oHtmlPart.setHtmlVarHtml(htmlVarHtml);
 			}
 
+			if(saves.contains("htmlVarBase64Decode")) {
+				String htmlVarBase64Decode = (String)solrDocument.get("htmlVarBase64Decode_stored_string");
+				if(htmlVarBase64Decode != null)
+					oHtmlPart.setHtmlVarBase64Decode(htmlVarBase64Decode);
+			}
+
 			if(saves.contains("htmlExclude")) {
 				Boolean htmlExclude = (Boolean)solrDocument.get("htmlExclude_stored_boolean");
 				if(htmlExclude != null)
@@ -4438,6 +5962,18 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				Boolean loginLogout = (Boolean)solrDocument.get("loginLogout_stored_boolean");
 				if(loginLogout != null)
 					oHtmlPart.setLoginLogout(loginLogout);
+			}
+
+			if(saves.contains("searchUri")) {
+				String searchUri = (String)solrDocument.get("searchUri_stored_string");
+				if(searchUri != null)
+					oHtmlPart.setSearchUri(searchUri);
+			}
+
+			if(saves.contains("mapTo")) {
+				String mapTo = (String)solrDocument.get("mapTo_stored_string");
+				if(mapTo != null)
+					oHtmlPart.setMapTo(mapTo);
 			}
 
 			if(saves.contains("sort1")) {
@@ -4631,6 +6167,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			document.addField("htmlVarHtml_indexed_string", htmlVarHtml);
 			document.addField("htmlVarHtml_stored_string", htmlVarHtml);
 		}
+		if(htmlVarBase64Decode != null) {
+			document.addField("htmlVarBase64Decode_indexed_string", htmlVarBase64Decode);
+			document.addField("htmlVarBase64Decode_stored_string", htmlVarBase64Decode);
+		}
 		if(htmlExclude != null) {
 			document.addField("htmlExclude_indexed_boolean", htmlExclude);
 			document.addField("htmlExclude_stored_boolean", htmlExclude);
@@ -4642,6 +6182,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		if(loginLogout != null) {
 			document.addField("loginLogout_indexed_boolean", loginLogout);
 			document.addField("loginLogout_stored_boolean", loginLogout);
+		}
+		if(searchUri != null) {
+			document.addField("searchUri_indexed_string", searchUri);
+			document.addField("searchUri_stored_string", searchUri);
+		}
+		if(mapTo != null) {
+			document.addField("mapTo_indexed_string", mapTo);
+			document.addField("mapTo_stored_string", mapTo);
 		}
 		if(sort1 != null) {
 			document.addField("sort1_indexed_double", sort1);
@@ -4732,12 +6280,18 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				return "htmlVarForEach_indexed_string";
 			case "htmlVarHtml":
 				return "htmlVarHtml_indexed_string";
+			case "htmlVarBase64Decode":
+				return "htmlVarBase64Decode_indexed_string";
 			case "htmlExclude":
 				return "htmlExclude_indexed_boolean";
 			case "pdfExclude":
 				return "pdfExclude_indexed_boolean";
 			case "loginLogout":
 				return "loginLogout_indexed_boolean";
+			case "searchUri":
+				return "searchUri_indexed_string";
+			case "mapTo":
+				return "mapTo_indexed_string";
 			case "sort1":
 				return "sort1_indexed_double";
 			case "sort2":
@@ -4851,6 +6405,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		if(htmlVarHtml != null)
 			oHtmlPart.setHtmlVarHtml(htmlVarHtml);
 
+		String htmlVarBase64Decode = (String)solrDocument.get("htmlVarBase64Decode_stored_string");
+		if(htmlVarBase64Decode != null)
+			oHtmlPart.setHtmlVarBase64Decode(htmlVarBase64Decode);
+
 		Boolean htmlExclude = (Boolean)solrDocument.get("htmlExclude_stored_boolean");
 		if(htmlExclude != null)
 			oHtmlPart.setHtmlExclude(htmlExclude);
@@ -4862,6 +6420,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		Boolean loginLogout = (Boolean)solrDocument.get("loginLogout_stored_boolean");
 		if(loginLogout != null)
 			oHtmlPart.setLoginLogout(loginLogout);
+
+		String searchUri = (String)solrDocument.get("searchUri_stored_string");
+		if(searchUri != null)
+			oHtmlPart.setSearchUri(searchUri);
+
+		String mapTo = (String)solrDocument.get("mapTo_stored_string");
+		if(mapTo != null)
+			oHtmlPart.setMapTo(mapTo);
 
 		Double sort1 = (Double)solrDocument.get("sort1_stored_double");
 		if(sort1 != null)
@@ -4947,12 +6513,18 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				apiRequest.addVars("htmlVarForEach");
 			if(!Objects.equals(htmlVarHtml, original.getHtmlVarHtml()))
 				apiRequest.addVars("htmlVarHtml");
+			if(!Objects.equals(htmlVarBase64Decode, original.getHtmlVarBase64Decode()))
+				apiRequest.addVars("htmlVarBase64Decode");
 			if(!Objects.equals(htmlExclude, original.getHtmlExclude()))
 				apiRequest.addVars("htmlExclude");
 			if(!Objects.equals(pdfExclude, original.getPdfExclude()))
 				apiRequest.addVars("pdfExclude");
 			if(!Objects.equals(loginLogout, original.getLoginLogout()))
 				apiRequest.addVars("loginLogout");
+			if(!Objects.equals(searchUri, original.getSearchUri()))
+				apiRequest.addVars("searchUri");
+			if(!Objects.equals(mapTo, original.getMapTo()))
+				apiRequest.addVars("mapTo");
 			if(!Objects.equals(sort1, original.getSort1()))
 				apiRequest.addVars("sort1");
 			if(!Objects.equals(sort2, original.getSort2()))
@@ -4982,7 +6554,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), htmlPartKey, pageDesignKeys, htmlLink, htmlElement, htmlId, htmlClasses, htmlStyle, htmlBefore, htmlAfter, htmlText, htmlVar, htmlVarSpan, htmlVarForm, htmlVarInput, htmlVarForEach, htmlVarHtml, htmlExclude, pdfExclude, loginLogout, sort1, sort2, sort3, sort4, sort5, sort6, sort7, sort8, sort9, sort10);
+		return Objects.hash(super.hashCode(), htmlPartKey, pageDesignKeys, htmlLink, htmlElement, htmlId, htmlClasses, htmlStyle, htmlBefore, htmlAfter, htmlText, htmlVar, htmlVarSpan, htmlVarForm, htmlVarInput, htmlVarForEach, htmlVarHtml, htmlVarBase64Decode, htmlExclude, pdfExclude, loginLogout, searchUri, mapTo, sort1, sort2, sort3, sort4, sort5, sort6, sort7, sort8, sort9, sort10);
 	}
 
 	////////////
@@ -5012,9 +6584,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				&& Objects.equals( htmlVarInput, that.htmlVarInput )
 				&& Objects.equals( htmlVarForEach, that.htmlVarForEach )
 				&& Objects.equals( htmlVarHtml, that.htmlVarHtml )
+				&& Objects.equals( htmlVarBase64Decode, that.htmlVarBase64Decode )
 				&& Objects.equals( htmlExclude, that.htmlExclude )
 				&& Objects.equals( pdfExclude, that.pdfExclude )
 				&& Objects.equals( loginLogout, that.loginLogout )
+				&& Objects.equals( searchUri, that.searchUri )
+				&& Objects.equals( mapTo, that.mapTo )
 				&& Objects.equals( sort1, that.sort1 )
 				&& Objects.equals( sort2, that.sort2 )
 				&& Objects.equals( sort3, that.sort3 )
@@ -5051,9 +6626,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		sb.append( ", htmlVarInput: \"" ).append(htmlVarInput).append( "\"" );
 		sb.append( ", htmlVarForEach: \"" ).append(htmlVarForEach).append( "\"" );
 		sb.append( ", htmlVarHtml: \"" ).append(htmlVarHtml).append( "\"" );
+		sb.append( ", htmlVarBase64Decode: \"" ).append(htmlVarBase64Decode).append( "\"" );
 		sb.append( ", htmlExclude: " ).append(htmlExclude);
 		sb.append( ", pdfExclude: " ).append(pdfExclude);
 		sb.append( ", loginLogout: " ).append(loginLogout);
+		sb.append( ", searchUri: \"" ).append(searchUri).append( "\"" );
+		sb.append( ", mapTo: \"" ).append(mapTo).append( "\"" );
 		sb.append( ", sort1: " ).append(sort1);
 		sb.append( ", sort2: " ).append(sort2);
 		sb.append( ", sort3: " ).append(sort3);

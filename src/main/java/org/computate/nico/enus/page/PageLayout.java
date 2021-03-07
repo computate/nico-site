@@ -13,7 +13,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -25,19 +28,27 @@ import org.apache.solr.common.SolrDocument;
 import org.computate.nico.enus.config.SiteConfig;
 import org.computate.nico.enus.design.PageDesignGenPage;
 import org.computate.nico.enus.enrollment.EnrollmentGenPage;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
+import org.computate.nico.enus.enrollment.SiteEnrollmentEnUSApiServiceImpl;
 import org.computate.nico.enus.html.part.HtmlPart;
 import org.computate.nico.enus.html.part.HtmlPartGenPage;
 import org.computate.nico.enus.pet.PetGenPage;
 import org.computate.nico.enus.request.SiteRequestEnUS;
+import org.computate.nico.enus.search.SearchList;
 import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.wrap.Wrap;
 import org.computate.nico.enus.writer.AllWriter;
 import org.computate.nico.enus.xml.UtilXml;
 
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.api.OperationRequest;
+
 
 /**
  * Keyword: classSimpleNamePageLayout
- */
+ */ 
 public class PageLayout extends PageLayoutGen<Object> {
 
 	public static final List<String> ROLES_MANAGER = Arrays.asList("SiteManager");
@@ -75,6 +86,9 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 	protected void _staticBaseUrl(Wrap<String> c) {
 		c.o(siteRequest_.getSiteConfig_().getStaticBaseUrl()); 
+	}
+
+	protected void _map(Map<String, Object> m) {
 	}
 
 	protected void _pageSolrDocument(Wrap<SolrDocument> c) {
@@ -317,7 +331,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 				g("div");
 				e("div").a("class", "site-section-all ").f();
 					e("div").a("class", "site-section-above ").f();
-						e("div").a("class", "w3-content w3-center w3-black ").f();
+						e("div").a("class", "w3-content w3-center w3-white ").f();
 							e("div").a("class", "").f();
 								menu("Menu1");
 							g("div"); 
@@ -381,11 +395,12 @@ public class PageLayout extends PageLayoutGen<Object> {
 	}
 
 	public void  menu(String id) {
-		e("div").a("class", "w3-bar w3-text-white w3-padding-bottom-8 w3-padding-top-8 ").a("style", "padding-left: 16px; padding-right: 16px; ").f();
+		e("div").a("class", "w3-bar w3-padding-bottom-8 w3-padding-top-8 ").a("style", "padding-left: 16px; padding-right: 16px; ").f();
 
 			e("div").a("class", "site-bar-item w3-bar-item ").f();
 				e("a").a("class", "").a("href", pageHomeUri).f();
 					e("span").a("class", "site-menu-item").f();
+						e("i").a("class", "fad fa-house").f().g("i");
 						sx("home");
 					g("span");
 				g("a");
@@ -398,8 +413,17 @@ public class PageLayout extends PageLayoutGen<Object> {
 	
 				{ e("div").a("class", "w3-dropdown-hover ").f();
 					{ e("div").a("class", "w3-button w3-hover-red ").f();
-							e("i").a("class", "fas fa-dog ").f().g("i");
-							sx("Pets");
+						e("i").a("class", "fad fa-paw w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-dog w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-cat w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-squirrel w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-rabbit-fast w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-ram w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-fish w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-frog w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-dragon w3-spin ").f().g("i");
+						e("i").a("class", "fad fa-crow w3-spin ").f().g("i");
+						sx("Pets");
 					} g("div");
 					{ e("div").a("class", "w3-dropdown-content w3-card-4 w3-padding ").f();
 						PetGenPage.htmlSuggestedPetGenPage(this, id, null);
@@ -408,7 +432,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 	
 				{ e("div").a("class", "w3-dropdown-hover ").f();
 					{ e("div").a("class", "w3-button w3-hover-khaki ").f();
-							e("i").a("class", "far fa-puzzle-piece ").f().g("i");
+							e("i").a("class", "fad fa-clipboard-list ").f().g("i");
 							sx("Enrollments");
 					} g("div");
 					{ e("div").a("class", "w3-dropdown-content w3-card-4 w3-padding ").f();
@@ -456,7 +480,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 			e("div").a("class", "site-bar-item w3-bar-item ").f();
 				e("a").a("class", "w3-padding ").a("href", pageUserUri).f(); 
 					e("span").a("class", "site-menu-item").f();
-						e("i").a("class", "far fa-sign-in-alt ").f().g("i");
+						e("i").a("class", "fad fa-house-user ").f().g("i");
 						sx("login");
 					g("span");
 				g("a");
@@ -466,7 +490,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 			{ e("div").a("class", "w3-dropdown-hover ").f();
 				{ e("div").a("class", "w3-button w3-hover-green ").f();
-						e("i").a("class", "far fa-user-cog ").f().g("i");
+						e("i").a("class", "fad fa-house-user ").f().g("i");
 						sx(siteRequest_.getUserName());
 				} g("div");
 				{ e("div").a("class", "w3-dropdown-content w3-card-4 w3-padding ").f();
@@ -990,6 +1014,65 @@ public class PageLayout extends PageLayoutGen<Object> {
 					if(htmlPart.getLoginLogout()) {
 						writeLoginLogout();
 						l();
+					}
+
+					String searchUri = htmlPart.getSearchUri();
+					String mapTo = htmlPart.getMapTo();
+					if(searchUri != null && mapTo != null) {
+
+						Matcher m = Pattern.compile("\\{\\{\\s*([^\\}\\s]+)\\s*\\}\\}").matcher(searchUri);
+						boolean found = m.find();
+						StringBuffer sb = new StringBuffer();
+
+						while(found) {
+							String var = m.group(1);
+							Object obtain = obtainForClass(var);
+							if(obtain != null)
+								m.appendReplacement(sb, obtain.toString());
+							found = m.find();
+						}
+						m.appendTail(sb);
+						searchUri = sb.toString();
+
+						SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+						siteRequest2.setVertx(siteRequest_.getVertx());
+						siteRequest2.setSiteContext_(siteRequest_.getSiteContext_());
+						siteRequest2.setSiteConfig_(siteRequest_.getSiteConfig_());
+						siteRequest2.setUserId(siteRequest_.getUserId());
+						siteRequest2.initDeepSiteRequestEnUS(siteRequest2);
+
+						OperationRequest operationRequest = new OperationRequest();
+						siteRequest2.setOperationRequest(operationRequest);
+						JsonObject params = new JsonObject();
+						operationRequest.setParams(params);
+						JsonObject query = new JsonObject();
+						params.put("path", new JsonObject());
+						Map<String, List<String>> decodedParams = new QueryStringDecoder(searchUri).parameters();
+
+						for (Map.Entry<String, List<String>> entry : decodedParams.entrySet()) {
+							String key = entry.getKey();
+							if(query.containsKey(key) && entry.getValue() != null) {
+								JsonArray values = query.getJsonArray(key);
+								for(String value : entry.getValue()) {
+									values.add(value);
+								}
+							}
+							else {
+								JsonArray values = new JsonArray();
+								for(String value : entry.getValue()) {
+									values.add(value);
+								}
+								query.put(key, values);
+							}
+						}
+						query.put("query", query);
+						params.put("query", query);
+
+						if(searchUri.startsWith("/api/enrollment?")) {
+							SiteEnrollmentEnUSApiServiceImpl service = new SiteEnrollmentEnUSApiServiceImpl(siteRequest_.getSiteContext_());
+							SearchList<SiteEnrollment> searchList = service.aSearchSiteEnrollmentList(siteRequest2, false, true, false, siteRequest_.getRequestUri(), "Search");
+							map.put(mapTo, searchList);
+						}
 					}
 					s(htmlPart.getHtmlAfter());
 				}

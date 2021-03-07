@@ -12,6 +12,7 @@ import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
@@ -72,6 +73,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.siteRequest_ = siteRequest_;
 		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
+	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected AllWriter siteRequest_Init() {
 		if(!siteRequest_Wrap.alreadyInitialized) {
 			_siteRequest_(siteRequest_Wrap);
@@ -105,10 +109,12 @@ public abstract class AllWriterGen<DEV> extends Object {
 	public String getTabStr() {
 		return tabStr;
 	}
-
-	public void setTabStr(String tabStr) {
-		this.tabStr = tabStr;
+	public void setTabStr(String o) {
+		this.tabStr = AllWriter.staticSetTabStr(siteRequest_, o);
 		this.tabStrWrap.alreadyInitialized = true;
+	}
+	public static String staticSetTabStr(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected AllWriter tabStrInit() {
 		if(!tabStrWrap.alreadyInitialized) {
@@ -120,12 +126,28 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return (AllWriter)this;
 	}
 
+	public static String staticSolrTabStr(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrTabStr(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqTabStr(SiteRequestEnUS siteRequest_, String o) {
+		return AllWriter.staticSolrStrTabStr(siteRequest_, AllWriter.staticSolrTabStr(siteRequest_, AllWriter.staticSetTabStr(siteRequest_, o)));
+	}
+
 	public String solrTabStr() {
-		return tabStr;
+		return AllWriter.staticSolrTabStr(siteRequest_, tabStr);
 	}
 
 	public String strTabStr() {
 		return tabStr == null ? "" : tabStr;
+	}
+
+	public String sqlTabStr() {
+		return tabStr;
 	}
 
 	public String jsonTabStr() {
@@ -172,6 +194,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.file = file;
 		this.fileWrap.alreadyInitialized = true;
 	}
+	public static File staticSetFile(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected AllWriter fileInit() {
 		if(!fileWrap.alreadyInitialized) {
 			_file(fileWrap);
@@ -209,6 +234,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 	public void setStringWriter(StringWriter stringWriter) {
 		this.stringWriter = stringWriter;
 		this.stringWriterWrap.alreadyInitialized = true;
+	}
+	public static StringWriter staticSetStringWriter(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected AllWriter stringWriterInit() {
 		if(!stringWriterWrap.alreadyInitialized) {
@@ -248,6 +276,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.buffer = buffer;
 		this.bufferWrap.alreadyInitialized = true;
 	}
+	public static Buffer staticSetBuffer(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected AllWriter bufferInit() {
 		if(!bufferWrap.alreadyInitialized) {
 			_buffer(bufferWrap);
@@ -285,6 +316,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 	public void setPrintWriter(PrintWriter printWriter) {
 		this.printWriter = printWriter;
 		this.printWriterWrap.alreadyInitialized = true;
+	}
+	public static PrintWriter staticSetPrintWriter(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected AllWriter printWriterInit() {
 		if(!printWriterWrap.alreadyInitialized) {
@@ -324,10 +358,12 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.empty = empty;
 		this.emptyWrap.alreadyInitialized = true;
 	}
-	public AllWriter setEmpty(String o) {
-		this.empty = Boolean.parseBoolean(o);
+	public void setEmpty(String o) {
+		this.empty = AllWriter.staticSetEmpty(siteRequest_, o);
 		this.emptyWrap.alreadyInitialized = true;
-		return (AllWriter)this;
+	}
+	public static Boolean staticSetEmpty(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
 	}
 	protected AllWriter emptyInit() {
 		if(!emptyWrap.alreadyInitialized) {
@@ -339,12 +375,28 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return (AllWriter)this;
 	}
 
+	public static Boolean staticSolrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqEmpty(SiteRequestEnUS siteRequest_, String o) {
+		return AllWriter.staticSolrStrEmpty(siteRequest_, AllWriter.staticSolrEmpty(siteRequest_, AllWriter.staticSetEmpty(siteRequest_, o)));
+	}
+
 	public Boolean solrEmpty() {
-		return empty;
+		return AllWriter.staticSolrEmpty(siteRequest_, empty);
 	}
 
 	public String strEmpty() {
 		return empty == null ? "" : empty.toString();
+	}
+
+	public Boolean sqlEmpty() {
+		return empty;
 	}
 
 	public String jsonEmpty() {
@@ -421,6 +473,10 @@ public abstract class AllWriterGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -471,6 +527,78 @@ public abstract class AllWriterGen<DEV> extends Object {
 		}
 	}
 
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetAllWriter(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetAllWriter(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "tabStr":
+			return AllWriter.staticSetTabStr(siteRequest_, o);
+		case "empty":
+			return AllWriter.staticSetEmpty(siteRequest_, o);
+			default:
+				return null;
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrAllWriter(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrAllWriter(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "tabStr":
+			return AllWriter.staticSolrTabStr(siteRequest_, (String)o);
+		case "empty":
+			return AllWriter.staticSolrEmpty(siteRequest_, (Boolean)o);
+			default:
+				return null;
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrAllWriter(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrAllWriter(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+		case "tabStr":
+			return AllWriter.staticSolrStrTabStr(siteRequest_, (String)o);
+		case "empty":
+			return AllWriter.staticSolrStrEmpty(siteRequest_, (Boolean)o);
+			default:
+				return null;
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqAllWriter(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqAllWriter(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+		case "tabStr":
+			return AllWriter.staticSolrFqTabStr(siteRequest_, o);
+		case "empty":
+			return AllWriter.staticSolrFqEmpty(siteRequest_, o);
+			default:
+				return null;
+		}
+	}
+
 	/////////////
 	// define //
 	/////////////
@@ -483,15 +611,37 @@ public abstract class AllWriterGen<DEV> extends Object {
 				if(o == null)
 					o = defineAllWriter(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
 	public Object defineAllWriter(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineAllWriter(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineAllWriter(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

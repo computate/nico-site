@@ -103,6 +103,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsPetGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/PetPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/EnrollmentPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptPetGenPage() {
@@ -122,6 +123,14 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
 		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestSitePetEnrollmentKeys([{'name':'fq','value':'petKeys:' + pk}], $('#listSitePetEnrollmentKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestSitePetEnrollmentKeys([{'name':'fq','value':'petKeys:' + pk}], $('#listSitePetEnrollmentKeys_Page'), pk, false); ");
+		}
 		tl(1, "}");
 		tl(1, "websocketSitePet(websocketSitePetInner);");
 		l("});");
@@ -143,6 +152,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 			o.htmPetFoodAmount("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmEnrollmentKeys("Page");
 			o.htmPetFood("Page");
 			o.htmPetSick("Page");
 		} g("div");
@@ -153,6 +163,9 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmUpdate("Page");
 			o.htmPetAmount("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserKeys("Page");
 		} g("div");
 	}
 
@@ -172,6 +185,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 			o.htmPetFoodAmount("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmEnrollmentKeys("POST");
 			o.htmPetFood("POST");
 			o.htmPetSick("POST");
 		} g("div");
@@ -182,6 +196,9 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmUpdate("POST");
 			o.htmPetAmount("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserKeys("POST");
 		} g("div");
 	}
 
@@ -223,6 +240,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 			o.htmPetFoodAmount("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmEnrollmentKeys("PUTCopy");
 			o.htmPetFood("PUTCopy");
 			o.htmPetSick("PUTCopy");
 		} g("div");
@@ -250,6 +268,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 			o.htmPetFoodAmount("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmEnrollmentKeys("PATCH");
 			o.htmPetFood("PATCH");
 			o.htmPetSick("PATCH");
 		} g("div");
@@ -279,6 +298,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 			o.htmPetFoodAmount("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmEnrollmentKeys("Search");
 			o.htmPetFood("Search");
 			o.htmPetSick("Search");
 		} g("div");
@@ -289,6 +309,9 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmUpdate("Search");
 			o.htmPetAmount("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserKeys("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
@@ -355,7 +378,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSitePet.getQueryResponse().getResults().getNumFound();
@@ -437,6 +460,7 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1PetGenPage();
+			} g("div");
 		}
 
 		if(listSitePet != null && listSitePet.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -464,7 +488,6 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsPetGenPage();
-		g("div");
 	}
 
 	public void table1PetGenPage() {
@@ -566,7 +589,6 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listSitePet != null && listSitePet.size() == 1) {
 				{ e("button")
@@ -749,7 +771,6 @@ public class PetGenPage extends PetGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedPetGenPage(this, null, listSitePet);
 	}

@@ -15,6 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
@@ -37,6 +38,7 @@ import org.apache.solr.common.SolrDocument;
 import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -73,8 +75,9 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public static final String SiteUser_ANameAdjective = "a site user";
 	public static final String SiteUser_NameAdjectiveSingular = "site user";
 	public static final String SiteUser_NameAdjectivePlural = "site users";
-	public static final String SiteUser_IconGroup = "regular";
-	public static final String SiteUser_IconName = "user-cog";
+	public static final String SiteUser_Color = "gray";
+	public static final String SiteUser_IconGroup = "duotone";
+	public static final String SiteUser_IconName = "house-user";
 
 	//////////////
 	// userKeys //
@@ -173,6 +176,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKeys == null ? "" : userKeys.toString();
 	}
 
+	public List<Long> sqlUserKeys() {
+		return userKeys;
+	}
+
 	public String jsonUserKeys() {
 		return userKeys == null ? "" : userKeys.toString();
 	}
@@ -187,6 +194,204 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String htmUserKeys() {
 		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
+	}
+
+	////////////////////
+	// enrollmentKeys //
+	////////////////////
+
+	/**	 The entity enrollmentKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> enrollmentKeys = new ArrayList<Long>();
+	@JsonIgnore
+	public Wrap<List<Long>> enrollmentKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("enrollmentKeys").o(enrollmentKeys);
+
+	/**	<br/> The entity enrollmentKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentKeys">Find the entity enrollmentKeys in Solr</a>
+	 * <br/>
+	 * @param enrollmentKeys is the entity already constructed. 
+	 **/
+	protected abstract void _enrollmentKeys(List<Long> l);
+
+	public List<Long> getEnrollmentKeys() {
+		return enrollmentKeys;
+	}
+
+	public void setEnrollmentKeys(List<Long> enrollmentKeys) {
+		this.enrollmentKeys = enrollmentKeys;
+		this.enrollmentKeysWrap.alreadyInitialized = true;
+	}
+	public void setEnrollmentKeys(String o) {
+		Long l = SiteUser.staticSetEnrollmentKeys(siteRequest_, o);
+		if(l != null)
+			addEnrollmentKeys(l);
+		this.enrollmentKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SiteUser addEnrollmentKeys(Long...objets) {
+		for(Long o : objets) {
+			addEnrollmentKeys(o);
+		}
+		return (SiteUser)this;
+	}
+	public SiteUser addEnrollmentKeys(Long o) {
+		if(o != null && !enrollmentKeys.contains(o))
+			this.enrollmentKeys.add(o);
+		return (SiteUser)this;
+	}
+	public void setEnrollmentKeys(JsonArray objets) {
+		enrollmentKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addEnrollmentKeys(o);
+		}
+	}
+	public SiteUser addEnrollmentKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addEnrollmentKeys(p);
+		}
+		return (SiteUser)this;
+	}
+	protected SiteUser enrollmentKeysInit() {
+		if(!enrollmentKeysWrap.alreadyInitialized) {
+			_enrollmentKeys(enrollmentKeys);
+		}
+		enrollmentKeysWrap.alreadyInitialized(true);
+		return (SiteUser)this;
+	}
+
+	public static Long staticSolrEnrollmentKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrEnrollmentKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUser.staticSolrStrEnrollmentKeys(siteRequest_, SiteUser.staticSolrEnrollmentKeys(siteRequest_, SiteUser.staticSetEnrollmentKeys(siteRequest_, o)));
+	}
+
+	public List<Long> solrEnrollmentKeys() {
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : enrollmentKeys) {
+			l.add(SiteUser.staticSolrEnrollmentKeys(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strEnrollmentKeys() {
+		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
+	}
+
+	public List<Long> sqlEnrollmentKeys() {
+		return enrollmentKeys;
+	}
+
+	public String jsonEnrollmentKeys() {
+		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
+	}
+
+	public String nomAffichageEnrollmentKeys() {
+		return "enrollments";
+	}
+
+	public String htmTooltipEnrollmentKeys() {
+		return null;
+	}
+
+	public String htmEnrollmentKeys() {
+		return enrollmentKeys == null ? "" : StringEscapeUtils.escapeHtml4(strEnrollmentKeys());
+	}
+
+	public void inputEnrollmentKeys(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_enrollmentKeys_clear")
+						.a("class", "enrollmentKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_enrollmentKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "enrollments")
+				.a("class", "valueObjectSuggest suggestEnrollmentKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setEnrollmentKeys")
+				.a("id", classApiMethodMethod, "_enrollmentKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestSiteUserEnrollmentKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'userKeys:" + pk + "'}", "], $('#listSiteUserEnrollmentKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
+	}
+
+	public void htmEnrollmentKeys(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserEnrollmentKeys").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/enrollment?fq=userKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-red w3-hover-red ").f();
+								e("i").a("class", "fad fa-clipboard-list ").f().g("i");
+								sx("enrollments");
+							} g("a");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this site user");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputEnrollmentKeys(classApiMethodMethod);
+								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSiteUserEnrollmentKeys_", classApiMethodMethod).f();
+								} g("ul");
+								{
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
+												.a("id", classApiMethodMethod, "_enrollmentKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSiteEnrollmentVals({ userKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "enrollmentKeys')); });")
+												.f().sx("add an enrollment")
+											.g("button");
+										} g("div");
+									}
+								}
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////
@@ -249,6 +454,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userId == null ? "" : userId;
 	}
 
+	public String sqlUserId() {
+		return userId;
+	}
+
 	public String jsonUserId() {
 		return userId == null ? "" : userId;
 	}
@@ -300,7 +509,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserId").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
+						{ e("div").a("class", "w3-cell-row w3-gray ").f();
 							e("label").a("for", classApiMethodMethod, "_userId").a("class", "").f().sx("user ID").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -316,7 +525,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userId')); $('#", classApiMethodMethod, "_userId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserId', null, function() { addGlow($('#", classApiMethodMethod, "_userId')); }, function() { addError($('#", classApiMethodMethod, "_userId')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -399,6 +608,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKey == null ? "" : userKey.toString();
 	}
 
+	public Long sqlUserKey() {
+		return userKey;
+	}
+
 	public String jsonUserKey() {
 		return userKey == null ? "" : userKey.toString();
 	}
@@ -450,7 +663,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserKey").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
+						{ e("div").a("class", "w3-cell-row w3-gray ").f();
 							e("label").a("for", classApiMethodMethod, "_userKey").a("class", "").f().sx("user key").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -466,7 +679,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userKey')); $('#", classApiMethodMethod, "_userKey').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserKey', null, function() { addGlow($('#", classApiMethodMethod, "_userKey')); }, function() { addError($('#", classApiMethodMethod, "_userKey')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -541,6 +754,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userName == null ? "" : userName;
 	}
 
+	public String sqlUserName() {
+		return userName;
+	}
+
 	public String jsonUserName() {
 		return userName == null ? "" : userName;
 	}
@@ -604,7 +821,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userName')); $('#", classApiMethodMethod, "_userName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserName', null, function() { addGlow($('#", classApiMethodMethod, "_userName')); }, function() { addError($('#", classApiMethodMethod, "_userName')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -679,6 +896,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userEmail == null ? "" : userEmail;
 	}
 
+	public String sqlUserEmail() {
+		return userEmail;
+	}
+
 	public String jsonUserEmail() {
 		return userEmail == null ? "" : userEmail;
 	}
@@ -742,7 +963,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userEmail')); $('#", classApiMethodMethod, "_userEmail').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserEmail', null, function() { addGlow($('#", classApiMethodMethod, "_userEmail')); }, function() { addError($('#", classApiMethodMethod, "_userEmail')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -817,6 +1038,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userFirstName == null ? "" : userFirstName;
 	}
 
+	public String sqlUserFirstName() {
+		return userFirstName;
+	}
+
 	public String jsonUserFirstName() {
 		return userFirstName == null ? "" : userFirstName;
 	}
@@ -880,7 +1105,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userFirstName')); $('#", classApiMethodMethod, "_userFirstName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserFirstName', null, function() { addGlow($('#", classApiMethodMethod, "_userFirstName')); }, function() { addError($('#", classApiMethodMethod, "_userFirstName')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -955,6 +1180,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userLastName == null ? "" : userLastName;
 	}
 
+	public String sqlUserLastName() {
+		return userLastName;
+	}
+
 	public String jsonUserLastName() {
 		return userLastName == null ? "" : userLastName;
 	}
@@ -1018,7 +1247,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userLastName')); $('#", classApiMethodMethod, "_userLastName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserLastName', null, function() { addGlow($('#", classApiMethodMethod, "_userLastName')); }, function() { addError($('#", classApiMethodMethod, "_userLastName')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -1093,6 +1322,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userFullName == null ? "" : userFullName;
 	}
 
+	public String sqlUserFullName() {
+		return userFullName;
+	}
+
 	public String jsonUserFullName() {
 		return userFullName == null ? "" : userFullName;
 	}
@@ -1156,7 +1389,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
 										{ e("button")
 											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userFullName')); $('#", classApiMethodMethod, "_userFullName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserFullName', null, function() { addGlow($('#", classApiMethodMethod, "_userFullName')); }, function() { addError($('#", classApiMethodMethod, "_userFullName')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
@@ -1229,6 +1462,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String strUserSite() {
 		return userSite == null ? "" : userSite;
+	}
+
+	public String sqlUserSite() {
+		return userSite;
 	}
 
 	public String jsonUserSite() {
@@ -1312,6 +1549,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userReceiveEmails == null ? "" : userReceiveEmails.toString();
 	}
 
+	public Boolean sqlUserReceiveEmails() {
+		return userReceiveEmails;
+	}
+
 	public String jsonUserReceiveEmails() {
 		return userReceiveEmails == null ? "" : userReceiveEmails.toString();
 	}
@@ -1376,7 +1617,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserReceiveEmails").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
+						{ e("div").a("class", "w3-cell-row w3-gray ").f();
 							e("label").a("for", classApiMethodMethod, "_userReceiveEmails").a("class", "").f().sx("receive email").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -1456,6 +1697,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return seeArchived == null ? "" : seeArchived.toString();
 	}
 
+	public Boolean sqlSeeArchived() {
+		return seeArchived;
+	}
+
 	public String jsonSeeArchived() {
 		return seeArchived == null ? "" : seeArchived.toString();
 	}
@@ -1520,7 +1765,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserSeeArchived").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
+						{ e("div").a("class", "w3-cell-row w3-gray ").f();
 							e("label").a("for", classApiMethodMethod, "_seeArchived").a("class", "").f().sx("see archived").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -1600,6 +1845,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return seeDeleted == null ? "" : seeDeleted.toString();
 	}
 
+	public Boolean sqlSeeDeleted() {
+		return seeDeleted;
+	}
+
 	public String jsonSeeDeleted() {
 		return seeDeleted == null ? "" : seeDeleted.toString();
 	}
@@ -1664,7 +1913,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			{ e("div").a("class", "w3-padding ").f();
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserSeeDeleted").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
+						{ e("div").a("class", "w3-cell-row w3-gray ").f();
 							e("label").a("for", classApiMethodMethod, "_seeDeleted").a("class", "").f().sx("see deleted").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
@@ -1701,6 +1950,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public void initSiteUser() {
 		userKeysInit();
+		enrollmentKeysInit();
 		userIdInit();
 		userKeyInit();
 		userNameInit();
@@ -1744,6 +1994,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -1752,6 +2006,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		switch(var) {
 			case "userKeys":
 				return oSiteUser.userKeys;
+			case "enrollmentKeys":
+				return oSiteUser.enrollmentKeys;
 			case "userId":
 				return oSiteUser.userId;
 			case "userKey":
@@ -1799,6 +2055,11 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public Object attributeSiteUser(String var, Object val) {
 		SiteUser oSiteUser = (SiteUser)this;
 		switch(var) {
+			case "enrollmentKeys":
+				oSiteUser.addEnrollmentKeys((Long)val);
+				if(!saves.contains("enrollmentKeys"))
+					saves.add("enrollmentKeys");
+				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -1815,6 +2076,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSetUserKeys(siteRequest_, o);
+		case "enrollmentKeys":
+			return SiteUser.staticSetEnrollmentKeys(siteRequest_, o);
 		case "userId":
 			return SiteUser.staticSetUserId(siteRequest_, o);
 		case "userKey":
@@ -1853,6 +2116,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSolrUserKeys(siteRequest_, (Long)o);
+		case "enrollmentKeys":
+			return SiteUser.staticSolrEnrollmentKeys(siteRequest_, (Long)o);
 		case "userId":
 			return SiteUser.staticSolrUserId(siteRequest_, (String)o);
 		case "userKey":
@@ -1891,6 +2156,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSolrStrUserKeys(siteRequest_, (Long)o);
+		case "enrollmentKeys":
+			return SiteUser.staticSolrStrEnrollmentKeys(siteRequest_, (Long)o);
 		case "userId":
 			return SiteUser.staticSolrStrUserId(siteRequest_, (String)o);
 		case "userKey":
@@ -1929,6 +2196,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSolrFqUserKeys(siteRequest_, o);
+		case "enrollmentKeys":
+			return SiteUser.staticSolrFqEnrollmentKeys(siteRequest_, o);
 		case "userId":
 			return SiteUser.staticSolrFqUserId(siteRequest_, o);
 		case "userKey":
@@ -1976,56 +2245,128 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineSiteUser(String var, String val) {
-		switch(var) {
-			case "userId":
+		switch(var.toLowerCase()) {
+			case "userid":
 				if(val != null)
 					setUserId(val);
-				saves.add(var);
+				saves.add("userId");
 				return val;
-			case "userKey":
+			case "userkey":
 				if(val != null)
 					setUserKey(val);
-				saves.add(var);
+				saves.add("userKey");
 				return val;
-			case "userName":
+			case "username":
 				if(val != null)
 					setUserName(val);
-				saves.add(var);
+				saves.add("userName");
 				return val;
-			case "userEmail":
+			case "useremail":
 				if(val != null)
 					setUserEmail(val);
-				saves.add(var);
+				saves.add("userEmail");
 				return val;
-			case "userFirstName":
+			case "userfirstname":
 				if(val != null)
 					setUserFirstName(val);
-				saves.add(var);
+				saves.add("userFirstName");
 				return val;
-			case "userLastName":
+			case "userlastname":
 				if(val != null)
 					setUserLastName(val);
-				saves.add(var);
+				saves.add("userLastName");
 				return val;
-			case "userFullName":
+			case "userfullname":
 				if(val != null)
 					setUserFullName(val);
-				saves.add(var);
+				saves.add("userFullName");
 				return val;
-			case "userReceiveEmails":
+			case "userreceiveemails":
 				if(val != null)
 					setUserReceiveEmails(val);
-				saves.add(var);
+				saves.add("userReceiveEmails");
 				return val;
-			case "seeArchived":
+			case "seearchived":
 				if(val != null)
 					setSeeArchived(val);
-				saves.add(var);
+				saves.add("seeArchived");
 				return val;
-			case "seeDeleted":
+			case "seedeleted":
 				if(val != null)
 					setSeeDeleted(val);
-				saves.add(var);
+				saves.add("seeDeleted");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteUser(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteUser(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "userid":
+				if(val instanceof String)
+					setUserId((String)val);
+				saves.add("userId");
+				return val;
+			case "userkey":
+				if(val instanceof Long)
+					setUserKey((Long)val);
+				saves.add("userKey");
+				return val;
+			case "username":
+				if(val instanceof String)
+					setUserName((String)val);
+				saves.add("userName");
+				return val;
+			case "useremail":
+				if(val instanceof String)
+					setUserEmail((String)val);
+				saves.add("userEmail");
+				return val;
+			case "userfirstname":
+				if(val instanceof String)
+					setUserFirstName((String)val);
+				saves.add("userFirstName");
+				return val;
+			case "userlastname":
+				if(val instanceof String)
+					setUserLastName((String)val);
+				saves.add("userLastName");
+				return val;
+			case "userfullname":
+				if(val instanceof String)
+					setUserFullName((String)val);
+				saves.add("userFullName");
+				return val;
+			case "userreceiveemails":
+				if(val instanceof Boolean)
+					setUserReceiveEmails((Boolean)val);
+				saves.add("userReceiveEmails");
+				return val;
+			case "seearchived":
+				if(val instanceof Boolean)
+					setSeeArchived((Boolean)val);
+				saves.add("seeArchived");
+				return val;
+			case "seedeleted":
+				if(val instanceof Boolean)
+					setSeeDeleted((Boolean)val);
+				saves.add("seeDeleted");
 				return val;
 			default:
 				return super.defineCluster(var, val);
@@ -2049,6 +2390,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				if(userKeys != null)
 					oSiteUser.userKeys.addAll(userKeys);
 			}
+
+			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_stored_longs");
+			if(enrollmentKeys != null)
+				oSiteUser.enrollmentKeys.addAll(enrollmentKeys);
 
 			if(saves.contains("userId")) {
 				String userId = (String)solrDocument.get("userId_stored_string");
@@ -2190,6 +2535,14 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				document.addField("userKeys_stored_longs", o);
 			}
 		}
+		if(enrollmentKeys != null) {
+			for(java.lang.Long o : enrollmentKeys) {
+				document.addField("enrollmentKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : enrollmentKeys) {
+				document.addField("enrollmentKeys_stored_longs", o);
+			}
+		}
 		if(userId != null) {
 			document.addField("userId_indexed_string", userId);
 			document.addField("userId_stored_string", userId);
@@ -2259,6 +2612,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "userKeys":
 				return "userKeys_indexed_longs";
+			case "enrollmentKeys":
+				return "enrollmentKeys_indexed_longs";
 			case "userId":
 				return "userId_indexed_string";
 			case "userKey":
@@ -2313,6 +2668,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
 		if(userKeys != null)
 			oSiteUser.userKeys.addAll(userKeys);
+
+		List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_stored_longs");
+		if(enrollmentKeys != null)
+			oSiteUser.enrollmentKeys.addAll(enrollmentKeys);
 
 		String userId = (String)solrDocument.get("userId_stored_string");
 		if(userId != null)
@@ -2383,6 +2742,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			SiteUser original = (SiteUser)o;
 			if(!Objects.equals(userKeys, original.getUserKeys()))
 				apiRequest.addVars("userKeys");
+			if(!Objects.equals(enrollmentKeys, original.getEnrollmentKeys()))
+				apiRequest.addVars("enrollmentKeys");
 			if(!Objects.equals(userId, original.getUserId()))
 				apiRequest.addVars("userId");
 			if(!Objects.equals(userKey, original.getUserKey()))
@@ -2414,7 +2775,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), userKeys, userId, userKey, userName, userEmail, userFirstName, userLastName, userFullName, userSite, userReceiveEmails, seeArchived, seeDeleted);
+		return Objects.hash(super.hashCode(), userKeys, enrollmentKeys, userId, userKey, userName, userEmail, userFirstName, userLastName, userFullName, userSite, userReceiveEmails, seeArchived, seeDeleted);
 	}
 
 	////////////
@@ -2429,6 +2790,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		SiteUser that = (SiteUser)o;
 		return super.equals(o)
 				&& Objects.equals( userKeys, that.userKeys )
+				&& Objects.equals( enrollmentKeys, that.enrollmentKeys )
 				&& Objects.equals( userId, that.userId )
 				&& Objects.equals( userKey, that.userKey )
 				&& Objects.equals( userName, that.userName )
@@ -2451,6 +2813,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("SiteUser { ");
 		sb.append( "userKeys: " ).append(userKeys);
+		sb.append( ", enrollmentKeys: " ).append(enrollmentKeys);
 		sb.append( ", userId: \"" ).append(userId).append( "\"" );
 		sb.append( ", userKey: " ).append(userKey);
 		sb.append( ", userName: \"" ).append(userName).append( "\"" );

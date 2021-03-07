@@ -15,13 +15,16 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.computate.nico.enus.user.SiteUser;
 import io.vertx.core.json.JsonObject;
 import java.lang.String;
 import io.vertx.core.logging.Logger;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
 import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.pet.SitePet;
 import java.math.MathContext;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import java.util.Set;
@@ -29,6 +32,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
+import org.computate.nico.enus.search.SearchList;
 import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
@@ -72,9 +76,9 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 	public static final String SiteEnrollment_ANameAdjective = "an enrollment";
 	public static final String SiteEnrollment_NameAdjectiveSingular = "enrollment";
 	public static final String SiteEnrollment_NameAdjectivePlural = "enrollments";
-	public static final String SiteEnrollment_Color = "pale-green";
-	public static final String SiteEnrollment_IconGroup = "regular";
-	public static final String SiteEnrollment_IconName = "edit";
+	public static final String SiteEnrollment_Color = "red";
+	public static final String SiteEnrollment_IconGroup = "duotone";
+	public static final String SiteEnrollment_IconName = "clipboard-list";
 	public static final Integer SiteEnrollment_Rows = 100;
 
 	///////////////////
@@ -145,6 +149,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		return enrollmentKey == null ? "" : enrollmentKey.toString();
 	}
 
+	public Long sqlEnrollmentKey() {
+		return enrollmentKey;
+	}
+
 	public String jsonEnrollmentKey() {
 		return enrollmentKey == null ? "" : enrollmentKey.toString();
 	}
@@ -159,6 +167,490 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 
 	public String htmEnrollmentKey() {
 		return enrollmentKey == null ? "" : StringEscapeUtils.escapeHtml4(strEnrollmentKey());
+	}
+
+	//////////////
+	// userKeys //
+	//////////////
+
+	/**	 The entity userKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> userKeys = new ArrayList<Long>();
+	@JsonIgnore
+	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("userKeys").o(userKeys);
+
+	/**	<br/> The entity userKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollment&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKeys">Find the entity userKeys in Solr</a>
+	 * <br/>
+	 * @param userKeys is the entity already constructed. 
+	 **/
+	protected abstract void _userKeys(List<Long> c);
+
+	public List<Long> getUserKeys() {
+		return userKeys;
+	}
+
+	public void setUserKeys(List<Long> userKeys) {
+		this.userKeys = userKeys;
+		this.userKeysWrap.alreadyInitialized = true;
+	}
+	public void setUserKeys(String o) {
+		Long l = SiteEnrollment.staticSetUserKeys(siteRequest_, o);
+		if(l != null)
+			addUserKeys(l);
+		this.userKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetUserKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SiteEnrollment addUserKeys(Long...objets) {
+		for(Long o : objets) {
+			addUserKeys(o);
+		}
+		return (SiteEnrollment)this;
+	}
+	public SiteEnrollment addUserKeys(Long o) {
+		if(o != null && !userKeys.contains(o))
+			this.userKeys.add(o);
+		return (SiteEnrollment)this;
+	}
+	public void setUserKeys(JsonArray objets) {
+		userKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addUserKeys(o);
+		}
+	}
+	public SiteEnrollment addUserKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addUserKeys(p);
+		}
+		return (SiteEnrollment)this;
+	}
+	protected SiteEnrollment userKeysInit() {
+		if(!userKeysWrap.alreadyInitialized) {
+			_userKeys(userKeys);
+		}
+		userKeysWrap.alreadyInitialized(true);
+		return (SiteEnrollment)this;
+	}
+
+	public static Long staticSolrUserKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrUserKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqUserKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SiteEnrollment.staticSolrStrUserKeys(siteRequest_, SiteEnrollment.staticSolrUserKeys(siteRequest_, SiteEnrollment.staticSetUserKeys(siteRequest_, o)));
+	}
+
+	public List<Long> solrUserKeys() {
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : userKeys) {
+			l.add(SiteEnrollment.staticSolrUserKeys(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strUserKeys() {
+		return userKeys == null ? "" : userKeys.toString();
+	}
+
+	public List<Long> sqlUserKeys() {
+		return userKeys;
+	}
+
+	public String jsonUserKeys() {
+		return userKeys == null ? "" : userKeys.toString();
+	}
+
+	public String nomAffichageUserKeys() {
+		return "users";
+	}
+
+	public String htmTooltipUserKeys() {
+		return null;
+	}
+
+	public String htmUserKeys() {
+		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
+	}
+
+	public void inputUserKeys(String classApiMethodMethod) {
+		SiteEnrollment s = (SiteEnrollment)this;
+		if(
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+		) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_userKeys_clear")
+						.a("class", "userKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_userKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "users")
+				.a("class", "valueObjectSuggest suggestUserKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setUserKeys")
+				.a("id", classApiMethodMethod, "_userKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestSiteEnrollmentUserKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'enrollmentKeys:" + pk + "'}", "], $('#listSiteEnrollmentUserKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
+	}
+
+	public void htmUserKeys(String classApiMethodMethod) {
+		SiteEnrollment s = (SiteEnrollment)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteEnrollmentUserKeys").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/user?fq=enrollmentKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-gray w3-hover-gray ").f();
+								e("i").a("class", "fad fa-house-user ").f().g("i");
+								sx("users");
+							} g("a");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this enrollment");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputUserKeys(classApiMethodMethod);
+								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSiteEnrollmentUserKeys_", classApiMethodMethod).f();
+								} g("ul");
+								if(
+										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), SiteUser.ROLES)
+										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), SiteUser.ROLES)
+										) {
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-gray ")
+												.a("id", classApiMethodMethod, "_userKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSiteUserVals({ enrollmentKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "userKeys')); });")
+												.f().sx("add a site user")
+											.g("button");
+										} g("div");
+									}
+								}
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	/////////////
+	// petKeys //
+	/////////////
+
+	/**	 The entity petKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> petKeys = new ArrayList<Long>();
+	@JsonIgnore
+	public Wrap<List<Long>> petKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("petKeys").o(petKeys);
+
+	/**	<br/> The entity petKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollment&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petKeys">Find the entity petKeys in Solr</a>
+	 * <br/>
+	 * @param petKeys is the entity already constructed. 
+	 **/
+	protected abstract void _petKeys(List<Long> c);
+
+	public List<Long> getPetKeys() {
+		return petKeys;
+	}
+
+	public void setPetKeys(List<Long> petKeys) {
+		this.petKeys = petKeys;
+		this.petKeysWrap.alreadyInitialized = true;
+	}
+	public void setPetKeys(String o) {
+		Long l = SiteEnrollment.staticSetPetKeys(siteRequest_, o);
+		if(l != null)
+			addPetKeys(l);
+		this.petKeysWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetPetKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SiteEnrollment addPetKeys(Long...objets) {
+		for(Long o : objets) {
+			addPetKeys(o);
+		}
+		return (SiteEnrollment)this;
+	}
+	public SiteEnrollment addPetKeys(Long o) {
+		if(o != null && !petKeys.contains(o))
+			this.petKeys.add(o);
+		return (SiteEnrollment)this;
+	}
+	public void setPetKeys(JsonArray objets) {
+		petKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addPetKeys(o);
+		}
+	}
+	public SiteEnrollment addPetKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addPetKeys(p);
+		}
+		return (SiteEnrollment)this;
+	}
+	protected SiteEnrollment petKeysInit() {
+		if(!petKeysWrap.alreadyInitialized) {
+			_petKeys(petKeys);
+		}
+		petKeysWrap.alreadyInitialized(true);
+		return (SiteEnrollment)this;
+	}
+
+	public static Long staticSolrPetKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPetKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPetKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SiteEnrollment.staticSolrStrPetKeys(siteRequest_, SiteEnrollment.staticSolrPetKeys(siteRequest_, SiteEnrollment.staticSetPetKeys(siteRequest_, o)));
+	}
+
+	public List<Long> solrPetKeys() {
+		List<Long> l = new ArrayList<Long>();
+		for(Long o : petKeys) {
+			l.add(SiteEnrollment.staticSolrPetKeys(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strPetKeys() {
+		return petKeys == null ? "" : petKeys.toString();
+	}
+
+	public List<Long> sqlPetKeys() {
+		return petKeys;
+	}
+
+	public String jsonPetKeys() {
+		return petKeys == null ? "" : petKeys.toString();
+	}
+
+	public String nomAffichagePetKeys() {
+		return "pets";
+	}
+
+	public String htmTooltipPetKeys() {
+		return null;
+	}
+
+	public String htmPetKeys() {
+		return petKeys == null ? "" : StringEscapeUtils.escapeHtml4(strPetKeys());
+	}
+
+	public void inputPetKeys(String classApiMethodMethod) {
+		SiteEnrollment s = (SiteEnrollment)this;
+		if(
+				userKeys.contains(siteRequest_.getUserKey())
+				|| Objects.equals(sessionId, siteRequest_.getSessionId())
+				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+		) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_petKeys_clear")
+						.a("class", "petKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_petKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "pets")
+				.a("class", "valueObjectSuggest suggestPetKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setPetKeys")
+				.a("id", classApiMethodMethod, "_petKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestSiteEnrollmentPetKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'enrollmentKeys:" + pk + "'}", "], $('#listSiteEnrollmentPetKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
+	}
+
+	public void htmPetKeys(String classApiMethodMethod) {
+		SiteEnrollment s = (SiteEnrollment)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteEnrollmentPetKeys").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/pet?fq=enrollmentKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
+								e("i").a("class", "fas fa-dog ").f().g("i");
+								sx("pets");
+							} g("a");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this enrollment");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputPetKeys(classApiMethodMethod);
+								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSiteEnrollmentPetKeys_", classApiMethodMethod).f();
+								} g("ul");
+								{
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+												.a("id", classApiMethodMethod, "_petKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSitePetVals({ enrollmentKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "petKeys')); });")
+												.f().sx("add a pet")
+											.g("button");
+										} g("div");
+									}
+								}
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	///////////////
+	// petSearch //
+	///////////////
+
+	/**	 The entity petSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SitePet>(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<SitePet> petSearch = new SearchList<SitePet>();
+	@JsonIgnore
+	public Wrap<SearchList<SitePet>> petSearchWrap = new Wrap<SearchList<SitePet>>().p(this).c(SearchList.class).var("petSearch").o(petSearch);
+
+	/**	<br/> The entity petSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<SitePet>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollment&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petSearch">Find the entity petSearch in Solr</a>
+	 * <br/>
+	 * @param petSearch is the entity already constructed. 
+	 **/
+	protected abstract void _petSearch(SearchList<SitePet> l);
+
+	public SearchList<SitePet> getPetSearch() {
+		return petSearch;
+	}
+
+	public void setPetSearch(SearchList<SitePet> petSearch) {
+		this.petSearch = petSearch;
+		this.petSearchWrap.alreadyInitialized = true;
+	}
+	public static SearchList<SitePet> staticSetPetSearch(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SiteEnrollment petSearchInit() {
+		if(!petSearchWrap.alreadyInitialized) {
+			_petSearch(petSearch);
+		}
+		petSearch.initDeepForClass(siteRequest_);
+		petSearchWrap.alreadyInitialized(true);
+		return (SiteEnrollment)this;
+	}
+
+	//////////
+	// pet_ //
+	//////////
+
+	/**	 The entity pet_
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected SitePet pet_;
+	@JsonIgnore
+	public Wrap<SitePet> pet_Wrap = new Wrap<SitePet>().p(this).c(SitePet.class).var("pet_").o(pet_);
+
+	/**	<br/> The entity pet_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollment&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pet_">Find the entity pet_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _pet_(Wrap<SitePet> c);
+
+	public SitePet getPet_() {
+		return pet_;
+	}
+
+	public void setPet_(SitePet pet_) {
+		this.pet_ = pet_;
+		this.pet_Wrap.alreadyInitialized = true;
+	}
+	public static SitePet staticSetPet_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SiteEnrollment pet_Init() {
+		if(!pet_Wrap.alreadyInitialized) {
+			_pet_(pet_Wrap);
+			if(pet_ == null)
+				setPet_(pet_Wrap.o);
+		}
+		pet_Wrap.alreadyInitialized(true);
+		return (SiteEnrollment)this;
 	}
 
 	//////////////
@@ -183,6 +675,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 
 	public void initSiteEnrollment() {
 		enrollmentKeyInit();
+		userKeysInit();
+		petKeysInit();
+		petSearchInit();
+		pet_Init();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -195,6 +691,8 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 
 	public void siteRequestSiteEnrollment(SiteRequestEnUS siteRequest_) {
 			super.siteRequestCluster(siteRequest_);
+		if(petSearch != null)
+			petSearch.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -215,6 +713,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -223,6 +725,14 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		switch(var) {
 			case "enrollmentKey":
 				return oSiteEnrollment.enrollmentKey;
+			case "userKeys":
+				return oSiteEnrollment.userKeys;
+			case "petKeys":
+				return oSiteEnrollment.petKeys;
+			case "petSearch":
+				return oSiteEnrollment.petSearch;
+			case "pet_":
+				return oSiteEnrollment.pet_;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -248,6 +758,16 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 	public Object attributeSiteEnrollment(String var, Object val) {
 		SiteEnrollment oSiteEnrollment = (SiteEnrollment)this;
 		switch(var) {
+			case "userKeys":
+				oSiteEnrollment.addUserKeys((Long)val);
+				if(!saves.contains("userKeys"))
+					saves.add("userKeys");
+				return val;
+			case "petKeys":
+				oSiteEnrollment.addPetKeys((Long)val);
+				if(!saves.contains("petKeys"))
+					saves.add("petKeys");
+				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -264,6 +784,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "enrollmentKey":
 			return SiteEnrollment.staticSetEnrollmentKey(siteRequest_, o);
+		case "userKeys":
+			return SiteEnrollment.staticSetUserKeys(siteRequest_, o);
+		case "petKeys":
+			return SiteEnrollment.staticSetPetKeys(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -280,6 +804,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "enrollmentKey":
 			return SiteEnrollment.staticSolrEnrollmentKey(siteRequest_, (Long)o);
+		case "userKeys":
+			return SiteEnrollment.staticSolrUserKeys(siteRequest_, (Long)o);
+		case "petKeys":
+			return SiteEnrollment.staticSolrPetKeys(siteRequest_, (Long)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -296,6 +824,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "enrollmentKey":
 			return SiteEnrollment.staticSolrStrEnrollmentKey(siteRequest_, (Long)o);
+		case "userKeys":
+			return SiteEnrollment.staticSolrStrUserKeys(siteRequest_, (Long)o);
+		case "petKeys":
+			return SiteEnrollment.staticSolrStrPetKeys(siteRequest_, (Long)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -312,6 +844,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "enrollmentKey":
 			return SiteEnrollment.staticSolrFqEnrollmentKey(siteRequest_, o);
+		case "userKeys":
+			return SiteEnrollment.staticSolrFqUserKeys(siteRequest_, o);
+		case "petKeys":
+			return SiteEnrollment.staticSolrFqPetKeys(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -337,7 +873,29 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineSiteEnrollment(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteEnrollment(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteEnrollment(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return super.defineCluster(var, val);
 		}
@@ -360,6 +918,14 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 				if(enrollmentKey != null)
 					oSiteEnrollment.setEnrollmentKey(enrollmentKey);
 			}
+
+			List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+			if(userKeys != null)
+				oSiteEnrollment.userKeys.addAll(userKeys);
+
+			List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_stored_longs");
+			if(petKeys != null)
+				oSiteEnrollment.petKeys.addAll(petKeys);
 		}
 
 		super.populateCluster(solrDocument);
@@ -431,6 +997,22 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 			document.addField("enrollmentKey_indexed_long", enrollmentKey);
 			document.addField("enrollmentKey_stored_long", enrollmentKey);
 		}
+		if(userKeys != null) {
+			for(java.lang.Long o : userKeys) {
+				document.addField("userKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : userKeys) {
+				document.addField("userKeys_stored_longs", o);
+			}
+		}
+		if(petKeys != null) {
+			for(java.lang.Long o : petKeys) {
+				document.addField("petKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : petKeys) {
+				document.addField("petKeys_stored_longs", o);
+			}
+		}
 		super.indexCluster(document);
 
 	}
@@ -456,6 +1038,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "enrollmentKey":
 				return "enrollmentKey_indexed_long";
+			case "userKeys":
+				return "userKeys_indexed_longs";
+			case "petKeys":
+				return "petKeys_indexed_longs";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -489,6 +1075,14 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		if(enrollmentKey != null)
 			oSiteEnrollment.setEnrollmentKey(enrollmentKey);
 
+		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+		if(userKeys != null)
+			oSiteEnrollment.userKeys.addAll(userKeys);
+
+		List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_stored_longs");
+		if(petKeys != null)
+			oSiteEnrollment.petKeys.addAll(petKeys);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -503,6 +1097,10 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 			SiteEnrollment original = (SiteEnrollment)o;
 			if(!Objects.equals(enrollmentKey, original.getEnrollmentKey()))
 				apiRequest.addVars("enrollmentKey");
+			if(!Objects.equals(userKeys, original.getUserKeys()))
+				apiRequest.addVars("userKeys");
+			if(!Objects.equals(petKeys, original.getPetKeys()))
+				apiRequest.addVars("petKeys");
 			super.apiRequestCluster();
 		}
 	}
@@ -512,7 +1110,7 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), enrollmentKey);
+		return Objects.hash(super.hashCode(), enrollmentKey, userKeys, petKeys);
 	}
 
 	////////////
@@ -526,7 +1124,9 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 			return false;
 		SiteEnrollment that = (SiteEnrollment)o;
 		return super.equals(o)
-				&& Objects.equals( enrollmentKey, that.enrollmentKey );
+				&& Objects.equals( enrollmentKey, that.enrollmentKey )
+				&& Objects.equals( userKeys, that.userKeys )
+				&& Objects.equals( petKeys, that.petKeys );
 	}
 
 	//////////////
@@ -538,6 +1138,8 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("SiteEnrollment { ");
 		sb.append( "enrollmentKey: " ).append(enrollmentKey);
+		sb.append( ", userKeys: " ).append(userKeys);
+		sb.append( ", petKeys: " ).append(petKeys);
 		sb.append(" }");
 		return sb.toString();
 	}

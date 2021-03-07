@@ -14,6 +14,7 @@ import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.computate.nico.enus.config.SiteConfig;
 import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
@@ -46,6 +47,131 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
  * <br/>
  **/
 public abstract class SiteContextEnUSGen<DEV> extends Object {
+
+/*
+CREATE TABLE PageDesign(
+	pageDesignCompleteName text
+	, designHidden boolean
+	, pageContentType text
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE HtmlPart(
+	htmlLink text
+	, htmlElement text
+	, htmlId text
+	, htmlClasses text
+	, htmlStyle text
+	, htmlBefore text
+	, htmlAfter text
+	, htmlText text
+	, htmlVar text
+	, htmlVarSpan text
+	, htmlVarForm text
+	, htmlVarInput text
+	, htmlVarForEach text
+	, htmlVarHtml text
+	, htmlVarBase64Decode text
+	, htmlExclude boolean
+	, pdfExclude boolean
+	, loginLogout boolean
+	, searchUri text
+	, mapTo text
+	, sort1 double
+	, sort2 double
+	, sort3 double
+	, sort4 double
+	, sort5 double
+	, sort6 double
+	, sort7 double
+	, sort8 double
+	, sort9 double
+	, sort10 double
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteUser(
+	userId text
+	, userKey bigint
+	, userName text
+	, userEmail text
+	, userFirstName text
+	, userLastName text
+	, userFullName text
+	, userReceiveEmails boolean
+	, seeArchived boolean
+	, seeDeleted boolean
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SitePet(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	, petName text
+	, petFoodAmount text
+	, petFood text
+	, petSick boolean
+	, petMedNote text
+	, petTrouble text
+	, update boolean
+	, petAmount text
+	);
+CREATE TABLE Cluster(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteEnrollment(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references PageDesign(pk)
+	);
+CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references HtmlPart(pk)
+	, pk2 bigint references PageDesign(pk)
+	);
+*/
+
 	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteContextEnUS.class);
 
 	///////////
@@ -75,6 +201,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 	public void setVertx(Vertx vertx) {
 		this.vertx = vertx;
 		this.vertxWrap.alreadyInitialized = true;
+	}
+	public static Vertx staticSetVertx(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SiteContextEnUS vertxInit() {
 		if(!vertxWrap.alreadyInitialized) {
@@ -114,6 +243,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		this.routerFactory = routerFactory;
 		this.routerFactoryWrap.alreadyInitialized = true;
 	}
+	public static OpenAPI3RouterFactory staticSetRouterFactory(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SiteContextEnUS routerFactoryInit() {
 		if(!routerFactoryWrap.alreadyInitialized) {
 			_routerFactory(routerFactoryWrap);
@@ -151,6 +283,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 	public void setRouter(Router router) {
 		this.router = router;
 		this.routerWrap.alreadyInitialized = true;
+	}
+	public static Router staticSetRouter(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SiteContextEnUS routerInit() {
 		if(!routerWrap.alreadyInitialized) {
@@ -190,6 +325,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		this.authHandler = authHandler;
 		this.authHandlerWrap.alreadyInitialized = true;
 	}
+	public static OAuth2AuthHandler staticSetAuthHandler(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SiteContextEnUS authHandlerInit() {
 		if(!authHandlerWrap.alreadyInitialized) {
 			_authHandler(authHandlerWrap);
@@ -227,6 +365,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 	public void setAuthProvider(OAuth2Auth authProvider) {
 		this.authProvider = authProvider;
 		this.authProviderWrap.alreadyInitialized = true;
+	}
+	public static OAuth2Auth staticSetAuthProvider(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SiteContextEnUS authProviderInit() {
 		if(!authProviderWrap.alreadyInitialized) {
@@ -266,6 +407,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		this.workerExecutor = workerExecutor;
 		this.workerExecutorWrap.alreadyInitialized = true;
 	}
+	public static WorkerExecutor staticSetWorkerExecutor(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SiteContextEnUS workerExecutorInit() {
 		if(!workerExecutorWrap.alreadyInitialized) {
 			_workerExecutor(workerExecutorWrap);
@@ -304,6 +448,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		this.siteConfig = siteConfig;
 		this.siteConfigWrap.alreadyInitialized = true;
 	}
+	public static SiteConfig staticSetSiteConfig(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SiteContextEnUS siteConfigInit() {
 		if(!siteConfigWrap.alreadyInitialized) {
 			_siteConfig(siteConfig);
@@ -340,6 +487,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 	public void setPgPool(PgPool pgPool) {
 		this.pgPool = pgPool;
 		this.pgPoolWrap.alreadyInitialized = true;
+	}
+	public static PgPool staticSetPgPool(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SiteContextEnUS pgPoolInit() {
 		if(!pgPoolWrap.alreadyInitialized) {
@@ -379,6 +529,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		this.solrClient = solrClient;
 		this.solrClientWrap.alreadyInitialized = true;
 	}
+	public static HttpSolrClient staticSetSolrClient(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SiteContextEnUS solrClientInit() {
 		if(!solrClientWrap.alreadyInitialized) {
 			_solrClient(solrClientWrap);
@@ -417,6 +570,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		this.mailClient = mailClient;
 		this.mailClientWrap.alreadyInitialized = true;
 	}
+	public static MailClient staticSetMailClient(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
 	protected SiteContextEnUS mailClientInit() {
 		if(!mailClientWrap.alreadyInitialized) {
 			_mailClient(mailClientWrap);
@@ -454,6 +610,9 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 	public void setSolrClientComputate(HttpSolrClient solrClientComputate) {
 		this.solrClientComputate = solrClientComputate;
 		this.solrClientComputateWrap.alreadyInitialized = true;
+	}
+	public static HttpSolrClient staticSetSolrClientComputate(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SiteContextEnUS solrClientComputateInit() {
 		if(!solrClientComputateWrap.alreadyInitialized) {
@@ -515,6 +674,10 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -573,6 +736,62 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		}
 	}
 
+	///////////////
+	// staticSet //
+	///////////////
+
+	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSetSiteContextEnUS(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSetSiteContextEnUS(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+			default:
+				return null;
+		}
+	}
+
+	////////////////
+	// staticSolr //
+	////////////////
+
+	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrSiteContextEnUS(entityVar,  siteRequest_, o);
+	}
+	public static Object staticSolrSiteContextEnUS(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+			default:
+				return null;
+		}
+	}
+
+	///////////////////
+	// staticSolrStr //
+	///////////////////
+
+	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		return staticSolrStrSiteContextEnUS(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrStrSiteContextEnUS(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+		switch(entityVar) {
+			default:
+				return null;
+		}
+	}
+
+	//////////////////
+	// staticSolrFq //
+	//////////////////
+
+	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		return staticSolrFqSiteContextEnUS(entityVar,  siteRequest_, o);
+	}
+	public static String staticSolrFqSiteContextEnUS(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+		switch(entityVar) {
+			default:
+				return null;
+		}
+	}
+
 	/////////////
 	// define //
 	/////////////
@@ -585,15 +804,37 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 				if(o == null)
 					o = defineSiteContextEnUS(v, val);
 				else if(o instanceof Cluster) {
-					Cluster cluster = (Cluster)o;
-					o = cluster.defineForClass(v, val);
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
 	public Object defineSiteContextEnUS(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteContextEnUS(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteContextEnUS(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

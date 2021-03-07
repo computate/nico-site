@@ -19,5 +19,4 @@ touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/vertx/AppVe
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/user/SiteUser.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/cluster/Cluster.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/pet/SitePet.java
-touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/guardian/SiteGuardian.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/enrollment/SiteEnrollment.java

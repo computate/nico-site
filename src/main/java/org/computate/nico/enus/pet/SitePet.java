@@ -1,5 +1,7 @@
 package org.computate.nico.enus.pet;
 
+import java.util.List;
+
 import org.computate.nico.enus.cluster.Cluster;
 import org.computate.nico.enus.wrap.Wrap;
 
@@ -37,10 +39,11 @@ import org.computate.nico.enus.wrap.Wrap;
  * NameVar.enUS: pet
  * 
  * Role.enUS: SiteAdmin
- * PublicRead: true
+ * RoleSession: true
+ * RoleUser: true
  * 
  * Rows: 100
- **/    
+ **/  
 public class SitePet extends SitePetGen<Cluster> {
 	
 
@@ -52,6 +55,28 @@ public class SitePet extends SitePetGen<Cluster> {
 	protected void _petKey(Wrap<Long> w) {
 		w.o(pk);
 	}
+
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Attribute: SiteUser.petKeys
+	 * HtmlRow: 8
+	 * HtmlCell: 1
+	 * DisplayName.enUS: users
+	 */         
+	protected void _userKeys(List<Long> c) {}
+
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Attribute: SiteEnrollment.petKeys
+	 * HtmlRow: 4
+	 * HtmlCell: 1
+	 * DisplayName.enUS: pets
+	 */          
+	protected void _enrollmentKeys(List<Long> l) {}
 
 	/**
 	 * {@inheritDoc}

@@ -12,6 +12,7 @@ import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.computate.nico.enus.enrollment.EnrollmentGenPage;
 import io.vertx.core.logging.Logger;
@@ -90,6 +91,10 @@ public abstract class EnrollmentPageGen<DEV> extends EnrollmentGenPage {
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
+			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
 			}
 		}
 		return o;
@@ -203,7 +208,29 @@ public abstract class EnrollmentPageGen<DEV> extends EnrollmentGenPage {
 		return o != null;
 	}
 	public Object defineEnrollmentPage(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return super.defineEnrollmentGenPage(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineEnrollmentPage(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineEnrollmentPage(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return super.defineEnrollmentGenPage(var, val);
 		}

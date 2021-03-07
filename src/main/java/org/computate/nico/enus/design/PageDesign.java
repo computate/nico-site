@@ -1,4 +1,4 @@
-package org.computate.nico.enus.design; 
+package org.computate.nico.enus.design;
 
 import java.util.List;
 

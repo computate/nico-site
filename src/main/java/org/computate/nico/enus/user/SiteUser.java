@@ -38,14 +38,14 @@ import org.computate.nico.enus.wrap.Wrap;
  * AName.frFR: un utilisateur du site
  * AName.enUS: a site user
  * PluralName.frFR: utilisateurs du site
- * Coulor: gray
- * IconGroup: regular
- * IconName: user-cog
+ * Color: gray
+ * IconGroup: duotone
+ * IconName: house-user
  * 
  * RoleUser: true
  * Role.frFR: SiteAdmin
  * Role.enUS: SiteAdmin
- */           
+ */          
 public class SiteUser extends SiteUserGen<Cluster> {   
 
 	/**
@@ -56,6 +56,17 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	protected void _userKeys(List<Long> l) {
 		l.add(pk);
 	}
+
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Attribute: SiteEnrollment.userKeys
+	 * HtmlRow: 4
+	 * HtmlCell: 1
+	 * DisplayName.enUS: enrollments
+	 */          
+	protected void _enrollmentKeys(List<Long> l) {}
 
 	/**
 	 * {@inheritDoc}
