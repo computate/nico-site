@@ -1330,6 +1330,68 @@ public abstract class ClusterGen<DEV> extends Object {
 		return sessionId == null ? "" : StringEscapeUtils.escapeHtml4(strSessionId());
 	}
 
+	public void inputSessionId(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			s.e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_sessionId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					s.a("class", "setSessionId classCluster inputCluster", pk, "SessionId w3-input w3-border ");
+					s.a("name", "setSessionId");
+				} else {
+					s.a("class", "valueSessionId w3-input w3-border classCluster inputCluster", pk, "SessionId w3-input w3-border ");
+					s.a("name", "sessionId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					s.a("onclick", "removeGlow($(this)); ");
+					s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSessionId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_sessionId')); }, function() { addError($('#", classApiMethodMethod, "_sessionId')); }); ");
+				}
+				s.a("value", strSessionId())
+			.fg();
+
+		} else {
+				s.e("span").a("class", "varCluster", pk, "SessionId ").f().sx(htmSessionId()).g("span");
+		}
+	}
+
+	public void htmSessionId(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterSessionId").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+
+								inputSessionId(classApiMethodMethod);
+							} s.g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ s.e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ s.e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_sessionId')); $('#", classApiMethodMethod, "_sessionId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#ClusterForm :input[name=pk]').val() }], 'setSessionId', null, function() { addGlow($('#", classApiMethodMethod, "_sessionId')); }, function() { addError($('#", classApiMethodMethod, "_sessionId')); }); ")
+											.f();
+											s.e("i").a("class", "far fa-eraser ").f().g("i");
+										} s.g("button");
+									} s.g("div");
+								}
+							}
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
+	}
+
 	////////////
 	// userId //
 	////////////
@@ -2863,6 +2925,11 @@ public abstract class ClusterGen<DEV> extends Object {
 					setDeleted(val);
 				saves.add("deleted");
 				return val;
+			case "sessionid":
+				if(val != null)
+					setSessionId(val);
+				saves.add("sessionId");
+				return val;
 			case "userid":
 				if(val != null)
 					setUserId(val);
@@ -2923,6 +2990,11 @@ public abstract class ClusterGen<DEV> extends Object {
 				if(val instanceof Boolean)
 					setDeleted((Boolean)val);
 				saves.add("deleted");
+				return val;
+			case "sessionid":
+				if(val instanceof String)
+					setSessionId((String)val);
+				saves.add("sessionId");
 				return val;
 			case "userid":
 				if(val instanceof String)

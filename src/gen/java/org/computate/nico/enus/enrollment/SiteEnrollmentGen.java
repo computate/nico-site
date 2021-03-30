@@ -579,6 +579,7 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 	/**	 The entity petSearch
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SitePet>(). 
 	 */
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SitePet> petSearch = new SearchList<SitePet>();
 	@JsonIgnore
@@ -619,6 +620,7 @@ public abstract class SiteEnrollmentGen<DEV> extends Cluster {
 	/**	 The entity pet_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SitePet pet_;
 	@JsonIgnore

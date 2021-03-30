@@ -3,6 +3,8 @@ package org.computate.nico.enus.pet;
 import java.util.List;
 
 import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
+import org.computate.nico.enus.search.SearchList;
 import org.computate.nico.enus.wrap.Wrap;
 
 /**
@@ -56,6 +58,18 @@ public class SitePet extends SitePetGen<Cluster> {
 		w.o(pk);
 	}
 
+	/**
+	 * Ignore: true
+	 **/
+	protected void _enrollmentSearch(SearchList<SiteEnrollment> l) {
+		l.setQuery("*:*");
+		l.addFilterQuery("petKey_indexed_long:" + pk);
+		l.setC(SiteEnrollment.class);
+		l.setStore(true);
+		l.setFacet(true);
+		l.addFacetField("userKeys_indexed_longs");
+	}
+
 	/**  
 	 * {@inheritDoc}
 	 * Indexed: true
@@ -74,7 +88,7 @@ public class SitePet extends SitePetGen<Cluster> {
 	 * Attribute: SiteEnrollment.petKeys
 	 * HtmlRow: 4
 	 * HtmlCell: 1
-	 * DisplayName.enUS: pets
+	 * DisplayName.enUS: enrollments
 	 */          
 	protected void _enrollmentKeys(List<Long> l) {}
 

@@ -176,6 +176,7 @@ public class Cluster extends ClusterGen<Object> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 */ 
 	protected void _sessionId(Wrap<String> c) {
 	}

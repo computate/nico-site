@@ -300,6 +300,19 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 							});
 						}));
 						break;
+					case "sessionId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "sessionId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value Cluster.sessionId failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -714,6 +727,34 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 										a.handle(Future.succeededFuture());
 									else
 										a.handle(Future.failedFuture(new Exception("value Cluster.deleted failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSessionId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "sessionId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.sessionId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSessionId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "sessionId", o2.jsonSessionId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.sessionId failed", b.cause())));
 								});
 							}));
 						}

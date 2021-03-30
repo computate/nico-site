@@ -32,6 +32,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
+import org.computate.nico.enus.search.SearchList;
 import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
@@ -167,6 +168,47 @@ public abstract class SitePetGen<DEV> extends Cluster {
 
 	public String htmPetKey() {
 		return petKey == null ? "" : StringEscapeUtils.escapeHtml4(strPetKey());
+	}
+
+	//////////////////////
+	// enrollmentSearch //
+	//////////////////////
+
+	/**	 The entity enrollmentSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SiteEnrollment>(). 
+	 */
+	@JsonIgnore
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<SiteEnrollment> enrollmentSearch = new SearchList<SiteEnrollment>();
+	@JsonIgnore
+	public Wrap<SearchList<SiteEnrollment>> enrollmentSearchWrap = new Wrap<SearchList<SiteEnrollment>>().p(this).c(SearchList.class).var("enrollmentSearch").o(enrollmentSearch);
+
+	/**	<br/> The entity enrollmentSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<SiteEnrollment>(). 
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentSearch">Find the entity enrollmentSearch in Solr</a>
+	 * <br/>
+	 * @param enrollmentSearch is the entity already constructed. 
+	 **/
+	protected abstract void _enrollmentSearch(SearchList<SiteEnrollment> l);
+
+	public SearchList<SiteEnrollment> getEnrollmentSearch() {
+		return enrollmentSearch;
+	}
+
+	public void setEnrollmentSearch(SearchList<SiteEnrollment> enrollmentSearch) {
+		this.enrollmentSearch = enrollmentSearch;
+		this.enrollmentSearchWrap.alreadyInitialized = true;
+	}
+	public static SearchList<SiteEnrollment> staticSetEnrollmentSearch(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SitePet enrollmentSearchInit() {
+		if(!enrollmentSearchWrap.alreadyInitialized) {
+			_enrollmentSearch(enrollmentSearch);
+		}
+		enrollmentSearch.initDeepForClass(siteRequest_);
+		enrollmentSearchWrap.alreadyInitialized(true);
+		return (SitePet)this;
 	}
 
 	//////////////
@@ -418,7 +460,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageEnrollmentKeys() {
-		return "pets";
+		return "enrollments";
 	}
 
 	public String htmTooltipEnrollmentKeys() {
@@ -450,7 +492,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			}
 			e("input")
 				.a("type", "text")
-				.a("placeholder", "pets")
+				.a("placeholder", "enrollments")
 				.a("class", "valueObjectSuggest suggestEnrollmentKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setEnrollmentKeys")
 				.a("id", classApiMethodMethod, "_enrollmentKeys")
@@ -472,7 +514,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 						{ e("div").a("class", "w3-cell-row ").f();
 							{ e("a").a("href", "/enrollment?fq=petKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-red w3-hover-red ").f();
 								e("i").a("class", "fad fa-clipboard-list ").f().g("i");
-								sx("pets");
+								sx("enrollments");
 							} g("a");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row ").f();
@@ -1724,6 +1766,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 
 	public void initSitePet() {
 		petKeyInit();
+		enrollmentSearchInit();
 		userKeysInit();
 		enrollmentKeysInit();
 		petNameInit();
@@ -1746,6 +1789,8 @@ public abstract class SitePetGen<DEV> extends Cluster {
 
 	public void siteRequestSitePet(SiteRequestEnUS siteRequest_) {
 			super.siteRequestCluster(siteRequest_);
+		if(enrollmentSearch != null)
+			enrollmentSearch.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -1778,6 +1823,8 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		switch(var) {
 			case "petKey":
 				return oSitePet.petKey;
+			case "enrollmentSearch":
+				return oSitePet.enrollmentSearch;
 			case "userKeys":
 				return oSitePet.userKeys;
 			case "enrollmentKeys":

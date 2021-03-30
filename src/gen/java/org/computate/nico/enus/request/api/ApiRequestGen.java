@@ -795,6 +795,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity original
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Object original;
 	@JsonIgnore

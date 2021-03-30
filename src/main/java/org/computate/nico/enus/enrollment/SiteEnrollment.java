@@ -2,7 +2,6 @@ package org.computate.nico.enus.enrollment;
 
 import java.util.List;
 
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.computate.nico.enus.cluster.Cluster;
 import org.computate.nico.enus.pet.SitePet;
 import org.computate.nico.enus.search.SearchList;
@@ -80,6 +79,9 @@ public class SiteEnrollment extends SiteEnrollmentGen<Cluster> {
 	 */         
 	protected void _petKeys(List<Long> c) {}
 
+	/**
+	 * Ignore: true
+	 */
 	protected void _petSearch(SearchList<SitePet> l) {
 		l.setQuery("*:*");
 		l.addFilterQuery("enrollmentKey_indexed_long:" + pk);
@@ -87,6 +89,9 @@ public class SiteEnrollment extends SiteEnrollmentGen<Cluster> {
 		l.setStore(true);
 	}
 
+	/**
+	 * Ignore: true
+	 */
 	protected void _pet_(Wrap<SitePet> c) {
 		if(petSearch.size() > 0) {
 			c.o(petSearch.get(0));

@@ -33,6 +33,8 @@ import org.computate.nico.enus.enrollment.SiteEnrollmentEnUSApiServiceImpl;
 import org.computate.nico.enus.html.part.HtmlPart;
 import org.computate.nico.enus.html.part.HtmlPartGenPage;
 import org.computate.nico.enus.pet.PetGenPage;
+import org.computate.nico.enus.pet.SitePet;
+import org.computate.nico.enus.pet.SitePetEnUSApiServiceImpl;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.search.SearchList;
 import org.computate.nico.enus.user.SiteUser;
@@ -898,7 +900,10 @@ public class PageLayout extends PageLayoutGen<Object> {
 		
 								for(Object o : list) {
 									try {
-										MethodUtils.invokeExactMethod(parent, "set" + StringUtils.capitalize(var), o);
+										if(parent instanceof Map)
+											MethodUtils.invokeMethod(parent, "put", var, o);
+										else
+											MethodUtils.invokeExactMethod(parent, "set" + StringUtils.capitalize(var), o);
 										i = htmlPageLayout2(pageContentType, htmlPartList, htmlPart, forStart, size);
 									} catch (RuntimeException e) {
 										throw e;
@@ -1039,6 +1044,9 @@ public class PageLayout extends PageLayoutGen<Object> {
 						siteRequest2.setSiteContext_(siteRequest_.getSiteContext_());
 						siteRequest2.setSiteConfig_(siteRequest_.getSiteConfig_());
 						siteRequest2.setUserId(siteRequest_.getUserId());
+						siteRequest2.setJsonPrincipal(siteRequest_.getJsonPrincipal());
+						siteRequest2.setSessionId(siteRequest_.getSessionId());
+						siteRequest2.setW(siteRequest_.getW());
 						siteRequest2.initDeepSiteRequestEnUS(siteRequest2);
 
 						OperationRequest operationRequest = new OperationRequest();
@@ -1069,8 +1077,23 @@ public class PageLayout extends PageLayoutGen<Object> {
 						params.put("query", query);
 
 						if(searchUri.startsWith("/api/enrollment?")) {
-							SiteEnrollmentEnUSApiServiceImpl service = new SiteEnrollmentEnUSApiServiceImpl(siteRequest_.getSiteContext_());
-							SearchList<SiteEnrollment> searchList = service.aSearchSiteEnrollmentList(siteRequest2, false, true, false, siteRequest_.getRequestUri(), "Search");
+							SearchList<SiteEnrollment> searchList;
+							try {
+								SiteEnrollmentEnUSApiServiceImpl service = new SiteEnrollmentEnUSApiServiceImpl(siteRequest_.getSiteContext_());
+								searchList = service.aSearchSiteEnrollmentList(siteRequest2, false, true, false, siteRequest_.getRequestUri(), "Search");
+							} catch (Exception e) {
+								searchList = new SearchList<>();
+							}
+							map.put(mapTo, searchList);
+						}
+						else if(searchUri.startsWith("/api/pet?")) {
+							SearchList<SitePet> searchList;
+							try {
+								SitePetEnUSApiServiceImpl service = new SitePetEnUSApiServiceImpl(siteRequest_.getSiteContext_());
+								searchList = service.aSearchSitePetList(siteRequest2, false, true, false, siteRequest_.getRequestUri(), "Search");
+							} catch (Exception e) {
+								searchList = new SearchList<>();
+							}
 							map.put(mapTo, searchList);
 						}
 					}
