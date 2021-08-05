@@ -1,60 +1,64 @@
 package org.computate.nico.enus.pet;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
-import java.util.HashMap;
-import org.computate.nico.enus.context.SiteContextEnUS;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
+import java.lang.Long;
+import java.util.Map;
+import org.computate.nico.enus.user.SiteUser;
+import io.vertx.core.json.JsonObject;
+import org.computate.nico.enus.base.BaseModel;
+import java.math.RoundingMode;
+import java.math.MathContext;
+import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.computate.nico.enus.search.SearchList;
+import io.vertx.core.Future;
+import java.util.Objects;
+import java.util.List;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
+import java.util.Optional;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import java.util.HashMap;
+import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
-import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.computate.nico.enus.user.SiteUser;
 import java.lang.Boolean;
-import io.vertx.core.json.JsonObject;
 import java.lang.String;
-import io.vertx.core.logging.Logger;
 import org.computate.nico.enus.wrap.Wrap;
-import java.math.RoundingMode;
-import org.computate.nico.enus.cluster.Cluster;
-import java.math.MathContext;
+import org.computate.nico.enus.java.LocalDateSerializer;
+import org.slf4j.Logger;
+import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import java.util.Set;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
-import org.computate.nico.enus.search.SearchList;
 import org.apache.solr.client.solrj.SolrClient;
-import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
-import java.util.List;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.computate.nico.enus.enrollment.SiteEnrollment;
-import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.computate.nico.enus.config.ConfigKeys;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class SitePetGen<DEV> extends Cluster {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SitePet.class);
+public abstract class SitePetGen<DEV> extends BaseModel {
+	protected static final Logger LOG = LoggerFactory.getLogger(SitePet.class);
 
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
 	public static final List<String> ROLE_READS = Arrays.asList("");
@@ -89,15 +93,16 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long petKey;
 	@JsonIgnore
-	public Wrap<Long> petKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("petKey").o(petKey);
+	public Wrap<Long> petKeyWrap = new Wrap<Long>().var("petKey").o(petKey);
 
 	/**	<br/> The entity petKey
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petKey">Find the entity petKey in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petKey">Find the entity petKey in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -111,6 +116,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		this.petKey = petKey;
 		this.petKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPetKey(String o) {
 		this.petKey = SitePet.staticSetPetKey(siteRequest_, o);
 		this.petKeyWrap.alreadyInitialized = true;
@@ -125,6 +131,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petKey(petKeyWrap);
 			if(petKey == null)
 				setPetKey(petKeyWrap.o);
+			petKeyWrap.o(null);
 		}
 		petKeyWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -158,10 +165,6 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petKey == null ? "" : petKey.toString();
 	}
 
-	public String nomAffichagePetKey() {
-		return null;
-	}
-
 	public String htmTooltipPetKey() {
 		return null;
 	}
@@ -175,21 +178,21 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	//////////////////////
 
 	/**	 The entity enrollmentSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SiteEnrollment>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteEnrollment> enrollmentSearch = new SearchList<SiteEnrollment>();
+	protected SearchList<SiteEnrollment> enrollmentSearch;
 	@JsonIgnore
-	public Wrap<SearchList<SiteEnrollment>> enrollmentSearchWrap = new Wrap<SearchList<SiteEnrollment>>().p(this).c(SearchList.class).var("enrollmentSearch").o(enrollmentSearch);
+	public Wrap<SearchList<SiteEnrollment>> enrollmentSearchWrap = new Wrap<SearchList<SiteEnrollment>>().var("enrollmentSearch").o(enrollmentSearch);
 
 	/**	<br/> The entity enrollmentSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<SiteEnrollment>(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentSearch">Find the entity enrollmentSearch in Solr</a>
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentSearch">Find the entity enrollmentSearch in Solr</a>
 	 * <br/>
-	 * @param enrollmentSearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _enrollmentSearch(SearchList<SiteEnrollment> l);
+	protected abstract void _enrollmentSearch(Promise<SearchList<SiteEnrollment>> promise);
 
 	public SearchList<SiteEnrollment> getEnrollmentSearch() {
 		return enrollmentSearch;
@@ -202,13 +205,31 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public static SearchList<SiteEnrollment> staticSetEnrollmentSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SitePet enrollmentSearchInit() {
+	protected Future<SearchList<SiteEnrollment>> enrollmentSearchPromise() {
+		Promise<SearchList<SiteEnrollment>> promise = Promise.promise();
 		if(!enrollmentSearchWrap.alreadyInitialized) {
-			_enrollmentSearch(enrollmentSearch);
+			Promise<SearchList<SiteEnrollment>> promise2 = Promise.promise();
+			_enrollmentSearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && enrollmentSearch == null) {
+					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setEnrollmentSearch(o);
+						enrollmentSearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					enrollmentSearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		enrollmentSearch.initDeepForClass(siteRequest_);
-		enrollmentSearchWrap.alreadyInitialized(true);
-		return (SitePet)this;
+		return promise.future();
 	}
 
 	//////////////
@@ -218,15 +239,17 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity userKeys
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> userKeys = new ArrayList<Long>();
 	@JsonIgnore
-	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("userKeys").o(userKeys);
+	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().var("userKeys").o(userKeys);
 
 	/**	<br/> The entity userKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKeys">Find the entity userKeys in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKeys">Find the entity userKeys in Solr</a>
 	 * <br/>
 	 * @param userKeys is the entity already constructed. 
 	 **/
@@ -240,6 +263,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		this.userKeys = userKeys;
 		this.userKeysWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setUserKeys(String o) {
 		Long l = SitePet.staticSetUserKeys(siteRequest_, o);
 		if(l != null)
@@ -262,6 +286,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			this.userKeys.add(o);
 		return (SitePet)this;
 	}
+	@JsonIgnore
 	public void setUserKeys(JsonArray objets) {
 		userKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -316,42 +341,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return userKeys == null ? "" : userKeys.toString();
 	}
 
-	public String nomAffichageUserKeys() {
-		return "users";
-	}
-
 	public String htmTooltipUserKeys() {
 		return null;
 	}
 
 	public String htmUserKeys() {
 		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
-	}
-
-	public void inputUserKeys(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-	}
-
-	public void htmUserKeys(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("users").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varSitePet", pk, "UserKeys ").f().sx(strUserKeys()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
 	}
 
 	////////////////////
@@ -361,15 +356,17 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity enrollmentKeys
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> enrollmentKeys = new ArrayList<Long>();
 	@JsonIgnore
-	public Wrap<List<Long>> enrollmentKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("enrollmentKeys").o(enrollmentKeys);
+	public Wrap<List<Long>> enrollmentKeysWrap = new Wrap<List<Long>>().var("enrollmentKeys").o(enrollmentKeys);
 
 	/**	<br/> The entity enrollmentKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentKeys">Find the entity enrollmentKeys in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentKeys">Find the entity enrollmentKeys in Solr</a>
 	 * <br/>
 	 * @param enrollmentKeys is the entity already constructed. 
 	 **/
@@ -383,6 +380,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		this.enrollmentKeys = enrollmentKeys;
 		this.enrollmentKeysWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setEnrollmentKeys(String o) {
 		Long l = SitePet.staticSetEnrollmentKeys(siteRequest_, o);
 		if(l != null)
@@ -405,6 +403,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			this.enrollmentKeys.add(o);
 		return (SitePet)this;
 	}
+	@JsonIgnore
 	public void setEnrollmentKeys(JsonArray objets) {
 		enrollmentKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -459,99 +458,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
 	}
 
-	public String nomAffichageEnrollmentKeys() {
-		return "enrollments";
-	}
-
 	public String htmTooltipEnrollmentKeys() {
 		return null;
 	}
 
 	public String htmEnrollmentKeys() {
 		return enrollmentKeys == null ? "" : StringEscapeUtils.escapeHtml4(strEnrollmentKeys());
-	}
-
-	public void inputEnrollmentKeys(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-			if("PUTCopy".equals(classApiMethodMethod)) {
-				{ e("div").f();
-					e("input")
-						.a("type", "checkbox")
-						.a("id", classApiMethodMethod, "_enrollmentKeys_clear")
-						.a("class", "enrollmentKeys_clear ")
-						.fg();
-					e("label").a("for", "classApiMethodMethod, \"_enrollmentKeys_clear").f().sx("clear").g("label");
-				} g("div");
-			}
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "enrollments")
-				.a("class", "valueObjectSuggest suggestEnrollmentKeys w3-input w3-border w3-cell w3-cell-middle ")
-				.a("name", "setEnrollmentKeys")
-				.a("id", classApiMethodMethod, "_enrollmentKeys")
-				.a("autocomplete", "off");
-				a("oninput", "suggestSitePetEnrollmentKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'petKeys:" + pk + "'}", "], $('#listSitePetEnrollmentKeys_", classApiMethodMethod, "'), ", pk, "); ");
-
-				fg();
-
-		} else {
-		}
-	}
-
-	public void htmEnrollmentKeys(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetEnrollmentKeys").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/enrollment?fq=petKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-red w3-hover-red ").f();
-								e("i").a("class", "fad fa-clipboard-list ").f().g("i");
-								sx("enrollments");
-							} g("a");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("h5").a("class", "w3-cell ").f();
-								sx("relate  to this pet");
-							} g("h5");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-cell-row ").f();
-
-								inputEnrollmentKeys(classApiMethodMethod);
-								} g("div");
-							} g("div");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSitePetEnrollmentKeys_", classApiMethodMethod).f();
-								} g("ul");
-								{
-									if("Page".equals(classApiMethodMethod)) {
-										{ e("div").a("class", "w3-cell-row ").f();
-											e("button")
-												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-red ")
-												.a("id", classApiMethodMethod, "_enrollmentKeys_add")
-												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSiteEnrollmentVals({ petKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "enrollmentKeys')); });")
-												.f().sx("add an enrollment")
-											.g("button");
-										} g("div");
-									}
-								}
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////
@@ -561,14 +473,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petName;
 	@JsonIgnore
-	public Wrap<String> petNameWrap = new Wrap<String>().p(this).c(String.class).var("petName").o(petName);
+	public Wrap<String> petNameWrap = new Wrap<String>().var("petName").o(petName);
 
 	/**	<br/> The entity petName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petName">Find the entity petName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petName">Find the entity petName in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -589,6 +502,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petName(petNameWrap);
 			if(petName == null)
 				setPetName(petNameWrap.o);
+			petNameWrap.o(null);
 		}
 		petNameWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -622,86 +536,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petName == null ? "" : petName;
 	}
 
-	public String nomAffichagePetName() {
-		return "name of pet:";
-	}
-
 	public String htmTooltipPetName() {
 		return null;
 	}
 
 	public String htmPetName() {
 		return petName == null ? "" : StringEscapeUtils.escapeHtml4(strPetName());
-	}
-
-	public void inputPetName(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "name of pet:")
-				.a("id", classApiMethodMethod, "_petName");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setPetName classSitePet inputSitePet", pk, "PetName w3-input w3-border ");
-					a("name", "setPetName");
-				} else {
-					a("class", "valuePetName w3-input w3-border classSitePet inputSitePet", pk, "PetName w3-input w3-border ");
-					a("name", "petName");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_petName')); }, function() { addError($('#", classApiMethodMethod, "_petName')); }); ");
-				}
-				a("value", strPetName())
-			.fg();
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetName ").f().sx(htmPetName()).g("span");
-		}
-	}
-
-	public void htmPetName(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetName").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petName").a("class", "").f().sx("name of pet:").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetName(classApiMethodMethod);
-							} g("div");
-							if(
-									userKeys.contains(siteRequest_.getUserKey())
-									|| Objects.equals(sessionId, siteRequest_.getSessionId())
-									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-							) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_petName')); $('#", classApiMethodMethod, "_petName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SitePetForm :input[name=pk]').val() }], 'setPetName', null, function() { addGlow($('#", classApiMethodMethod, "_petName')); }, function() { addError($('#", classApiMethodMethod, "_petName')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	///////////////////
@@ -711,14 +551,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petFoodAmount
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petFoodAmount;
 	@JsonIgnore
-	public Wrap<String> petFoodAmountWrap = new Wrap<String>().p(this).c(String.class).var("petFoodAmount").o(petFoodAmount);
+	public Wrap<String> petFoodAmountWrap = new Wrap<String>().var("petFoodAmount").o(petFoodAmount);
 
 	/**	<br/> The entity petFoodAmount
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petFoodAmount">Find the entity petFoodAmount in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petFoodAmount">Find the entity petFoodAmount in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -739,6 +580,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petFoodAmount(petFoodAmountWrap);
 			if(petFoodAmount == null)
 				setPetFoodAmount(petFoodAmountWrap.o);
+			petFoodAmountWrap.o(null);
 		}
 		petFoodAmountWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -772,84 +614,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petFoodAmount == null ? "" : petFoodAmount;
 	}
 
-	public String nomAffichagePetFoodAmount() {
-		return "How much does your pet eat?";
-	}
-
 	public String htmTooltipPetFoodAmount() {
 		return null;
 	}
 
 	public String htmPetFoodAmount() {
 		return petFoodAmount == null ? "" : StringEscapeUtils.escapeHtml4(strPetFoodAmount());
-	}
-
-	public void inputPetFoodAmount(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("textarea")
-				.a("placeholder", "How much does your pet eat?")
-				.a("id", classApiMethodMethod, "_petFoodAmount");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setPetFoodAmount classSitePet inputSitePet", pk, "PetFoodAmount w3-input w3-border ");
-					a("name", "setPetFoodAmount");
-				} else {
-					a("class", "valuePetFoodAmount w3-input w3-border classSitePet inputSitePet", pk, "PetFoodAmount w3-input w3-border ");
-					a("name", "petFoodAmount");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetFoodAmount', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_petFoodAmount')); }, function() { addError($('#", classApiMethodMethod, "_petFoodAmount')); }); ");
-				}
-			f().sx(strPetFoodAmount()).g("textarea");
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetFoodAmount ").f().sx(htmPetFoodAmount()).g("span");
-		}
-	}
-
-	public void htmPetFoodAmount(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetFoodAmount").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petFoodAmount").a("class", "").f().sx("How much does your pet eat?").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetFoodAmount(classApiMethodMethod);
-							} g("div");
-							if(
-									userKeys.contains(siteRequest_.getUserKey())
-									|| Objects.equals(sessionId, siteRequest_.getSessionId())
-									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-							) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_petFoodAmount')); $('#", classApiMethodMethod, "_petFoodAmount').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SitePetForm :input[name=pk]').val() }], 'setPetFoodAmount', null, function() { addGlow($('#", classApiMethodMethod, "_petFoodAmount')); }, function() { addError($('#", classApiMethodMethod, "_petFoodAmount')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////
@@ -859,14 +629,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petFood
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petFood;
 	@JsonIgnore
-	public Wrap<String> petFoodWrap = new Wrap<String>().p(this).c(String.class).var("petFood").o(petFood);
+	public Wrap<String> petFoodWrap = new Wrap<String>().var("petFood").o(petFood);
 
 	/**	<br/> The entity petFood
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petFood">Find the entity petFood in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petFood">Find the entity petFood in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -887,6 +658,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petFood(petFoodWrap);
 			if(petFood == null)
 				setPetFood(petFoodWrap.o);
+			petFoodWrap.o(null);
 		}
 		petFoodWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -920,84 +692,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petFood == null ? "" : petFood;
 	}
 
-	public String nomAffichagePetFood() {
-		return "What does your pet eat?";
-	}
-
 	public String htmTooltipPetFood() {
 		return null;
 	}
 
 	public String htmPetFood() {
 		return petFood == null ? "" : StringEscapeUtils.escapeHtml4(strPetFood());
-	}
-
-	public void inputPetFood(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("textarea")
-				.a("placeholder", "What does your pet eat?")
-				.a("id", classApiMethodMethod, "_petFood");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setPetFood classSitePet inputSitePet", pk, "PetFood w3-input w3-border ");
-					a("name", "setPetFood");
-				} else {
-					a("class", "valuePetFood w3-input w3-border classSitePet inputSitePet", pk, "PetFood w3-input w3-border ");
-					a("name", "petFood");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetFood', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_petFood')); }, function() { addError($('#", classApiMethodMethod, "_petFood')); }); ");
-				}
-			f().sx(strPetFood()).g("textarea");
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetFood ").f().sx(htmPetFood()).g("span");
-		}
-	}
-
-	public void htmPetFood(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetFood").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petFood").a("class", "").f().sx("What does your pet eat?").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetFood(classApiMethodMethod);
-							} g("div");
-							if(
-									userKeys.contains(siteRequest_.getUserKey())
-									|| Objects.equals(sessionId, siteRequest_.getSessionId())
-									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-							) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_petFood')); $('#", classApiMethodMethod, "_petFood').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SitePetForm :input[name=pk]').val() }], 'setPetFood', null, function() { addGlow($('#", classApiMethodMethod, "_petFood')); }, function() { addError($('#", classApiMethodMethod, "_petFood')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////
@@ -1007,14 +707,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petSick
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean petSick;
 	@JsonIgnore
-	public Wrap<Boolean> petSickWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("petSick").o(petSick);
+	public Wrap<Boolean> petSickWrap = new Wrap<Boolean>().var("petSick").o(petSick);
 
 	/**	<br/> The entity petSick
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petSick">Find the entity petSick in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petSick">Find the entity petSick in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1028,6 +729,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		this.petSick = petSick;
 		this.petSickWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPetSick(String o) {
 		this.petSick = SitePet.staticSetPetSick(siteRequest_, o);
 		this.petSickWrap.alreadyInitialized = true;
@@ -1040,6 +742,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petSick(petSickWrap);
 			if(petSick == null)
 				setPetSick(petSickWrap.o);
+			petSickWrap.o(null);
 		}
 		petSickWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -1073,81 +776,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petSick == null ? "" : petSick.toString();
 	}
 
-	public String nomAffichagePetSick() {
-		return "Is your pet sick, or need medication?";
-	}
-
 	public String htmTooltipPetSick() {
 		return null;
 	}
 
 	public String htmPetSick() {
 		return petSick == null ? "" : StringEscapeUtils.escapeHtml4(strPetSick());
-	}
-
-	public void inputPetSick(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_petSick")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_petSick");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setPetSick classSitePet inputSitePet", pk, "PetSick w3-input w3-border ");
-				a("name", "setPetSick");
-			} else {
-				a("class", "valuePetSick classSitePet inputSitePet", pk, "PetSick w3-input w3-border ");
-				a("name", "petSick");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetSick', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_petSick')); }, function() { addError($('#", classApiMethodMethod, "_petSick')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getPetSick() != null && getPetSick())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetSick ").f().sx(htmPetSick()).g("span");
-		}
-	}
-
-	public void htmPetSick(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetSick").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petSick").a("class", "").f().sx("Is your pet sick, or need medication?").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetSick(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////////
@@ -1157,14 +791,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petMedNote
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petMedNote;
 	@JsonIgnore
-	public Wrap<String> petMedNoteWrap = new Wrap<String>().p(this).c(String.class).var("petMedNote").o(petMedNote);
+	public Wrap<String> petMedNoteWrap = new Wrap<String>().var("petMedNote").o(petMedNote);
 
 	/**	<br/> The entity petMedNote
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petMedNote">Find the entity petMedNote in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petMedNote">Find the entity petMedNote in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1185,6 +820,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petMedNote(petMedNoteWrap);
 			if(petMedNote == null)
 				setPetMedNote(petMedNoteWrap.o);
+			petMedNoteWrap.o(null);
 		}
 		petMedNoteWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -1218,84 +854,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petMedNote == null ? "" : petMedNote;
 	}
 
-	public String nomAffichagePetMedNote() {
-		return "Additional notes for medication:";
-	}
-
 	public String htmTooltipPetMedNote() {
 		return null;
 	}
 
 	public String htmPetMedNote() {
 		return petMedNote == null ? "" : StringEscapeUtils.escapeHtml4(strPetMedNote());
-	}
-
-	public void inputPetMedNote(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("textarea")
-				.a("placeholder", "Additional notes for medication:")
-				.a("id", classApiMethodMethod, "_petMedNote");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setPetMedNote classSitePet inputSitePet", pk, "PetMedNote w3-input w3-border ");
-					a("name", "setPetMedNote");
-				} else {
-					a("class", "valuePetMedNote w3-input w3-border classSitePet inputSitePet", pk, "PetMedNote w3-input w3-border ");
-					a("name", "petMedNote");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetMedNote', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_petMedNote')); }, function() { addError($('#", classApiMethodMethod, "_petMedNote')); }); ");
-				}
-			f().sx(strPetMedNote()).g("textarea");
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetMedNote ").f().sx(htmPetMedNote()).g("span");
-		}
-	}
-
-	public void htmPetMedNote(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetMedNote").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petMedNote").a("class", "").f().sx("Additional notes for medication:").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetMedNote(classApiMethodMethod);
-							} g("div");
-							if(
-									userKeys.contains(siteRequest_.getUserKey())
-									|| Objects.equals(sessionId, siteRequest_.getSessionId())
-									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-							) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_petMedNote')); $('#", classApiMethodMethod, "_petMedNote').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SitePetForm :input[name=pk]').val() }], 'setPetMedNote', null, function() { addGlow($('#", classApiMethodMethod, "_petMedNote')); }, function() { addError($('#", classApiMethodMethod, "_petMedNote')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////////
@@ -1305,14 +869,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petTrouble
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petTrouble;
 	@JsonIgnore
-	public Wrap<String> petTroubleWrap = new Wrap<String>().p(this).c(String.class).var("petTrouble").o(petTrouble);
+	public Wrap<String> petTroubleWrap = new Wrap<String>().var("petTrouble").o(petTrouble);
 
 	/**	<br/> The entity petTrouble
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petTrouble">Find the entity petTrouble in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petTrouble">Find the entity petTrouble in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1333,6 +898,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petTrouble(petTroubleWrap);
 			if(petTrouble == null)
 				setPetTrouble(petTroubleWrap.o);
+			petTroubleWrap.o(null);
 		}
 		petTroubleWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -1366,84 +932,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petTrouble == null ? "" : petTrouble;
 	}
 
-	public String nomAffichagePetTrouble() {
-		return "What would get your pet in trouble?";
-	}
-
 	public String htmTooltipPetTrouble() {
 		return null;
 	}
 
 	public String htmPetTrouble() {
 		return petTrouble == null ? "" : StringEscapeUtils.escapeHtml4(strPetTrouble());
-	}
-
-	public void inputPetTrouble(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("textarea")
-				.a("placeholder", "What would get your pet in trouble?")
-				.a("id", classApiMethodMethod, "_petTrouble");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setPetTrouble classSitePet inputSitePet", pk, "PetTrouble w3-input w3-border ");
-					a("name", "setPetTrouble");
-				} else {
-					a("class", "valuePetTrouble w3-input w3-border classSitePet inputSitePet", pk, "PetTrouble w3-input w3-border ");
-					a("name", "petTrouble");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetTrouble', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_petTrouble')); }, function() { addError($('#", classApiMethodMethod, "_petTrouble')); }); ");
-				}
-			f().sx(strPetTrouble()).g("textarea");
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetTrouble ").f().sx(htmPetTrouble()).g("span");
-		}
-	}
-
-	public void htmPetTrouble(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetTrouble").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petTrouble").a("class", "").f().sx("What would get your pet in trouble?").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetTrouble(classApiMethodMethod);
-							} g("div");
-							if(
-									userKeys.contains(siteRequest_.getUserKey())
-									|| Objects.equals(sessionId, siteRequest_.getSessionId())
-									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-							) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_petTrouble')); $('#", classApiMethodMethod, "_petTrouble').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SitePetForm :input[name=pk]').val() }], 'setPetTrouble', null, function() { addGlow($('#", classApiMethodMethod, "_petTrouble')); }, function() { addError($('#", classApiMethodMethod, "_petTrouble')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////
@@ -1453,14 +947,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity update
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean update;
 	@JsonIgnore
-	public Wrap<Boolean> updateWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("update").o(update);
+	public Wrap<Boolean> updateWrap = new Wrap<Boolean>().var("update").o(update);
 
 	/**	<br/> The entity update
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:update">Find the entity update in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:update">Find the entity update in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1474,6 +969,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		this.update = update;
 		this.updateWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setUpdate(String o) {
 		this.update = SitePet.staticSetUpdate(siteRequest_, o);
 		this.updateWrap.alreadyInitialized = true;
@@ -1486,6 +982,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_update(updateWrap);
 			if(update == null)
 				setUpdate(updateWrap.o);
+			updateWrap.o(null);
 		}
 		updateWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -1519,81 +1016,12 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return update == null ? "" : update.toString();
 	}
 
-	public String nomAffichageUpdate() {
-		return "Do you want updates, if you do how many?";
-	}
-
 	public String htmTooltipUpdate() {
 		return null;
 	}
 
 	public String htmUpdate() {
 		return update == null ? "" : StringEscapeUtils.escapeHtml4(strUpdate());
-	}
-
-	public void inputUpdate(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_update")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_update");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setUpdate classSitePet inputSitePet", pk, "Update w3-input w3-border ");
-				a("name", "setUpdate");
-			} else {
-				a("class", "valueUpdate classSitePet inputSitePet", pk, "Update w3-input w3-border ");
-				a("name", "update");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUpdate', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_update')); }, function() { addError($('#", classApiMethodMethod, "_update')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getUpdate() != null && getUpdate())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "Update ").f().sx(htmUpdate()).g("span");
-		}
-	}
-
-	public void htmUpdate(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetUpdate").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_update").a("class", "").f().sx("Do you want updates, if you do how many?").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUpdate(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	///////////////
@@ -1603,14 +1031,15 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/**	 The entity petAmount
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petAmount;
 	@JsonIgnore
-	public Wrap<String> petAmountWrap = new Wrap<String>().p(this).c(String.class).var("petAmount").o(petAmount);
+	public Wrap<String> petAmountWrap = new Wrap<String>().var("petAmount").o(petAmount);
 
 	/**	<br/> The entity petAmount
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petAmount">Find the entity petAmount in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petAmount">Find the entity petAmount in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1631,6 +1060,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			_petAmount(petAmountWrap);
 			if(petAmount == null)
 				setPetAmount(petAmountWrap.o);
+			petAmountWrap.o(null);
 		}
 		petAmountWrap.alreadyInitialized(true);
 		return (SitePet)this;
@@ -1664,10 +1094,6 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petAmount == null ? "" : petAmount;
 	}
 
-	public String nomAffichagePetAmount() {
-		return "How many updates? (If any.)";
-	}
-
 	public String htmTooltipPetAmount() {
 		return null;
 	}
@@ -1676,111 +1102,84 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		return petAmount == null ? "" : StringEscapeUtils.escapeHtml4(strPetAmount());
 	}
 
-	public void inputPetAmount(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		if(
-				userKeys.contains(siteRequest_.getUserKey())
-				|| Objects.equals(sessionId, siteRequest_.getSessionId())
-				|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-		) {
-			e("textarea")
-				.a("placeholder", "How many updates? (If any.)")
-				.a("id", classApiMethodMethod, "_petAmount");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setPetAmount classSitePet inputSitePet", pk, "PetAmount w3-input w3-border ");
-					a("name", "setPetAmount");
-				} else {
-					a("class", "valuePetAmount w3-input w3-border classSitePet inputSitePet", pk, "PetAmount w3-input w3-border ");
-					a("name", "petAmount");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPetAmount', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_petAmount')); }, function() { addError($('#", classApiMethodMethod, "_petAmount')); }); ");
-				}
-			f().sx(strPetAmount()).g("textarea");
-
-		} else {
-			e("span").a("class", "varSitePet", pk, "PetAmount ").f().sx(htmPetAmount()).g("span");
-		}
-	}
-
-	public void htmPetAmount(String classApiMethodMethod) {
-		SitePet s = (SitePet)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SitePetPetAmount").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_petAmount").a("class", "").f().sx("How many updates? (If any.)").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputPetAmount(classApiMethodMethod);
-							} g("div");
-							if(
-									userKeys.contains(siteRequest_.getUserKey())
-									|| Objects.equals(sessionId, siteRequest_.getSessionId())
-									|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-							) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_petAmount')); $('#", classApiMethodMethod, "_petAmount').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SitePetForm :input[name=pk]').val() }], 'setPetAmount', null, function() { addGlow($('#", classApiMethodMethod, "_petAmount')); }, function() { addError($('#", classApiMethodMethod, "_petAmount')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
 
 	protected boolean alreadyInitializedSitePet = false;
 
-	public SitePet initDeepSitePet(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSitePet(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSitePet) {
 			alreadyInitializedSitePet = true;
-			initDeepSitePet();
+			return promiseDeepSitePet();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SitePet)this;
 	}
 
-	public void initDeepSitePet() {
-		initSitePet();
-		super.initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepSitePet() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSitePet(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepBaseModel(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSitePet() {
-		petKeyInit();
-		enrollmentSearchInit();
-		userKeysInit();
-		enrollmentKeysInit();
-		petNameInit();
-		petFoodAmountInit();
-		petFoodInit();
-		petSickInit();
-		petMedNoteInit();
-		petTroubleInit();
-		updateInit();
-		petAmountInit();
+	public Future<Void> promiseSitePet(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				petKeyInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			enrollmentSearchPromise().onSuccess(enrollmentSearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				userKeysInit();
+				enrollmentKeysInit();
+				petNameInit();
+				petFoodAmountInit();
+				petFoodInit();
+				petSickInit();
+				petMedNoteInit();
+				petTroubleInit();
+				updateInit();
+				petAmountInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSitePet(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSitePet(siteRequest_);
 	}
 
 	/////////////////
@@ -1788,7 +1187,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	/////////////////
 
 	public void siteRequestSitePet(SiteRequestEnUS siteRequest_) {
-			super.siteRequestCluster(siteRequest_);
+			super.siteRequestBaseModel(siteRequest_);
 		if(enrollmentSearch != null)
 			enrollmentSearch.setSiteRequest_(siteRequest_);
 	}
@@ -1807,9 +1206,9 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainSitePet(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -1846,7 +1245,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			case "petAmount":
 				return oSitePet.petAmount;
 			default:
-				return super.obtainCluster(var);
+				return super.obtainBaseModel(var);
 		}
 	}
 
@@ -1860,9 +1259,9 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeSitePet(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -1876,7 +1275,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 					saves.add("enrollmentKeys");
 				return val;
 			default:
-				return super.attributeCluster(var, val);
+				return super.attributeBaseModel(var, val);
 		}
 	}
 
@@ -1912,7 +1311,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		case "petAmount":
 			return SitePet.staticSetPetAmount(siteRequest_, o);
 			default:
-				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -1948,7 +1347,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		case "petAmount":
 			return SitePet.staticSolrPetAmount(siteRequest_, (String)o);
 			default:
-				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -1984,7 +1383,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		case "petAmount":
 			return SitePet.staticSolrStrPetAmount(siteRequest_, (String)o);
 			default:
-				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrStrBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -2020,7 +1419,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		case "petAmount":
 			return SitePet.staticSolrFqPetAmount(siteRequest_, o);
 			default:
-				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrFqBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -2035,9 +1434,9 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSitePet(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -2086,7 +1485,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 				saves.add("petAmount");
 				return val;
 			default:
-				return super.defineCluster(var, val);
+				return super.defineBaseModel(var, val);
 		}
 	}
 
@@ -2097,9 +1496,9 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSitePet(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -2148,7 +1547,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 				saves.add("petAmount");
 				return val;
 			default:
-				return super.defineCluster(var, val);
+				return super.defineBaseModel(var, val);
 		}
 	}
 
@@ -2229,68 +1628,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			}
 		}
 
-		super.populateCluster(solrDocument);
-	}
-
-	/////////////
-	// index //
-	/////////////
-
-	public static void index() {
-		try {
-			SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-			siteRequest.initDeepSiteRequestEnUS();
-			SiteContextEnUS siteContext = new SiteContextEnUS();
-			siteContext.getSiteConfig().setConfigPath("/usr/local/src/nico-site/config/nico-site.config");
-			siteContext.initDeepSiteContextEnUS();
-			siteRequest.setSiteContext_(siteContext);
-			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-			SolrQuery solrQuery = new SolrQuery();
-			solrQuery.setQuery("*:*");
-			solrQuery.setRows(1);
-			solrQuery.addFilterQuery("id:" + ClientUtils.escapeQueryChars("org.computate.nico.enus.pet.SitePet"));
-			QueryResponse queryResponse = siteRequest.getSiteContext_().getSolrClient().query(solrQuery);
-			if(queryResponse.getResults().size() > 0)
-				siteRequest.setSolrDocument(queryResponse.getResults().get(0));
-			SitePet o = new SitePet();
-			o.siteRequestSitePet(siteRequest);
-			o.initDeepSitePet(siteRequest);
-			o.indexSitePet();
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-
-	@Override public void indexForClass() {
-		indexSitePet();
-	}
-
-	@Override public void indexForClass(SolrInputDocument document) {
-		indexSitePet(document);
-	}
-
-	public void indexSitePet(SolrClient clientSolr) {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexSitePet(document);
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-	public void indexSitePet() {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexSitePet(document);
-			SolrClient clientSolr = siteRequest_.getSiteContext_().getSolrClient();
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
+		super.populateBaseModel(solrDocument);
 	}
 
 	public void indexSitePet(SolrInputDocument document) {
@@ -2346,25 +1684,8 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			document.addField("petAmount_indexed_string", petAmount);
 			document.addField("petAmount_stored_string", petAmount);
 		}
-		super.indexCluster(document);
+		super.indexBaseModel(document);
 
-	}
-
-	public void unindexSitePet() {
-		try {
-		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-			siteRequest.initDeepSiteRequestEnUS();
-			SiteContextEnUS siteContext = new SiteContextEnUS();
-			siteContext.initDeepSiteContextEnUS();
-			siteRequest.setSiteContext_(siteContext);
-			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-			initDeepSitePet(siteRequest);
-			SolrClient solrClient = siteContext.getSolrClient();
-			solrClient.deleteById(id.toString());
-			solrClient.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public static String varIndexedSitePet(String entityVar) {
@@ -2392,21 +1713,21 @@ public abstract class SitePetGen<DEV> extends Cluster {
 			case "petAmount":
 				return "petAmount_indexed_string";
 			default:
-				return Cluster.varIndexedCluster(entityVar);
+				return BaseModel.varIndexedBaseModel(entityVar);
 		}
 	}
 
 	public static String varSearchSitePet(String entityVar) {
 		switch(entityVar) {
 			default:
-				return Cluster.varSearchCluster(entityVar);
+				return BaseModel.varSearchBaseModel(entityVar);
 		}
 	}
 
 	public static String varSuggestedSitePet(String entityVar) {
 		switch(entityVar) {
 			default:
-				return Cluster.varSuggestedCluster(entityVar);
+				return BaseModel.varSuggestedBaseModel(entityVar);
 		}
 	}
 
@@ -2420,51 +1741,23 @@ public abstract class SitePetGen<DEV> extends Cluster {
 	public void storeSitePet(SolrDocument solrDocument) {
 		SitePet oSitePet = (SitePet)this;
 
-		Long petKey = (Long)solrDocument.get("petKey_stored_long");
-		if(petKey != null)
-			oSitePet.setPetKey(petKey);
+		oSitePet.setPetKey(Optional.ofNullable(solrDocument.get("petKey_stored_long")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("userKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oSitePet.addUserKeys(v.toString());
+		});
+		Optional.ofNullable((List<?>)solrDocument.get("enrollmentKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oSitePet.addEnrollmentKeys(v.toString());
+		});
+		oSitePet.setPetName(Optional.ofNullable(solrDocument.get("petName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetFoodAmount(Optional.ofNullable(solrDocument.get("petFoodAmount_stored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetFood(Optional.ofNullable(solrDocument.get("petFood_stored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetSick(Optional.ofNullable(solrDocument.get("petSick_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetMedNote(Optional.ofNullable(solrDocument.get("petMedNote_stored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetTrouble(Optional.ofNullable(solrDocument.get("petTrouble_stored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setUpdate(Optional.ofNullable(solrDocument.get("update_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetAmount(Optional.ofNullable(solrDocument.get("petAmount_stored_string")).map(v -> v.toString()).orElse(null));
 
-		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
-		if(userKeys != null)
-			oSitePet.userKeys.addAll(userKeys);
-
-		List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_stored_longs");
-		if(enrollmentKeys != null)
-			oSitePet.enrollmentKeys.addAll(enrollmentKeys);
-
-		String petName = (String)solrDocument.get("petName_stored_string");
-		if(petName != null)
-			oSitePet.setPetName(petName);
-
-		String petFoodAmount = (String)solrDocument.get("petFoodAmount_stored_string");
-		if(petFoodAmount != null)
-			oSitePet.setPetFoodAmount(petFoodAmount);
-
-		String petFood = (String)solrDocument.get("petFood_stored_string");
-		if(petFood != null)
-			oSitePet.setPetFood(petFood);
-
-		Boolean petSick = (Boolean)solrDocument.get("petSick_stored_boolean");
-		if(petSick != null)
-			oSitePet.setPetSick(petSick);
-
-		String petMedNote = (String)solrDocument.get("petMedNote_stored_string");
-		if(petMedNote != null)
-			oSitePet.setPetMedNote(petMedNote);
-
-		String petTrouble = (String)solrDocument.get("petTrouble_stored_string");
-		if(petTrouble != null)
-			oSitePet.setPetTrouble(petTrouble);
-
-		Boolean update = (Boolean)solrDocument.get("update_stored_boolean");
-		if(update != null)
-			oSitePet.setUpdate(update);
-
-		String petAmount = (String)solrDocument.get("petAmount_stored_string");
-		if(petAmount != null)
-			oSitePet.setPetAmount(petAmount);
-
-		super.storeCluster(solrDocument);
+		super.storeBaseModel(solrDocument);
 	}
 
 	//////////////////
@@ -2498,7 +1791,7 @@ public abstract class SitePetGen<DEV> extends Cluster {
 				apiRequest.addVars("update");
 			if(!Objects.equals(petAmount, original.getPetAmount()))
 				apiRequest.addVars("petAmount");
-			super.apiRequestCluster();
+			super.apiRequestBaseModel();
 		}
 	}
 
@@ -2556,4 +1849,17 @@ public abstract class SitePetGen<DEV> extends Cluster {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_petKey = "petKey";
+	public static final String VAR_enrollmentSearch = "enrollmentSearch";
+	public static final String VAR_userKeys = "userKeys";
+	public static final String VAR_enrollmentKeys = "enrollmentKeys";
+	public static final String VAR_petName = "petName";
+	public static final String VAR_petFoodAmount = "petFoodAmount";
+	public static final String VAR_petFood = "petFood";
+	public static final String VAR_petSick = "petSick";
+	public static final String VAR_petMedNote = "petMedNote";
+	public static final String VAR_petTrouble = "petTrouble";
+	public static final String VAR_update = "update";
+	public static final String VAR_petAmount = "petAmount";
 }

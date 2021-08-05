@@ -1,35 +1,40 @@
 package org.computate.nico.enus.writer;
 
+import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
-import org.computate.nico.enus.context.SiteContextEnUS;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import org.computate.nico.enus.writer.AllWriter;
+import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import org.computate.nico.enus.vertx.AppSwagger2;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.computate.nico.enus.config.SiteConfig;
 import java.lang.Boolean;
+import io.vertx.core.json.JsonObject;
 import java.lang.String;
-import io.vertx.core.logging.Logger;
+import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
-import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.java.LocalDateSerializer;
+import org.slf4j.Logger;
 import org.computate.nico.enus.writer.AllWriters;
 import java.math.MathContext;
+import io.vertx.core.Promise;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
+import io.vertx.core.Future;
+import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
@@ -38,15 +43,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Object;
+import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class ApiWriterGen<DEV> extends Object {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(ApiWriter.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(ApiWriter.class);
 
 	//////////////////
 	// siteRequest_ //
@@ -55,14 +60,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -84,6 +90,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -96,14 +103,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSolrDocument
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument classSolrDocument;
 	@JsonIgnore
-	public Wrap<SolrDocument> classSolrDocumentWrap = new Wrap<SolrDocument>().p(this).c(SolrDocument.class).var("classSolrDocument").o(classSolrDocument);
+	public Wrap<SolrDocument> classSolrDocumentWrap = new Wrap<SolrDocument>().var("classSolrDocument").o(classSolrDocument);
 
 	/**	<br/> The entity classSolrDocument
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSolrDocument">Find the entity classSolrDocument in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSolrDocument">Find the entity classSolrDocument in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -125,6 +133,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classSolrDocument(classSolrDocumentWrap);
 			if(classSolrDocument == null)
 				setClassSolrDocument(classSolrDocumentWrap.o);
+			classSolrDocumentWrap.o(null);
 		}
 		classSolrDocumentWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -137,15 +146,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity contextRows
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer contextRows;
 	@JsonIgnore
-	public Wrap<Integer> contextRowsWrap = new Wrap<Integer>().p(this).c(Integer.class).var("contextRows").o(contextRows);
+	public Wrap<Integer> contextRowsWrap = new Wrap<Integer>().var("contextRows").o(contextRows);
 
 	/**	<br/> The entity contextRows
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextRows">Find the entity contextRows in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextRows">Find the entity contextRows in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -159,6 +169,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.contextRows = contextRows;
 		this.contextRowsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContextRows(String o) {
 		this.contextRows = ApiWriter.staticSetContextRows(siteRequest_, o);
 		this.contextRowsWrap.alreadyInitialized = true;
@@ -173,6 +184,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_contextRows(contextRowsWrap);
 			if(contextRows == null)
 				setContextRows(contextRowsWrap.o);
+			contextRowsWrap.o(null);
 		}
 		contextRowsWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -206,18 +218,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return contextRows == null ? "" : contextRows.toString();
 	}
 
-	public String nomAffichageContextRows() {
-		return null;
-	}
-
-	public String htmTooltipContextRows() {
-		return null;
-	}
-
-	public String htmContextRows() {
-		return contextRows == null ? "" : StringEscapeUtils.escapeHtml4(strContextRows());
-	}
-
 	////////////////////
 	// classApiMethod //
 	////////////////////
@@ -225,14 +225,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMethod;
 	@JsonIgnore
-	public Wrap<String> classApiMethodWrap = new Wrap<String>().p(this).c(String.class).var("classApiMethod").o(classApiMethod);
+	public Wrap<String> classApiMethodWrap = new Wrap<String>().var("classApiMethod").o(classApiMethod);
 
 	/**	<br/> The entity classApiMethod
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiMethod">Find the entity classApiMethod in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiMethod">Find the entity classApiMethod in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -253,6 +254,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiMethod(classApiMethodWrap);
 			if(classApiMethod == null)
 				setClassApiMethod(classApiMethodWrap.o);
+			classApiMethodWrap.o(null);
 		}
 		classApiMethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -286,18 +288,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMethod == null ? "" : classApiMethod;
 	}
 
-	public String nomAffichageClassApiMethod() {
-		return null;
-	}
-
-	public String htmTooltipClassApiMethod() {
-		return null;
-	}
-
-	public String htmClassApiMethod() {
-		return classApiMethod == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiMethod());
-	}
-
 	////////////////////
 	// openApiVersion //
 	////////////////////
@@ -305,14 +295,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity openApiVersion
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiVersion;
 	@JsonIgnore
-	public Wrap<String> openApiVersionWrap = new Wrap<String>().p(this).c(String.class).var("openApiVersion").o(openApiVersion);
+	public Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion").o(openApiVersion);
 
 	/**	<br/> The entity openApiVersion
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiVersion">Find the entity openApiVersion in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiVersion">Find the entity openApiVersion in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -333,6 +324,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_openApiVersion(openApiVersionWrap);
 			if(openApiVersion == null)
 				setOpenApiVersion(openApiVersionWrap.o);
+			openApiVersionWrap.o(null);
 		}
 		openApiVersionWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -366,18 +358,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return openApiVersion == null ? "" : openApiVersion;
 	}
 
-	public String nomAffichageOpenApiVersion() {
-		return null;
-	}
-
-	public String htmTooltipOpenApiVersion() {
-		return null;
-	}
-
-	public String htmOpenApiVersion() {
-		return openApiVersion == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiVersion());
-	}
-
 	/////////////////
 	// appSwagger2 //
 	/////////////////
@@ -385,14 +365,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity appSwagger2
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AppSwagger2 appSwagger2;
 	@JsonIgnore
-	public Wrap<AppSwagger2> appSwagger2Wrap = new Wrap<AppSwagger2>().p(this).c(AppSwagger2.class).var("appSwagger2").o(appSwagger2);
+	public Wrap<AppSwagger2> appSwagger2Wrap = new Wrap<AppSwagger2>().var("appSwagger2").o(appSwagger2);
 
 	/**	<br/> The entity appSwagger2
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appSwagger2">Find the entity appSwagger2 in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appSwagger2">Find the entity appSwagger2 in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -414,6 +395,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_appSwagger2(appSwagger2Wrap);
 			if(appSwagger2 == null)
 				setAppSwagger2(appSwagger2Wrap.o);
+			appSwagger2Wrap.o(null);
 		}
 		if(appSwagger2 != null)
 			appSwagger2.initDeepForClass(siteRequest_);
@@ -428,14 +410,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classUris
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classUris;
 	@JsonIgnore
-	public Wrap<List<String>> classUrisWrap = new Wrap<List<String>>().p(this).c(List.class).var("classUris").o(classUris);
+	public Wrap<List<String>> classUrisWrap = new Wrap<List<String>>().var("classUris").o(classUris);
 
 	/**	<br/> The entity classUris
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classUris">Find the entity classUris in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classUris">Find the entity classUris in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -450,7 +434,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classUrisWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassUris(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public ApiWriter addClassUris(String...objets) {
 		for(String o : objets) {
@@ -463,6 +447,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classUris.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassUris(JsonArray objets) {
 		classUris.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -475,6 +460,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classUris(classUrisWrap);
 			if(classUris == null)
 				setClassUris(classUrisWrap.o);
+			classUrisWrap.o(null);
 		}
 		classUrisWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -512,18 +498,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classUris == null ? "" : classUris.toString();
 	}
 
-	public String nomAffichageClassUris() {
-		return null;
-	}
-
-	public String htmTooltipClassUris() {
-		return null;
-	}
-
-	public String htmClassUris() {
-		return classUris == null ? "" : StringEscapeUtils.escapeHtml4(strClassUris());
-	}
-
 	//////////////////////////
 	// openApiVersionNumber //
 	//////////////////////////
@@ -531,15 +505,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity openApiVersionNumber
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer openApiVersionNumber;
 	@JsonIgnore
-	public Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().p(this).c(Integer.class).var("openApiVersionNumber").o(openApiVersionNumber);
+	public Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber").o(openApiVersionNumber);
 
 	/**	<br/> The entity openApiVersionNumber
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiVersionNumber">Find the entity openApiVersionNumber in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiVersionNumber">Find the entity openApiVersionNumber in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -553,6 +528,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.openApiVersionNumber = openApiVersionNumber;
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setOpenApiVersionNumber(String o) {
 		this.openApiVersionNumber = ApiWriter.staticSetOpenApiVersionNumber(siteRequest_, o);
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
@@ -567,6 +543,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_openApiVersionNumber(openApiVersionNumberWrap);
 			if(openApiVersionNumber == null)
 				setOpenApiVersionNumber(openApiVersionNumberWrap.o);
+			openApiVersionNumberWrap.o(null);
 		}
 		openApiVersionNumberWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -600,18 +577,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
 
-	public String nomAffichageOpenApiVersionNumber() {
-		return null;
-	}
-
-	public String htmTooltipOpenApiVersionNumber() {
-		return null;
-	}
-
-	public String htmOpenApiVersionNumber() {
-		return openApiVersionNumber == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiVersionNumber());
-	}
-
 	////////////////
 	// tabsSchema //
 	////////////////
@@ -619,15 +584,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity tabsSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsSchema;
 	@JsonIgnore
-	public Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().p(this).c(Integer.class).var("tabsSchema").o(tabsSchema);
+	public Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema").o(tabsSchema);
 
 	/**	<br/> The entity tabsSchema
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabsSchema">Find the entity tabsSchema in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabsSchema">Find the entity tabsSchema in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -641,6 +607,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.tabsSchema = tabsSchema;
 		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setTabsSchema(String o) {
 		this.tabsSchema = ApiWriter.staticSetTabsSchema(siteRequest_, o);
 		this.tabsSchemaWrap.alreadyInitialized = true;
@@ -655,6 +622,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_tabsSchema(tabsSchemaWrap);
 			if(tabsSchema == null)
 				setTabsSchema(tabsSchemaWrap.o);
+			tabsSchemaWrap.o(null);
 		}
 		tabsSchemaWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -688,18 +656,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
-	public String nomAffichageTabsSchema() {
-		return null;
-	}
-
-	public String htmTooltipTabsSchema() {
-		return null;
-	}
-
-	public String htmTabsSchema() {
-		return tabsSchema == null ? "" : StringEscapeUtils.escapeHtml4(strTabsSchema());
-	}
-
 	///////////////////
 	// tabsResponses //
 	///////////////////
@@ -707,15 +663,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity tabsResponses
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsResponses;
 	@JsonIgnore
-	public Wrap<Integer> tabsResponsesWrap = new Wrap<Integer>().p(this).c(Integer.class).var("tabsResponses").o(tabsResponses);
+	public Wrap<Integer> tabsResponsesWrap = new Wrap<Integer>().var("tabsResponses").o(tabsResponses);
 
 	/**	<br/> The entity tabsResponses
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabsResponses">Find the entity tabsResponses in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabsResponses">Find the entity tabsResponses in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -729,6 +686,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.tabsResponses = tabsResponses;
 		this.tabsResponsesWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setTabsResponses(String o) {
 		this.tabsResponses = ApiWriter.staticSetTabsResponses(siteRequest_, o);
 		this.tabsResponsesWrap.alreadyInitialized = true;
@@ -743,6 +701,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_tabsResponses(tabsResponsesWrap);
 			if(tabsResponses == null)
 				setTabsResponses(tabsResponsesWrap.o);
+			tabsResponsesWrap.o(null);
 		}
 		tabsResponsesWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -776,18 +735,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return tabsResponses == null ? "" : tabsResponses.toString();
 	}
 
-	public String nomAffichageTabsResponses() {
-		return null;
-	}
-
-	public String htmTooltipTabsResponses() {
-		return null;
-	}
-
-	public String htmTabsResponses() {
-		return tabsResponses == null ? "" : StringEscapeUtils.escapeHtml4(strTabsResponses());
-	}
-
 	////////////
 	// wPaths //
 	////////////
@@ -795,14 +742,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wPaths
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wPaths;
 	@JsonIgnore
-	public Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wPaths").o(wPaths);
+	public Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths").o(wPaths);
 
 	/**	<br/> The entity wPaths
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wPaths">Find the entity wPaths in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wPaths">Find the entity wPaths in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -824,6 +772,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wPaths(wPathsWrap);
 			if(wPaths == null)
 				setWPaths(wPathsWrap.o);
+			wPathsWrap.o(null);
 		}
 		if(wPaths != null)
 			wPaths.initDeepForClass(siteRequest_);
@@ -838,14 +787,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestBodies
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBodies;
 	@JsonIgnore
-	public Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wRequestBodies").o(wRequestBodies);
+	public Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies").o(wRequestBodies);
 
 	/**	<br/> The entity wRequestBodies
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestBodies">Find the entity wRequestBodies in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestBodies">Find the entity wRequestBodies in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -867,6 +817,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wRequestBodies(wRequestBodiesWrap);
 			if(wRequestBodies == null)
 				setWRequestBodies(wRequestBodiesWrap.o);
+			wRequestBodiesWrap.o(null);
 		}
 		if(wRequestBodies != null)
 			wRequestBodies.initDeepForClass(siteRequest_);
@@ -881,14 +832,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wSchemas
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wSchemas;
 	@JsonIgnore
-	public Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wSchemas").o(wSchemas);
+	public Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas").o(wSchemas);
 
 	/**	<br/> The entity wSchemas
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wSchemas">Find the entity wSchemas in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wSchemas">Find the entity wSchemas in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -910,6 +862,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wSchemas(wSchemasWrap);
 			if(wSchemas == null)
 				setWSchemas(wSchemasWrap.o);
+			wSchemasWrap.o(null);
 		}
 		if(wSchemas != null)
 			wSchemas.initDeepForClass(siteRequest_);
@@ -917,89 +870,89 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return (ApiWriter)this;
 	}
 
-	/////////////////
-	// siteContext //
-	/////////////////
+	////////////
+	// config //
+	////////////
 
-	/**	 The entity siteContext
+	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected SiteContextEnUS siteContext;
+	protected JsonObject config;
 	@JsonIgnore
-	public Wrap<SiteContextEnUS> siteContextWrap = new Wrap<SiteContextEnUS>().p(this).c(SiteContextEnUS.class).var("siteContext").o(siteContext);
+	public Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config").o(config);
 
-	/**	<br/> The entity siteContext
+	/**	<br/> The entity config
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteContext">Find the entity siteContext in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:config">Find the entity config in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _siteContext(Wrap<SiteContextEnUS> c);
+	protected abstract void _config(Wrap<JsonObject> c);
 
-	public SiteContextEnUS getSiteContext() {
-		return siteContext;
+	public JsonObject getConfig() {
+		return config;
 	}
 
-	public void setSiteContext(SiteContextEnUS siteContext) {
-		this.siteContext = siteContext;
-		this.siteContextWrap.alreadyInitialized = true;
+	public void setConfig(JsonObject config) {
+		this.config = config;
+		this.configWrap.alreadyInitialized = true;
 	}
-	public static SiteContextEnUS staticSetSiteContext(SiteRequestEnUS siteRequest_, String o) {
+	public static JsonObject staticSetConfig(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected ApiWriter siteContextInit() {
-		if(!siteContextWrap.alreadyInitialized) {
-			_siteContext(siteContextWrap);
-			if(siteContext == null)
-				setSiteContext(siteContextWrap.o);
+	protected ApiWriter configInit() {
+		if(!configWrap.alreadyInitialized) {
+			_config(configWrap);
+			if(config == null)
+				setConfig(configWrap.o);
+			configWrap.o(null);
 		}
-		if(siteContext != null)
-			siteContext.initDeepForClass(siteRequest_);
-		siteContextWrap.alreadyInitialized(true);
+		configWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
-	////////////////
-	// siteConfig //
-	////////////////
+	/////////////////////////
+	// solrClientComputate //
+	/////////////////////////
 
-	/**	 The entity siteConfig
+	/**	 The entity solrClientComputate
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected SiteConfig siteConfig;
+	protected SolrClient solrClientComputate;
 	@JsonIgnore
-	public Wrap<SiteConfig> siteConfigWrap = new Wrap<SiteConfig>().p(this).c(SiteConfig.class).var("siteConfig").o(siteConfig);
+	public Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate").o(solrClientComputate);
 
-	/**	<br/> The entity siteConfig
+	/**	<br/> The entity solrClientComputate
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteConfig">Find the entity siteConfig in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrClientComputate">Find the entity solrClientComputate in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _siteConfig(Wrap<SiteConfig> c);
+	protected abstract void _solrClientComputate(Wrap<SolrClient> c);
 
-	public SiteConfig getSiteConfig() {
-		return siteConfig;
+	public SolrClient getSolrClientComputate() {
+		return solrClientComputate;
 	}
 
-	public void setSiteConfig(SiteConfig siteConfig) {
-		this.siteConfig = siteConfig;
-		this.siteConfigWrap.alreadyInitialized = true;
+	public void setSolrClientComputate(SolrClient solrClientComputate) {
+		this.solrClientComputate = solrClientComputate;
+		this.solrClientComputateWrap.alreadyInitialized = true;
 	}
-	public static SiteConfig staticSetSiteConfig(SiteRequestEnUS siteRequest_, String o) {
+	public static SolrClient staticSetSolrClientComputate(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected ApiWriter siteConfigInit() {
-		if(!siteConfigWrap.alreadyInitialized) {
-			_siteConfig(siteConfigWrap);
-			if(siteConfig == null)
-				setSiteConfig(siteConfigWrap.o);
+	protected ApiWriter solrClientComputateInit() {
+		if(!solrClientComputateWrap.alreadyInitialized) {
+			_solrClientComputate(solrClientComputateWrap);
+			if(solrClientComputate == null)
+				setSolrClientComputate(solrClientComputateWrap.o);
+			solrClientComputateWrap.o(null);
 		}
-		if(siteConfig != null)
-			siteConfig.initDeepForClass(siteRequest_);
-		siteConfigWrap.alreadyInitialized(true);
+		solrClientComputateWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1010,14 +963,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestHeaders
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestHeaders;
 	@JsonIgnore
-	public Wrap<AllWriter> wRequestHeadersWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wRequestHeaders").o(wRequestHeaders);
+	public Wrap<AllWriter> wRequestHeadersWrap = new Wrap<AllWriter>().var("wRequestHeaders").o(wRequestHeaders);
 
 	/**	<br/> The entity wRequestHeaders
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestHeaders">Find the entity wRequestHeaders in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestHeaders">Find the entity wRequestHeaders in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1039,6 +993,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wRequestHeaders(wRequestHeadersWrap);
 			if(wRequestHeaders == null)
 				setWRequestHeaders(wRequestHeadersWrap.o);
+			wRequestHeadersWrap.o(null);
 		}
 		if(wRequestHeaders != null)
 			wRequestHeaders.initDeepForClass(siteRequest_);
@@ -1053,14 +1008,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestDescription
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestDescription;
 	@JsonIgnore
-	public Wrap<AllWriter> wRequestDescriptionWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wRequestDescription").o(wRequestDescription);
+	public Wrap<AllWriter> wRequestDescriptionWrap = new Wrap<AllWriter>().var("wRequestDescription").o(wRequestDescription);
 
 	/**	<br/> The entity wRequestDescription
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestDescription">Find the entity wRequestDescription in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestDescription">Find the entity wRequestDescription in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1082,6 +1038,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wRequestDescription(wRequestDescriptionWrap);
 			if(wRequestDescription == null)
 				setWRequestDescription(wRequestDescriptionWrap.o);
+			wRequestDescriptionWrap.o(null);
 		}
 		if(wRequestDescription != null)
 			wRequestDescription.initDeepForClass(siteRequest_);
@@ -1096,14 +1053,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wResponseDescription
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseDescription;
 	@JsonIgnore
-	public Wrap<AllWriter> wResponseDescriptionWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wResponseDescription").o(wResponseDescription);
+	public Wrap<AllWriter> wResponseDescriptionWrap = new Wrap<AllWriter>().var("wResponseDescription").o(wResponseDescription);
 
 	/**	<br/> The entity wResponseDescription
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wResponseDescription">Find the entity wResponseDescription in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wResponseDescription">Find the entity wResponseDescription in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1125,6 +1083,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wResponseDescription(wResponseDescriptionWrap);
 			if(wResponseDescription == null)
 				setWResponseDescription(wResponseDescriptionWrap.o);
+			wResponseDescriptionWrap.o(null);
 		}
 		if(wResponseDescription != null)
 			wResponseDescription.initDeepForClass(siteRequest_);
@@ -1139,14 +1098,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestBody
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBody;
 	@JsonIgnore
-	public Wrap<AllWriter> wRequestBodyWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wRequestBody").o(wRequestBody);
+	public Wrap<AllWriter> wRequestBodyWrap = new Wrap<AllWriter>().var("wRequestBody").o(wRequestBody);
 
 	/**	<br/> The entity wRequestBody
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestBody">Find the entity wRequestBody in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestBody">Find the entity wRequestBody in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1168,6 +1128,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wRequestBody(wRequestBodyWrap);
 			if(wRequestBody == null)
 				setWRequestBody(wRequestBodyWrap.o);
+			wRequestBodyWrap.o(null);
 		}
 		if(wRequestBody != null)
 			wRequestBody.initDeepForClass(siteRequest_);
@@ -1182,14 +1143,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wResponseBody
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseBody;
 	@JsonIgnore
-	public Wrap<AllWriter> wResponseBodyWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wResponseBody").o(wResponseBody);
+	public Wrap<AllWriter> wResponseBodyWrap = new Wrap<AllWriter>().var("wResponseBody").o(wResponseBody);
 
 	/**	<br/> The entity wResponseBody
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wResponseBody">Find the entity wResponseBody in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wResponseBody">Find the entity wResponseBody in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1211,6 +1173,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wResponseBody(wResponseBodyWrap);
 			if(wResponseBody == null)
 				setWResponseBody(wResponseBodyWrap.o);
+			wResponseBodyWrap.o(null);
 		}
 		if(wResponseBody != null)
 			wResponseBody.initDeepForClass(siteRequest_);
@@ -1225,14 +1188,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestSchema;
 	@JsonIgnore
-	public Wrap<AllWriter> wRequestSchemaWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wRequestSchema").o(wRequestSchema);
+	public Wrap<AllWriter> wRequestSchemaWrap = new Wrap<AllWriter>().var("wRequestSchema").o(wRequestSchema);
 
 	/**	<br/> The entity wRequestSchema
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestSchema">Find the entity wRequestSchema in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestSchema">Find the entity wRequestSchema in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1254,6 +1218,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wRequestSchema(wRequestSchemaWrap);
 			if(wRequestSchema == null)
 				setWRequestSchema(wRequestSchemaWrap.o);
+			wRequestSchemaWrap.o(null);
 		}
 		if(wRequestSchema != null)
 			wRequestSchema.initDeepForClass(siteRequest_);
@@ -1268,14 +1233,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wResponseSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseSchema;
 	@JsonIgnore
-	public Wrap<AllWriter> wResponseSchemaWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wResponseSchema").o(wResponseSchema);
+	public Wrap<AllWriter> wResponseSchemaWrap = new Wrap<AllWriter>().var("wResponseSchema").o(wResponseSchema);
 
 	/**	<br/> The entity wResponseSchema
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wResponseSchema">Find the entity wResponseSchema in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wResponseSchema">Find the entity wResponseSchema in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1297,6 +1263,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_wResponseSchema(wResponseSchemaWrap);
 			if(wResponseSchema == null)
 				setWResponseSchema(wResponseSchemaWrap.o);
+			wResponseSchemaWrap.o(null);
 		}
 		if(wResponseSchema != null)
 			wResponseSchema.initDeepForClass(siteRequest_);
@@ -1311,14 +1278,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity writers
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriters writers;
 	@JsonIgnore
-	public Wrap<AllWriters> writersWrap = new Wrap<AllWriters>().p(this).c(AllWriters.class).var("writers").o(writers);
+	public Wrap<AllWriters> writersWrap = new Wrap<AllWriters>().var("writers").o(writers);
 
 	/**	<br/> The entity writers
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:writers">Find the entity writers in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:writers">Find the entity writers in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1340,6 +1308,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_writers(writersWrap);
 			if(writers == null)
 				setWriters(writersWrap.o);
+			writersWrap.o(null);
 		}
 		if(writers != null)
 			writers.initDeepForClass(siteRequest_);
@@ -1354,14 +1323,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiTag
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiTag;
 	@JsonIgnore
-	public Wrap<String> classApiTagWrap = new Wrap<String>().p(this).c(String.class).var("classApiTag").o(classApiTag);
+	public Wrap<String> classApiTagWrap = new Wrap<String>().var("classApiTag").o(classApiTag);
 
 	/**	<br/> The entity classApiTag
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiTag">Find the entity classApiTag in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiTag">Find the entity classApiTag in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1382,6 +1352,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiTag(classApiTagWrap);
 			if(classApiTag == null)
 				setClassApiTag(classApiTagWrap.o);
+			classApiTagWrap.o(null);
 		}
 		classApiTagWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1415,18 +1386,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiTag == null ? "" : classApiTag;
 	}
 
-	public String nomAffichageClassApiTag() {
-		return null;
-	}
-
-	public String htmTooltipClassApiTag() {
-		return null;
-	}
-
-	public String htmClassApiTag() {
-		return classApiTag == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiTag());
-	}
-
 	//////////////////////
 	// classExtendsBase //
 	//////////////////////
@@ -1434,14 +1393,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classExtendsBase
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classExtendsBase;
 	@JsonIgnore
-	public Wrap<Boolean> classExtendsBaseWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classExtendsBase").o(classExtendsBase);
+	public Wrap<Boolean> classExtendsBaseWrap = new Wrap<Boolean>().var("classExtendsBase").o(classExtendsBase);
 
 	/**	<br/> The entity classExtendsBase
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classExtendsBase">Find the entity classExtendsBase in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classExtendsBase">Find the entity classExtendsBase in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1455,6 +1415,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classExtendsBase = classExtendsBase;
 		this.classExtendsBaseWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassExtendsBase(String o) {
 		this.classExtendsBase = ApiWriter.staticSetClassExtendsBase(siteRequest_, o);
 		this.classExtendsBaseWrap.alreadyInitialized = true;
@@ -1467,6 +1428,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classExtendsBase(classExtendsBaseWrap);
 			if(classExtendsBase == null)
 				setClassExtendsBase(classExtendsBaseWrap.o);
+			classExtendsBaseWrap.o(null);
 		}
 		classExtendsBaseWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1500,18 +1462,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classExtendsBase == null ? "" : classExtendsBase.toString();
 	}
 
-	public String nomAffichageClassExtendsBase() {
-		return null;
-	}
-
-	public String htmTooltipClassExtendsBase() {
-		return null;
-	}
-
-	public String htmClassExtendsBase() {
-		return classExtendsBase == null ? "" : StringEscapeUtils.escapeHtml4(strClassExtendsBase());
-	}
-
 	/////////////////
 	// classIsBase //
 	/////////////////
@@ -1519,14 +1469,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classIsBase
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classIsBase;
 	@JsonIgnore
-	public Wrap<Boolean> classIsBaseWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classIsBase").o(classIsBase);
+	public Wrap<Boolean> classIsBaseWrap = new Wrap<Boolean>().var("classIsBase").o(classIsBase);
 
 	/**	<br/> The entity classIsBase
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classIsBase">Find the entity classIsBase in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classIsBase">Find the entity classIsBase in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1540,6 +1491,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classIsBase = classIsBase;
 		this.classIsBaseWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassIsBase(String o) {
 		this.classIsBase = ApiWriter.staticSetClassIsBase(siteRequest_, o);
 		this.classIsBaseWrap.alreadyInitialized = true;
@@ -1552,6 +1504,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classIsBase(classIsBaseWrap);
 			if(classIsBase == null)
 				setClassIsBase(classIsBaseWrap.o);
+			classIsBaseWrap.o(null);
 		}
 		classIsBaseWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1585,18 +1538,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classIsBase == null ? "" : classIsBase.toString();
 	}
 
-	public String nomAffichageClassIsBase() {
-		return null;
-	}
-
-	public String htmTooltipClassIsBase() {
-		return null;
-	}
-
-	public String htmClassIsBase() {
-		return classIsBase == null ? "" : StringEscapeUtils.escapeHtml4(strClassIsBase());
-	}
-
 	/////////////////////
 	// classSimpleName //
 	/////////////////////
@@ -1604,14 +1545,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSimpleName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
 	@JsonIgnore
-	public Wrap<String> classSimpleNameWrap = new Wrap<String>().p(this).c(String.class).var("classSimpleName").o(classSimpleName);
+	public Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName").o(classSimpleName);
 
 	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1632,6 +1574,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classSimpleName(classSimpleNameWrap);
 			if(classSimpleName == null)
 				setClassSimpleName(classSimpleNameWrap.o);
+			classSimpleNameWrap.o(null);
 		}
 		classSimpleNameWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1665,18 +1608,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSimpleName == null ? "" : classSimpleName;
 	}
 
-	public String nomAffichageClassSimpleName() {
-		return null;
-	}
-
-	public String htmTooltipClassSimpleName() {
-		return null;
-	}
-
-	public String htmClassSimpleName() {
-		return classSimpleName == null ? "" : StringEscapeUtils.escapeHtml4(strClassSimpleName());
-	}
-
 	/////////////
 	// appName //
 	/////////////
@@ -1684,14 +1615,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity appName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String appName;
 	@JsonIgnore
-	public Wrap<String> appNameWrap = new Wrap<String>().p(this).c(String.class).var("appName").o(appName);
+	public Wrap<String> appNameWrap = new Wrap<String>().var("appName").o(appName);
 
 	/**	<br/> The entity appName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appName">Find the entity appName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appName">Find the entity appName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1712,6 +1644,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_appName(appNameWrap);
 			if(appName == null)
 				setAppName(appNameWrap.o);
+			appNameWrap.o(null);
 		}
 		appNameWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1745,18 +1678,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return appName == null ? "" : appName;
 	}
 
-	public String nomAffichageAppName() {
-		return null;
-	}
-
-	public String htmTooltipAppName() {
-		return null;
-	}
-
-	public String htmAppName() {
-		return appName == null ? "" : StringEscapeUtils.escapeHtml4(strAppName());
-	}
-
 	///////////////////////
 	// classAbsolutePath //
 	///////////////////////
@@ -1764,14 +1685,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classAbsolutePath
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classAbsolutePath;
 	@JsonIgnore
-	public Wrap<String> classAbsolutePathWrap = new Wrap<String>().p(this).c(String.class).var("classAbsolutePath").o(classAbsolutePath);
+	public Wrap<String> classAbsolutePathWrap = new Wrap<String>().var("classAbsolutePath").o(classAbsolutePath);
 
 	/**	<br/> The entity classAbsolutePath
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classAbsolutePath">Find the entity classAbsolutePath in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classAbsolutePath">Find the entity classAbsolutePath in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1792,6 +1714,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classAbsolutePath(classAbsolutePathWrap);
 			if(classAbsolutePath == null)
 				setClassAbsolutePath(classAbsolutePathWrap.o);
+			classAbsolutePathWrap.o(null);
 		}
 		classAbsolutePathWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1825,18 +1748,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classAbsolutePath == null ? "" : classAbsolutePath;
 	}
 
-	public String nomAffichageClassAbsolutePath() {
-		return null;
-	}
-
-	public String htmTooltipClassAbsolutePath() {
-		return null;
-	}
-
-	public String htmClassAbsolutePath() {
-		return classAbsolutePath == null ? "" : StringEscapeUtils.escapeHtml4(strClassAbsolutePath());
-	}
-
 	///////////////////////
 	// classApiUriMethod //
 	///////////////////////
@@ -1844,14 +1755,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiUriMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiUriMethod;
 	@JsonIgnore
-	public Wrap<String> classApiUriMethodWrap = new Wrap<String>().p(this).c(String.class).var("classApiUriMethod").o(classApiUriMethod);
+	public Wrap<String> classApiUriMethodWrap = new Wrap<String>().var("classApiUriMethod").o(classApiUriMethod);
 
 	/**	<br/> The entity classApiUriMethod
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiUriMethod">Find the entity classApiUriMethod in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiUriMethod">Find the entity classApiUriMethod in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1872,6 +1784,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiUriMethod(classApiUriMethodWrap);
 			if(classApiUriMethod == null)
 				setClassApiUriMethod(classApiUriMethodWrap.o);
+			classApiUriMethodWrap.o(null);
 		}
 		classApiUriMethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1905,18 +1818,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiUriMethod == null ? "" : classApiUriMethod;
 	}
 
-	public String nomAffichageClassApiUriMethod() {
-		return null;
-	}
-
-	public String htmTooltipClassApiUriMethod() {
-		return null;
-	}
-
-	public String htmClassApiUriMethod() {
-		return classApiUriMethod == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiUriMethod());
-	}
-
 	/////////////////////////
 	// classRoleUserMethod //
 	/////////////////////////
@@ -1924,14 +1825,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoleUserMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleUserMethod;
 	@JsonIgnore
-	public Wrap<Boolean> classRoleUserMethodWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classRoleUserMethod").o(classRoleUserMethod);
+	public Wrap<Boolean> classRoleUserMethodWrap = new Wrap<Boolean>().var("classRoleUserMethod").o(classRoleUserMethod);
 
 	/**	<br/> The entity classRoleUserMethod
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleUserMethod">Find the entity classRoleUserMethod in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleUserMethod">Find the entity classRoleUserMethod in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1945,6 +1847,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRoleUserMethod = classRoleUserMethod;
 		this.classRoleUserMethodWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRoleUserMethod(String o) {
 		this.classRoleUserMethod = ApiWriter.staticSetClassRoleUserMethod(siteRequest_, o);
 		this.classRoleUserMethodWrap.alreadyInitialized = true;
@@ -1957,6 +1860,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classRoleUserMethod(classRoleUserMethodWrap);
 			if(classRoleUserMethod == null)
 				setClassRoleUserMethod(classRoleUserMethodWrap.o);
+			classRoleUserMethodWrap.o(null);
 		}
 		classRoleUserMethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -1990,18 +1894,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUserMethod == null ? "" : classRoleUserMethod.toString();
 	}
 
-	public String nomAffichageClassRoleUserMethod() {
-		return null;
-	}
-
-	public String htmTooltipClassRoleUserMethod() {
-		return null;
-	}
-
-	public String htmClassRoleUserMethod() {
-		return classRoleUserMethod == null ? "" : StringEscapeUtils.escapeHtml4(strClassRoleUserMethod());
-	}
-
 	//////////////////////////
 	// classApiMethodMethod //
 	//////////////////////////
@@ -2009,14 +1901,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiMethodMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMethodMethod;
 	@JsonIgnore
-	public Wrap<String> classApiMethodMethodWrap = new Wrap<String>().p(this).c(String.class).var("classApiMethodMethod").o(classApiMethodMethod);
+	public Wrap<String> classApiMethodMethodWrap = new Wrap<String>().var("classApiMethodMethod").o(classApiMethodMethod);
 
 	/**	<br/> The entity classApiMethodMethod
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiMethodMethod">Find the entity classApiMethodMethod in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiMethodMethod">Find the entity classApiMethodMethod in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2037,6 +1930,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiMethodMethod(classApiMethodMethodWrap);
 			if(classApiMethodMethod == null)
 				setClassApiMethodMethod(classApiMethodMethodWrap.o);
+			classApiMethodMethodWrap.o(null);
 		}
 		classApiMethodMethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2070,18 +1964,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMethodMethod == null ? "" : classApiMethodMethod;
 	}
 
-	public String nomAffichageClassApiMethodMethod() {
-		return null;
-	}
-
-	public String htmTooltipClassApiMethodMethod() {
-		return null;
-	}
-
-	public String htmClassApiMethodMethod() {
-		return classApiMethodMethod == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiMethodMethod());
-	}
-
 	////////////////////////////////
 	// classApiMediaType200Method //
 	////////////////////////////////
@@ -2089,14 +1971,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiMediaType200Method
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMediaType200Method;
 	@JsonIgnore
-	public Wrap<String> classApiMediaType200MethodWrap = new Wrap<String>().p(this).c(String.class).var("classApiMediaType200Method").o(classApiMediaType200Method);
+	public Wrap<String> classApiMediaType200MethodWrap = new Wrap<String>().var("classApiMediaType200Method").o(classApiMediaType200Method);
 
 	/**	<br/> The entity classApiMediaType200Method
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiMediaType200Method">Find the entity classApiMediaType200Method in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiMediaType200Method">Find the entity classApiMediaType200Method in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2117,6 +2000,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiMediaType200Method(classApiMediaType200MethodWrap);
 			if(classApiMediaType200Method == null)
 				setClassApiMediaType200Method(classApiMediaType200MethodWrap.o);
+			classApiMediaType200MethodWrap.o(null);
 		}
 		classApiMediaType200MethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2150,18 +2034,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMediaType200Method == null ? "" : classApiMediaType200Method;
 	}
 
-	public String nomAffichageClassApiMediaType200Method() {
-		return null;
-	}
-
-	public String htmTooltipClassApiMediaType200Method() {
-		return null;
-	}
-
-	public String htmClassApiMediaType200Method() {
-		return classApiMediaType200Method == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiMediaType200Method());
-	}
-
 	///////////////////////////////
 	// classApiOperationIdMethod //
 	///////////////////////////////
@@ -2169,14 +2041,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiOperationIdMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethod;
 	@JsonIgnore
-	public Wrap<String> classApiOperationIdMethodWrap = new Wrap<String>().p(this).c(String.class).var("classApiOperationIdMethod").o(classApiOperationIdMethod);
+	public Wrap<String> classApiOperationIdMethodWrap = new Wrap<String>().var("classApiOperationIdMethod").o(classApiOperationIdMethod);
 
 	/**	<br/> The entity classApiOperationIdMethod
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiOperationIdMethod">Find the entity classApiOperationIdMethod in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiOperationIdMethod">Find the entity classApiOperationIdMethod in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2197,6 +2070,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiOperationIdMethod(classApiOperationIdMethodWrap);
 			if(classApiOperationIdMethod == null)
 				setClassApiOperationIdMethod(classApiOperationIdMethodWrap.o);
+			classApiOperationIdMethodWrap.o(null);
 		}
 		classApiOperationIdMethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2230,18 +2104,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiOperationIdMethod == null ? "" : classApiOperationIdMethod;
 	}
 
-	public String nomAffichageClassApiOperationIdMethod() {
-		return null;
-	}
-
-	public String htmTooltipClassApiOperationIdMethod() {
-		return null;
-	}
-
-	public String htmClassApiOperationIdMethod() {
-		return classApiOperationIdMethod == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiOperationIdMethod());
-	}
-
 	//////////////////////////////////////
 	// classApiOperationIdMethodRequest //
 	//////////////////////////////////////
@@ -2249,14 +2111,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiOperationIdMethodRequest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethodRequest;
 	@JsonIgnore
-	public Wrap<String> classApiOperationIdMethodRequestWrap = new Wrap<String>().p(this).c(String.class).var("classApiOperationIdMethodRequest").o(classApiOperationIdMethodRequest);
+	public Wrap<String> classApiOperationIdMethodRequestWrap = new Wrap<String>().var("classApiOperationIdMethodRequest").o(classApiOperationIdMethodRequest);
 
 	/**	<br/> The entity classApiOperationIdMethodRequest
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiOperationIdMethodRequest">Find the entity classApiOperationIdMethodRequest in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiOperationIdMethodRequest">Find the entity classApiOperationIdMethodRequest in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2277,6 +2140,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap);
 			if(classApiOperationIdMethodRequest == null)
 				setClassApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap.o);
+			classApiOperationIdMethodRequestWrap.o(null);
 		}
 		classApiOperationIdMethodRequestWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2310,18 +2174,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiOperationIdMethodRequest == null ? "" : classApiOperationIdMethodRequest;
 	}
 
-	public String nomAffichageClassApiOperationIdMethodRequest() {
-		return null;
-	}
-
-	public String htmTooltipClassApiOperationIdMethodRequest() {
-		return null;
-	}
-
-	public String htmClassApiOperationIdMethodRequest() {
-		return classApiOperationIdMethodRequest == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiOperationIdMethodRequest());
-	}
-
 	///////////////////////////////////////
 	// classApiOperationIdMethodResponse //
 	///////////////////////////////////////
@@ -2329,14 +2181,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiOperationIdMethodResponse
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethodResponse;
 	@JsonIgnore
-	public Wrap<String> classApiOperationIdMethodResponseWrap = new Wrap<String>().p(this).c(String.class).var("classApiOperationIdMethodResponse").o(classApiOperationIdMethodResponse);
+	public Wrap<String> classApiOperationIdMethodResponseWrap = new Wrap<String>().var("classApiOperationIdMethodResponse").o(classApiOperationIdMethodResponse);
 
 	/**	<br/> The entity classApiOperationIdMethodResponse
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiOperationIdMethodResponse">Find the entity classApiOperationIdMethodResponse in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiOperationIdMethodResponse">Find the entity classApiOperationIdMethodResponse in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2357,6 +2210,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap);
 			if(classApiOperationIdMethodResponse == null)
 				setClassApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap.o);
+			classApiOperationIdMethodResponseWrap.o(null);
 		}
 		classApiOperationIdMethodResponseWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2390,18 +2244,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiOperationIdMethodResponse == null ? "" : classApiOperationIdMethodResponse;
 	}
 
-	public String nomAffichageClassApiOperationIdMethodResponse() {
-		return null;
-	}
-
-	public String htmTooltipClassApiOperationIdMethodResponse() {
-		return null;
-	}
-
-	public String htmClassApiOperationIdMethodResponse() {
-		return classApiOperationIdMethodResponse == null ? "" : StringEscapeUtils.escapeHtml4(strClassApiOperationIdMethodResponse());
-	}
-
 	///////////////////////////////////////////
 	// classSuperApiOperationIdMethodRequest //
 	///////////////////////////////////////////
@@ -2409,14 +2251,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSuperApiOperationIdMethodRequest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSuperApiOperationIdMethodRequest;
 	@JsonIgnore
-	public Wrap<String> classSuperApiOperationIdMethodRequestWrap = new Wrap<String>().p(this).c(String.class).var("classSuperApiOperationIdMethodRequest").o(classSuperApiOperationIdMethodRequest);
+	public Wrap<String> classSuperApiOperationIdMethodRequestWrap = new Wrap<String>().var("classSuperApiOperationIdMethodRequest").o(classSuperApiOperationIdMethodRequest);
 
 	/**	<br/> The entity classSuperApiOperationIdMethodRequest
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSuperApiOperationIdMethodRequest">Find the entity classSuperApiOperationIdMethodRequest in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSuperApiOperationIdMethodRequest">Find the entity classSuperApiOperationIdMethodRequest in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2437,6 +2280,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap);
 			if(classSuperApiOperationIdMethodRequest == null)
 				setClassSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap.o);
+			classSuperApiOperationIdMethodRequestWrap.o(null);
 		}
 		classSuperApiOperationIdMethodRequestWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2470,18 +2314,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSuperApiOperationIdMethodRequest == null ? "" : classSuperApiOperationIdMethodRequest;
 	}
 
-	public String nomAffichageClassSuperApiOperationIdMethodRequest() {
-		return null;
-	}
-
-	public String htmTooltipClassSuperApiOperationIdMethodRequest() {
-		return null;
-	}
-
-	public String htmClassSuperApiOperationIdMethodRequest() {
-		return classSuperApiOperationIdMethodRequest == null ? "" : StringEscapeUtils.escapeHtml4(strClassSuperApiOperationIdMethodRequest());
-	}
-
 	////////////////////////////////////////////
 	// classSuperApiOperationIdMethodResponse //
 	////////////////////////////////////////////
@@ -2489,14 +2321,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSuperApiOperationIdMethodResponse
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSuperApiOperationIdMethodResponse;
 	@JsonIgnore
-	public Wrap<String> classSuperApiOperationIdMethodResponseWrap = new Wrap<String>().p(this).c(String.class).var("classSuperApiOperationIdMethodResponse").o(classSuperApiOperationIdMethodResponse);
+	public Wrap<String> classSuperApiOperationIdMethodResponseWrap = new Wrap<String>().var("classSuperApiOperationIdMethodResponse").o(classSuperApiOperationIdMethodResponse);
 
 	/**	<br/> The entity classSuperApiOperationIdMethodResponse
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSuperApiOperationIdMethodResponse">Find the entity classSuperApiOperationIdMethodResponse in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSuperApiOperationIdMethodResponse">Find the entity classSuperApiOperationIdMethodResponse in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2517,6 +2350,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap);
 			if(classSuperApiOperationIdMethodResponse == null)
 				setClassSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap.o);
+			classSuperApiOperationIdMethodResponseWrap.o(null);
 		}
 		classSuperApiOperationIdMethodResponseWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2550,18 +2384,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSuperApiOperationIdMethodResponse == null ? "" : classSuperApiOperationIdMethodResponse;
 	}
 
-	public String nomAffichageClassSuperApiOperationIdMethodResponse() {
-		return null;
-	}
-
-	public String htmTooltipClassSuperApiOperationIdMethodResponse() {
-		return null;
-	}
-
-	public String htmClassSuperApiOperationIdMethodResponse() {
-		return classSuperApiOperationIdMethodResponse == null ? "" : StringEscapeUtils.escapeHtml4(strClassSuperApiOperationIdMethodResponse());
-	}
-
 	//////////////////////////////////
 	// classPageCanonicalNameMethod //
 	//////////////////////////////////
@@ -2569,14 +2391,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classPageCanonicalNameMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classPageCanonicalNameMethod;
 	@JsonIgnore
-	public Wrap<String> classPageCanonicalNameMethodWrap = new Wrap<String>().p(this).c(String.class).var("classPageCanonicalNameMethod").o(classPageCanonicalNameMethod);
+	public Wrap<String> classPageCanonicalNameMethodWrap = new Wrap<String>().var("classPageCanonicalNameMethod").o(classPageCanonicalNameMethod);
 
 	/**	<br/> The entity classPageCanonicalNameMethod
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classPageCanonicalNameMethod">Find the entity classPageCanonicalNameMethod in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classPageCanonicalNameMethod">Find the entity classPageCanonicalNameMethod in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2597,6 +2420,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classPageCanonicalNameMethod(classPageCanonicalNameMethodWrap);
 			if(classPageCanonicalNameMethod == null)
 				setClassPageCanonicalNameMethod(classPageCanonicalNameMethodWrap.o);
+			classPageCanonicalNameMethodWrap.o(null);
 		}
 		classPageCanonicalNameMethodWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2630,18 +2454,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classPageCanonicalNameMethod == null ? "" : classPageCanonicalNameMethod;
 	}
 
-	public String nomAffichageClassPageCanonicalNameMethod() {
-		return null;
-	}
-
-	public String htmTooltipClassPageCanonicalNameMethod() {
-		return null;
-	}
-
-	public String htmClassPageCanonicalNameMethod() {
-		return classPageCanonicalNameMethod == null ? "" : StringEscapeUtils.escapeHtml4(strClassPageCanonicalNameMethod());
-	}
-
 	////////////////////////
 	// classKeywordsFound //
 	////////////////////////
@@ -2649,14 +2461,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classKeywordsFound
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classKeywordsFound;
 	@JsonIgnore
-	public Wrap<Boolean> classKeywordsFoundWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classKeywordsFound").o(classKeywordsFound);
+	public Wrap<Boolean> classKeywordsFoundWrap = new Wrap<Boolean>().var("classKeywordsFound").o(classKeywordsFound);
 
 	/**	<br/> The entity classKeywordsFound
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classKeywordsFound">Find the entity classKeywordsFound in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classKeywordsFound">Find the entity classKeywordsFound in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2670,6 +2483,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classKeywordsFound = classKeywordsFound;
 		this.classKeywordsFoundWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassKeywordsFound(String o) {
 		this.classKeywordsFound = ApiWriter.staticSetClassKeywordsFound(siteRequest_, o);
 		this.classKeywordsFoundWrap.alreadyInitialized = true;
@@ -2682,6 +2496,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classKeywordsFound(classKeywordsFoundWrap);
 			if(classKeywordsFound == null)
 				setClassKeywordsFound(classKeywordsFoundWrap.o);
+			classKeywordsFoundWrap.o(null);
 		}
 		classKeywordsFoundWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2715,18 +2530,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classKeywordsFound == null ? "" : classKeywordsFound.toString();
 	}
 
-	public String nomAffichageClassKeywordsFound() {
-		return null;
-	}
-
-	public String htmTooltipClassKeywordsFound() {
-		return null;
-	}
-
-	public String htmClassKeywordsFound() {
-		return classKeywordsFound == null ? "" : StringEscapeUtils.escapeHtml4(strClassKeywordsFound());
-	}
-
 	///////////////////
 	// classKeywords //
 	///////////////////
@@ -2734,14 +2537,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classKeywords
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classKeywords;
 	@JsonIgnore
-	public Wrap<List<String>> classKeywordsWrap = new Wrap<List<String>>().p(this).c(List.class).var("classKeywords").o(classKeywords);
+	public Wrap<List<String>> classKeywordsWrap = new Wrap<List<String>>().var("classKeywords").o(classKeywords);
 
 	/**	<br/> The entity classKeywords
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classKeywords">Find the entity classKeywords in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classKeywords">Find the entity classKeywords in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2756,7 +2561,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classKeywordsWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassKeywords(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public ApiWriter addClassKeywords(String...objets) {
 		for(String o : objets) {
@@ -2769,6 +2574,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classKeywords.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassKeywords(JsonArray objets) {
 		classKeywords.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -2781,6 +2587,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classKeywords(classKeywordsWrap);
 			if(classKeywords == null)
 				setClassKeywords(classKeywordsWrap.o);
+			classKeywordsWrap.o(null);
 		}
 		classKeywordsWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2818,18 +2625,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classKeywords == null ? "" : classKeywords.toString();
 	}
 
-	public String nomAffichageClassKeywords() {
-		return null;
-	}
-
-	public String htmTooltipClassKeywords() {
-		return null;
-	}
-
-	public String htmClassKeywords() {
-		return classKeywords == null ? "" : StringEscapeUtils.escapeHtml4(strClassKeywords());
-	}
-
 	/////////////////////
 	// classPublicRead //
 	/////////////////////
@@ -2837,14 +2632,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classPublicRead
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classPublicRead;
 	@JsonIgnore
-	public Wrap<Boolean> classPublicReadWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classPublicRead").o(classPublicRead);
+	public Wrap<Boolean> classPublicReadWrap = new Wrap<Boolean>().var("classPublicRead").o(classPublicRead);
 
 	/**	<br/> The entity classPublicRead
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classPublicRead">Find the entity classPublicRead in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classPublicRead">Find the entity classPublicRead in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2858,6 +2654,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classPublicRead = classPublicRead;
 		this.classPublicReadWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassPublicRead(String o) {
 		this.classPublicRead = ApiWriter.staticSetClassPublicRead(siteRequest_, o);
 		this.classPublicReadWrap.alreadyInitialized = true;
@@ -2870,6 +2667,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classPublicRead(classPublicReadWrap);
 			if(classPublicRead == null)
 				setClassPublicRead(classPublicReadWrap.o);
+			classPublicReadWrap.o(null);
 		}
 		classPublicReadWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2903,18 +2701,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classPublicRead == null ? "" : classPublicRead.toString();
 	}
 
-	public String nomAffichageClassPublicRead() {
-		return null;
-	}
-
-	public String htmTooltipClassPublicRead() {
-		return null;
-	}
-
-	public String htmClassPublicRead() {
-		return classPublicRead == null ? "" : StringEscapeUtils.escapeHtml4(strClassPublicRead());
-	}
-
 	//////////////////////
 	// classRoleSession //
 	//////////////////////
@@ -2922,14 +2708,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoleSession
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleSession;
 	@JsonIgnore
-	public Wrap<Boolean> classRoleSessionWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classRoleSession").o(classRoleSession);
+	public Wrap<Boolean> classRoleSessionWrap = new Wrap<Boolean>().var("classRoleSession").o(classRoleSession);
 
 	/**	<br/> The entity classRoleSession
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleSession">Find the entity classRoleSession in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleSession">Find the entity classRoleSession in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -2943,6 +2730,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRoleSession = classRoleSession;
 		this.classRoleSessionWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRoleSession(String o) {
 		this.classRoleSession = ApiWriter.staticSetClassRoleSession(siteRequest_, o);
 		this.classRoleSessionWrap.alreadyInitialized = true;
@@ -2955,6 +2743,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classRoleSession(classRoleSessionWrap);
 			if(classRoleSession == null)
 				setClassRoleSession(classRoleSessionWrap.o);
+			classRoleSessionWrap.o(null);
 		}
 		classRoleSessionWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -2988,18 +2777,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleSession == null ? "" : classRoleSession.toString();
 	}
 
-	public String nomAffichageClassRoleSession() {
-		return null;
-	}
-
-	public String htmTooltipClassRoleSession() {
-		return null;
-	}
-
-	public String htmClassRoleSession() {
-		return classRoleSession == null ? "" : StringEscapeUtils.escapeHtml4(strClassRoleSession());
-	}
-
 	//////////////////////////
 	// classRoleUtilisateur //
 	//////////////////////////
@@ -3007,14 +2784,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoleUtilisateur
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleUtilisateur;
 	@JsonIgnore
-	public Wrap<Boolean> classRoleUtilisateurWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classRoleUtilisateur").o(classRoleUtilisateur);
+	public Wrap<Boolean> classRoleUtilisateurWrap = new Wrap<Boolean>().var("classRoleUtilisateur").o(classRoleUtilisateur);
 
 	/**	<br/> The entity classRoleUtilisateur
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleUtilisateur">Find the entity classRoleUtilisateur in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleUtilisateur">Find the entity classRoleUtilisateur in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -3028,6 +2806,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRoleUtilisateur = classRoleUtilisateur;
 		this.classRoleUtilisateurWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRoleUtilisateur(String o) {
 		this.classRoleUtilisateur = ApiWriter.staticSetClassRoleUtilisateur(siteRequest_, o);
 		this.classRoleUtilisateurWrap.alreadyInitialized = true;
@@ -3040,6 +2819,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classRoleUtilisateur(classRoleUtilisateurWrap);
 			if(classRoleUtilisateur == null)
 				setClassRoleUtilisateur(classRoleUtilisateurWrap.o);
+			classRoleUtilisateurWrap.o(null);
 		}
 		classRoleUtilisateurWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -3073,16 +2853,80 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
 	}
 
-	public String nomAffichageClassRoleUtilisateur() {
-		return null;
+	//////////////////
+	// classRoleAll //
+	//////////////////
+
+	/**	 The entity classRoleAll
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected Boolean classRoleAll;
+	@JsonIgnore
+	public Wrap<Boolean> classRoleAllWrap = new Wrap<Boolean>().var("classRoleAll").o(classRoleAll);
+
+	/**	<br/> The entity classRoleAll
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleAll">Find the entity classRoleAll in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _classRoleAll(Wrap<Boolean> c);
+
+	public Boolean getClassRoleAll() {
+		return classRoleAll;
 	}
 
-	public String htmTooltipClassRoleUtilisateur() {
-		return null;
+	public void setClassRoleAll(Boolean classRoleAll) {
+		this.classRoleAll = classRoleAll;
+		this.classRoleAllWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setClassRoleAll(String o) {
+		this.classRoleAll = ApiWriter.staticSetClassRoleAll(siteRequest_, o);
+		this.classRoleAllWrap.alreadyInitialized = true;
+	}
+	public static Boolean staticSetClassRoleAll(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
+	}
+	protected ApiWriter classRoleAllInit() {
+		if(!classRoleAllWrap.alreadyInitialized) {
+			_classRoleAll(classRoleAllWrap);
+			if(classRoleAll == null)
+				setClassRoleAll(classRoleAllWrap.o);
+			classRoleAllWrap.o(null);
+		}
+		classRoleAllWrap.alreadyInitialized(true);
+		return (ApiWriter)this;
 	}
 
-	public String htmClassRoleUtilisateur() {
-		return classRoleUtilisateur == null ? "" : StringEscapeUtils.escapeHtml4(strClassRoleUtilisateur());
+	public static Boolean staticSolrClassRoleAll(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrClassRoleAll(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqClassRoleAll(SiteRequestEnUS siteRequest_, String o) {
+		return ApiWriter.staticSolrStrClassRoleAll(siteRequest_, ApiWriter.staticSolrClassRoleAll(siteRequest_, ApiWriter.staticSetClassRoleAll(siteRequest_, o)));
+	}
+
+	public Boolean solrClassRoleAll() {
+		return ApiWriter.staticSolrClassRoleAll(siteRequest_, classRoleAll);
+	}
+
+	public String strClassRoleAll() {
+		return classRoleAll == null ? "" : classRoleAll.toString();
+	}
+
+	public Boolean sqlClassRoleAll() {
+		return classRoleAll;
+	}
+
+	public String jsonClassRoleAll() {
+		return classRoleAll == null ? "" : classRoleAll.toString();
 	}
 
 	/////////////////////
@@ -3092,14 +2936,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRolesFound
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRolesFound;
 	@JsonIgnore
-	public Wrap<Boolean> classRolesFoundWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("classRolesFound").o(classRolesFound);
+	public Wrap<Boolean> classRolesFoundWrap = new Wrap<Boolean>().var("classRolesFound").o(classRolesFound);
 
 	/**	<br/> The entity classRolesFound
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRolesFound">Find the entity classRolesFound in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRolesFound">Find the entity classRolesFound in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -3113,6 +2958,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRolesFound = classRolesFound;
 		this.classRolesFoundWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRolesFound(String o) {
 		this.classRolesFound = ApiWriter.staticSetClassRolesFound(siteRequest_, o);
 		this.classRolesFoundWrap.alreadyInitialized = true;
@@ -3125,6 +2971,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classRolesFound(classRolesFoundWrap);
 			if(classRolesFound == null)
 				setClassRolesFound(classRolesFoundWrap.o);
+			classRolesFoundWrap.o(null);
 		}
 		classRolesFoundWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -3158,18 +3005,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRolesFound == null ? "" : classRolesFound.toString();
 	}
 
-	public String nomAffichageClassRolesFound() {
-		return null;
-	}
-
-	public String htmTooltipClassRolesFound() {
-		return null;
-	}
-
-	public String htmClassRolesFound() {
-		return classRolesFound == null ? "" : StringEscapeUtils.escapeHtml4(strClassRolesFound());
-	}
-
 	////////////////
 	// classRoles //
 	////////////////
@@ -3177,14 +3012,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoles
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classRoles;
 	@JsonIgnore
-	public Wrap<List<String>> classRolesWrap = new Wrap<List<String>>().p(this).c(List.class).var("classRoles").o(classRoles);
+	public Wrap<List<String>> classRolesWrap = new Wrap<List<String>>().var("classRoles").o(classRoles);
 
 	/**	<br/> The entity classRoles
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoles">Find the entity classRoles in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoles">Find the entity classRoles in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -3199,7 +3036,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRolesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassRoles(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public ApiWriter addClassRoles(String...objets) {
 		for(String o : objets) {
@@ -3212,6 +3049,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classRoles.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassRoles(JsonArray objets) {
 		classRoles.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -3224,6 +3062,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classRoles(classRolesWrap);
 			if(classRoles == null)
 				setClassRoles(classRolesWrap.o);
+			classRolesWrap.o(null);
 		}
 		classRolesWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -3261,18 +3100,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoles == null ? "" : classRoles.toString();
 	}
 
-	public String nomAffichageClassRoles() {
-		return null;
-	}
-
-	public String htmTooltipClassRoles() {
-		return null;
-	}
-
-	public String htmClassRoles() {
-		return classRoles == null ? "" : StringEscapeUtils.escapeHtml4(strClassRoles());
-	}
-
 	////////////////////////
 	// classRolesLanguage //
 	////////////////////////
@@ -3280,14 +3107,16 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRolesLanguage
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classRolesLanguage;
 	@JsonIgnore
-	public Wrap<List<String>> classRolesLanguageWrap = new Wrap<List<String>>().p(this).c(List.class).var("classRolesLanguage").o(classRolesLanguage);
+	public Wrap<List<String>> classRolesLanguageWrap = new Wrap<List<String>>().var("classRolesLanguage").o(classRolesLanguage);
 
 	/**	<br/> The entity classRolesLanguage
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRolesLanguage">Find the entity classRolesLanguage in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRolesLanguage">Find the entity classRolesLanguage in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -3302,7 +3131,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRolesLanguageWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassRolesLanguage(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public ApiWriter addClassRolesLanguage(String...objets) {
 		for(String o : objets) {
@@ -3315,6 +3144,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classRolesLanguage.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassRolesLanguage(JsonArray objets) {
 		classRolesLanguage.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -3327,6 +3157,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_classRolesLanguage(classRolesLanguageWrap);
 			if(classRolesLanguage == null)
 				setClassRolesLanguage(classRolesLanguageWrap.o);
+			classRolesLanguageWrap.o(null);
 		}
 		classRolesLanguageWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -3364,18 +3195,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRolesLanguage == null ? "" : classRolesLanguage.toString();
 	}
 
-	public String nomAffichageClassRolesLanguage() {
-		return null;
-	}
-
-	public String htmTooltipClassRolesLanguage() {
-		return null;
-	}
-
-	public String htmClassRolesLanguage() {
-		return classRolesLanguage == null ? "" : StringEscapeUtils.escapeHtml4(strClassRolesLanguage());
-	}
-
 	//////////////////
 	// languageName //
 	//////////////////
@@ -3383,14 +3202,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity languageName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String languageName;
 	@JsonIgnore
-	public Wrap<String> languageNameWrap = new Wrap<String>().p(this).c(String.class).var("languageName").o(languageName);
+	public Wrap<String> languageNameWrap = new Wrap<String>().var("languageName").o(languageName);
 
 	/**	<br/> The entity languageName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:languageName">Find the entity languageName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:languageName">Find the entity languageName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -3411,6 +3231,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_languageName(languageNameWrap);
 			if(languageName == null)
 				setLanguageName(languageNameWrap.o);
+			languageNameWrap.o(null);
 		}
 		languageNameWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -3444,18 +3265,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return languageName == null ? "" : languageName;
 	}
 
-	public String nomAffichageLanguageName() {
-		return null;
-	}
-
-	public String htmTooltipLanguageName() {
-		return null;
-	}
-
-	public String htmLanguageName() {
-		return languageName == null ? "" : StringEscapeUtils.escapeHtml4(strLanguageName());
-	}
-
 	////////////////////////
 	// entitySolrDocument //
 	////////////////////////
@@ -3463,14 +3272,15 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity entitySolrDocument
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument entitySolrDocument;
 	@JsonIgnore
-	public Wrap<SolrDocument> entitySolrDocumentWrap = new Wrap<SolrDocument>().p(this).c(SolrDocument.class).var("entitySolrDocument").o(entitySolrDocument);
+	public Wrap<SolrDocument> entitySolrDocumentWrap = new Wrap<SolrDocument>().var("entitySolrDocument").o(entitySolrDocument);
 
 	/**	<br/> The entity entitySolrDocument
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:entitySolrDocument">Find the entity entitySolrDocument in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:entitySolrDocument">Find the entity entitySolrDocument in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -3492,6 +3302,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			_entitySolrDocument(entitySolrDocumentWrap);
 			if(entitySolrDocument == null)
 				setEntitySolrDocument(entitySolrDocumentWrap.o);
+			entitySolrDocumentWrap.o(null);
 		}
 		entitySolrDocumentWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
@@ -3517,55 +3328,56 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 
 	public void initApiWriter() {
-		siteRequest_Init();
-		classSolrDocumentInit();
-		contextRowsInit();
-		classApiMethodInit();
-		openApiVersionInit();
-		appSwagger2Init();
-		classUrisInit();
-		openApiVersionNumberInit();
-		tabsSchemaInit();
-		tabsResponsesInit();
-		wPathsInit();
-		wRequestBodiesInit();
-		wSchemasInit();
-		siteContextInit();
-		siteConfigInit();
-		wRequestHeadersInit();
-		wRequestDescriptionInit();
-		wResponseDescriptionInit();
-		wRequestBodyInit();
-		wResponseBodyInit();
-		wRequestSchemaInit();
-		wResponseSchemaInit();
-		writersInit();
-		classApiTagInit();
-		classExtendsBaseInit();
-		classIsBaseInit();
-		classSimpleNameInit();
-		appNameInit();
-		classAbsolutePathInit();
-		classApiUriMethodInit();
-		classRoleUserMethodInit();
-		classApiMethodMethodInit();
-		classApiMediaType200MethodInit();
-		classApiOperationIdMethodInit();
-		classApiOperationIdMethodRequestInit();
-		classApiOperationIdMethodResponseInit();
-		classSuperApiOperationIdMethodRequestInit();
-		classSuperApiOperationIdMethodResponseInit();
-		classPageCanonicalNameMethodInit();
-		classKeywordsFoundInit();
-		classKeywordsInit();
-		classPublicReadInit();
-		classRoleSessionInit();
-		classRoleUtilisateurInit();
-		classRolesFoundInit();
-		classRolesInit();
-		classRolesLanguageInit();
-		languageNameInit();
-		entitySolrDocumentInit();
+				siteRequest_Init();
+				classSolrDocumentInit();
+				contextRowsInit();
+				classApiMethodInit();
+				openApiVersionInit();
+				appSwagger2Init();
+				classUrisInit();
+				openApiVersionNumberInit();
+				tabsSchemaInit();
+				tabsResponsesInit();
+				wPathsInit();
+				wRequestBodiesInit();
+				wSchemasInit();
+				configInit();
+				solrClientComputateInit();
+				wRequestHeadersInit();
+				wRequestDescriptionInit();
+				wResponseDescriptionInit();
+				wRequestBodyInit();
+				wResponseBodyInit();
+				wRequestSchemaInit();
+				wResponseSchemaInit();
+				writersInit();
+				classApiTagInit();
+				classExtendsBaseInit();
+				classIsBaseInit();
+				classSimpleNameInit();
+				appNameInit();
+				classAbsolutePathInit();
+				classApiUriMethodInit();
+				classRoleUserMethodInit();
+				classApiMethodMethodInit();
+				classApiMediaType200MethodInit();
+				classApiOperationIdMethodInit();
+				classApiOperationIdMethodRequestInit();
+				classApiOperationIdMethodResponseInit();
+				classSuperApiOperationIdMethodRequestInit();
+				classSuperApiOperationIdMethodResponseInit();
+				classPageCanonicalNameMethodInit();
+				classKeywordsFoundInit();
+				classKeywordsInit();
+				classPublicReadInit();
+				classRoleSessionInit();
+				classRoleUtilisateurInit();
+				classRoleAllInit();
+				classRolesFoundInit();
+				classRolesInit();
+				classRolesLanguageInit();
+				languageNameInit();
+				entitySolrDocumentInit();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -3617,9 +3429,9 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainApiWriter(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -3657,10 +3469,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 				return oApiWriter.wRequestBodies;
 			case "wSchemas":
 				return oApiWriter.wSchemas;
-			case "siteContext":
-				return oApiWriter.siteContext;
-			case "siteConfig":
-				return oApiWriter.siteConfig;
+			case "config":
+				return oApiWriter.config;
+			case "solrClientComputate":
+				return oApiWriter.solrClientComputate;
 			case "wRequestHeaders":
 				return oApiWriter.wRequestHeaders;
 			case "wRequestDescription":
@@ -3719,6 +3531,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 				return oApiWriter.classRoleSession;
 			case "classRoleUtilisateur":
 				return oApiWriter.classRoleUtilisateur;
+			case "classRoleAll":
+				return oApiWriter.classRoleAll;
 			case "classRolesFound":
 				return oApiWriter.classRolesFound;
 			case "classRoles":
@@ -3744,9 +3558,9 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeApiWriter(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -3824,6 +3638,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSetClassRoleSession(siteRequest_, o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSetClassRoleUtilisateur(siteRequest_, o);
+		case "classRoleAll":
+			return ApiWriter.staticSetClassRoleAll(siteRequest_, o);
 		case "classRolesFound":
 			return ApiWriter.staticSetClassRolesFound(siteRequest_, o);
 		case "classRoles":
@@ -3902,6 +3718,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrClassRoleSession(siteRequest_, (Boolean)o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSolrClassRoleUtilisateur(siteRequest_, (Boolean)o);
+		case "classRoleAll":
+			return ApiWriter.staticSolrClassRoleAll(siteRequest_, (Boolean)o);
 		case "classRolesFound":
 			return ApiWriter.staticSolrClassRolesFound(siteRequest_, (Boolean)o);
 		case "classRoles":
@@ -3980,6 +3798,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrStrClassRoleSession(siteRequest_, (Boolean)o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSolrStrClassRoleUtilisateur(siteRequest_, (Boolean)o);
+		case "classRoleAll":
+			return ApiWriter.staticSolrStrClassRoleAll(siteRequest_, (Boolean)o);
 		case "classRolesFound":
 			return ApiWriter.staticSolrStrClassRolesFound(siteRequest_, (Boolean)o);
 		case "classRoles":
@@ -4058,6 +3878,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrFqClassRoleSession(siteRequest_, o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSolrFqClassRoleUtilisateur(siteRequest_, o);
+		case "classRoleAll":
+			return ApiWriter.staticSolrFqClassRoleAll(siteRequest_, o);
 		case "classRolesFound":
 			return ApiWriter.staticSolrFqClassRolesFound(siteRequest_, o);
 		case "classRoles":
@@ -4082,9 +3904,9 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			for(String v : vars) {
 				if(o == null)
 					o = defineApiWriter(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -4104,9 +3926,9 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			for(String v : vars) {
 				if(o == null)
 					o = defineApiWriter(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -4162,4 +3984,55 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_classSolrDocument = "classSolrDocument";
+	public static final String VAR_contextRows = "contextRows";
+	public static final String VAR_classApiMethod = "classApiMethod";
+	public static final String VAR_openApiVersion = "openApiVersion";
+	public static final String VAR_appSwagger2 = "appSwagger2";
+	public static final String VAR_classUris = "classUris";
+	public static final String VAR_openApiVersionNumber = "openApiVersionNumber";
+	public static final String VAR_tabsSchema = "tabsSchema";
+	public static final String VAR_tabsResponses = "tabsResponses";
+	public static final String VAR_wPaths = "wPaths";
+	public static final String VAR_wRequestBodies = "wRequestBodies";
+	public static final String VAR_wSchemas = "wSchemas";
+	public static final String VAR_config = "config";
+	public static final String VAR_solrClientComputate = "solrClientComputate";
+	public static final String VAR_wRequestHeaders = "wRequestHeaders";
+	public static final String VAR_wRequestDescription = "wRequestDescription";
+	public static final String VAR_wResponseDescription = "wResponseDescription";
+	public static final String VAR_wRequestBody = "wRequestBody";
+	public static final String VAR_wResponseBody = "wResponseBody";
+	public static final String VAR_wRequestSchema = "wRequestSchema";
+	public static final String VAR_wResponseSchema = "wResponseSchema";
+	public static final String VAR_writers = "writers";
+	public static final String VAR_classApiTag = "classApiTag";
+	public static final String VAR_classExtendsBase = "classExtendsBase";
+	public static final String VAR_classIsBase = "classIsBase";
+	public static final String VAR_classSimpleName = "classSimpleName";
+	public static final String VAR_appName = "appName";
+	public static final String VAR_classAbsolutePath = "classAbsolutePath";
+	public static final String VAR_classApiUriMethod = "classApiUriMethod";
+	public static final String VAR_classRoleUserMethod = "classRoleUserMethod";
+	public static final String VAR_classApiMethodMethod = "classApiMethodMethod";
+	public static final String VAR_classApiMediaType200Method = "classApiMediaType200Method";
+	public static final String VAR_classApiOperationIdMethod = "classApiOperationIdMethod";
+	public static final String VAR_classApiOperationIdMethodRequest = "classApiOperationIdMethodRequest";
+	public static final String VAR_classApiOperationIdMethodResponse = "classApiOperationIdMethodResponse";
+	public static final String VAR_classSuperApiOperationIdMethodRequest = "classSuperApiOperationIdMethodRequest";
+	public static final String VAR_classSuperApiOperationIdMethodResponse = "classSuperApiOperationIdMethodResponse";
+	public static final String VAR_classPageCanonicalNameMethod = "classPageCanonicalNameMethod";
+	public static final String VAR_classKeywordsFound = "classKeywordsFound";
+	public static final String VAR_classKeywords = "classKeywords";
+	public static final String VAR_classPublicRead = "classPublicRead";
+	public static final String VAR_classRoleSession = "classRoleSession";
+	public static final String VAR_classRoleUtilisateur = "classRoleUtilisateur";
+	public static final String VAR_classRoleAll = "classRoleAll";
+	public static final String VAR_classRolesFound = "classRolesFound";
+	public static final String VAR_classRoles = "classRoles";
+	public static final String VAR_classRolesLanguage = "classRolesLanguage";
+	public static final String VAR_languageName = "languageName";
+	public static final String VAR_entitySolrDocument = "entitySolrDocument";
 }

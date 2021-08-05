@@ -8,18 +8,21 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.computate.nico.enus.config.SiteConfig;
-import org.computate.nico.enus.context.SiteContextEnUS;
+
+import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.wrap.Wrap;
 import org.computate.nico.enus.writer.AllWriter;
 import org.computate.nico.enus.writer.ApiWriter;
+
+import io.vertx.core.json.JsonObject;
 
 public class AppSwagger2 extends AppSwagger2Gen<Object> {
 
@@ -29,30 +32,29 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 		api.writeOpenApi();
 	}
 
+	protected void _solrClientComputate(Wrap<SolrClient> w) {
+	}
+
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
 	}
 
-	protected void _siteContext(SiteContextEnUS o) { 
-	}
-
-	protected void _siteConfig(Wrap<SiteConfig> c) {
-		c.o(siteContext.getSiteConfig());
-	}
-
-	protected void _appPath(Wrap<String> c) {
-		c.o(siteConfig.getAppPath());
+	protected void _config(Wrap<JsonObject> c) {
 	}
 
 	protected void _appName(Wrap<String> c) {
-		c.o("NICO_SITE");
+		c.o("nico-site");
 	}
 
 	protected void _languageName(Wrap<String> c) {
 		c.o("enUS");
 	}
 
+	protected void _appPath(Wrap<String> c) {
+		c.o(config.getString(ConfigKeys.APP_PATH + "_" + languageName));
+	}
+
 	protected void _openApiVersion(Wrap<String> c) {
-		c.o(siteConfig.getOpenApiVersion());
+		c.o(config.getString(ConfigKeys.OPEN_API_VERSION, "3.0"));
 	}
 
 	protected void _openApiVersionNumber(Wrap<Integer> c) {
@@ -67,11 +69,11 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 	}
 
 	protected void _apiVersion(Wrap<String> c) {
-		c.o(siteConfig.getApiVersion());
+		c.o(config.getString(ConfigKeys.API_VERSION));
 	}
 
 	protected void _openApiYamlPath(Wrap<String> c) {
-		c.o(appPath + "/src/main/resources/" + ("2.0".equals(apiVersion) ? "swagger2" : "openapi3") + "-enUS.yaml");
+		c.o(appPath + "/src/main/resources/webroot/" + ("2.0".equals(apiVersion) ? "swagger2" : "openapi3") + "-enUS.yaml");
 	}
 
 	protected void _openApiYamlFile(Wrap<File> c) {
@@ -137,18 +139,13 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 
 		wPaths.l("info:");
 
-		wPaths.t(1, "title: ").string(siteConfig.getApiTitle()).l();
+		wPaths.t(1, "title: ").string(config.getString(ConfigKeys.API_TITLE)).l();
 //		wPaths.t(1, "description: ").yamlStr(2, siteConfig.getApiDescription());
 		if(openApiVersionNumber == 2) {
 			wPaths.t(1, "version: ").string(apiVersion).l();
-			wPaths.t(0, "host: ").l(wPaths.js(siteConfig.getApiHostName()));
-			wPaths.tl(0, "schemes:");
-			wPaths.tl(1, "- \"https\"");
 		}
 		else if(openApiVersionNumber > 2) {
 			wPaths.tl(1, "version: ", apiVersion);
-			wPaths.tl(0, "servers:");
-			wPaths.tl(1, "- url: ", siteConfig.getSiteBaseUrl());
 		}
 	}
 
@@ -182,74 +179,22 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 			wPaths.tl(7, "schema:");
 			wPaths.tl(8, "type: string");
 			wPaths.l();
-			wPaths.tl(1, "/photo:");
-			wPaths.tl(2, "post:");
-			wPaths.tl(3, "operationId: photo");
-			wPaths.tl(3, "x-vertx-event-bus: ", appName, "-", languageName, "-photo");
-			wPaths.tl(3, "description: >+");
-			wPaths.tl(3, "requestBody:");
-			wPaths.tl(4, "required: true");
-			wPaths.tl(4, "content:");
-			wPaths.tl(5, "multipart/form-data:");
-			wPaths.tl(6, "schema:");
-			wPaths.tl(7, "type: object");
-			wPaths.tl(7, "properties:");
-			wPaths.tl(8, "pk:");
-			wPaths.tl(9, "type: string");
-			wPaths.tl(8, "classeNomCanonique:");
-			wPaths.tl(9, "type: string");
-			wPaths.tl(8, "photo:");
-			wPaths.tl(9, "type: string");
-			wPaths.tl(9, "format: binary");
-			wPaths.tl(3, "responses:");
-			wPaths.tl(4, "'200':");
-			wPaths.tl(5, "description: >+");
-			wPaths.tl(5, "content:");
-			wPaths.tl(6, "application/json; charset=utf-8:");
-			wPaths.tl(7, "schema:");
-			wPaths.tl(8, "type: string");
-			wPaths.l();
-
-//		  /callback:
-//		    get:
-//		      operationId: callback
-//		      x-vertx-event-bus: NICO_SITE-enUS-School
-//		      responses:
-//		        '200':
-//		          description: >+
-//		          content:
-//		            application/json; charset=utf-8:
-//		              schema:
-//		                type: string
-//		  /logout:
-//		    get:
-//		      operationId: logout
-//		      x-vertx-event-bus: NICO_SITE-enUS-School
-//		      responses:
-//		        '200':
-//		          description: >+
-//		          content:
-//		            application/json; charset=utf-8:
-//		              schema:
-//		                type: string
 
 			if(openApiVersionNumber == 2) {
 				wSchemas.tl(0, "definitions:");
 			}
 			else {
 				wRequestBodies.tl(0, "components:");
-				if(siteConfig.getAuthUrl() != null) {
+				if(config.getString(ConfigKeys.AUTH_URL) != null) {
 					wRequestBodies.tl(1, "securitySchemes:");
+						wRequestBodies.tl(2, "basicAuth:");
+						wRequestBodies.tl(3, "type: http");
+						wRequestBodies.tl(3, "scheme: basic");
 						wRequestBodies.tl(2, "openIdConnect:");
 						wRequestBodies.tl(3, "type: openIdConnect");
-						wRequestBodies.tl(3, "openIdConnectUrl: ", siteConfig.getAuthUrl(), "/realms/", siteConfig.getAuthRealm(), "/.well-known/openid-configuration");
+						wRequestBodies.tl(3, "openIdConnectUrl: ", config.getString(ConfigKeys.AUTH_URL), "/realms/", config.getString(ConfigKeys.AUTH_REALM), "/.well-known/openid-configuration");
 				}
 				wRequestBodies.tl(1, "requestBodies:");
-				wRequestBodies.tl(2, "ErrorResponse:");
-				wRequestBodies.tl(3, "content:");
-				wRequestBodies.tl(4, "application/json:");
-				wRequestBodies.tl(5, "schema:");
-				wRequestBodies.tl(6, "$ref: '#/components/schemas/ErrorResponse'");
 
 				wSchemas.tl(1, "schemas:");
 			}
@@ -260,8 +205,9 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 			searchClasses.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(appPath));
 			searchClasses.addFilterQuery("classeApi_indexed_boolean:true");
 			searchClasses.addFilterQuery("partEstClasse_indexed_boolean:true");
+			searchClasses.addSort("classeNomCanonique_enUS_indexed_string", ORDER.asc);
 			searchClasses.addSort("partNumero_indexed_int", ORDER.asc);
-			QueryResponse searchClassesResponse = siteContext.getSolrClientComputate().query(searchClasses);
+			QueryResponse searchClassesResponse = solrClientComputate.query(searchClasses);
 			SolrDocumentList searchClassesResultats = searchClassesResponse.getResults();
 			Integer searchClassesLines = searchClasses.getRows();
 			for(Long i = searchClassesResultats.getStart(); i < searchClassesResultats.getNumFound(); i+=searchClassesLines) {
@@ -289,6 +235,7 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 						apiWriter.setWSchemas(wSchemas);
 						apiWriter.setOpenApiVersion(openApiVersion);
 						apiWriter.setAppSwagger2(this);
+						apiWriter.setSolrClientComputate(solrClientComputate);
 						apiWriter.setClassUris(classUris);
 						apiWriter.initDeepApiWriter(siteRequest_);
 						apiWriters.add(apiWriter);
@@ -304,11 +251,11 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 					SolrQuery searchEntites = new SolrQuery();
 					searchEntites.setQuery("*:*");
 					searchEntites.setRows(1000000);
-					searchEntites.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(siteConfig.getAppPath()));
+					searchEntites.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(appPath));
 					searchEntites.addFilterQuery("classeCheminAbsolu_indexed_string:" + ClientUtils.escapeQueryChars(classAbsolutePath));
 					searchEntites.addFilterQuery("partEstEntite_indexed_boolean:true");
 					searchEntites.addSort("partNumero_indexed_int", ORDER.asc);
-					QueryResponse searchEntitesResponse = siteContext.getSolrClientComputate().query(searchEntites);
+					QueryResponse searchEntitesResponse = solrClientComputate.query(searchEntites);
 					SolrDocumentList searchEntitesResults = searchEntitesResponse.getResults();
 					Integer searchEntitesLines = searchEntites.getRows();
 
@@ -323,7 +270,7 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 							}
 						}
 						searchEntites.setStart(i.intValue() + searchEntitesLines);
-						searchEntitesResponse = siteContext.getSolrClientComputate().query(searchEntites);
+						searchEntitesResponse = solrClientComputate.query(searchEntites);
 						searchEntitesResults = searchEntitesResponse.getResults();
 						searchEntitesLines = searchEntites.getRows();
 					}
@@ -337,35 +284,10 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 					}
 				}
 				searchClasses.setStart(i.intValue() + searchClassesLines);
-				searchClassesResponse = siteContext.getSolrClientComputate().query(searchClasses);
+				searchClassesResponse = solrClientComputate.query(searchClasses);
 				searchClassesResultats = searchClassesResponse.getResults();
 				searchClassesLines = searchClasses.getRows();
 			}
-			wSchemas.tl(tabsSchema, "ErrorResponse:");
-			wSchemas.tl(tabsSchema + 1, "required:");
-			wSchemas.tl(tabsSchema + 2, "- type");
-			wSchemas.tl(tabsSchema + 2, "- code");
-			wSchemas.tl(tabsSchema + 1, "properties:");
-			wSchemas.tl(tabsSchema + 2, "type:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "enum:");
-			wSchemas.tl(tabsSchema + 4, "- ERROR");
-			wSchemas.tl(tabsSchema + 4, "- WARN");
-			wSchemas.tl(tabsSchema + 4, "- INVALID");
-			wSchemas.tl(tabsSchema + 4, "- FATAL");
-			wSchemas.t(tabsSchema + 3, "description: ").yamlStr(tabsSchema + 4, "<br>invalid - Request did not confirm to the specification and was unprocessed & rejected. Please fix the value and try again</br>                         <br>warn - Request was partially processed.  E.g. some of the fields are missing in response to the system issues,  request was accepted successfully but will be processed asynchronously</br>                                                          <br>error - The request was accepted but could not be processed successfully</br>            <br>fatal - There was an internal system error while processing the request. These are technical errors and will be resolved by Citi, and the consumer should retry after some time. Business errors will not be categorized as fatal </br>");
-			wSchemas.tl(tabsSchema + 2, "code:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: Error code which qualifies the error. ");
-			wSchemas.tl(tabsSchema + 2, "details:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: Human readable explanation specific to the occurrence of the problem. ");
-			wSchemas.tl(tabsSchema + 2, "location:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: The name of the field that resulted in the error. ");
-			wSchemas.tl(tabsSchema + 2, "moreInfo:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: URI to human readable documentation of the error. ");
 		} catch (Exception e) {
 			ExceptionUtils.rethrow(e);
 		}

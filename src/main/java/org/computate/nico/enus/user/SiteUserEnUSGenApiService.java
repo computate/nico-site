@@ -1,16 +1,21 @@
 package org.computate.nico.enus.user;
 
-import org.computate.nico.enus.context.SiteContextEnUS;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.codegen.annotations.ProxyGen;
-import io.vertx.ext.web.api.generator.WebApiServiceGen;
 import io.vertx.serviceproxy.ServiceBinder;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.JsonArray;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.web.api.OperationResponse;
+import io.vertx.ext.web.api.service.WebApiServiceGen;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.core.WorkerExecutor;
+import io.vertx.pgclient.PgPool;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
 
 /**
  * Translate: false
@@ -19,22 +24,13 @@ import io.vertx.ext.web.api.OperationResponse;
 @WebApiServiceGen
 @ProxyGen
 public interface SiteUserEnUSGenApiService {
-	static void registerService(SiteContextEnUS siteContext, Vertx vertx) {
-		new ServiceBinder(vertx).setAddress("nico-site-enUS-SiteUser").register(SiteUserEnUSGenApiService.class, new SiteUserEnUSApiServiceImpl(siteContext));
+	static void registerService(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, Vertx vertx) {
+		new ServiceBinder(vertx).setAddress("nico-site-enUS-SiteUser").register(SiteUserEnUSGenApiService.class, new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider));
 	}
 
-	static SiteUserEnUSGenApiService create(SiteContextEnUS siteContext, Vertx vertx) {
-		return new SiteUserEnUSApiServiceImpl(siteContext);
-	}
-
-	// Une méthode d'usine pour créer une instance et un proxy. 
-	static SiteUserEnUSGenApiService createProxy(Vertx vertx, String address) {
-		return new SiteUserEnUSGenApiServiceVertxEBProxy(vertx, address);
-	}
-
-	public void searchSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void patchSiteUser(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void postSiteUser(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpageSiteUserId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpageSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchSiteUser(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
+	public void patchSiteUser(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
+	public void patchSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
+	public void postSiteUser(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
+	public void postSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
 }

@@ -6,17 +6,20 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.computate.nico.enus.config.SiteConfig;
-import org.computate.nico.enus.context.SiteContextEnUS;
+
+import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.vertx.AppSwagger2;
 import org.computate.nico.enus.wrap.Wrap;
+
+import io.vertx.core.json.JsonObject;
 
 public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWriter> {
 
@@ -68,12 +71,10 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 	protected void _wSchemas(Wrap<AllWriter> c) {
 	}
 
-	protected void _siteContext(Wrap<SiteContextEnUS> c) {
-		c.o(siteRequest_.getSiteContext_());
+	protected void _config(Wrap<JsonObject> c) {
 	}
 
-	protected void _siteConfig(Wrap<SiteConfig> c) {
-		c.o(siteRequest_.getSiteConfig_());
+	protected void _solrClientComputate(Wrap<SolrClient> c) {
 	}
 
 	protected void _wRequestHeaders(Wrap<AllWriter> c) {
@@ -193,6 +194,10 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 
 	protected void _classRoleUtilisateur(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeRoleUtilisateur_stored_boolean"));
+	}
+
+	protected void _classRoleAll(Wrap<Boolean> c) {
+		c.o((Boolean)classSolrDocument.get("classeRoleChacun_stored_boolean"));
 	}
 
 	protected void _classRolesFound(Wrap<Boolean> c) {
@@ -340,7 +345,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				SolrQuery searchEntities = new SolrQuery();
 				searchEntities.setQuery("*:*");
 				searchEntities.setRows(1000000);
-				searchEntities.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(siteConfig.getAppPath()));
+				searchEntities.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(config.getString(ConfigKeys.APP_PATH)));
 
 				if(StringUtils.isBlank(entityCanonicalNameGeneric))
 					searchEntities.addFilterQuery("classeNomCanonique_enUS_indexed_string:" + ClientUtils.escapeQueryChars(entityCanonicalName));
@@ -350,7 +355,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				searchEntities.addFilterQuery("entiteMotsCles_indexed_strings:" + ClientUtils.escapeQueryChars("apiModelEntity"));
 				searchEntities.addFilterQuery("partEstEntite_indexed_boolean:true");
 				searchEntities.addSort("partNumero_indexed_int", ORDER.asc);
-				QueryResponse searchEntitiesReponse = siteContext.getSolrClientComputate().query(searchEntities);
+				QueryResponse searchEntitiesReponse = solrClientComputate.query(searchEntities);
 				SolrDocumentList searchEntitiesResults = searchEntitiesReponse.getResults();
 				Integer searchEntitiesLines = searchEntities.getRows();
 
@@ -389,12 +394,6 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 							entityDescription = (String)entitySolrDocument.get("entiteDescription_stored_string");
 	
 							writeEntityDescription(numberTabs + 3, w, apiRequestOrResponse);
-//							if(entiteCanonicalNameGeneric == null) {
-//								writeEntityDescription(tabStep + 3, w, classApiMethod, apiRequestOrResponse);
-//							}
-//							else {
-//								writeEntityDescription(tabStep + 5, w, classApiMethod, apiRequestOrResponse);
-//							}
 							
 							entityVar = entityVarOld;
 							entityVarCapitalized = entityVarCapitalizedAncien;
@@ -574,44 +573,37 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 
 	public void  writeApi(Boolean id) throws Exception, Exception {
 
-			if(id || !classUris.contains(classApiUriMethod)) {
-				wPaths.tl(1, classApiUriMethod, (id ? "/{id}" : ""), ":");
-				classUris.add(classApiUriMethod);
-			}
-	
-			wPaths.tl(2, StringUtils.lowerCase(classApiMethodMethod), ":");
-			wPaths.tl(3, "operationId: ", classApiOperationIdMethod, (id ? "Id" : ""));
-			wPaths.tl(3, "x-vertx-event-bus: ", appName, "-", languageName, "-", classSimpleName);
-	
-			if(classRoleUserMethod 
-					|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isNotTrue(classPublicRead)
-					|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isTrue(classPublicRead) && StringUtils.equalsAny(classApiMethodMethod, "POST", "PUT", "PATCH", "DELETE")
-					) {
-				wPaths.tl(3, "security:");
-				wPaths.tl(4, "- openIdConnect:");
-				wPaths.tl(5, "- DefaultAuthScope");
+		if(id || !classUris.contains(classApiUriMethod)) {
+			wPaths.tl(1, classApiUriMethod, (id ? "/{id}" : ""), ":");
+			classUris.add(classApiUriMethod);
+		}
 
-//				wPaths.tl(5, "- roles");
-//				wPaths.tl(5, "- profile");
-//				wPaths.tl(5, "- offline_access");
+		wPaths.tl(2, StringUtils.lowerCase(classApiMethodMethod), ":");
+		wPaths.tl(3, "operationId: ", classApiOperationIdMethod, (id ? "Id" : ""));
+		wPaths.tl(3, "x-vertx-event-bus: ", appName, "-", languageName, "-", classSimpleName);
 
-//				for(int i = 0; i < classRoles.size(); i++) {
-//					if("frFR".equals(classRolesLanguage.get(i)))
-//						wPaths.tl(5, "- ", classRoles.get(i));
-//				}
-			}
-	
-			wPaths.t(3, "description: ").yamlStr(4, "");
-			wPaths.t(3, "summary: ").yamlStr(4, "");
-			if(StringUtils.isNotBlank(classApiTag)) {
-				wPaths.tl(3, "tags:");
-				wPaths.tl(4, "- ", classApiTag);
-			}
-	
-			if(openApiVersionNumber == 2) {
-				wPaths.tl(3, "produces:");
-				wPaths.tl(4, "- ", classApiMediaType200Method);
-			}
+		if(classRoleAll 
+				|| classRoleUserMethod 
+				|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isNotTrue(classPublicRead)
+				|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isTrue(classPublicRead) && StringUtils.equalsAny(classApiMethodMethod, "POST", "PUT", "PATCH", "DELETE")
+				) {
+			wPaths.tl(3, "security:");
+//			wPaths.tl(4, "- basicAuth: []");
+			wPaths.tl(4, "- openIdConnect:");
+			wPaths.tl(5, "- DefaultAuthScope");
+		}
+
+		wPaths.t(3, "description: ").yamlStr(4, "");
+		wPaths.t(3, "summary: ").yamlStr(4, "");
+		if(StringUtils.isNotBlank(classApiTag)) {
+			wPaths.tl(3, "tags:");
+			wPaths.tl(4, "- ", classApiTag);
+		}
+
+		if(openApiVersionNumber == 2) {
+			wPaths.tl(3, "produces:");
+			wPaths.tl(4, "- ", classApiMediaType200Method);
+		}
 	
 		if(!wRequestHeaders.getEmpty() || "GET".equals(classApiMethodMethod) || "DELETE".equals(classApiMethodMethod) || "PUT".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
 			wPaths.tl(3, "parameters:");
@@ -649,7 +641,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(5, "schema:");
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
-				wPaths.tl(7, "  type: string");
+				wPaths.tl(7, "type: string");
 				wPaths.tl(4, "- in: query");
 				wPaths.tl(5, "name: fl");
 				wPaths.tl(5, "description: ''");
@@ -663,7 +655,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(5, "schema:");
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
-				wPaths.tl(7, "  type: string");
+				wPaths.tl(7, "type: string");
 				wPaths.tl(4, "- in: query");
 				wPaths.tl(5, "name: start");
 				wPaths.tl(5, "description: ''");
@@ -691,6 +683,62 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
 				wPaths.tl(7, "  type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: boolean");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.start");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.end");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.gap");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.pivot");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.field");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
 			}
 		}
 
@@ -713,10 +761,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 			wPaths.tl(5, "in: body");
 
 			String strRequestDescription = wRequestDescription.toString();
-//			if(StringUtils.isNotBlank(StringUtils.trim(strRequestDescription)))
-				wPaths.t(5, "description: ").yamlStr(6, StringUtils.trim(strRequestDescription));
-//			else
-//				wPaths.tl(5, "description: ''");
+			wPaths.t(5, "description: ").yamlStr(6, StringUtils.trim(strRequestDescription));
 			
 			wPaths.tl(5, "schema:");
 			wPaths.tl(6, "$ref: '#/components/requestBodies/", classApiOperationIdMethodRequest, "'");
@@ -737,65 +782,11 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 		else {
 	
 			String strResponseDescription = wResponseDescription.toString();
-	//		if(StringUtils.isNotBlank(StringUtils.trim(strResponseDescription)))
-				wPaths.t(5 + tabsResponses, "description: ").yamlStr(6, strResponseDescription);
-	//		else
-	//			wPaths.tl(5, "description: ''");
+			wPaths.t(5 + tabsResponses, "description: ").yamlStr(6, strResponseDescription);
 		}
 
 		wPaths.tl(5 + tabsResponses, "schema:");
-		wPaths.tl(6 + tabsResponses, "$ref: '#/components/requestBodies/", classApiOperationIdMethodResponse, "'");
-		wPaths.tl(4, "'400':");
-		if(openApiVersionNumber > 2) {
-			wPaths.t(5, "description: ").yamlStr(6 + tabsResponses, "<table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing or invalid Parameters</td></tr></table>");
-			wPaths.tl(5, "content:").tl(6, "application/json:");
-		}
-		else {
-			wPaths.t(5 + tabsResponses, "description: ").yamlStr(6 + tabsResponses, "<table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing or invalid Parameters</td></tr></table>");
-		}
-		wPaths.tl(5 + tabsResponses, "schema:");
-		wPaths.tl(6 + tabsResponses, "$ref: '#/components/requestBodies/ErrorResponse'");
-		wPaths.tl(4, "'401':");
-		if(openApiVersionNumber > 2) {
-			wPaths.t(5, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization credentials are missing or invalid</td></tr></table>");
-			wPaths.tl(5, "content:").tl(6, "application/json:");
-		}
-		else {
-			wPaths.t(5 + tabsResponses, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization credentials are missing or invalid</td></tr></table>");
-		}
-		wPaths.tl(5 + tabsResponses, "schema:");
-		wPaths.tl(6 + tabsResponses, "$ref: '#/components/requestBodies/ErrorResponse'");
-		wPaths.tl(4, "'403':");
-		if(openApiVersionNumber > 2) {
-			wPaths.t(5, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td><td>More Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The request operation is not configured to access this resource</td><td>Channel/Country/Business provided in the request is not supported currently</td></tr></table>");
-			wPaths.tl(5, "content:").tl(6, "application/json:");
-		}
-		else {
-			wPaths.t(5 + tabsResponses, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td><td>More Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The request operation is not configured to access this resource</td><td>Channel/Country/Business provided in the request is not supported currently</td></tr></table>");
-		}
-		wPaths.tl(5 + tabsResponses, "schema:");
-		wPaths.tl(6 + tabsResponses, "$ref: '#/components/requestBodies/ErrorResponse'");
-		wPaths.tl(4, "'404':");
-		if(openApiVersionNumber > 2) {
-			wPaths.t(5, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td><td>More Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The requested resource was not found</td><td>Empty resource/resource not found</td></tr></table>");
-			wPaths.tl(5, "content:").tl(6, "application/json:");
-		}
-		else {
-			wPaths.t(5 + tabsResponses, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td><td>More Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The requested resource was not found</td><td>Empty resource/resource not found</td></tr></table>");
-		}
-		wPaths.tl(5 + tabsResponses, "schema:");
-		wPaths.tl(6 + tabsResponses, "$ref: '#/components/requestBodies/ErrorResponse'");
-		wPaths.tl(4, "'500':");
-		if(openApiVersionNumber > 2) {
-			wPaths.t(5, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The request failed due to an internal error/server unavailability</td></tr></table>");
-			wPaths.tl(5, "content:").tl(6, "application/json:");
-		}
-		else {
-			wPaths.t(5 + tabsResponses, "description: ").yamlStr(6 + tabsResponses, "<table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The request failed due to an internal error/server unavailability</td></tr></table>");
-		}
-		wPaths.tl(5 + tabsResponses, "schema:");
-		wPaths.tl(6 + tabsResponses, "$ref: '#/components/requestBodies/ErrorResponse'");
-
+		wPaths.tl(6 + tabsResponses, "$ref: '#/components/schemas/", classApiOperationIdMethodResponse, "'");
 		if(!id) {
 			if(openApiVersionNumber > 2) {
 				if(!"GET".equals(classApiMethodMethod) && !"DELETE".equals(classApiMethodMethod)) {
@@ -818,7 +809,6 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 			}
 	
 			if(!"GET".equals(classApiMethodMethod) && !"DELETE".equals(classApiMethodMethod)) {
-	//		if(classeMotsClesTrouves && classeMotsCles.contains(classApiMethod + ".request")) {
 				wSchemas.tl(tabsSchema, classApiOperationIdMethodRequest, ":");
 				wSchemas.tl(tabsSchema + 1, "allOf:");
 				if(BooleanUtils.isTrue(classExtendsBase) && StringUtils.isNotBlank(classSuperApiOperationIdMethodRequest)) {
@@ -828,35 +818,33 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wSchemas.tl(tabsSchema + 3, "properties:");
 				wSchemas.s(wRequestSchema.toString());
 			}
-	
-	//		if(classeMotsClesTrouves && classeMotsCles.contains(classApiMethod + ".response")) {
-				wSchemas.tl(tabsSchema, classApiOperationIdMethodResponse, ":");
-				wSchemas.tl(tabsSchema + 1, "allOf:");
-				if("text/html".equals(classApiMediaType200Method)) {
-					wSchemas.tl(tabsSchema + 2, "- type: string");
+
+			wSchemas.tl(tabsSchema, classApiOperationIdMethodResponse, ":");
+			wSchemas.tl(tabsSchema + 1, "allOf:");
+			if("text/html".equals(classApiMediaType200Method)) {
+				wSchemas.tl(tabsSchema + 2, "- type: string");
+			}
+			else if("application/pdf".equals(classApiMediaType200Method)) {
+				wSchemas.tl(tabsSchema + 2, "- type: string");
+				wSchemas.tl(tabsSchema + 2, "- format: binary");
+			}
+			else {
+				if(BooleanUtils.isTrue(classExtendsBase) && StringUtils.isNotBlank(classSuperApiOperationIdMethodResponse)) {
+					wSchemas.tl(tabsSchema + 2, "- $ref: \"#/components/schemas/", classSuperApiOperationIdMethodResponse, "\"");
 				}
-				else if("application/pdf".equals(classApiMediaType200Method)) {
-					wSchemas.tl(tabsSchema + 2, "- type: string");
-					wSchemas.tl(tabsSchema + 2, "- format: binary");
+	
+				if(classApiMethod.contains("Search")) {
+					wSchemas.tl(tabsSchema + 2, "- type: array");
+					wSchemas.tl(tabsSchema + 3, "items:");
+					wSchemas.tl(tabsSchema + 4, "type: object");
+					wSchemas.tl(tabsSchema + 4, "properties:");
 				}
 				else {
-					if(BooleanUtils.isTrue(classExtendsBase) && StringUtils.isNotBlank(classSuperApiOperationIdMethodResponse)) {
-						wSchemas.tl(tabsSchema + 2, "- $ref: \"#/components/schemas/", classSuperApiOperationIdMethodResponse, "\"");
-					}
-		
-					if(classApiMethod.contains("Search")) {
-						wSchemas.tl(tabsSchema + 2, "- type: array");
-						wSchemas.tl(tabsSchema + 3, "items:");
-						wSchemas.tl(tabsSchema + 4, "type: object");
-						wSchemas.tl(tabsSchema + 4, "properties:");
-					}
-					else {
-						wSchemas.tl(tabsSchema + 2, "- type: object");
-						wSchemas.tl(tabsSchema + 3, "properties:");
-					}
-					wSchemas.s(wResponseSchema.toString());
+					wSchemas.tl(tabsSchema + 2, "- type: object");
+					wSchemas.tl(tabsSchema + 3, "properties:");
 				}
-	//		}
+				wSchemas.s(wResponseSchema.toString());
+			}
 		}
 		if(classPageCanonicalNameMethod != null && BooleanUtils.isFalse(id) && !"/".equals(classApiUriMethod))
 			writeApi(true);

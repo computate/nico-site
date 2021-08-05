@@ -1,20 +1,24 @@
 package org.computate.nico.enus.user;
 
-import org.computate.nico.enus.enrollment.SiteEnrollmentEnUSGenApiServiceImpl;
-import org.computate.nico.enus.enrollment.SiteEnrollment;
-import org.computate.nico.enus.config.SiteConfig;
 import org.computate.nico.enus.request.SiteRequestEnUS;
-import org.computate.nico.enus.context.SiteContextEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.request.api.ApiRequest;
 import org.computate.nico.enus.search.SearchResult;
+import org.computate.nico.enus.vertx.MailVerticle;
+import org.computate.nico.enus.config.ConfigKeys;
+import org.computate.nico.enus.base.BaseApiServiceImpl;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.pgclient.PgPool;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.time.Instant;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -27,6 +31,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -47,13 +52,8 @@ import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
-import io.vertx.ext.web.api.validation.ParameterTypeValidator;
-import io.vertx.ext.web.api.validation.ValidationException;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
-import io.vertx.pgclient.PgPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
@@ -66,17 +66,31 @@ import java.sql.Timestamp;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.api.OperationResponse;
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
+import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.net.URLDecoder;
+import org.apache.solr.util.DateMathParser;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.PivotField;
+import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.commons.collections.CollectionUtils;
@@ -89,76 +103,58 @@ import org.computate.nico.enus.writer.AllWriter;
 /**
  * Translate: false
  **/
-public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService {
+public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements SiteUserEnUSGenApiService {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteUserEnUSGenApiServiceImpl.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SiteUserEnUSGenApiServiceImpl.class);
 
-	protected static final String SERVICE_ADDRESS = "SiteUserEnUSApiServiceImpl";
-
-	protected SiteContextEnUS siteContext;
-
-	public SiteUserEnUSGenApiServiceImpl(SiteContextEnUS siteContext) {
-		this.siteContext = siteContext;
+	public SiteUserEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// Search //
 
 	@Override
-	public void searchSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteUser(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/user");
-		siteRequest.setRequestMethod("Search");
-		try {
-			{
-				userSiteUser(siteRequest, b -> {
-					if(b.succeeded()) {
-						aSearchSiteUser(siteRequest, false, true, false, "/api/user", "Search", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteUser> listSiteUser = c.result();
-								searchSiteUserResponse(listSiteUser, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchSiteUser succeeded. "));
-									} else {
-										LOGGER.error(String.format("searchSiteUser failed. ", d.cause()));
-										errorSiteUser(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("searchSiteUser failed. ", c.cause()));
-								errorSiteUser(siteRequest, eventHandler, c);
-							}
+	public void searchSiteUser(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					searchSiteUserList(siteRequest, false, true, false, "/api/user", "Search").onSuccess(listSiteUser -> {
+						response200SearchSiteUser(listSiteUser).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("searchSiteUser succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("searchSiteUser failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("searchSiteUser failed. ", b.cause()));
-						errorSiteUser(siteRequest, eventHandler, b);
-					}
-				});
-			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSiteUser failed. ", ex));
-			errorSiteUser(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
-	}
-
-
-	public void searchSiteUserResponse(SearchList<SiteUser> listSiteUser, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
-		try {
-			response200SearchSiteUser(listSiteUser, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("searchSiteUserResponse failed. ", a.cause()));
-					errorSiteUser(siteRequest, eventHandler, a);
+					}).onFailure(ex -> {
+						LOG.error(String.format("searchSiteUser failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
 				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSiteUserResponse failed. ", ex));
-			errorSiteUser(siteRequest, null, Future.failedFuture(ex));
-		}
+			} catch(Exception ex) {
+				LOG.error(String.format("searchSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("searchSiteUser failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("searchSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
-	public void response200SearchSiteUser(SearchList<SiteUser> listSiteUser, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+
+	public Future<ServiceResponse> response200SearchSiteUser(SearchList<SiteUser> listSiteUser) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
 			QueryResponse responseSearch = listSiteUser.getQueryResponse();
@@ -170,18 +166,24 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
+			List<String> fls = listSiteUser.getFields();
 
 			JsonObject json = new JsonObject();
 			json.put("startNum", startNum);
 			json.put("foundNum", foundNum);
 			json.put("returnedNum", returnedNum);
-			json.put("searchTime", searchTime);
-			json.put("transmissionTime", transmissionTime);
+			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
+				json.put("searchTime", searchTime);
+				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
+			}
 			JsonArray l = new JsonArray();
 			listSiteUser.getList().stream().forEach(o -> {
 				JsonObject json2 = JsonObject.mapFrom(o);
-				List<String> fls = listSiteUser.getFields();
 				if(fls.size() > 0) {
 					Set<String> fieldNames = new HashSet<String>();
 					fieldNames.addAll(json2.fieldNames());
@@ -201,1837 +203,849 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						facetFieldCounts.put(count.getName(), count.getCount());
+					}
+				}
+			}
+
+			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
+			if(facetRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				json.put("facet_ranges", rangeJson);
+				for(RangeFacet rangeFacet : facetRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonObject rangeFacetCountsMap = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsMap);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						rangeFacetCountsMap.put(count.getValue(), count.getCount());
+					}
+				}
+			}
+
+			NamedList<List<PivotField>> facetPivot = responseSearch.getFacetPivot();
+			if(facetPivot != null) {
+				JsonObject facetPivotJson = new JsonObject();
+				json.put("facet_pivot", facetPivotJson);
+				Iterator<Entry<String, List<PivotField>>> facetPivotIterator = responseSearch.getFacetPivot().iterator();
+				while(facetPivotIterator.hasNext()) {
+					Entry<String, List<PivotField>> pivotEntry = facetPivotIterator.next();
+					List<PivotField> pivotFields = pivotEntry.getValue();
+					String[] varsIndexed = pivotEntry.getKey().trim().split(",");
+					String[] entityVars = new String[varsIndexed.length];
+					for(Integer i = 0; i < entityVars.length; i++) {
+						String entityIndexed = varsIndexed[i];
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+					}
+					JsonArray pivotArray = new JsonArray();
+					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
+					responsePivotSearchSiteUser(pivotFields, pivotArray);
+				}
+			}
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200SearchSiteUser failed. "), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+	public void responsePivotSearchSiteUser(List<PivotField> pivotFields, JsonArray pivotArray) {
+		for(PivotField pivotField : pivotFields) {
+			String entityIndexed = pivotField.getField();
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			JsonObject pivotJson = new JsonObject();
+			pivotArray.add(pivotJson);
+			pivotJson.put("field", entityVar);
+			pivotJson.put("value", pivotField.getValue());
+			pivotJson.put("count", pivotField.getCount());
+			List<RangeFacet> pivotRanges = pivotField.getFacetRanges();
+			List<PivotField> pivotFields2 = pivotField.getPivot();
+			if(pivotRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				pivotJson.put("ranges", rangeJson);
+				for(RangeFacet rangeFacet : pivotRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
+					}
+				}
+			}
+			if(pivotFields2 != null) {
+				JsonArray pivotArray2 = new JsonArray();
+				pivotJson.put("pivot", pivotArray2);
+				responsePivotSearchSiteUser(pivotFields2, pivotArray2);
+			}
 		}
 	}
 
 	// PATCH //
 
 	@Override
-	public void patchSiteUser(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteUser(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/user");
-		siteRequest.setRequestMethod("PATCH");
-		try {
-			LOGGER.info(String.format("patchSiteUser started. "));
-			{
-				userSiteUser(siteRequest, b -> {
-					if(b.succeeded()) {
-						patchSiteUserResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											aSearchSiteUser(siteRequest, false, true, true, "/api/user", "PATCH", d -> {
-												if(d.succeeded()) {
-													SearchList<SiteUser> listSiteUser = d.result();
-
-													List<String> roles2 = Arrays.asList("SiteAdmin");
-													if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
-															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-															) {
-														String message = String.format("roles required: " + String.join(", ", roles2));
-														LOGGER.error(message);
-														errorSiteUser(siteRequest, eventHandler, Future.failedFuture(message));
-													} else {
-
-														ApiRequest apiRequest = new ApiRequest();
-														apiRequest.setRows(listSiteUser.getRows());
-														apiRequest.setNumFound(listSiteUser.getQueryResponse().getResults().getNumFound());
-														apiRequest.setNumPATCH(0L);
-														apiRequest.initDeepApiRequest(siteRequest);
-														siteRequest.setApiRequest_(apiRequest);
-														siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteUser.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-														Date date = null;
-														if(facets != null)
-														date = (Date)facets.get("max_modified");
-														String dt;
-														if(date == null)
-															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-														else
-															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-														listSiteUser.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
-
-														try {
-															listPATCHSiteUser(apiRequest, listSiteUser, dt, e -> {
-																if(e.succeeded()) {
-																	patchSiteUserResponse(siteRequest, f -> {
-																		if(f.succeeded()) {
-																			LOGGER.info(String.format("patchSiteUser succeeded. "));
-																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																		} else {
-																			LOGGER.error(String.format("patchSiteUser failed. ", f.cause()));
-																			errorSiteUser(siteRequest, null, f);
-																		}
-																	});
-																} else {
-																	LOGGER.error(String.format("patchSiteUser failed. ", e.cause()));
-																	errorSiteUser(siteRequest, null, e);
-																}
-															});
-														} catch(Exception ex) {
-															LOGGER.error(String.format("patchSiteUser failed. ", ex));
-															errorSiteUser(siteRequest, null, Future.failedFuture(ex));
-														}
-													}
-										} else {
-													LOGGER.error(String.format("patchSiteUser failed. ", d.cause()));
-													errorSiteUser(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOGGER.error(String.format("patchSiteUser failed. ", ex));
-											errorSiteUser(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
+	public void patchSiteUser(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("patchSiteUser started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
+					searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
+						try {
+							List<String> roles2 = Arrays.asList("SiteAdmin");
+							if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
+									&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+									&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+									) {
+								String message = String.format("roles required: " + String.join(", ", roles2));
+								LOG.error(message);
+								error(siteRequest, eventHandler, new RuntimeException(message));
 							} else {
-								LOGGER.error(String.format("patchSiteUser failed. ", c.cause()));
-								errorSiteUser(siteRequest, eventHandler, c);
+
+								ApiRequest apiRequest = new ApiRequest();
+								apiRequest.setRows(listSiteUser.getRows());
+								apiRequest.setNumFound(listSiteUser.getQueryResponse().getResults().getNumFound());
+								apiRequest.setNumPATCH(0L);
+								apiRequest.initDeepApiRequest(siteRequest);
+								siteRequest.setApiRequest_(apiRequest);
+								if(apiRequest.getNumFound() == 1L)
+									apiRequest.setOriginal(listSiteUser.first());
+								apiRequest.setPk(listSiteUser.first().getPk());
+								eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+
+								listPATCHSiteUser(apiRequest, listSiteUser).onSuccess(e -> {
+									response200PATCHSiteUser(siteRequest).onSuccess(response -> {
+										LOG.debug(String.format("patchSiteUser succeeded. "));
+										eventHandler.handle(Future.succeededFuture(response));
+									}).onFailure(ex -> {
+										LOG.error(String.format("patchSiteUser failed. "), ex);
+										error(siteRequest, eventHandler, ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(String.format("patchSiteUser failed. "), ex);
+									error(siteRequest, eventHandler, ex);
+								});
 							}
-						});
-					} else {
-						LOGGER.error(String.format("patchSiteUser failed. ", b.cause()));
-						errorSiteUser(siteRequest, eventHandler, b);
-					}
-				});
+						} catch(Exception ex) {
+							LOG.error(String.format("patchSiteUser failed. "), ex);
+							error(siteRequest, eventHandler, ex);
+						}
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchSiteUser failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("patchSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSiteUser failed. ", ex));
-			errorSiteUser(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("patchSiteUser failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("patchSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public void listPATCHSiteUser(ApiRequest apiRequest, SearchList<SiteUser> listSiteUser, String dt, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> listPATCHSiteUser(ApiRequest apiRequest, SearchList<SiteUser> listSiteUser) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
 		listSiteUser.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteUser(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
-			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			o.setSiteRequest_(siteRequest2);
-			futures.add(
-				patchSiteUserFuture(o, false, a -> {
-					if(a.succeeded()) {
-					} else {
-						errorSiteUser(siteRequest2, eventHandler, a);
-					}
-				})
-			);
+			futures.add(Future.future(promise1 -> {
+				patchSiteUserFuture(o, false).onSuccess(a -> {
+					promise1.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("listPATCHSiteUser failed. "), ex);
+					promise1.fail(ex);
+				});
+			}));
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listSiteUser.next(dt)) {
-					listPATCHSiteUser(apiRequest, listSiteUser, dt, eventHandler);
-				} else {
-					response200PATCHSiteUser(siteRequest, eventHandler);
-				}
-			} else {
-				LOGGER.error(String.format("listPATCHSiteUser failed. ", a.cause()));
-				errorSiteUser(listSiteUser.getSiteRequest_(), eventHandler, a);
+		CompositeFuture.all(futures).onSuccess( a -> {
+			if(apiRequest != null) {
+				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteUser.getQueryResponse().getResults().size());
+				if(apiRequest.getNumFound() == 1L)
+					listSiteUser.first().apiRequestSiteUser();
+				eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
 			}
+			listSiteUser.next().onSuccess(next -> {
+				if(next) {
+					listPATCHSiteUser(apiRequest, listSiteUser);
+				} else {
+					promise.complete();
+				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHSiteUser failed. "), ex);
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHSiteUser failed. "), ex);
+			promise.fail(ex);
+		});
+		return promise.future();
+	}
+
+	@Override
+	public void patchSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				serviceRequest.getParams().getJsonObject("query").put("rows", 1);
+				searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
+					try {
+						SiteUser o = listSiteUser.first();
+						if(o != null && listSiteUser.getQueryResponse().getResults().getNumFound() == 1) {
+							ApiRequest apiRequest = new ApiRequest();
+							apiRequest.setRows(1);
+							apiRequest.setNumFound(1L);
+							apiRequest.setNumPATCH(0L);
+							apiRequest.initDeepApiRequest(siteRequest);
+							siteRequest.setApiRequest_(apiRequest);
+							if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+								siteRequest.getRequestVars().put( "refresh", "false" );
+							}
+							if(apiRequest.getNumFound() == 1L)
+								apiRequest.setOriginal(o);
+							apiRequest.setPk(listSiteUser.first().getPk());
+							eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+							patchSiteUserFuture(o, false).onSuccess(a -> {
+								eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+							}).onFailure(ex -> {
+								eventHandler.handle(Future.failedFuture(ex));
+							});
+						} else {
+							eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+						}
+					} catch(Exception ex) {
+						LOG.error(String.format("patchSiteUser failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					}
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteUser failed. "), ex);
+					error(siteRequest, eventHandler, ex);
+				});
+			} catch(Exception ex) {
+				LOG.error(String.format("patchSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			LOG.error(String.format("patchSiteUser failed. "), ex);
+			error(null, eventHandler, ex);
 		});
 	}
 
-	public Future<SiteUser> patchSiteUserFuture(SiteUser o, Boolean inheritPk, Handler<AsyncResult<SiteUser>> eventHandler) {
-		Promise<SiteUser> promise = Promise.promise();
+	public Future<SiteUser> patchSiteUserFuture(SiteUser o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		Promise<SiteUser> promise = Promise.promise();
+
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			if(apiRequest != null && apiRequest.getNumFound() == 1L) {
-				apiRequest.setOriginal(o);
-				apiRequest.setPk(o.getPk());
-			}
-			sqlConnectionSiteUser(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteUser(siteRequest, b -> {
-						if(b.succeeded()) {
-							sqlPATCHSiteUser(o, inheritPk, c -> {
-								if(c.succeeded()) {
-									SiteUser siteUser = c.result();
-									defineIndexSiteUser(siteUser, d -> {
-										if(d.succeeded()) {
-											if(apiRequest != null) {
-												apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-												if(apiRequest.getNumFound() == 1L) {
-													siteUser.apiRequestSiteUser();
-												}
-												siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-											}
-											eventHandler.handle(Future.succeededFuture(siteUser));
-											promise.complete(siteUser);
-										} else {
-											LOGGER.error(String.format("patchSiteUserFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOGGER.error(String.format("patchSiteUserFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
+			pgPool.withTransaction(sqlConnection -> {
+				Promise<SiteUser> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				sqlPATCHSiteUser(o, inheritPk).onSuccess(siteUser -> {
+					defineSiteUser(siteUser).onSuccess(c -> {
+						attributeSiteUser(siteUser).onSuccess(d -> {
+							indexSiteUser(siteUser).onSuccess(e -> {
+								promise1.complete(siteUser);
+							}).onFailure(ex -> {
+								LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+								promise1.fail(ex);
 							});
-						} else {
-							LOGGER.error(String.format("patchSiteUserFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
-						}
+						}).onFailure(ex -> {
+							LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+							promise1.fail(ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+						promise1.fail(ex);
 					});
-				} else {
-					LOGGER.error(String.format("patchSiteUserFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+					promise1.fail(ex);
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			}).compose(siteUser -> {
+				Promise<SiteUser> promise2 = Promise.promise();
+				refreshSiteUser(siteUser).onSuccess(a -> {
+					promise2.complete(siteUser);
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+					promise2.fail(ex);
+				});
+				return promise2.future();
+			}).onSuccess(siteUser -> {
+				promise.complete(siteUser);
+				LOG.debug(String.format("patchSiteUserFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("patchSiteUserFuture failed. ", e));
-			errorSiteUser(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+			promise.fail(ex);
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPATCHSiteUser(SiteUser o, Boolean inheritPk, Handler<AsyncResult<SiteUser>> eventHandler) {
+	public Future<SiteUser> sqlPATCHSiteUser(SiteUser o, Boolean inheritPk) {
+		Promise<SiteUser> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteUser SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteUser o2 = new SiteUser();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-
-				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("addUserKeys")).orElse(null);
-				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
-					userKeys.add(siteRequest.getUserKey().toString());
-				else
-					jsonObject.put("addUserKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
-			}
-
-			for(String methodName : methodNames) {
-				switch(methodName) {
+			for(String entityVar : methodNames) {
+				switch(entityVar) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							o2.setInheritPk(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_inheritPk + "=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
-								});
-							}));
-						}
+							o2.setArchived(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_archived + "=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "addEnrollmentKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<org.computate.nico.enus.enrollment.SiteEnrollment> searchList = new SearchList<org.computate.nico.enus.enrollment.SiteEnrollment>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.enrollment.SiteEnrollment.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-								List<String> roles = Arrays.asList("SiteAdmin");
-								if(
-										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-										) {
-									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-								}
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && !o.getEnrollmentKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "enrollmentKeys", l2, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteUser.enrollmentKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteEnrollment");
-									}
-								}
-							}
-						}
-						break;
-					case "addAllEnrollmentKeys":
-						JsonArray addAllEnrollmentKeysValues = jsonObject.getJsonArray(methodName);
-						if(addAllEnrollmentKeysValues != null) {
-							for(Integer i = 0; i <  addAllEnrollmentKeysValues.size(); i++) {
-								Long l = Long.parseLong(addAllEnrollmentKeysValues.getString(i));
-								if(l != null) {
-									SearchList<org.computate.nico.enus.enrollment.SiteEnrollment> searchList = new SearchList<org.computate.nico.enus.enrollment.SiteEnrollment>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(org.computate.nico.enus.enrollment.SiteEnrollment.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-									List<String> roles = Arrays.asList("SiteAdmin");
-									if(
-											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-											) {
-										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-									}
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null && !o.getEnrollmentKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "enrollmentKeys", l2, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteUser.enrollmentKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SiteEnrollment");
-										}
-									}
-								}
-							}
-						}
-						break;
-					case "setEnrollmentKeys":
-						JsonArray setEnrollmentKeysValues = jsonObject.getJsonArray(methodName);
-						JsonArray setEnrollmentKeysValues2 = new JsonArray();
-						if(setEnrollmentKeysValues != null) {
-							for(Integer i = 0; i <  setEnrollmentKeysValues.size(); i++) {
-								Long l = Long.parseLong(setEnrollmentKeysValues.getString(i));
-								if(l != null) {
-									SearchList<org.computate.nico.enus.enrollment.SiteEnrollment> searchList = new SearchList<org.computate.nico.enus.enrollment.SiteEnrollment>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(org.computate.nico.enus.enrollment.SiteEnrollment.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-									List<String> roles = Arrays.asList("SiteAdmin");
-									if(
-											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-											) {
-										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-									}
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null)
-										setEnrollmentKeysValues2.add(l2);
-									if(l2 != null && !o.getEnrollmentKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "enrollmentKeys", l2, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteUser.enrollmentKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SiteEnrollment");
-										}
-									}
-								}
-							}
-						}
-						if(o.getEnrollmentKeys() != null) {
-							for(Long l :  o.getEnrollmentKeys()) {
-								if(l != null && (setEnrollmentKeysValues2 == null || !setEnrollmentKeysValues2.contains(l))) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "enrollmentKeys", l, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteUser.enrollmentKeys failed", b.cause())));
-										});
-									}));
-								}
-							}
-						}
-						break;
-					case "removeEnrollmentKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<org.computate.nico.enus.enrollment.SiteEnrollment> searchList = new SearchList<org.computate.nico.enus.enrollment.SiteEnrollment>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.enrollment.SiteEnrollment.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-								List<String> roles = Arrays.asList("SiteAdmin");
-								if(
-										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-										) {
-									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-								}
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && o.getEnrollmentKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "enrollmentKeys", l2, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteUser.enrollmentKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteEnrollment");
-									}
-								}
-							}
-						}
+							o2.setDeleted(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_deleted + "=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "setUserId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userId", o2.jsonUserId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setUserKey":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userKey")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userKey failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserKey(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userKey", o2.jsonUserKey())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userKey failed", b.cause())));
-								});
-							}));
-						}
+							o2.setUserId(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userId + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserId());
 						break;
 					case "setUserName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userName failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userName", o2.jsonUserName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userName failed", b.cause())));
-								});
-							}));
-						}
+							o2.setUserName(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userName + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserName());
 						break;
 					case "setUserEmail":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userEmail")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserEmail(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userEmail", o2.jsonUserEmail())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
-								});
-							}));
-						}
+							o2.setUserEmail(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userEmail + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserEmail());
 						break;
 					case "setUserFirstName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userFirstName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserFirstName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userFirstName", o2.jsonUserFirstName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
-								});
-							}));
-						}
+							o2.setUserFirstName(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userFirstName + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserFirstName());
 						break;
 					case "setUserLastName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userLastName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserLastName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userLastName", o2.jsonUserLastName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
-								});
-							}));
-						}
+							o2.setUserLastName(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userLastName + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserLastName());
 						break;
 					case "setUserFullName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userFullName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserFullName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userFullName", o2.jsonUserFullName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setUserReceiveEmails":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userReceiveEmails")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userReceiveEmails failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserReceiveEmails(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userReceiveEmails", o2.jsonUserReceiveEmails())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userReceiveEmails failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setSeeArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "seeArchived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeArchived failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setSeeArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "seeArchived", o2.jsonSeeArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeArchived failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setSeeDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "seeDeleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeDeleted failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setSeeDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "seeDeleted", o2.jsonSeeDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeDeleted failed", b.cause())));
-								});
-							}));
-						}
+							o2.setUserFullName(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userFullName + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserFullName());
 						break;
 				}
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures2.add(0, Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
+			}
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
 					SiteUser o3 = new SiteUser();
 					o3.setSiteRequest_(o.getSiteRequest_());
 					o3.setPk(pk);
-					eventHandler.handle(Future.succeededFuture(o3));
-				} else {
-					LOGGER.error(String.format("sqlPATCHSiteUser failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPATCHSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void patchSiteUserResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			response200PATCHSiteUser(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("patchSiteUserResponse failed. ", a.cause()));
-					errorSiteUser(siteRequest, eventHandler, a);
-				}
+					promise.complete(o3);
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSiteUserResponse failed. ", ex));
-			errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200PATCHSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200PATCHSiteUser(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200PATCHSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PATCHSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// POST //
 
 	@Override
-	public void postSiteUser(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteUser(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/user");
-		siteRequest.setRequestMethod("POST");
-		try {
-			LOGGER.info(String.format("postSiteUser started. "));
-			{
-				userSiteUser(siteRequest, b -> {
-					if(b.succeeded()) {
-						ApiRequest apiRequest = new ApiRequest();
-						apiRequest.setRows(1);
-						apiRequest.setNumFound(1L);
-						apiRequest.setNumPATCH(0L);
-						apiRequest.initDeepApiRequest(siteRequest);
-						siteRequest.setApiRequest_(apiRequest);
-						siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-						postSiteUserFuture(siteRequest, false, c -> {
-							if(c.succeeded()) {
-								SiteUser siteUser = c.result();
-								apiRequest.setPk(siteUser.getPk());
-								postSiteUserResponse(siteUser, d -> {
-										if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("postSiteUser succeeded. "));
-									} else {
-										LOGGER.error(String.format("postSiteUser failed. ", d.cause()));
-										errorSiteUser(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("postSiteUser failed. ", c.cause()));
-								errorSiteUser(siteRequest, eventHandler, c);
-							}
-						});
-					} else {
-						LOGGER.error(String.format("postSiteUser failed. ", b.cause()));
-						errorSiteUser(siteRequest, eventHandler, b);
-					}
-				});
+	public void postSiteUser(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("postSiteUser started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					ApiRequest apiRequest = new ApiRequest();
+					apiRequest.setRows(1);
+					apiRequest.setNumFound(1L);
+					apiRequest.setNumPATCH(0L);
+					apiRequest.initDeepApiRequest(siteRequest);
+					siteRequest.setApiRequest_(apiRequest);
+					eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+					JsonObject params = new JsonObject();
+					params.put("body", siteRequest.getJsonObject());
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("nico-site-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "postSiteUserFuture")).onSuccess(a -> {
+						JsonObject responseMessage = (JsonObject)a.body();
+						JsonObject responseBody = new JsonObject(new String(Base64.getDecoder().decode(responseMessage.getString("payload")), Charset.forName("UTF-8")));
+						apiRequest.setPk(Long.parseLong(responseBody.getString("pk")));
+						eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
+						LOG.debug(String.format("postSiteUser succeeded. "));
+					}).onFailure(ex -> {
+						LOG.error(String.format("postSiteUser failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("postSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("postSiteUser failed. ", ex));
-			errorSiteUser(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteUser failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public Future<SiteUser> postSiteUserFuture(SiteRequestEnUS siteRequest, Boolean inheritPk, Handler<AsyncResult<SiteUser>> eventHandler) {
-		Promise<SiteUser> promise = Promise.promise();
-		try {
-			sqlConnectionSiteUser(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteUser(siteRequest, b -> {
-						if(b.succeeded()) {
-							createSiteUser(siteRequest, c -> {
-								if(c.succeeded()) {
-									SiteUser siteUser = c.result();
-									sqlPOSTSiteUser(siteUser, inheritPk, d -> {
-										if(d.succeeded()) {
-											defineIndexSiteUser(siteUser, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														siteUser.apiRequestSiteUser();
-														siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-													}
-													eventHandler.handle(Future.succeededFuture(siteUser));
-													promise.complete(siteUser);
-												} else {
-													LOGGER.error(String.format("postSiteUserFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOGGER.error(String.format("postSiteUserFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOGGER.error(String.format("postSiteUserFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOGGER.error(String.format("postSiteUserFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
-						}
-					});
-				} else {
-					LOGGER.error(String.format("postSiteUserFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+	@Override
+	public void postSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			postSiteUserFuture(siteRequest, false).onSuccess(o -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(JsonObject.mapFrom(o).encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("postSiteUserFuture failed. ", e));
-			errorSiteUser(siteRequest, null, Future.failedFuture(e));
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteUser failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
+	}
+
+	public Future<SiteUser> postSiteUserFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
+		Promise<SiteUser> promise = Promise.promise();
+
+		try {
+			pgPool.withTransaction(sqlConnection -> {
+				Promise<SiteUser> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createSiteUser(siteRequest).onSuccess(siteUser -> {
+					sqlPOSTSiteUser(siteUser, inheritPk).onSuccess(b -> {
+						defineSiteUser(siteUser).onSuccess(c -> {
+							attributeSiteUser(siteUser).onSuccess(d -> {
+								indexSiteUser(siteUser).onSuccess(e -> {
+									promise1.complete(siteUser);
+								}).onFailure(ex -> {
+									LOG.error(String.format("postSiteUserFuture failed. "), ex);
+									promise1.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(String.format("postSiteUserFuture failed. "), ex);
+								promise1.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("postSiteUserFuture failed. "), ex);
+							promise1.fail(ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("postSiteUserFuture failed. "), ex);
+						promise1.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format("postSiteUserFuture failed. "), ex);
+					promise1.fail(ex);
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			}).compose(siteUser -> {
+				Promise<SiteUser> promise2 = Promise.promise();
+				refreshSiteUser(siteUser).onSuccess(a -> {
+					ApiRequest apiRequest = siteRequest.getApiRequest_();
+					if(apiRequest != null) {
+						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+						siteUser.apiRequestSiteUser();
+						eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+					}
+					promise2.complete(siteUser);
+				}).onFailure(ex -> {
+					LOG.error(String.format("postSiteUserFuture failed. "), ex);
+					promise2.fail(ex);
+				});
+				return promise2.future();
+			}).onSuccess(siteUser -> {
+				promise.complete(siteUser);
+				LOG.debug(String.format("postSiteUserFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("postSiteUserFuture failed. "), ex);
+			promise.fail(ex);
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPOSTSiteUser(SiteUser o, Boolean inheritPk, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> sqlPOSTSiteUser(SiteUser o, Boolean inheritPk) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteUser SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			SiteUser o2 = new SiteUser();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-
-				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("userKeys")).orElse(null);
-				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
-					userKeys.add(siteRequest.getUserKey().toString());
-				else
-					jsonObject.put("userKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			if(jsonObject != null) {
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
-					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
-							});
-						}));
-						break;
-					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
-							});
-						}));
-						break;
-					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
-							});
-						}));
-						break;
-					case "enrollmentKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							if(l != null) {
-								SearchList<org.computate.nico.enus.enrollment.SiteEnrollment> searchList = new SearchList<org.computate.nico.enus.enrollment.SiteEnrollment>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.enrollment.SiteEnrollment.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "enrollmentKeys", l2, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteUser.enrollmentKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteEnrollment");
-									}
-								}
-							}
+					case SiteUser.VAR_inheritPk:
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
 						}
+						bSql.append(SiteUser.VAR_inheritPk + "=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
-					case "userId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userId failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_archived:
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_archived + "=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
-					case "userKey":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userKey", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userKey failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_deleted:
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_deleted + "=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
-					case "userName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userName failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_userId:
+						o2.setUserId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserId());
 						break;
-					case "userEmail":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userEmail", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_userName:
+						o2.setUserName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userName + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserName());
 						break;
-					case "userFirstName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userFirstName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_userEmail:
+						o2.setUserEmail(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userEmail + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserEmail());
 						break;
-					case "userLastName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userLastName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_userFirstName:
+						o2.setUserFirstName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userFirstName + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserFirstName());
 						break;
-					case "userFullName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userFullName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_userLastName:
+						o2.setUserLastName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userLastName + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserLastName());
 						break;
-					case "userReceiveEmails":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userReceiveEmails", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userReceiveEmails failed", b.cause())));
-							});
-						}));
-						break;
-					case "seeArchived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "seeArchived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.seeArchived failed", b.cause())));
-							});
-						}));
-						break;
-					case "seeDeleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "seeDeleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.seeDeleted failed", b.cause())));
-							});
-						}));
+					case SiteUser.VAR_userFullName:
+						o2.setUserFullName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userFullName + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserFullName());
 						break;
 					}
 				}
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture());
-				} else {
-					LOGGER.error(String.format("sqlPOSTSiteUser failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPOSTSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void postSiteUserResponse(SiteUser siteUser, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = siteUser.getSiteRequest_();
-		try {
-			response200POSTSiteUser(siteUser, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("postSiteUserResponse failed. ", a.cause()));
-					errorSiteUser(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("postSiteUserResponse failed. ", ex));
-			errorSiteUser(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200POSTSiteUser(SiteUser o, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			JsonObject json = JsonObject.mapFrom(o);
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200POSTSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	// SearchPage //
-
-	@Override
-	public void searchpageSiteUserId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		searchpageSiteUser(operationRequest, eventHandler);
-	}
-
-	@Override
-	public void searchpageSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteUser(siteContext, operationRequest);
-		siteRequest.setRequestUri("/user");
-		siteRequest.setRequestMethod("SearchPage");
-		try {
-			{
-				userSiteUser(siteRequest, b -> {
-					if(b.succeeded()) {
-						aSearchSiteUser(siteRequest, false, true, false, "/user", "SearchPage", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteUser> listSiteUser = c.result();
-								searchpageSiteUserResponse(listSiteUser, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchpageSiteUser succeeded. "));
-									} else {
-										LOGGER.error(String.format("searchpageSiteUser failed. ", d.cause()));
-										errorSiteUser(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("searchpageSiteUser failed. ", c.cause()));
-								errorSiteUser(siteRequest, eventHandler, c);
-							}
-						});
-					} else {
-						LOGGER.error(String.format("searchpageSiteUser failed. ", b.cause()));
-						errorSiteUser(siteRequest, eventHandler, b);
-					}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures2.add(0, Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
+			}
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
+					promise.fail(ex);
 				});
-			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSiteUser failed. ", ex));
-			errorSiteUser(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
-	}
-
-
-	public void searchpageSiteUserPageInit(SiteUserPage page, SearchList<SiteUser> listSiteUser) {
-	}
-	public void searchpageSiteUserResponse(SearchList<SiteUser> listSiteUser, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
-		try {
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(siteRequest, buffer);
-			siteRequest.setW(w);
-			response200SearchPageSiteUser(listSiteUser, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("searchpageSiteUserResponse failed. ", a.cause()));
-					errorSiteUser(siteRequest, eventHandler, a);
-				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSiteUserResponse failed. ", ex));
-			errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
-	}
-	public void response200SearchPageSiteUser(SearchList<SiteUser> listSiteUser, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(listSiteUser.getSiteRequest_(), buffer);
-			SiteUserPage page = new SiteUserPage();
-			SolrDocument pageSolrDocument = new SolrDocument();
-			MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
-			siteRequest.setRequestHeaders(requestHeaders);
-
-			pageSolrDocument.setField("pageUri_frFR_stored_string", "/user");
-			page.setPageSolrDocument(pageSolrDocument);
-			page.setW(w);
-			if(listSiteUser.size() == 1)
-				siteRequest.setRequestPk(listSiteUser.get(0).getPk());
-			siteRequest.setW(w);
-			page.setListSiteUser(listSiteUser);
-			page.setSiteRequest_(siteRequest);
-			searchpageSiteUserPageInit(page, listSiteUser);
-			page.initDeepSiteUserPage(siteRequest);
-			page.html();
-			eventHandler.handle(Future.succeededFuture(new OperationResponse(200, "OK", buffer, requestHeaders)));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchPageSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	// General //
-
-	public Future<SiteUser> defineIndexSiteUser(SiteUser siteUser, Handler<AsyncResult<SiteUser>> eventHandler) {
-		Promise<SiteUser> promise = Promise.promise();
-		SiteRequestEnUS siteRequest = siteUser.getSiteRequest_();
-		defineSiteUser(siteUser, c -> {
-			if(c.succeeded()) {
-				attributeSiteUser(siteUser, d -> {
-					if(d.succeeded()) {
-						indexSiteUser(siteUser, e -> {
-							if(e.succeeded()) {
-								sqlCommitSiteUser(siteRequest, f -> {
-									if(f.succeeded()) {
-										sqlCloseSiteUser(siteRequest, g -> {
-											if(g.succeeded()) {
-												refreshSiteUser(siteUser, h -> {
-													if(h.succeeded()) {
-														eventHandler.handle(Future.succeededFuture(siteUser));
-														promise.complete(siteUser);
-													} else {
-														LOGGER.error(String.format("refreshSiteUser failed. ", h.cause()));
-														errorSiteUser(siteRequest, null, h);
-													}
-												});
-											} else {
-												LOGGER.error(String.format("defineIndexSiteUser failed. ", g.cause()));
-												errorSiteUser(siteRequest, null, g);
-											}
-										});
-									} else {
-										LOGGER.error(String.format("defineIndexSiteUser failed. ", f.cause()));
-										errorSiteUser(siteRequest, null, f);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("defineIndexSiteUser failed. ", e.cause()));
-								errorSiteUser(siteRequest, null, e);
-							}
-						});
-					} else {
-						LOGGER.error(String.format("defineIndexSiteUser failed. ", d.cause()));
-						errorSiteUser(siteRequest, null, d);
-					}
-				});
-			} else {
-				LOGGER.error(String.format("defineIndexSiteUser failed. ", c.cause()));
-				errorSiteUser(siteRequest, null, c);
-			}
-		});
 		return promise.future();
 	}
 
-	public void createSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<SiteUser>> eventHandler) {
+	public Future<ServiceResponse> response200POSTSiteUser(SiteUser o) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
-			Transaction tx = siteRequest.getTx();
-			String userId = siteRequest.getUserId();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
+			JsonObject json = JsonObject.mapFrom(o);
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200POSTSiteUser failed. "), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+	public static final String VAR_userKey = "userKey";
+	public static final String VAR_userKeys = "userKeys";
+	public static final String VAR_userId = "userId";
+	public static final String VAR_userName = "userName";
+	public static final String VAR_userEmail = "userEmail";
+	public static final String VAR_userFirstName = "userFirstName";
+	public static final String VAR_userLastName = "userLastName";
+	public static final String VAR_userFullName = "userFullName";
 
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
+	// General //
+
+	public Future<SiteUser> createSiteUser(SiteRequestEnUS siteRequest) {
+		Promise<SiteUser> promise = Promise.promise();
+		try {
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
+			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+
+			sqlConnection.preparedQuery("INSERT INTO SiteUser(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(SiteUser.class.getCanonicalName(), userId, created.toOffsetDateTime())
-					, createAsync
-			-> {
-				if(createAsync.succeeded()) {
-					Row createLine = createAsync.result().value().stream().findFirst().orElseGet(() -> null);
-					Long pk = createLine.getLong(0);
-					SiteUser o = new SiteUser();
-					o.setPk(pk);
-					o.setSiteRequest_(siteRequest);
-					eventHandler.handle(Future.succeededFuture(o));
-				} else {
-					LOGGER.error(String.format("createSiteUser failed. ", createAsync.cause()));
-					eventHandler.handle(Future.failedFuture(createAsync.cause()));
-				}
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)).onSuccess(result -> {
+				Row createLine = result.value().stream().findFirst().orElseGet(() -> null);
+				Long pk = createLine.getLong(0);
+				SiteUser o = new SiteUser();
+				o.setPk(pk);
+				o.setSiteRequest_(siteRequest);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				LOG.error("createSiteUser failed. ", ex);
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("createSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("createSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void errorSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler, AsyncResult<?> resultAsync) {
-		Throwable e = resultAsync.cause();
-		JsonObject json = new JsonObject()
-				.put("error", new JsonObject()
-				.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null))
-				.put("userName", siteRequest.getUserName())
-				.put("userFullName", siteRequest.getUserFullName())
-				.put("requestUri", siteRequest.getRequestUri())
-				.put("requestMethod", siteRequest.getRequestMethod())
-				.put("params", Optional.ofNullable(siteRequest.getOperationRequest()).map(o -> o.getParams()).orElse(null))
-				);
-		ExceptionUtils.printRootCauseStackTrace(e);
-		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
-				Buffer.buffer().appendString(json.encodePrettily())
-				, MultiMap.caseInsensitiveMultiMap().add("Content-Type", "application/json")
-		);
-		SiteConfig siteConfig = siteRequest.getSiteConfig_();
-		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-		MailClient mailClient = siteContext.getMailClient();
-		MailMessage message = new MailMessage();
-		message.setFrom(siteConfig.getEmailFrom());
-		message.setTo(siteConfig.getEmailAdmin());
-		if(e != null)
-			message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-		message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-		WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-		workerExecutor.executeBlocking(
-			blockingCodeHandler -> {
-				mailClient.sendMail(message, result -> {
-					if (result.succeeded()) {
-						LOGGER.info(result.result());
-					} else {
-						LOGGER.error(result.cause());
-					}
-				});
-			}, resultHandler -> {
-			}
-		);
-		sqlRollbackSiteUser(siteRequest, a -> {
-			if(a.succeeded()) {
-				LOGGER.info(String.format("sql rollback. "));
-				sqlCloseSiteUser(siteRequest, b -> {
-					if(b.succeeded()) {
-						LOGGER.info(String.format("sql close. "));
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					} else {
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					}
-				});
-			} else {
-				if(eventHandler != null)
-					eventHandler.handle(Future.succeededFuture(responseOperation));
-			}
-		});
-	}
-
-	public void sqlConnectionSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
-
-			if(pgPool == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				pgPool.getConnection(a -> {
-					if(a.succeeded()) {
-						SqlConnection sqlConnection = a.result();
-						siteRequest.setSqlConnection(sqlConnection);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("sqlConnectionSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlTransactionSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				Transaction tx = sqlConnection.begin();
-				siteRequest.setTx(tx);
-				eventHandler.handle(Future.succeededFuture());
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTransactionSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCommitSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				tx.commit(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("sqlCommitSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlRollbackSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				tx.rollback(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("sqlRollbackSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCloseSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				sqlConnection.close();
-				siteRequest.setSqlConnection(null);
-				eventHandler.handle(Future.succeededFuture());
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlCloseSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public SiteRequestEnUS generateSiteRequestEnUSForSiteUser(SiteContextEnUS siteContext, OperationRequest operationRequest) {
-		return generateSiteRequestEnUSForSiteUser(siteContext, operationRequest, null);
-	}
-
-	public SiteRequestEnUS generateSiteRequestEnUSForSiteUser(SiteContextEnUS siteContext, OperationRequest operationRequest, JsonObject body) {
-		Vertx vertx = siteContext.getVertx();
-		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-		siteRequest.setJsonObject(body);
-		siteRequest.setVertx(vertx);
-		siteRequest.setSiteContext_(siteContext);
-		siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-		siteRequest.setOperationRequest(operationRequest);
-		siteRequest.initDeepSiteRequestEnUS(siteRequest);
-
-		return siteRequest;
-	}
-
-	public void userSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				sqlConnectionSiteUser(siteRequest, a -> {
-					if(a.succeeded()) {
-						sqlTransactionSiteUser(siteRequest, b -> {
-							if(b.succeeded()) {
-								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
-										.collecting(Collectors.toList())
-										.execute(Tuple.of("org.computate.nico.enus.user.SiteUser", userId)
-										, selectCAsync
-								-> {
-									if(selectCAsync.succeeded()) {
-										try {
-											Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-											if(userValues == null) {
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("userFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("userLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("userCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("userId", jsonPrincipal.getString("sub"));
-												jsonObject.put("userEmail", jsonPrincipal.getString("email"));
-												userSiteUserDefine(siteRequest, jsonObject, false);
-
-												SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-												siteRequest2.setTx(siteRequest.getTx());
-												siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-												siteRequest2.setJsonObject(jsonObject);
-												siteRequest2.setVertx(siteRequest.getVertx());
-												siteRequest2.setSiteContext_(siteContext);
-												siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-												siteRequest2.setUserId(siteRequest.getUserId());
-												siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-
-												ApiRequest apiRequest = new ApiRequest();
-												apiRequest.setRows(1);
-												apiRequest.setNumFound(1L);
-												apiRequest.setNumPATCH(0L);
-												apiRequest.initDeepApiRequest(siteRequest2);
-												siteRequest2.setApiRequest_(apiRequest);
-
-												userService.createSiteUser(siteRequest2, c -> {
-													if(c.succeeded()) {
-														SiteUser siteUser = c.result();
-														userService.sqlPOSTSiteUser(siteUser, false, d -> {
-															if(d.succeeded()) {
-																userService.defineIndexSiteUser(siteUser, e -> {
-																	if(e.succeeded()) {
-																		siteRequest.setSiteUser(siteUser);
-																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
-																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
-																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
-																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
-																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.getPk());
-																		eventHandler.handle(Future.succeededFuture());
-																	} else {
-																		errorSiteUser(siteRequest, eventHandler, e);
-																	}
-																});
-															} else {
-																errorSiteUser(siteRequest, eventHandler, d);
-															}
-														});
-													} else {
-														errorSiteUser(siteRequest, eventHandler, c);
-													}
-												});
-											} else {
-												Long pkUser = userValues.getLong(0);
-												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-												searchList.setQuery("*:*");
-												searchList.setStore(true);
-												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
-												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-												searchList.initDeepSearchList(siteRequest);
-												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("setUserFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("setUserLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("setUserCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("setUserId", jsonPrincipal.getString("sub"));
-												jsonObject.put("setUserEmail", jsonPrincipal.getString("email"));
-												Boolean define = userSiteUserDefine(siteRequest, jsonObject, true);
-												if(define) {
-													SiteUser siteUser;
-													if(siteUser1 == null) {
-														siteUser = new SiteUser();
-														siteUser.setPk(pkUser);
-														siteUser.setSiteRequest_(siteRequest);
-													} else {
-														siteUser = siteUser1;
-													}
-
-													SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-													siteRequest2.setTx(siteRequest.getTx());
-													siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-													siteRequest2.setJsonObject(jsonObject);
-													siteRequest2.setVertx(siteRequest.getVertx());
-													siteRequest2.setSiteContext_(siteContext);
-													siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-													siteRequest2.setUserId(siteRequest.getUserId());
-													siteRequest2.setUserKey(siteRequest.getUserKey());
-													siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-													siteUser.setSiteRequest_(siteRequest2);
-
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(1);
-													apiRequest.setNumFound(1L);
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest2);
-													siteRequest2.setApiRequest_(apiRequest);
-
-													userService.sqlPATCHSiteUser(siteUser, false, d -> {
-														if(d.succeeded()) {
-															SiteUser siteUser2 = d.result();
-															userService.defineIndexSiteUser(siteUser2, e -> {
-																if(e.succeeded()) {
-																	siteRequest.setSiteUser(siteUser2);
-																	siteRequest.setUserName(siteUser2.getUserName());
-																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser2.getUserLastName());
-																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.getPk());
-																	eventHandler.handle(Future.succeededFuture());
-																} else {
-																	errorSiteUser(siteRequest, eventHandler, e);
-																}
-															});
-														} else {
-															errorSiteUser(siteRequest, eventHandler, d);
-														}
-													});
-												} else {
-													siteRequest.setSiteUser(siteUser1);
-													siteRequest.setUserName(siteUser1.getUserName());
-													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-													siteRequest.setUserLastName(siteUser1.getUserLastName());
-													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.getPk());
-													sqlRollbackSiteUser(siteRequest, c -> {
-														if(c.succeeded()) {
-															eventHandler.handle(Future.succeededFuture());
-														} else {
-															eventHandler.handle(Future.failedFuture(c.cause()));
-															errorSiteUser(siteRequest, eventHandler, c);
-														}
-													});
-												}
-											}
-										} catch(Exception e) {
-											LOGGER.error(String.format("userSiteUser failed. ", e));
-											eventHandler.handle(Future.failedFuture(e));
-										}
-									} else {
-										LOGGER.error(String.format("userSiteUser failed. ", selectCAsync.cause()));
-										eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
-									}
-								});
-							} else {
-								LOGGER.error(String.format("userSiteUser failed. ", b.cause()));
-								eventHandler.handle(Future.failedFuture(b.cause()));
-							}
-						});
-					} else {
-						LOGGER.error(String.format("userSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("userSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public Boolean userSiteUserDefine(SiteRequestEnUS siteRequest, JsonObject jsonObject, Boolean patch) {
-		if(patch) {
-			return false;
-		} else {
-			return false;
-		}
-	}
-
-	public void aSearchSiteUserQ(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteUserQ(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		searchList.setQuery(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : ClientUtils.escapeQueryChars(valueIndexed)));
 		if(!"*".equals(entityVar)) {
 		}
 	}
 
-	public void aSearchSiteUserFq(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String searchSiteUserFq(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -2040,38 +1054,39 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
 			String fq1 = fqs[0].equals("*") ? fqs[0] : SiteUser.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[0]);
 			String fq2 = fqs[1].equals("*") ? fqs[1] : SiteUser.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
-			searchList.addFilterQuery(varIndexed + ":[" + fq1 + " TO " + fq2 + "]");
+			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			searchList.addFilterQuery(varIndexed + ":" + SiteUser.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed));
+			return varIndexed + ":" + ClientUtils.escapeQueryChars(SiteUser.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed)).replace("\\", "\\\\");
 		}
 	}
 
-	public void aSearchSiteUserSort(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteUserSort(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		searchList.addSort(varIndexed, ORDER.valueOf(valueIndexed));
 	}
 
-	public void aSearchSiteUserRows(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueRows) {
-			searchList.setRows(apiMethod != null && apiMethod.contains("Search") ? valueRows : 10);
+	public void searchSiteUserRows(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueRows) {
+			searchList.setRows(apiMethod != null ? valueRows : 10);
 	}
 
-	public void aSearchSiteUserStart(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueStart) {
+	public void searchSiteUserStart(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueStart) {
 		searchList.setStart(valueStart);
 	}
 
-	public void aSearchSiteUserVar(String uri, String apiMethod, SearchList<SiteUser> searchList, String var, String value) {
+	public void searchSiteUserVar(String uri, String apiMethod, SearchList<SiteUser> searchList, String var, String value) {
 		searchList.getSiteRequest_().getRequestVars().put(var, value);
 	}
 
-	public void aSearchSiteUserUri(String uri, String apiMethod, SearchList<SiteUser> searchList) {
+	public void searchSiteUserUri(String uri, String apiMethod, SearchList<SiteUser> searchList) {
 	}
 
-	public void varsSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<OperationResponse>>> eventHandler) {
+	public Future<ServiceResponse> varsSiteUser(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
 				String paramName = paramRequest.getKey();
@@ -2088,306 +1103,313 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 								break;
 						}
 					}
-				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchSiteUser failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
+				} catch(Exception ex) {
+					LOG.error(String.format("searchSiteUser failed. "), ex);
+					promise.fail(ex);
 				}
 			});
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete();
+		} catch(Exception ex) {
+			LOG.error(String.format("searchSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void aSearchSiteUser(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteUser>>> eventHandler) {
+	public Future<SearchList<SiteUser>> searchSiteUserList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+		Promise<SearchList<SiteUser>> promise = Promise.promise();
 		try {
-			SearchList<SiteUser> searchList = aSearchSiteUserList(siteRequest, populate, store, modify, uri, apiMethod);
-			eventHandler.handle(Future.succeededFuture(searchList));
-		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+			String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
+			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+			SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+			searchList.setPopulate(populate);
+			searchList.setStore(store);
+			searchList.setQuery("*:*");
+			searchList.setC(SiteUser.class);
+			searchList.setSiteRequest_(siteRequest);
+			if(entityList != null)
+				searchList.addFields(entityList);
 
-	public SearchList<SiteUser> aSearchSiteUserList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
-		OperationRequest operationRequest = siteRequest.getOperationRequest();
-		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
-		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-		SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-		searchList.setPopulate(populate);
-		searchList.setStore(store);
-		searchList.setQuery("*:*");
-		searchList.setC(SiteUser.class);
-		searchList.setSiteRequest_(siteRequest);
-		if(entityList != null)
-			searchList.addFields(entityList);
-		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
-
-		String id = operationRequest.getParams().getJsonObject("path").getString("id");
-		if(id != null && NumberUtils.isCreatable(id)) {
-			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
-		} else if(id != null) {
-			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
-		}
-
-		List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin");
-		List<String> roleLires = Arrays.asList("");
-		if(
-				!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-				&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-				&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleLires))
-				&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleLires))
-				) {
-			searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-					+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-		}
-
-		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
-			String entityVar = null;
-			String valueIndexed = null;
-			String varIndexed = null;
-			String valueSort = null;
-			Integer valueStart = null;
-			Integer valueRows = null;
-			String paramName = paramRequest.getKey();
-			Object paramValuesObject = paramRequest.getValue();
-			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
-
-			try {
-				for(Object paramObject : paramObjects) {
-					switch(paramName) {
-						case "q":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							varIndexed = "*".equals(entityVar) ? entityVar : SiteUser.varSearchSiteUser(entityVar);
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-							aSearchSiteUserQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "fq":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							varIndexed = SiteUser.varIndexedSiteUser(entityVar);
-							aSearchSiteUserFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "sort":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-							valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-							varIndexed = SiteUser.varIndexedSiteUser(entityVar);
-							aSearchSiteUserSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "start":
-							valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-							aSearchSiteUserStart(uri, apiMethod, searchList, valueStart);
-							break;
-						case "rows":
-							valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-							aSearchSiteUserRows(uri, apiMethod, searchList, valueRows);
-							break;
-						case "var":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							aSearchSiteUserVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-							break;
-					}
-				}
-				aSearchSiteUserUri(uri, apiMethod, searchList);
-			} catch(Exception e) {
-				ExceptionUtils.rethrow(e);
+			String id = serviceRequest.getParams().getJsonObject("path").getString("id");
+			if(id != null && NumberUtils.isCreatable(id)) {
+				searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+			} else if(id != null) {
+				searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 			}
-		});
-		if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-			searchList.addSort("created_indexed_date", ORDER.desc);
+
+			List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin");
+			List<String> roleReads = Arrays.asList("");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleReads))
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleReads))
+					) {
+				searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+						+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+			}
+
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+				String entityVar = null;
+				String valueIndexed = null;
+				String varIndexed = null;
+				String valueSort = null;
+				Integer valueStart = null;
+				Integer valueRows = null;
+				String valueCursorMark = null;
+				String paramName = paramRequest.getKey();
+				Object paramValuesObject = paramRequest.getValue();
+				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+				try {
+					if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
+						Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
+						boolean foundFacetPivot = mFacetPivot.find();
+						if(foundFacetPivot) {
+							String solrLocalParams = mFacetPivot.group(1);
+							String[] entityVars = mFacetPivot.group(2).trim().split(",");
+							String[] varsIndexed = new String[entityVars.length];
+							for(Integer i = 0; i < entityVars.length; i++) {
+								entityVar = entityVars[i];
+								varsIndexed[i] = SiteUser.varIndexedSiteUser(entityVar);
+							}
+							searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
+						}
+					} else if(paramValuesObject != null) {
+						for(Object paramObject : paramObjects) {
+							switch(paramName) {
+								case "q":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+									varIndexed = "*".equals(entityVar) ? entityVar : SiteUser.varSearchSiteUser(entityVar);
+									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+									valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+									searchSiteUserQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									break;
+								case "fq":
+									Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
+									boolean foundFq = mFq.find();
+									if(foundFq) {
+										StringBuffer sb = new StringBuffer();
+										while(foundFq) {
+											entityVar = mFq.group(1).trim();
+											valueIndexed = mFq.group(2).trim();
+											varIndexed = SiteUser.varIndexedSiteUser(entityVar);
+											String entityFq = searchSiteUserFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											mFq.appendReplacement(sb, entityFq);
+											foundFq = mFq.find();
+										}
+										mFq.appendTail(sb);
+										searchList.addFilterQuery(sb.toString());
+									}
+									break;
+								case "sort":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+									valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+									varIndexed = SiteUser.varIndexedSiteUser(entityVar);
+									searchSiteUserSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									break;
+								case "start":
+									valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+									searchSiteUserStart(uri, apiMethod, searchList, valueStart);
+									break;
+								case "rows":
+									valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+									searchSiteUserRows(uri, apiMethod, searchList, valueRows);
+									break;
+								case "facet":
+									searchList.add("facet", ((Boolean)paramObject).toString());
+									break;
+								case "facet.range.start":
+									String startMathStr = (String)paramObject;
+									Date start = DateMathParser.parseMath(null, startMathStr);
+									searchList.add("facet.range.start", start.toInstant().toString());
+									break;
+								case "facet.range.end":
+									String endMathStr = (String)paramObject;
+									Date end = DateMathParser.parseMath(null, endMathStr);
+									searchList.add("facet.range.end", end.toInstant().toString());
+									break;
+								case "facet.range.gap":
+									String gap = (String)paramObject;
+									searchList.add("facet.range.gap", gap);
+									break;
+								case "facet.range":
+									Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+									boolean foundFacetRange = mFacetRange.find();
+									if(foundFacetRange) {
+										String solrLocalParams = mFacetRange.group(1);
+										entityVar = mFacetRange.group(2).trim();
+										varIndexed = SiteUser.varIndexedSiteUser(entityVar);
+										searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
+									}
+									break;
+								case "facet.field":
+									entityVar = (String)paramObject;
+									varIndexed = SiteUser.varIndexedSiteUser(entityVar);
+									if(varIndexed != null)
+										searchList.addFacetField(varIndexed);
+									break;
+								case "var":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+									searchSiteUserVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+									break;
+								case "cursorMark":
+									valueCursorMark = (String)paramObject;
+									searchList.add("cursorMark", (String)paramObject);
+									break;
+							}
+						}
+						searchSiteUserUri(uri, apiMethod, searchList);
+					}
+				} catch(Exception e) {
+					ExceptionUtils.rethrow(e);
+				}
+			});
+			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+				searchList.addSort("created_indexed_date", ORDER.desc);
+			}
+			searchSiteUser2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+				promise.complete(searchList);
+			}).onFailure(ex -> {
+				LOG.error(String.format("searchSiteUser failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("searchSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
-		aSearchSiteUser2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
-		searchList.initDeepForClass(siteRequest);
-		return searchList;
+		return promise.future();
 	}
-	public void aSearchSiteUser2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteUser> searchList) {
+	public void searchSiteUser2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteUser> searchList) {
 	}
 
-	public void defineSiteUser(SiteUser o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> defineSiteUser(SiteUser o) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			sqlConnection.preparedQuery("SELECT * FROM SiteUser WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
-					, defineAsync
-			-> {
-				if(defineAsync.succeeded()) {
-					try {
-						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineSiteUser failed. ", e));
-								LOGGER.error(e);
+					).onSuccess(result -> {
+				try {
+					for(Row definition : result.value()) {
+						for(Integer i = 0; i < definition.size(); i++) {
+							String columnName = definition.getColumnName(i);
+							Object columnValue = definition.getValue(i);
+							if(!"pk".equals(columnName)) {
+								try {
+									o.defineForClass(columnName, columnValue);
+								} catch(Exception e) {
+									LOG.error(String.format("defineSiteUser failed. "), e);
+								}
 							}
 						}
-						eventHandler.handle(Future.succeededFuture());
-					} catch(Exception e) {
-						LOGGER.error(String.format("defineSiteUser failed. ", e));
-						eventHandler.handle(Future.failedFuture(e));
 					}
-				} else {
-					LOGGER.error(String.format("defineSiteUser failed. ", defineAsync.cause()));
-					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
+					promise.complete();
+				} catch(Exception ex) {
+					LOG.error(String.format("defineSiteUser failed. "), ex);
+					promise.fail(ex);
 				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("defineSiteUser failed. "), ex);
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("defineSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("defineSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void attributeSiteUser(SiteUser o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> attributeSiteUser(SiteUser o) {
+		Promise<Void> promise = Promise.promise();
+			promise.complete();
+		return promise.future();
+	}
+
+	public Future<Void> indexSiteUser(SiteUser o) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
-			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
-					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk)
-					, attributeAsync
-			-> {
-				try {
-					if(attributeAsync.succeeded()) {
-						if(attributeAsync.result() != null) {
-							for(Row definition : attributeAsync.result().value()) {
-								if(pk.equals(definition.getLong(0)))
-									o.attributeForClass(definition.getString(2), definition.getLong(1));
-								else
-									o.attributeForClass(definition.getString(3), definition.getLong(0));
-							}
-						}
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("attributeSiteUser failed. ", attributeAsync.cause()));
-						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
-					}
-				} catch(Exception e) {
-					LOGGER.error(String.format("attributeSiteUser failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("attributeSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void indexSiteUser(SiteUser o, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
-		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOGGER.error(String.format("indexSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			o.promiseDeepForClass(siteRequest).onSuccess(a -> {
+				SolrInputDocument document = new SolrInputDocument();
+				o.indexSiteUser(document);
+				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?softCommit=true&overwrite=true&wt=json");
+				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
+				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("indexSiteUser failed. "), new RuntimeException(ex));
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexSiteUser failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void refreshSiteUser(SiteUser o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> refreshSiteUser(SiteUser o) {
+		Promise<Void> promise = Promise.promise();
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && BooleanUtils.isFalse(Optional.ofNullable(siteRequest.getApiRequest_()).map(ApiRequest::getEmpty).orElse(true))) {
-				SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-				searchList.setStore(true);
-				searchList.setQuery("*:*");
-				searchList.setC(SiteUser.class);
-				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
-				searchList.add("json.facet", "{enrollmentKeys:{terms:{field:enrollmentKeys_indexed_longs, limit:1000}}}");
-				searchList.setRows(1000);
-				searchList.initDeepSearchList(siteRequest);
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				List<Future> futures = new ArrayList<>();
 
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
-
-					if("SiteEnrollment".equals(classSimpleName2) && pk2 != null) {
-						SearchList<SiteEnrollment> searchList2 = new SearchList<SiteEnrollment>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(SiteEnrollment.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						searchList2.initDeepSearchList(siteRequest);
-						SiteEnrollment o2 = searchList2.getList().stream().findFirst().orElse(null);
-
-						if(o2 != null) {
-							SiteEnrollmentEnUSGenApiServiceImpl service = new SiteEnrollmentEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteUser(siteContext, siteRequest.getOperationRequest(), new JsonObject());
-							ApiRequest apiRequest2 = new ApiRequest();
-							apiRequest2.setRows(1);
-							apiRequest2.setNumFound(1l);
-							apiRequest2.setNumPATCH(0L);
-							apiRequest2.initDeepApiRequest(siteRequest2);
-							siteRequest2.setApiRequest_(apiRequest2);
-							siteRequest2.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest2).toString());
-
-							o2.setPk(pk2);
-							o2.setSiteRequest_(siteRequest2);
-							futures.add(
-								service.patchSiteEnrollmentFuture(o2, false, a -> {
-									if(a.succeeded()) {
-									} else {
-										LOGGER.info(String.format("SiteEnrollment %s failed. ", pk2));
-										eventHandler.handle(Future.failedFuture(a.cause()));
-									}
-								})
-							);
-						}
-					}
 				}
 
-				CompositeFuture.all(futures).onComplete(a -> {
-					if(a.succeeded()) {
-						SiteUserEnUSApiServiceImpl service = new SiteUserEnUSApiServiceImpl(siteRequest.getSiteContext_());
-						List<Future> futures2 = new ArrayList<>();
-						for(SiteUser o2 : searchList.getList()) {
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteUser(siteContext, siteRequest.getOperationRequest(), new JsonObject());
-							o2.setSiteRequest_(siteRequest2);
-							futures2.add(
-								service.patchSiteUserFuture(o2, false, b -> {
-									if(b.succeeded()) {
-									} else {
-										LOGGER.info(String.format("SiteUser %s failed. ", o2.getPk()));
-										eventHandler.handle(Future.failedFuture(b.cause()));
-									}
-								})
-							);
-						}
-
-						CompositeFuture.all(futures2).onComplete(b -> {
-							if(b.succeeded()) {
-								eventHandler.handle(Future.succeededFuture());
-							} else {
-								LOGGER.error("Refresh relations failed. ", b.cause());
-								errorSiteUser(siteRequest, eventHandler, b);
-							}
-						});
-					} else {
-						LOGGER.error("Refresh relations failed. ", a.cause());
-						errorSiteUser(siteRequest, eventHandler, a);
-					}
+				CompositeFuture.all(futures).onSuccess(b -> {
+					JsonObject params = new JsonObject();
+					params.put("body", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("path", new JsonObject());
+					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("nico-site-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture")).onSuccess(c -> {
+						JsonObject responseMessage = (JsonObject)c.body();
+						Integer statusCode = responseMessage.getInteger("statusCode");
+						if(statusCode.equals(200))
+							promise.complete();
+						else
+							promise.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+					}).onFailure(ex -> {
+						LOG.error("Refresh relations failed. ", ex);
+						promise.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error("Refresh relations failed. ", ex);
+					promise.fail(ex);
 				});
 			} else {
-				eventHandler.handle(Future.succeededFuture());
+				promise.complete();
 			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("refreshSiteUser failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("refreshSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 }

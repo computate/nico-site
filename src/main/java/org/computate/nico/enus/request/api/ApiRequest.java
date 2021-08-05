@@ -1,10 +1,14 @@
 package org.computate.nico.enus.request.api; 
 
+import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.wrap.Wrap;
 
@@ -12,15 +16,15 @@ import org.computate.nico.enus.wrap.Wrap;
  * Keyword: classSimpleNameApiRequest
  */
 public class ApiRequest extends ApiRequestGen<Object> {
-
+	
 	/**
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {}
-
+	
 	protected void _created(Wrap<ZonedDateTime> c) {
-		c.o(ZonedDateTime.now());
+		c.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 	}
 
 	protected void _rows(Wrap<Integer> c) {
@@ -41,16 +45,9 @@ public class ApiRequest extends ApiRequestGen<Object> {
 		c.o("PATCH-" + uuid);
 	}
 
-	protected void _empty(Wrap<Boolean> c) {
-		c.o(Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getJsonObject).map(b -> b.size()).orElse(0) == 0);
-	}
-
 	protected void _pk(Wrap<Long> c) {
 	}
 
-	/**
-	 * Ignore: true
-	 */
 	protected void _original(Wrap<Object> c) {
 	}
 
@@ -61,5 +58,27 @@ public class ApiRequest extends ApiRequestGen<Object> {
 	}
 
 	protected void _vars(List<String> c) {
+	}
+
+	protected void _timeRemaining(Wrap<String> w) {
+		w.o(calculateTimeRemaining());
+	}
+
+	public String calculateTimeRemaining() {
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)));
+		Long timeDifferenceNow = ChronoUnit.SECONDS.between(created, now);
+		Double ratio = ((double) numPATCH / numFound);
+		Double remainingSeconds = ((double) timeDifferenceNow) / ratio - ((double) timeDifferenceNow);
+
+		// Calculating the difference in Hours
+		Long hours = ((Double) (remainingSeconds / 60 / 60)).longValue();
+
+		// Calculating the difference in Minutes
+		Long minutes = ((Double) ((remainingSeconds / 60) % 60)).longValue();
+
+		// Calculating the difference in Seconds
+		Long seconds = ((Double) (remainingSeconds % 60)).longValue();
+
+		return (hours > 0L ? hours + " hours " : "") + (minutes > 0L ? minutes + " minutes " : "") + (hours == 0L && minutes <= 1L ? seconds + " seconds." : "");
 	}
 }

@@ -1,32 +1,37 @@
 package org.computate.nico.enus.writer;
 
+import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
+import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
-import io.vertx.core.logging.Logger;
+import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
 import java.io.PrintWriter;
-import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.java.LocalDateSerializer;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import java.io.StringWriter;
+import io.vertx.core.Promise;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
+import io.vertx.core.Future;
 import java.io.File;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
@@ -35,15 +40,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Object;
+import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class AllWriterGen<DEV> extends Object {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(AllWriter.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AllWriter.class);
 
 	//////////////////
 	// siteRequest_ //
@@ -52,14 +57,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -81,6 +87,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -93,14 +100,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity tabStr
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String tabStr;
 	@JsonIgnore
-	public Wrap<String> tabStrWrap = new Wrap<String>().p(this).c(String.class).var("tabStr").o(tabStr);
+	public Wrap<String> tabStrWrap = new Wrap<String>().var("tabStr").o(tabStr);
 
 	/**	<br/> The entity tabStr
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabStr">Find the entity tabStr in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabStr">Find the entity tabStr in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -121,6 +129,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_tabStr(tabStrWrap);
 			if(tabStr == null)
 				setTabStr(tabStrWrap.o);
+			tabStrWrap.o(null);
 		}
 		tabStrWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -154,18 +163,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return tabStr == null ? "" : tabStr;
 	}
 
-	public String nomAffichageTabStr() {
-		return null;
-	}
-
-	public String htmTooltipTabStr() {
-		return null;
-	}
-
-	public String htmTabStr() {
-		return tabStr == null ? "" : StringEscapeUtils.escapeHtml4(strTabStr());
-	}
-
 	//////////
 	// file //
 	//////////
@@ -173,14 +170,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity file
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected File file;
 	@JsonIgnore
-	public Wrap<File> fileWrap = new Wrap<File>().p(this).c(File.class).var("file").o(file);
+	public Wrap<File> fileWrap = new Wrap<File>().var("file").o(file);
 
 	/**	<br/> The entity file
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:file">Find the entity file in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:file">Find the entity file in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -202,6 +200,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_file(fileWrap);
 			if(file == null)
 				setFile(fileWrap.o);
+			fileWrap.o(null);
 		}
 		fileWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -214,14 +213,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity stringWriter
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected StringWriter stringWriter;
 	@JsonIgnore
-	public Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().p(this).c(StringWriter.class).var("stringWriter").o(stringWriter);
+	public Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().var("stringWriter").o(stringWriter);
 
 	/**	<br/> The entity stringWriter
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stringWriter">Find the entity stringWriter in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stringWriter">Find the entity stringWriter in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -243,6 +243,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_stringWriter(stringWriterWrap);
 			if(stringWriter == null)
 				setStringWriter(stringWriterWrap.o);
+			stringWriterWrap.o(null);
 		}
 		stringWriterWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -255,14 +256,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity buffer
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Buffer buffer;
 	@JsonIgnore
-	public Wrap<Buffer> bufferWrap = new Wrap<Buffer>().p(this).c(Buffer.class).var("buffer").o(buffer);
+	public Wrap<Buffer> bufferWrap = new Wrap<Buffer>().var("buffer").o(buffer);
 
 	/**	<br/> The entity buffer
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:buffer">Find the entity buffer in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:buffer">Find the entity buffer in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -284,6 +286,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_buffer(bufferWrap);
 			if(buffer == null)
 				setBuffer(bufferWrap.o);
+			bufferWrap.o(null);
 		}
 		bufferWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -296,14 +299,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity printWriter
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected PrintWriter printWriter;
 	@JsonIgnore
-	public Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().p(this).c(PrintWriter.class).var("printWriter").o(printWriter);
+	public Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().var("printWriter").o(printWriter);
 
 	/**	<br/> The entity printWriter
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:printWriter">Find the entity printWriter in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:printWriter">Find the entity printWriter in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -325,6 +329,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_printWriter(printWriterWrap);
 			if(printWriter == null)
 				setPrintWriter(printWriterWrap.o);
+			printWriterWrap.o(null);
 		}
 		printWriterWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -337,14 +342,15 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity empty
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean empty;
 	@JsonIgnore
-	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("empty").o(empty);
+	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().var("empty").o(empty);
 
 	/**	<br/> The entity empty
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:empty">Find the entity empty in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:empty">Find the entity empty in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -358,6 +364,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.empty = empty;
 		this.emptyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setEmpty(String o) {
 		this.empty = AllWriter.staticSetEmpty(siteRequest_, o);
 		this.emptyWrap.alreadyInitialized = true;
@@ -370,6 +377,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_empty(emptyWrap);
 			if(empty == null)
 				setEmpty(emptyWrap.o);
+			emptyWrap.o(null);
 		}
 		emptyWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -403,18 +411,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return empty == null ? "" : empty.toString();
 	}
 
-	public String nomAffichageEmpty() {
-		return null;
-	}
-
-	public String htmTooltipEmpty() {
-		return null;
-	}
-
-	public String htmEmpty() {
-		return empty == null ? "" : StringEscapeUtils.escapeHtml4(strEmpty());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -435,13 +431,13 @@ public abstract class AllWriterGen<DEV> extends Object {
 	}
 
 	public void initAllWriter() {
-		siteRequest_Init();
-		tabStrInit();
-		fileInit();
-		stringWriterInit();
-		bufferInit();
-		printWriterInit();
-		emptyInit();
+				siteRequest_Init();
+				tabStrInit();
+				fileInit();
+				stringWriterInit();
+				bufferInit();
+				printWriterInit();
+				emptyInit();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -469,9 +465,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainAllWriter(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -512,9 +508,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeAllWriter(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -610,9 +606,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 			for(String v : vars) {
 				if(o == null)
 					o = defineAllWriter(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -632,9 +628,9 @@ public abstract class AllWriterGen<DEV> extends Object {
 			for(String v : vars) {
 				if(o == null)
 					o = defineAllWriter(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -690,4 +686,12 @@ public abstract class AllWriterGen<DEV> extends Object {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_tabStr = "tabStr";
+	public static final String VAR_file = "file";
+	public static final String VAR_stringWriter = "stringWriter";
+	public static final String VAR_buffer = "buffer";
+	public static final String VAR_printWriter = "printWriter";
+	public static final String VAR_empty = "empty";
 }

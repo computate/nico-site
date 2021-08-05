@@ -2,14 +2,17 @@ package org.computate.nico.enus.enrollment;
 
 import java.util.List;
 
-import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.pet.SitePet;
 import org.computate.nico.enus.search.SearchList;
 import org.computate.nico.enus.wrap.Wrap;
 
+import io.vertx.core.Promise;
+
 /**
  * Model: true
  * Api: true
+ * Page: true
  * Indexed: true
  * Saved: true
  * 
@@ -45,8 +48,8 @@ import org.computate.nico.enus.wrap.Wrap;
  * RoleUser: true
  * 
  * Rows: 100
- **/  
-public class SiteEnrollment extends SiteEnrollmentGen<Cluster> {
+ **/    
+public class SiteEnrollment extends SiteEnrollmentGen<BaseModel> {
 
 	/**
 	 * {@inheritDoc}
@@ -82,11 +85,13 @@ public class SiteEnrollment extends SiteEnrollmentGen<Cluster> {
 	/**
 	 * Ignore: true
 	 */
-	protected void _petSearch(SearchList<SitePet> l) {
+	protected void _petSearch(Promise<SearchList<SitePet>> promise) {
+		SearchList<SitePet> l = new SearchList<>();
 		l.setQuery("*:*");
 		l.addFilterQuery("enrollmentKey_indexed_long:" + pk);
 		l.setC(SitePet.class);
 		l.setStore(true);
+		promise.complete(l);
 	}
 
 	/**

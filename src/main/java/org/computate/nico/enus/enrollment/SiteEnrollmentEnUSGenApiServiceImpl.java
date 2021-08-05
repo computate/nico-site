@@ -1,22 +1,28 @@
 package org.computate.nico.enus.enrollment;
 
-import org.computate.nico.enus.user.SiteUserEnUSGenApiServiceImpl;
+import org.computate.nico.enus.user.SiteUserEnUSApiServiceImpl;
 import org.computate.nico.enus.user.SiteUser;
-import org.computate.nico.enus.pet.SitePetEnUSGenApiServiceImpl;
+import org.computate.nico.enus.pet.SitePetEnUSApiServiceImpl;
 import org.computate.nico.enus.pet.SitePet;
-import org.computate.nico.enus.config.SiteConfig;
 import org.computate.nico.enus.request.SiteRequestEnUS;
-import org.computate.nico.enus.context.SiteContextEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.request.api.ApiRequest;
 import org.computate.nico.enus.search.SearchResult;
+import org.computate.nico.enus.vertx.MailVerticle;
+import org.computate.nico.enus.config.ConfigKeys;
+import org.computate.nico.enus.base.BaseApiServiceImpl;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.pgclient.PgPool;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.time.Instant;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -29,6 +35,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,13 +56,8 @@ import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
-import io.vertx.ext.web.api.validation.ParameterTypeValidator;
-import io.vertx.ext.web.api.validation.ValidationException;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
-import io.vertx.pgclient.PgPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
@@ -68,17 +70,31 @@ import java.sql.Timestamp;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.api.OperationResponse;
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
+import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.net.URLDecoder;
+import org.apache.solr.util.DateMathParser;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.PivotField;
+import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.commons.collections.CollectionUtils;
@@ -91,107 +107,128 @@ import org.computate.nico.enus.writer.AllWriter;
 /**
  * Translate: false
  **/
-public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGenApiService {
+public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl implements SiteEnrollmentEnUSGenApiService {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteEnrollmentEnUSGenApiServiceImpl.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SiteEnrollmentEnUSGenApiServiceImpl.class);
 
-	protected static final String SERVICE_ADDRESS = "SiteEnrollmentEnUSApiServiceImpl";
-
-	protected SiteContextEnUS siteContext;
-
-	public SiteEnrollmentEnUSGenApiServiceImpl(SiteContextEnUS siteContext) {
-		this.siteContext = siteContext;
+	public SiteEnrollmentEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
-	public void putimportSiteEnrollment(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/enrollment/import");
-		siteRequest.setRequestMethod("PUTImport");
-		try {
-			LOGGER.info(String.format("putimportSiteEnrollment started. "));
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						putimportSiteEnrollmentResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											ApiRequest apiRequest = new ApiRequest();
-											JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-											apiRequest.setRows(jsonArray.size());
-											apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-											apiRequest.setNumPATCH(0L);
-											apiRequest.initDeepApiRequest(siteRequest);
-											siteRequest.setApiRequest_(apiRequest);
-											siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-											varsSiteEnrollment(siteRequest, d -> {
-												if(d.succeeded()) {
-													listPUTImportSiteEnrollment(apiRequest, siteRequest, e -> {
-														if(e.succeeded()) {
-															putimportSiteEnrollmentResponse(siteRequest, f -> {
-																if(e.succeeded()) {
-																	LOGGER.info(String.format("putimportSiteEnrollment succeeded. "));
-																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
-																} else {
-																	LOGGER.error(String.format("putimportSiteEnrollment failed. ", f.cause()));
-																	errorSiteEnrollment(siteRequest, null, f);
-																}
-															});
-														} else {
-															LOGGER.error(String.format("putimportSiteEnrollment failed. ", e.cause()));
-															errorSiteEnrollment(siteRequest, null, e);
-														}
-													});
-												} else {
-													LOGGER.error(String.format("putimportSiteEnrollment failed. ", d.cause()));
-													errorSiteEnrollment(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOGGER.error(String.format("putimportSiteEnrollment failed. ", ex));
-											errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
-							} else {
-								LOGGER.error(String.format("putimportSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void putimportSiteEnrollment(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("putimportSiteEnrollment started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					try {
+						ApiRequest apiRequest = new ApiRequest();
+						JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
+						apiRequest.setRows(jsonArray.size());
+						apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
+						apiRequest.setNumPATCH(0L);
+						apiRequest.initDeepApiRequest(siteRequest);
+						siteRequest.setApiRequest_(apiRequest);
+						eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+						varsSiteEnrollment(siteRequest).onSuccess(d -> {
+							listPUTImportSiteEnrollment(apiRequest, siteRequest).onSuccess(e -> {
+								response200PUTImportSiteEnrollment(siteRequest).onSuccess(response -> {
+									LOG.debug(String.format("putimportSiteEnrollment succeeded. "));
+									eventHandler.handle(Future.succeededFuture(response));
+								}).onFailure(ex -> {
+									LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+									error(siteRequest, eventHandler, ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+								error(siteRequest, eventHandler, ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("putimportSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
+					} catch(Exception ex) {
+						LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
 					}
-				});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putimportSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public void listPUTImportSiteEnrollment(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> listPUTImportSiteEnrollment(ApiRequest apiRequest, SiteRequestEnUS siteRequest) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
 			jsonArray.forEach(obj -> {
-				JsonObject json = (JsonObject)obj;
+				futures.add(Future.future(promise1 -> {
+					JsonObject params = new JsonObject();
+					params.put("body", obj);
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("nico-site-enUS-SiteEnrollment", json, new DeliveryOptions().addHeader("action", "putimportSiteEnrollmentFuture")).onSuccess(a -> {
+						promise1.complete();
+					}).onFailure(ex -> {
+						LOG.error(String.format("listPUTImportSiteEnrollment failed. "), ex);
+						promise1.fail(ex);
+					});
+				}));
+			});
+			CompositeFuture.all(futures).onSuccess(a -> {
+				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPUTImportSiteEnrollment failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("listPUTImportSiteEnrollment failed. "), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
 
-				json.put("inheritPk", json.getValue("pk"));
-
-				json.put("created", json.getValue("created"));
-
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), json);
-				siteRequest2.setApiRequest_(apiRequest);
-				siteRequest2.setRequestVars(siteRequest.getRequestVars());
+	@Override
+	public void putimportSiteEnrollmentFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				ApiRequest apiRequest = new ApiRequest();
+				apiRequest.setRows(1);
+				apiRequest.setNumFound(1L);
+				apiRequest.setNumPATCH(0L);
+				apiRequest.initDeepApiRequest(siteRequest);
+				siteRequest.setApiRequest_(apiRequest);
+				body.put("inheritPk", body.getValue("pk"));
+				if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+					siteRequest.getRequestVars().put( "refresh", "false" );
+				}
 
 				SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
 				searchList.setStore(true);
@@ -199,170 +236,224 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				searchList.setC(SiteEnrollment.class);
 				searchList.addFilterQuery("deleted_indexed_boolean:false");
 				searchList.addFilterQuery("archived_indexed_boolean:false");
-				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
-				searchList.initDeepForClass(siteRequest2);
-
-				if(searchList.size() == 1) {
-					SiteEnrollment o = searchList.getList().stream().findFirst().orElse(null);
-					JsonObject json2 = new JsonObject();
-					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
-						}
-						siteRequest2.setJsonObject(json2);
-						futures.add(
-							patchSiteEnrollmentFuture(o, true, a -> {
-								if(a.succeeded()) {
+				searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
+				searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+					try {
+						if(searchList.size() >= 1) {
+							SiteEnrollment o = searchList.getList().stream().findFirst().orElse(null);
+							SiteEnrollment o2 = new SiteEnrollment();
+							JsonObject body2 = new JsonObject();
+							for(String f : body.fieldNames()) {
+								Object bodyVal = body.getValue(f);
+								if(bodyVal instanceof JsonArray) {
+									JsonArray bodyVals = (JsonArray)bodyVal;
+									Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+									if(bodyVals.size() == vals.size()) {
+										Boolean match = true;
+										for(Object val : vals) {
+											if(val != null) {
+												if(!bodyVals.contains(val.toString())) {
+													match = false;
+													break;
+												}
+											} else {
+												match = false;
+												break;
+											}
+										}
+										if(!match) {
+											body2.put("set" + StringUtils.capitalize(f), bodyVal);
+										}
+									} else {
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
+									}
 								} else {
-									LOGGER.error(String.format("listPUTImportSiteEnrollment failed. ", a.cause()));
-									errorSiteEnrollment(siteRequest2, eventHandler, a);
+									o2.defineForClass(f, bodyVal);
+									o2.attributeForClass(f, bodyVal);
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
-							})
-						);
-					}
-				} else {
-					futures.add(
-						postSiteEnrollmentFuture(siteRequest2, true, a -> {
-							if(a.succeeded()) {
-							} else {
-								LOGGER.error(String.format("listPUTImportSiteEnrollment failed. ", a.cause()));
-								errorSiteEnrollment(siteRequest2, eventHandler, a);
 							}
-						})
-					);
+							for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+								if(!body.fieldNames().contains(f)) {
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.putNull("set" + StringUtils.capitalize(f));
+								}
+							}
+							if(body2.size() > 0) {
+								siteRequest.setJsonObject(body2);
+								patchSiteEnrollmentFuture(o, true).onSuccess(b -> {
+									LOG.info("Import SiteEnrollment {} succeeded, modified SiteEnrollment. ", body.getValue("pk"));
+									eventHandler.handle(Future.succeededFuture());
+								}).onFailure(ex -> {
+									LOG.error(String.format("putimportSiteEnrollmentFuture failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								});
+							} else {
+								eventHandler.handle(Future.succeededFuture());
+							}
+						} else {
+							postSiteEnrollmentFuture(siteRequest, true).onSuccess(b -> {
+								LOG.info("Import SiteEnrollment {} succeeded, created new SiteEnrollment. ", body.getValue("pk"));
+								eventHandler.handle(Future.succeededFuture());
+							}).onFailure(ex -> {
+								LOG.error(String.format("putimportSiteEnrollmentFuture failed. "), ex);
+								eventHandler.handle(Future.failedFuture(ex));
+							});
+						}
+					} catch(Exception ex) {
+						LOG.error(String.format("putimportSiteEnrollmentFuture failed. "), ex);
+						eventHandler.handle(Future.failedFuture(ex));
+					}
+				}).onFailure(ex -> {
+					LOG.error(String.format("putimportSiteEnrollmentFuture failed. "), ex);
+					eventHandler.handle(Future.failedFuture(ex));
+				});
+			} catch(Exception ex) {
+				LOG.error(String.format("putimportSiteEnrollmentFuture failed. "), ex);
+				eventHandler.handle(Future.failedFuture(ex));
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putimportSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
-			});
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-					response200PUTImportSiteEnrollment(siteRequest, eventHandler);
-				} else {
-					LOGGER.error(String.format("listPUTImportSiteEnrollment failed. ", a.cause()));
-					errorSiteEnrollment(apiRequest.getSiteRequest_(), eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTImportSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
+			} else {
+				LOG.error(String.format("putimportSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
-	public void putimportSiteEnrollmentResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			response200PUTImportSiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("putimportSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200PUTImportSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<ServiceResponse> response200PUTImportSiteEnrollment(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTImportSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PUTImportSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// PUTMerge //
 
 	@Override
-	public void putmergeSiteEnrollment(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/enrollment/merge");
-		siteRequest.setRequestMethod("PUTMerge");
-		try {
-			LOGGER.info(String.format("putmergeSiteEnrollment started. "));
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						putmergeSiteEnrollmentResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											ApiRequest apiRequest = new ApiRequest();
-											JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-											apiRequest.setRows(jsonArray.size());
-											apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-											apiRequest.setNumPATCH(0L);
-											apiRequest.initDeepApiRequest(siteRequest);
-											siteRequest.setApiRequest_(apiRequest);
-											siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-											varsSiteEnrollment(siteRequest, d -> {
-												if(d.succeeded()) {
-													listPUTMergeSiteEnrollment(apiRequest, siteRequest, e -> {
-														if(e.succeeded()) {
-															putmergeSiteEnrollmentResponse(siteRequest, f -> {
-																if(e.succeeded()) {
-																	LOGGER.info(String.format("putmergeSiteEnrollment succeeded. "));
-																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
-																} else {
-																	LOGGER.error(String.format("putmergeSiteEnrollment failed. ", f.cause()));
-																	errorSiteEnrollment(siteRequest, null, f);
-																}
-															});
-														} else {
-															LOGGER.error(String.format("putmergeSiteEnrollment failed. ", e.cause()));
-															errorSiteEnrollment(siteRequest, null, e);
-														}
-													});
-												} else {
-													LOGGER.error(String.format("putmergeSiteEnrollment failed. ", d.cause()));
-													errorSiteEnrollment(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOGGER.error(String.format("putmergeSiteEnrollment failed. ", ex));
-											errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
-							} else {
-								LOGGER.error(String.format("putmergeSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void putmergeSiteEnrollment(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("putmergeSiteEnrollment started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					try {
+						ApiRequest apiRequest = new ApiRequest();
+						JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
+						apiRequest.setRows(jsonArray.size());
+						apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
+						apiRequest.setNumPATCH(0L);
+						apiRequest.initDeepApiRequest(siteRequest);
+						siteRequest.setApiRequest_(apiRequest);
+						eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+						varsSiteEnrollment(siteRequest).onSuccess(d -> {
+							listPUTMergeSiteEnrollment(apiRequest, siteRequest).onSuccess(e -> {
+								response200PUTMergeSiteEnrollment(siteRequest).onSuccess(response -> {
+									LOG.debug(String.format("putmergeSiteEnrollment succeeded. "));
+									eventHandler.handle(Future.succeededFuture(response));
+								}).onFailure(ex -> {
+									LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+									error(siteRequest, eventHandler, ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+								error(siteRequest, eventHandler, ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("putmergeSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
+					} catch(Exception ex) {
+						LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
 					}
-				});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putmergeSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public void listPUTMergeSiteEnrollment(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> listPUTMergeSiteEnrollment(ApiRequest apiRequest, SiteRequestEnUS siteRequest) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
 			jsonArray.forEach(obj -> {
-				JsonObject json = (JsonObject)obj;
+				futures.add(Future.future(promise1 -> {
+					JsonObject params = new JsonObject();
+					params.put("body", obj);
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("nico-site-enUS-SiteEnrollment", json, new DeliveryOptions().addHeader("action", "putmergeSiteEnrollmentFuture")).onSuccess(a -> {
+						promise1.complete();
+					}).onFailure(ex -> {
+						LOG.error(String.format("listPUTMergeSiteEnrollment failed. "), ex);
+						promise1.fail(ex);
+					});
+				}));
+			});
+			CompositeFuture.all(futures).onSuccess(a -> {
+				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPUTMergeSiteEnrollment failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("listPUTMergeSiteEnrollment failed. "), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
 
-				json.put("inheritPk", json.getValue("pk"));
-
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), json);
-				siteRequest2.setApiRequest_(apiRequest);
-				siteRequest2.setRequestVars(siteRequest.getRequestVars());
+	@Override
+	public void putmergeSiteEnrollmentFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				ApiRequest apiRequest = new ApiRequest();
+				apiRequest.setRows(1);
+				apiRequest.setNumFound(1L);
+				apiRequest.setNumPATCH(0L);
+				apiRequest.initDeepApiRequest(siteRequest);
+				siteRequest.setApiRequest_(apiRequest);
+				body.put("inheritPk", body.getValue("pk"));
+				if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+					siteRequest.getRequestVars().put( "refresh", "false" );
+				}
 
 				SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
 				searchList.setStore(true);
@@ -370,197 +461,209 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				searchList.setC(SiteEnrollment.class);
 				searchList.addFilterQuery("deleted_indexed_boolean:false");
 				searchList.addFilterQuery("archived_indexed_boolean:false");
-				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
-				searchList.initDeepForClass(siteRequest2);
-
-				if(searchList.size() == 1) {
-					SiteEnrollment o = searchList.getList().stream().findFirst().orElse(null);
-					JsonObject json2 = new JsonObject();
-					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
-						}
-						siteRequest2.setJsonObject(json2);
-						futures.add(
-							patchSiteEnrollmentFuture(o, false, a -> {
-								if(a.succeeded()) {
+				searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
+				searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+					try {
+						if(searchList.size() >= 1) {
+							SiteEnrollment o = searchList.getList().stream().findFirst().orElse(null);
+							SiteEnrollment o2 = new SiteEnrollment();
+							JsonObject body2 = new JsonObject();
+							for(String f : body.fieldNames()) {
+								Object bodyVal = body.getValue(f);
+								if(bodyVal instanceof JsonArray) {
+									JsonArray bodyVals = (JsonArray)bodyVal;
+									Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+									if(bodyVals.size() == vals.size()) {
+										Boolean match = true;
+										for(Object val : vals) {
+											if(val != null) {
+												if(!bodyVals.contains(val.toString())) {
+													match = false;
+													break;
+												}
+											} else {
+												match = false;
+												break;
+											}
+										}
+										if(!match) {
+											body2.put("set" + StringUtils.capitalize(f), bodyVal);
+										}
+									} else {
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
+									}
 								} else {
-									LOGGER.error(String.format("listPUTMergeSiteEnrollment failed. ", a.cause()));
-									errorSiteEnrollment(siteRequest2, eventHandler, a);
+									o2.defineForClass(f, bodyVal);
+									o2.attributeForClass(f, bodyVal);
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
-							})
-						);
-					}
-				} else {
-					futures.add(
-						postSiteEnrollmentFuture(siteRequest2, false, a -> {
-							if(a.succeeded()) {
-							} else {
-								LOGGER.error(String.format("listPUTMergeSiteEnrollment failed. ", a.cause()));
-								errorSiteEnrollment(siteRequest2, eventHandler, a);
 							}
-						})
-					);
+							for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+								if(!body.fieldNames().contains(f)) {
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.putNull("set" + StringUtils.capitalize(f));
+								}
+							}
+							if(body2.size() > 0) {
+								siteRequest.setJsonObject(body2);
+								patchSiteEnrollmentFuture(o, false).onSuccess(b -> {
+									LOG.info("Import SiteEnrollment {} succeeded, modified SiteEnrollment. ", body.getValue("pk"));
+									eventHandler.handle(Future.succeededFuture());
+								}).onFailure(ex -> {
+									LOG.error(String.format("putmergeSiteEnrollmentFuture failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								});
+							} else {
+								eventHandler.handle(Future.succeededFuture());
+							}
+						} else {
+							postSiteEnrollmentFuture(siteRequest, false).onSuccess(b -> {
+								LOG.info("Import SiteEnrollment {} succeeded, created new SiteEnrollment. ", body.getValue("pk"));
+								eventHandler.handle(Future.succeededFuture());
+							}).onFailure(ex -> {
+								LOG.error(String.format("putmergeSiteEnrollmentFuture failed. "), ex);
+								eventHandler.handle(Future.failedFuture(ex));
+							});
+						}
+					} catch(Exception ex) {
+						LOG.error(String.format("putmergeSiteEnrollmentFuture failed. "), ex);
+						eventHandler.handle(Future.failedFuture(ex));
+					}
+				}).onFailure(ex -> {
+					LOG.error(String.format("putmergeSiteEnrollmentFuture failed. "), ex);
+					eventHandler.handle(Future.failedFuture(ex));
+				});
+			} catch(Exception ex) {
+				LOG.error(String.format("putmergeSiteEnrollmentFuture failed. "), ex);
+				eventHandler.handle(Future.failedFuture(ex));
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putmergeSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
-			});
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-					response200PUTMergeSiteEnrollment(siteRequest, eventHandler);
-				} else {
-					LOGGER.error(String.format("listPUTMergeSiteEnrollment failed. ", a.cause()));
-					errorSiteEnrollment(apiRequest.getSiteRequest_(), eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTMergeSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
+			} else {
+				LOG.error(String.format("putmergeSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
-	public void putmergeSiteEnrollmentResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			response200PUTMergeSiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("putmergeSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200PUTMergeSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<ServiceResponse> response200PUTMergeSiteEnrollment(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTMergeSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PUTMergeSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// PUTCopy //
 
 	@Override
-	public void putcopySiteEnrollment(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/enrollment/copy");
-		siteRequest.setRequestMethod("PUTCopy");
-		try {
-			LOGGER.info(String.format("putcopySiteEnrollment started. "));
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						putcopySiteEnrollmentResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											aSearchSiteEnrollment(siteRequest, false, true, true, "/api/enrollment/copy", "PUTCopy", d -> {
-												if(d.succeeded()) {
-													SearchList<SiteEnrollment> listSiteEnrollment = d.result();
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(listSiteEnrollment.getRows());
-													apiRequest.setNumFound(listSiteEnrollment.getQueryResponse().getResults().getNumFound());
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest);
-													siteRequest.setApiRequest_(apiRequest);
-													siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-													try {
-														listPUTCopySiteEnrollment(apiRequest, listSiteEnrollment, e -> {
-															if(e.succeeded()) {
-																putcopySiteEnrollmentResponse(siteRequest, f -> {
-																	if(f.succeeded()) {
-																		LOGGER.info(String.format("putcopySiteEnrollment succeeded. "));
-																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																	} else {
-																		LOGGER.error(String.format("putcopySiteEnrollment failed. ", f.cause()));
-																		errorSiteEnrollment(siteRequest, null, f);
-																	}
-																});
-															} else {
-																LOGGER.error(String.format("putcopySiteEnrollment failed. ", e.cause()));
-																errorSiteEnrollment(siteRequest, null, e);
-															}
-														});
-													} catch(Exception ex) {
-														LOGGER.error(String.format("putcopySiteEnrollment failed. ", ex));
-														errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-													}
-												} else {
-													LOGGER.error(String.format("putcopySiteEnrollment failed. ", d.cause()));
-													errorSiteEnrollment(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOGGER.error(String.format("putcopySiteEnrollment failed. ", ex));
-											errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
-							} else {
-								LOGGER.error(String.format("putcopySiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void putcopySiteEnrollment(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("putcopySiteEnrollment started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					response200PUTCopySiteEnrollment(siteRequest).onSuccess(response -> {
+						eventHandler.handle(Future.succeededFuture(response));
+						searchSiteEnrollmentList(siteRequest, false, true, true, "/api/enrollment/copy", "PUTCopy").onSuccess(listSiteEnrollment -> {
+							ApiRequest apiRequest = new ApiRequest();
+							apiRequest.setRows(listSiteEnrollment.getRows());
+							apiRequest.setNumFound(listSiteEnrollment.getQueryResponse().getResults().getNumFound());
+							apiRequest.setNumPATCH(0L);
+							apiRequest.initDeepApiRequest(siteRequest);
+							siteRequest.setApiRequest_(apiRequest);
+							eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+							listPUTCopySiteEnrollment(apiRequest, listSiteEnrollment).onSuccess(e -> {
+								response200PUTCopySiteEnrollment(siteRequest).onSuccess(f -> {
+									LOG.debug(String.format("putcopySiteEnrollment succeeded. "));
+									blockingCodeHandler.complete();
+								}).onFailure(ex -> {
+									LOG.error(String.format("putcopySiteEnrollment failed. "), ex);
+									blockingCodeHandler.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(String.format("putcopySiteEnrollment failed. "), ex);
+								blockingCodeHandler.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("putcopySiteEnrollment failed. "), ex);
+							blockingCodeHandler.fail(ex);
 						});
-					} else {
-						LOGGER.error(String.format("putcopySiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
+					}).onFailure(ex -> {
+						LOG.error(String.format("putcopySiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("putcopySiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopySiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putcopySiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("putcopySiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public void listPUTCopySiteEnrollment(ApiRequest apiRequest, SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> listPUTCopySiteEnrollment(ApiRequest apiRequest, SearchList<SiteEnrollment> listSiteEnrollment) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
 		listSiteEnrollment.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = siteRequest.copy();
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
-				putcopySiteEnrollmentFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
-					if(a.succeeded()) {
-					} else {
-						LOGGER.error(String.format("listPUTCopySiteEnrollment failed. ", a.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, a);
-					}
+				putcopySiteEnrollmentFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
+					LOG.error(String.format("listPUTCopySiteEnrollment failed. "), ex);
+					error(siteRequest, null, ex);
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteEnrollment.size());
-				if(listSiteEnrollment.next()) {
-					listPUTCopySiteEnrollment(apiRequest, listSiteEnrollment, eventHandler);
+		CompositeFuture.all(futures).onSuccess(a -> {
+			apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteEnrollment.size());
+			listSiteEnrollment.next().onSuccess(next -> {
+				if(next) {
+					listPUTCopySiteEnrollment(apiRequest, listSiteEnrollment);
 				} else {
-					response200PUTCopySiteEnrollment(siteRequest, eventHandler);
+					promise.complete();
 				}
-			} else {
-				LOGGER.error(String.format("listPUTCopySiteEnrollment failed. ", a.cause()));
-				errorSiteEnrollment(listSiteEnrollment.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPUTCopySiteEnrollment failed. "), ex);
+				error(listSiteEnrollment.getSiteRequest_(), null, ex);
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPUTCopySiteEnrollment failed. "), ex);
+			error(listSiteEnrollment.getSiteRequest_(), null, ex);
 		});
+		return promise.future();
 	}
 
-	public Future<SiteEnrollment> putcopySiteEnrollmentFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject, Handler<AsyncResult<SiteEnrollment>> eventHandler) {
+	public Future<SiteEnrollment> putcopySiteEnrollmentFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
 		Promise<SiteEnrollment> promise = Promise.promise();
+
 		try {
 
 			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
@@ -570,70 +673,88 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 					jsonObject.remove(o.getKey());
 				else
 					jsonObject.put(o.getKey(), o.getValue());
-				jsonObject.getJsonArray("saves").add(o.getKey());
+				if(!jsonObject.getJsonArray("saves").contains(o.getKey()))
+					jsonObject.getJsonArray("saves").add(o.getKey());
 			});
 
-			sqlConnectionSiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteEnrollment(siteRequest, b -> {
-						if(b.succeeded()) {
-							createSiteEnrollment(siteRequest, c -> {
-								if(c.succeeded()) {
-									SiteEnrollment siteEnrollment = c.result();
-									sqlPUTCopySiteEnrollment(siteEnrollment, jsonObject, d -> {
-										if(d.succeeded()) {
-											defineIndexSiteEnrollment(siteEnrollment, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														if(apiRequest.getNumFound() == 1L) {
-															siteEnrollment.apiRequestSiteEnrollment();
-														}
-														siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-													}
-													eventHandler.handle(Future.succeededFuture(siteEnrollment));
-													promise.complete(siteEnrollment);
-												} else {
-													LOGGER.error(String.format("putcopySiteEnrollmentFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOGGER.error(String.format("putcopySiteEnrollmentFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOGGER.error(String.format("putcopySiteEnrollmentFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
+			pgPool.withTransaction(sqlConnection -> {
+				Promise<SiteEnrollment> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createSiteEnrollment(siteRequest).onSuccess(siteEnrollment -> {
+					sqlPUTCopySiteEnrollment(siteEnrollment, jsonObject).onSuccess(b -> {
+						defineSiteEnrollment(siteEnrollment).onSuccess(c -> {
+							attributeSiteEnrollment(siteEnrollment).onSuccess(d -> {
+								indexSiteEnrollment(siteEnrollment).onSuccess(e -> {
+									promise1.complete(siteEnrollment);
+								}).onFailure(ex -> {
+									LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+									promise1.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+								promise1.fail(ex);
 							});
-						} else {
-							LOGGER.error(String.format("putcopySiteEnrollmentFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
-						}
+						}).onFailure(ex -> {
+							LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+							promise1.fail(ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+						promise1.fail(ex);
 					});
-				} else {
-					LOGGER.error(String.format("putcopySiteEnrollmentFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+				}).onFailure(ex -> {
+					LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+					promise1.fail(ex);
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			}).compose(siteEnrollment -> {
+				Promise<SiteEnrollment> promise2 = Promise.promise();
+				refreshSiteEnrollment(siteEnrollment).onSuccess(a -> {
+					ApiRequest apiRequest = siteRequest.getApiRequest_();
+					if(apiRequest != null) {
+						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+						siteEnrollment.apiRequestSiteEnrollment();
+						eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+					}
+					promise2.complete(siteEnrollment);
+				}).onFailure(ex -> {
+					LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+					promise2.fail(ex);
+				});
+				return promise2.future();
+			}).onSuccess(siteEnrollment -> {
+				promise.complete(siteEnrollment);
+				LOG.debug(String.format("putcopySiteEnrollmentFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("putcopySiteEnrollmentFuture failed. ", e));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("putcopySiteEnrollmentFuture failed. "), ex);
+			promise.fail(ex);
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPUTCopySiteEnrollment(SiteEnrollment o, JsonObject jsonObject, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> sqlPUTCopySiteEnrollment(SiteEnrollment o, JsonObject jsonObject) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteEnrollment SET ");
+			List<Object> bParams = new ArrayList<Object>();
+			SiteEnrollment o2 = new SiteEnrollment();
+			o2.setSiteRequest_(siteRequest);
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -642,1321 +763,902 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				for(Integer i = 0; i < entityVars.size(); i++) {
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
-					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteEnrollment.inheritPk failed", b.cause())));
-							});
-						}));
-						break;
-					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteEnrollment.archived failed", b.cause())));
-							});
-						}));
-						break;
-					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteEnrollment.deleted failed", b.cause())));
-							});
-						}));
-						break;
-					case "userKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_addA)
-										.execute(Tuple.of(l, "enrollmentKeys", pk, "userKeys")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-								});
-							}));
-							if(!pks.contains(l)) {
-								pks.add(l);
-								classes.add("SiteUser");
-							}
+					case SiteEnrollment.VAR_inheritPk:
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
 						}
+						bSql.append(SiteEnrollment.VAR_inheritPk + "=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
-					case "petKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_addA)
-										.execute(Tuple.of(l, "enrollmentKeys", pk, "petKeys")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-								});
-							}));
-							if(!pks.contains(l)) {
-								pks.add(l);
-								classes.add("SitePet");
+					case SiteEnrollment.VAR_archived:
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteEnrollment.VAR_archived + "=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
+						break;
+					case SiteEnrollment.VAR_deleted:
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteEnrollment.VAR_deleted + "=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
+						break;
+					case SiteEnrollment.VAR_petKeys:
+						{
+							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+								futures.add(Future.future(a -> {
+									sqlConnection.preparedQuery("INSERT INTO SitePetEnrollmentKeys_SiteEnrollmentPetKeys(pk1, pk2) values($1, $2)")
+											.execute(Tuple.of(l, pk)
+											, b
+									-> {
+										if(b.succeeded())
+											a.handle(Future.succeededFuture());
+										else
+											a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
+									});
+								}));
+								if(!pks.contains(l)) {
+									pks.add(l);
+									classes.add("SitePet");
+								}
 							}
 						}
 						break;
 					}
 				}
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture());
-				} else {
-					LOGGER.error(String.format("sqlPUTCopySiteEnrollment failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPUTCopySiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void putcopySiteEnrollmentResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			response200PUTCopySiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("putcopySiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
-				}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
+			}
+			CompositeFuture.all(futures).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPUTCopySiteEnrollment failed. "), ex);
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopySiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPUTCopySiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200PUTCopySiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200PUTCopySiteEnrollment(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTCopySiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PUTCopySiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// POST //
 
 	@Override
-	public void postSiteEnrollment(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/enrollment");
-		siteRequest.setRequestMethod("POST");
-		try {
-			LOGGER.info(String.format("postSiteEnrollment started. "));
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						ApiRequest apiRequest = new ApiRequest();
-						apiRequest.setRows(1);
-						apiRequest.setNumFound(1L);
-						apiRequest.setNumPATCH(0L);
-						apiRequest.initDeepApiRequest(siteRequest);
-						siteRequest.setApiRequest_(apiRequest);
-						siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-						postSiteEnrollmentFuture(siteRequest, false, c -> {
-							if(c.succeeded()) {
-								SiteEnrollment siteEnrollment = c.result();
-								apiRequest.setPk(siteEnrollment.getPk());
-								postSiteEnrollmentResponse(siteEnrollment, d -> {
-										if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("postSiteEnrollment succeeded. "));
-									} else {
-										LOGGER.error(String.format("postSiteEnrollment failed. ", d.cause()));
-										errorSiteEnrollment(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("postSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
-						});
-					} else {
-						LOGGER.error(String.format("postSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
+	public void postSiteEnrollment(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("postSiteEnrollment started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					ApiRequest apiRequest = new ApiRequest();
+					apiRequest.setRows(1);
+					apiRequest.setNumFound(1L);
+					apiRequest.setNumPATCH(0L);
+					apiRequest.initDeepApiRequest(siteRequest);
+					siteRequest.setApiRequest_(apiRequest);
+					eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+					JsonObject params = new JsonObject();
+					params.put("body", siteRequest.getJsonObject());
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("nico-site-enUS-SiteEnrollment", json, new DeliveryOptions().addHeader("action", "postSiteEnrollmentFuture")).onSuccess(a -> {
+						JsonObject responseMessage = (JsonObject)a.body();
+						JsonObject responseBody = new JsonObject(new String(Base64.getDecoder().decode(responseMessage.getString("payload")), Charset.forName("UTF-8")));
+						apiRequest.setPk(Long.parseLong(responseBody.getString("pk")));
+						eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
+						LOG.debug(String.format("postSiteEnrollment succeeded. "));
+					}).onFailure(ex -> {
+						LOG.error(String.format("postSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("postSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("postSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public Future<SiteEnrollment> postSiteEnrollmentFuture(SiteRequestEnUS siteRequest, Boolean inheritPk, Handler<AsyncResult<SiteEnrollment>> eventHandler) {
-		Promise<SiteEnrollment> promise = Promise.promise();
-		try {
-			sqlConnectionSiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteEnrollment(siteRequest, b -> {
-						if(b.succeeded()) {
-							createSiteEnrollment(siteRequest, c -> {
-								if(c.succeeded()) {
-									SiteEnrollment siteEnrollment = c.result();
-									sqlPOSTSiteEnrollment(siteEnrollment, inheritPk, d -> {
-										if(d.succeeded()) {
-											defineIndexSiteEnrollment(siteEnrollment, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														siteEnrollment.apiRequestSiteEnrollment();
-														siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-													}
-													eventHandler.handle(Future.succeededFuture(siteEnrollment));
-													promise.complete(siteEnrollment);
-												} else {
-													LOGGER.error(String.format("postSiteEnrollmentFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOGGER.error(String.format("postSiteEnrollmentFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOGGER.error(String.format("postSiteEnrollmentFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOGGER.error(String.format("postSiteEnrollmentFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
-						}
-					});
-				} else {
-					LOGGER.error(String.format("postSiteEnrollmentFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+	@Override
+	public void postSiteEnrollmentFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			postSiteEnrollmentFuture(siteRequest, false).onSuccess(o -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(JsonObject.mapFrom(o).encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("postSiteEnrollmentFuture failed. ", e));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(e));
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
+	}
+
+	public Future<SiteEnrollment> postSiteEnrollmentFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
+		Promise<SiteEnrollment> promise = Promise.promise();
+
+		try {
+			pgPool.withTransaction(sqlConnection -> {
+				Promise<SiteEnrollment> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createSiteEnrollment(siteRequest).onSuccess(siteEnrollment -> {
+					sqlPOSTSiteEnrollment(siteEnrollment, inheritPk).onSuccess(b -> {
+						defineSiteEnrollment(siteEnrollment).onSuccess(c -> {
+							attributeSiteEnrollment(siteEnrollment).onSuccess(d -> {
+								indexSiteEnrollment(siteEnrollment).onSuccess(e -> {
+									promise1.complete(siteEnrollment);
+								}).onFailure(ex -> {
+									LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+									promise1.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+								promise1.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+							promise1.fail(ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+						promise1.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+					promise1.fail(ex);
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			}).compose(siteEnrollment -> {
+				Promise<SiteEnrollment> promise2 = Promise.promise();
+				refreshSiteEnrollment(siteEnrollment).onSuccess(a -> {
+					ApiRequest apiRequest = siteRequest.getApiRequest_();
+					if(apiRequest != null) {
+						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+						siteEnrollment.apiRequestSiteEnrollment();
+						eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+					}
+					promise2.complete(siteEnrollment);
+				}).onFailure(ex -> {
+					LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+					promise2.fail(ex);
+				});
+				return promise2.future();
+			}).onSuccess(siteEnrollment -> {
+				promise.complete(siteEnrollment);
+				LOG.debug(String.format("postSiteEnrollmentFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("postSiteEnrollmentFuture failed. "), ex);
+			promise.fail(ex);
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPOSTSiteEnrollment(SiteEnrollment o, Boolean inheritPk, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> sqlPOSTSiteEnrollment(SiteEnrollment o, Boolean inheritPk) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteEnrollment SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			SiteEnrollment o2 = new SiteEnrollment();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-
-				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("userKeys")).orElse(null);
-				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
-					userKeys.add(siteRequest.getUserKey().toString());
-				else
-					jsonObject.put("userKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			if(jsonObject != null) {
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
-					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteEnrollment.inheritPk failed", b.cause())));
-							});
-						}));
-						break;
-					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteEnrollment.archived failed", b.cause())));
-							});
-						}));
-						break;
-					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteEnrollment.deleted failed", b.cause())));
-							});
-						}));
-						break;
-					case "userKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							if(l != null) {
-								SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.user.SiteUser.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteUser");
-									}
-								}
-							}
+					case SiteEnrollment.VAR_inheritPk:
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
 						}
+						bSql.append(SiteEnrollment.VAR_inheritPk + "=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
-					case "petKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							if(l != null) {
-								SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.pet.SitePet.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
+					case SiteEnrollment.VAR_archived:
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteEnrollment.VAR_archived + "=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
+						break;
+					case SiteEnrollment.VAR_deleted:
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteEnrollment.VAR_deleted + "=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
+						break;
+					case SiteEnrollment.VAR_petKeys:
+						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
 										classes.add("SitePet");
 									}
-								}
-							}
-						}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk2, pk).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 						break;
 					}
 				}
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture());
-				} else {
-					LOGGER.error(String.format("sqlPOSTSiteEnrollment failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPOSTSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void postSiteEnrollmentResponse(SiteEnrollment siteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = siteEnrollment.getSiteRequest_();
-		try {
-			response200POSTSiteEnrollment(siteEnrollment, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("postSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
-				}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures2.add(0, Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
+			}
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPOSTSiteEnrollment failed. "), ex);
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPOSTSiteEnrollment failed. "), ex);
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("postSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPOSTSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200POSTSiteEnrollment(SiteEnrollment o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200POSTSiteEnrollment(SiteEnrollment o) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			JsonObject json = JsonObject.mapFrom(o);
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200POSTSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200POSTSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// PATCH //
 
 	@Override
-	public void patchSiteEnrollment(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/enrollment");
-		siteRequest.setRequestMethod("PATCH");
-		try {
-			LOGGER.info(String.format("patchSiteEnrollment started. "));
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						patchSiteEnrollmentResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											aSearchSiteEnrollment(siteRequest, false, true, true, "/api/enrollment", "PATCH", d -> {
-												if(d.succeeded()) {
-													SearchList<SiteEnrollment> listSiteEnrollment = d.result();
-
-													List<String> roles2 = Arrays.asList("SiteAdmin");
-													if(listSiteEnrollment.getQueryResponse().getResults().getNumFound() > 1
-															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-															) {
-														String message = String.format("roles required: " + String.join(", ", roles2));
-														LOGGER.error(message);
-														errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(message));
-													} else {
-
-														ApiRequest apiRequest = new ApiRequest();
-														apiRequest.setRows(listSiteEnrollment.getRows());
-														apiRequest.setNumFound(listSiteEnrollment.getQueryResponse().getResults().getNumFound());
-														apiRequest.setNumPATCH(0L);
-														apiRequest.initDeepApiRequest(siteRequest);
-														siteRequest.setApiRequest_(apiRequest);
-														siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteEnrollment.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-														Date date = null;
-														if(facets != null)
-														date = (Date)facets.get("max_modified");
-														String dt;
-														if(date == null)
-															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-														else
-															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-														listSiteEnrollment.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
-
-														try {
-															listPATCHSiteEnrollment(apiRequest, listSiteEnrollment, dt, e -> {
-																if(e.succeeded()) {
-																	patchSiteEnrollmentResponse(siteRequest, f -> {
-																		if(f.succeeded()) {
-																			LOGGER.info(String.format("patchSiteEnrollment succeeded. "));
-																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																		} else {
-																			LOGGER.error(String.format("patchSiteEnrollment failed. ", f.cause()));
-																			errorSiteEnrollment(siteRequest, null, f);
-																		}
-																	});
-																} else {
-																	LOGGER.error(String.format("patchSiteEnrollment failed. ", e.cause()));
-																	errorSiteEnrollment(siteRequest, null, e);
-																}
-															});
-														} catch(Exception ex) {
-															LOGGER.error(String.format("patchSiteEnrollment failed. ", ex));
-															errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-														}
-													}
-										} else {
-													LOGGER.error(String.format("patchSiteEnrollment failed. ", d.cause()));
-													errorSiteEnrollment(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOGGER.error(String.format("patchSiteEnrollment failed. ", ex));
-											errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
+	public void patchSiteEnrollment(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.debug(String.format("patchSiteEnrollment started. "));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
+					searchSiteEnrollmentList(siteRequest, false, true, true, "/api/enrollment", "PATCH").onSuccess(listSiteEnrollment -> {
+						try {
+							List<String> roles2 = Arrays.asList("SiteAdmin");
+							if(listSiteEnrollment.getQueryResponse().getResults().getNumFound() > 1
+									&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+									&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+									) {
+								String message = String.format("roles required: " + String.join(", ", roles2));
+								LOG.error(message);
+								error(siteRequest, eventHandler, new RuntimeException(message));
 							} else {
-								LOGGER.error(String.format("patchSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
+
+								ApiRequest apiRequest = new ApiRequest();
+								apiRequest.setRows(listSiteEnrollment.getRows());
+								apiRequest.setNumFound(listSiteEnrollment.getQueryResponse().getResults().getNumFound());
+								apiRequest.setNumPATCH(0L);
+								apiRequest.initDeepApiRequest(siteRequest);
+								siteRequest.setApiRequest_(apiRequest);
+								if(apiRequest.getNumFound() == 1L)
+									apiRequest.setOriginal(listSiteEnrollment.first());
+								apiRequest.setPk(listSiteEnrollment.first().getPk());
+								eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+
+								listPATCHSiteEnrollment(apiRequest, listSiteEnrollment).onSuccess(e -> {
+									response200PATCHSiteEnrollment(siteRequest).onSuccess(response -> {
+										LOG.debug(String.format("patchSiteEnrollment succeeded. "));
+										eventHandler.handle(Future.succeededFuture(response));
+									}).onFailure(ex -> {
+										LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+										error(siteRequest, eventHandler, ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+									error(siteRequest, eventHandler, ex);
+								});
 							}
-						});
-					} else {
-						LOGGER.error(String.format("patchSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
+						} catch(Exception ex) {
+							LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
+						}
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("patchSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
-	public void listPATCHSiteEnrollment(ApiRequest apiRequest, SearchList<SiteEnrollment> listSiteEnrollment, String dt, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> listPATCHSiteEnrollment(ApiRequest apiRequest, SearchList<SiteEnrollment> listSiteEnrollment) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
 		listSiteEnrollment.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
-			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			o.setSiteRequest_(siteRequest2);
-			futures.add(
-				patchSiteEnrollmentFuture(o, false, a -> {
-					if(a.succeeded()) {
-					} else {
-						errorSiteEnrollment(siteRequest2, eventHandler, a);
-					}
-				})
-			);
+			futures.add(Future.future(promise1 -> {
+				patchSiteEnrollmentFuture(o, false).onSuccess(a -> {
+					promise1.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("listPATCHSiteEnrollment failed. "), ex);
+					promise1.fail(ex);
+				});
+			}));
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listSiteEnrollment.next(dt)) {
-					listPATCHSiteEnrollment(apiRequest, listSiteEnrollment, dt, eventHandler);
-				} else {
-					response200PATCHSiteEnrollment(siteRequest, eventHandler);
-				}
-			} else {
-				LOGGER.error(String.format("listPATCHSiteEnrollment failed. ", a.cause()));
-				errorSiteEnrollment(listSiteEnrollment.getSiteRequest_(), eventHandler, a);
+		CompositeFuture.all(futures).onSuccess( a -> {
+			if(apiRequest != null) {
+				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteEnrollment.getQueryResponse().getResults().size());
+				if(apiRequest.getNumFound() == 1L)
+					listSiteEnrollment.first().apiRequestSiteEnrollment();
+				eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
 			}
+			listSiteEnrollment.next().onSuccess(next -> {
+				if(next) {
+					listPATCHSiteEnrollment(apiRequest, listSiteEnrollment);
+				} else {
+					promise.complete();
+				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHSiteEnrollment failed. "), ex);
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHSiteEnrollment failed. "), ex);
+			promise.fail(ex);
+		});
+		return promise.future();
+	}
+
+	@Override
+	public void patchSiteEnrollmentFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				serviceRequest.getParams().getJsonObject("query").put("rows", 1);
+				searchSiteEnrollmentList(siteRequest, false, true, true, "/api/enrollment", "PATCH").onSuccess(listSiteEnrollment -> {
+					try {
+						SiteEnrollment o = listSiteEnrollment.first();
+						if(o != null && listSiteEnrollment.getQueryResponse().getResults().getNumFound() == 1) {
+							ApiRequest apiRequest = new ApiRequest();
+							apiRequest.setRows(1);
+							apiRequest.setNumFound(1L);
+							apiRequest.setNumPATCH(0L);
+							apiRequest.initDeepApiRequest(siteRequest);
+							siteRequest.setApiRequest_(apiRequest);
+							if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+								siteRequest.getRequestVars().put( "refresh", "false" );
+							}
+							if(apiRequest.getNumFound() == 1L)
+								apiRequest.setOriginal(o);
+							apiRequest.setPk(listSiteEnrollment.first().getPk());
+							eventBus.publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
+							patchSiteEnrollmentFuture(o, false).onSuccess(a -> {
+								eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+							}).onFailure(ex -> {
+								eventHandler.handle(Future.failedFuture(ex));
+							});
+						} else {
+							eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+						}
+					} catch(Exception ex) {
+						LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					}
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+					error(siteRequest, eventHandler, ex);
+				});
+			} catch(Exception ex) {
+				LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			LOG.error(String.format("patchSiteEnrollment failed. "), ex);
+			error(null, eventHandler, ex);
 		});
 	}
 
-	public Future<SiteEnrollment> patchSiteEnrollmentFuture(SiteEnrollment o, Boolean inheritPk, Handler<AsyncResult<SiteEnrollment>> eventHandler) {
-		Promise<SiteEnrollment> promise = Promise.promise();
+	public Future<SiteEnrollment> patchSiteEnrollmentFuture(SiteEnrollment o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		Promise<SiteEnrollment> promise = Promise.promise();
+
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			if(apiRequest != null && apiRequest.getNumFound() == 1L) {
-				apiRequest.setOriginal(o);
-				apiRequest.setPk(o.getPk());
-			}
-			sqlConnectionSiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteEnrollment(siteRequest, b -> {
-						if(b.succeeded()) {
-							sqlPATCHSiteEnrollment(o, inheritPk, c -> {
-								if(c.succeeded()) {
-									SiteEnrollment siteEnrollment = c.result();
-									defineIndexSiteEnrollment(siteEnrollment, d -> {
-										if(d.succeeded()) {
-											if(apiRequest != null) {
-												apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-												if(apiRequest.getNumFound() == 1L) {
-													siteEnrollment.apiRequestSiteEnrollment();
-												}
-												siteRequest.getVertx().eventBus().publish("websocketSiteEnrollment", JsonObject.mapFrom(apiRequest).toString());
-											}
-											eventHandler.handle(Future.succeededFuture(siteEnrollment));
-											promise.complete(siteEnrollment);
-										} else {
-											LOGGER.error(String.format("patchSiteEnrollmentFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOGGER.error(String.format("patchSiteEnrollmentFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
+			pgPool.withTransaction(sqlConnection -> {
+				Promise<SiteEnrollment> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				sqlPATCHSiteEnrollment(o, inheritPk).onSuccess(siteEnrollment -> {
+					defineSiteEnrollment(siteEnrollment).onSuccess(c -> {
+						attributeSiteEnrollment(siteEnrollment).onSuccess(d -> {
+							indexSiteEnrollment(siteEnrollment).onSuccess(e -> {
+								promise1.complete(siteEnrollment);
+							}).onFailure(ex -> {
+								LOG.error(String.format("patchSiteEnrollmentFuture failed. "), ex);
+								promise1.fail(ex);
 							});
-						} else {
-							LOGGER.error(String.format("patchSiteEnrollmentFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
-						}
+						}).onFailure(ex -> {
+							LOG.error(String.format("patchSiteEnrollmentFuture failed. "), ex);
+							promise1.fail(ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchSiteEnrollmentFuture failed. "), ex);
+						promise1.fail(ex);
 					});
-				} else {
-					LOGGER.error(String.format("patchSiteEnrollmentFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteEnrollmentFuture failed. "), ex);
+					promise1.fail(ex);
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
+			}).compose(siteEnrollment -> {
+				Promise<SiteEnrollment> promise2 = Promise.promise();
+				refreshSiteEnrollment(siteEnrollment).onSuccess(a -> {
+					promise2.complete(siteEnrollment);
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteEnrollmentFuture failed. "), ex);
+					promise2.fail(ex);
+				});
+				return promise2.future();
+			}).onSuccess(siteEnrollment -> {
+				promise.complete(siteEnrollment);
+				LOG.debug(String.format("patchSiteEnrollmentFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				error(siteRequest, null, ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("patchSiteEnrollmentFuture failed. ", e));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("patchSiteEnrollmentFuture failed. "), ex);
+			promise.fail(ex);
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPATCHSiteEnrollment(SiteEnrollment o, Boolean inheritPk, Handler<AsyncResult<SiteEnrollment>> eventHandler) {
+	public Future<SiteEnrollment> sqlPATCHSiteEnrollment(SiteEnrollment o, Boolean inheritPk) {
+		Promise<SiteEnrollment> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteEnrollment SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteEnrollment o2 = new SiteEnrollment();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-
-				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("addUserKeys")).orElse(null);
-				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
-					userKeys.add(siteRequest.getUserKey().toString());
-				else
-					jsonObject.put("addUserKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
-			}
-
-			for(String methodName : methodNames) {
-				switch(methodName) {
+			for(String entityVar : methodNames) {
+				switch(entityVar) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							o2.setInheritPk(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteEnrollment.VAR_inheritPk + "=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.archived failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.archived failed", b.cause())));
-								});
-							}));
-						}
+							o2.setArchived(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteEnrollment.VAR_archived + "=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.deleted failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteEnrollment.deleted failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "addUserKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.user.SiteUser.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-								List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
-								if(
-										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-										) {
-									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-								}
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && !o.getUserKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteUser");
-									}
-								}
-							}
-						}
-						break;
-					case "addAllUserKeys":
-						JsonArray addAllUserKeysValues = jsonObject.getJsonArray(methodName);
-						if(addAllUserKeysValues != null) {
-							for(Integer i = 0; i <  addAllUserKeysValues.size(); i++) {
-								Long l = Long.parseLong(addAllUserKeysValues.getString(i));
-								if(l != null) {
-									SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(org.computate.nico.enus.user.SiteUser.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-									List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
-									if(
-											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-											) {
-										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-									}
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null && !o.getUserKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SiteUser");
-										}
-									}
-								}
-							}
-						}
-						break;
-					case "setUserKeys":
-						JsonArray setUserKeysValues = jsonObject.getJsonArray(methodName);
-						JsonArray setUserKeysValues2 = new JsonArray();
-						if(setUserKeysValues != null) {
-							for(Integer i = 0; i <  setUserKeysValues.size(); i++) {
-								Long l = Long.parseLong(setUserKeysValues.getString(i));
-								if(l != null) {
-									SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(org.computate.nico.enus.user.SiteUser.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-									List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
-									if(
-											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-											) {
-										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-									}
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null)
-										setUserKeysValues2.add(l2);
-									if(l2 != null && !o.getUserKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SiteUser");
-										}
-									}
-								}
-							}
-						}
-						if(o.getUserKeys() != null) {
-							for(Long l :  o.getUserKeys()) {
-								if(l != null && (setUserKeysValues == null || !setUserKeysValues2.contains(l))) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l, "enrollmentKeys", pk, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-										});
-									}));
-								}
-							}
-						}
-						break;
-					case "removeUserKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<org.computate.nico.enus.user.SiteUser> searchList = new SearchList<org.computate.nico.enus.user.SiteUser>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.user.SiteUser.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-								List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin", "SiteAdmin", "SiteAdmin");
-								if(
-										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-										) {
-									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-								}
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && o.getUserKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "userKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.userKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteUser");
-									}
-								}
-							}
-						}
-						break;
-					case "addPetKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.pet.SitePet.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-								List<String> roles = Arrays.asList("SiteAdmin");
-								if(
-										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-										) {
-									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-								}
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && !o.getPetKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SitePet");
-									}
-								}
-							}
-						}
-						break;
-					case "addAllPetKeys":
-						JsonArray addAllPetKeysValues = jsonObject.getJsonArray(methodName);
-						if(addAllPetKeysValues != null) {
-							for(Integer i = 0; i <  addAllPetKeysValues.size(); i++) {
-								Long l = Long.parseLong(addAllPetKeysValues.getString(i));
-								if(l != null) {
-									SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(org.computate.nico.enus.pet.SitePet.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-									List<String> roles = Arrays.asList("SiteAdmin");
-									if(
-											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-											) {
-										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-									}
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null && !o.getPetKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SitePet");
-										}
-									}
-								}
-							}
-						}
+							o2.setDeleted(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteEnrollment.VAR_deleted + "=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "setPetKeys":
-						JsonArray setPetKeysValues = jsonObject.getJsonArray(methodName);
-						JsonArray setPetKeysValues2 = new JsonArray();
-						if(setPetKeysValues != null) {
-							for(Integer i = 0; i <  setPetKeysValues.size(); i++) {
-								Long l = Long.parseLong(setPetKeysValues.getString(i));
-								if(l != null) {
-									SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(org.computate.nico.enus.pet.SitePet.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-									List<String> roles = Arrays.asList("SiteAdmin");
-									if(
-											!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-											) {
-										searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-												+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-									}
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null)
-										setPetKeysValues2.add(l2);
-									if(l2 != null && !o.getPetKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SitePet");
-										}
-									}
-								}
-							}
-						}
-						if(o.getPetKeys() != null) {
-							for(Long l :  o.getPetKeys()) {
-								if(l != null && (setPetKeysValues == null || !setPetKeysValues2.contains(l))) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l, "enrollmentKeys", pk, "petKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-										});
-									}));
-								}
-							}
-						}
-						break;
-					case "removePetKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<org.computate.nico.enus.pet.SitePet> searchList = new SearchList<org.computate.nico.enus.pet.SitePet>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(org.computate.nico.enus.pet.SitePet.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
-
-								List<String> roles = Arrays.asList("SiteAdmin");
-								if(
-										!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-										&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-										) {
-									searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-											+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-								}
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && o.getPetKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l2, "enrollmentKeys", pk, "petKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteEnrollment.petKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
+						JsonArray setPetKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						setPetKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
 										classes.add("SitePet");
 									}
-								}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						Optional.ofNullable(o.getPetKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setPetKeysValues.contains(oVal.toString())).forEach(pk2 -> {
+							if(!pks.contains(pk2)) {
+								pks.add(pk2);
+								classes.add("SitePet");
 							}
-						}
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).deleteFrom(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).where(pk2, pk).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
+					case "addAllPetKeys":
+						JsonArray addAllPetKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						addAllPetKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SitePet");
+									}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
+					case "addPetKeys":
+						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SitePet");
+									}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
+					case "removePetKeys":
+						Optional.ofNullable(jsonObject.getString(entityVar)).map(val -> Long.parseLong(val)).ifPresent(pk2 -> {
+							if(!pks.contains(pk2)) {
+								pks.add(pk2);
+								classes.add("SitePet");
+							}
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).deleteFrom(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).where(pk2, pk).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 						break;
 				}
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures2.add(0, Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
+			}
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
 					SiteEnrollment o3 = new SiteEnrollment();
 					o3.setSiteRequest_(o.getSiteRequest_());
 					o3.setPk(pk);
-					eventHandler.handle(Future.succeededFuture(o3));
-				} else {
-					LOGGER.error(String.format("sqlPATCHSiteEnrollment failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPATCHSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void patchSiteEnrollmentResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			response200PATCHSiteEnrollment(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("patchSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
-				}
+					promise.complete(o3);
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPATCHSiteEnrollment failed. "), ex);
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPATCHSiteEnrollment failed. "), ex);
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPATCHSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200PATCHSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200PATCHSiteEnrollment(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200PATCHSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PATCHSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// GET //
 
 	@Override
-	public void getSiteEnrollment(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/enrollment/{id}");
-		siteRequest.setRequestMethod("GET");
-		try {
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, false, "/api/enrollment/{id}", "GET", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
-								getSiteEnrollmentResponse(listSiteEnrollment, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("getSiteEnrollment succeeded. "));
-									} else {
-										LOGGER.error(String.format("getSiteEnrollment failed. ", d.cause()));
-										errorSiteEnrollment(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("getSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void getSiteEnrollment(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					searchSiteEnrollmentList(siteRequest, false, true, false, "/api/enrollment/{id}", "GET").onSuccess(listSiteEnrollment -> {
+						response200GETSiteEnrollment(listSiteEnrollment).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("getSiteEnrollment succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("getSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("getSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
-			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("getSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
-	}
-
-
-	public void getSiteEnrollmentResponse(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
-		try {
-			response200GETSiteEnrollment(listSiteEnrollment, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("getSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
+					}).onFailure(ex -> {
+						LOG.error(String.format("getSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
 				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("getSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
+			} catch(Exception ex) {
+				LOG.error(String.format("getSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("getSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("getSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
-	public void response200GETSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+
+	public Future<ServiceResponse> response200GETSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
 			SolrDocumentList solrDocuments = listSiteEnrollment.getSolrDocumentList();
 
 			JsonObject json = JsonObject.mapFrom(listSiteEnrollment.getList().stream().findFirst().orElse(null));
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200GETSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200GETSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// Search //
 
 	@Override
-	public void searchSiteEnrollment(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/enrollment");
-		siteRequest.setRequestMethod("Search");
-		try {
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, false, "/api/enrollment", "Search", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
-								searchSiteEnrollmentResponse(listSiteEnrollment, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchSiteEnrollment succeeded. "));
-									} else {
-										LOGGER.error(String.format("searchSiteEnrollment failed. ", d.cause()));
-										errorSiteEnrollment(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("searchSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void searchSiteEnrollment(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					searchSiteEnrollmentList(siteRequest, false, true, false, "/api/enrollment", "Search").onSuccess(listSiteEnrollment -> {
+						response200SearchSiteEnrollment(listSiteEnrollment).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("searchSiteEnrollment succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("searchSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
-			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
-	}
-
-
-	public void searchSiteEnrollmentResponse(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
-		try {
-			response200SearchSiteEnrollment(listSiteEnrollment, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("searchSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
+					}).onFailure(ex -> {
+						LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
 				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
+			} catch(Exception ex) {
+				LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("searchSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
-	public void response200SearchSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+
+	public Future<ServiceResponse> response200SearchSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
 			QueryResponse responseSearch = listSiteEnrollment.getQueryResponse();
@@ -1968,18 +1670,24 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
+			List<String> fls = listSiteEnrollment.getFields();
 
 			JsonObject json = new JsonObject();
 			json.put("startNum", startNum);
 			json.put("foundNum", foundNum);
 			json.put("returnedNum", returnedNum);
-			json.put("searchTime", searchTime);
-			json.put("transmissionTime", transmissionTime);
+			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
+				json.put("searchTime", searchTime);
+				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
+			}
 			JsonArray l = new JsonArray();
 			listSiteEnrollment.getList().stream().forEach(o -> {
 				JsonObject json2 = JsonObject.mapFrom(o);
-				List<String> fls = listSiteEnrollment.getFields();
 				if(fls.size() > 0) {
 					Set<String> fieldNames = new HashSet<String>();
 					fieldNames.addAll(json2.fieldNames());
@@ -1999,74 +1707,149 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						facetFieldCounts.put(count.getName(), count.getCount());
+					}
+				}
+			}
+
+			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
+			if(facetRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				json.put("facet_ranges", rangeJson);
+				for(RangeFacet rangeFacet : facetRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonObject rangeFacetCountsMap = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsMap);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						rangeFacetCountsMap.put(count.getValue(), count.getCount());
+					}
+				}
+			}
+
+			NamedList<List<PivotField>> facetPivot = responseSearch.getFacetPivot();
+			if(facetPivot != null) {
+				JsonObject facetPivotJson = new JsonObject();
+				json.put("facet_pivot", facetPivotJson);
+				Iterator<Entry<String, List<PivotField>>> facetPivotIterator = responseSearch.getFacetPivot().iterator();
+				while(facetPivotIterator.hasNext()) {
+					Entry<String, List<PivotField>> pivotEntry = facetPivotIterator.next();
+					List<PivotField> pivotFields = pivotEntry.getValue();
+					String[] varsIndexed = pivotEntry.getKey().trim().split(",");
+					String[] entityVars = new String[varsIndexed.length];
+					for(Integer i = 0; i < entityVars.length; i++) {
+						String entityIndexed = varsIndexed[i];
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+					}
+					JsonArray pivotArray = new JsonArray();
+					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
+					responsePivotSearchSiteEnrollment(pivotFields, pivotArray);
+				}
+			}
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200SearchSiteEnrollment failed. "), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+	public void responsePivotSearchSiteEnrollment(List<PivotField> pivotFields, JsonArray pivotArray) {
+		for(PivotField pivotField : pivotFields) {
+			String entityIndexed = pivotField.getField();
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			JsonObject pivotJson = new JsonObject();
+			pivotArray.add(pivotJson);
+			pivotJson.put("field", entityVar);
+			pivotJson.put("value", pivotField.getValue());
+			pivotJson.put("count", pivotField.getCount());
+			List<RangeFacet> pivotRanges = pivotField.getFacetRanges();
+			List<PivotField> pivotFields2 = pivotField.getPivot();
+			if(pivotRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				pivotJson.put("ranges", rangeJson);
+				for(RangeFacet rangeFacet : pivotRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
+					}
+				}
+			}
+			if(pivotFields2 != null) {
+				JsonArray pivotArray2 = new JsonArray();
+				pivotJson.put("pivot", pivotArray2);
+				responsePivotSearchSiteEnrollment(pivotFields2, pivotArray2);
+			}
 		}
 	}
 
 	// AdminSearch //
 
 	@Override
-	public void adminsearchSiteEnrollment(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/admin/enrollment");
-		siteRequest.setRequestMethod("AdminSearch");
-		try {
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, false, "/api/admin/enrollment", "AdminSearch", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
-								adminsearchSiteEnrollmentResponse(listSiteEnrollment, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("adminsearchSiteEnrollment succeeded. "));
-									} else {
-										LOGGER.error(String.format("adminsearchSiteEnrollment failed. ", d.cause()));
-										errorSiteEnrollment(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("adminsearchSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void adminsearchSiteEnrollment(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					searchSiteEnrollmentList(siteRequest, false, true, false, "/api/admin/enrollment", "AdminSearch").onSuccess(listSiteEnrollment -> {
+						response200AdminSearchSiteEnrollment(listSiteEnrollment).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("adminsearchSiteEnrollment succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("adminsearchSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("adminsearchSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
-			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
-	}
-
-
-	public void adminsearchSiteEnrollmentResponse(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
-		try {
-			response200AdminSearchSiteEnrollment(listSiteEnrollment, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("adminsearchSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
+					}).onFailure(ex -> {
+						LOG.error(String.format("adminsearchSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
 				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
+			} catch(Exception ex) {
+				LOG.error(String.format("adminsearchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("adminsearchSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("adminsearchSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
-	public void response200AdminSearchSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
+
+
+	public Future<ServiceResponse> response200AdminSearchSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
 			QueryResponse responseSearch = listSiteEnrollment.getQueryResponse();
@@ -2078,18 +1861,24 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
+			List<String> fls = listSiteEnrollment.getFields();
 
 			JsonObject json = new JsonObject();
 			json.put("startNum", startNum);
 			json.put("foundNum", foundNum);
 			json.put("returnedNum", returnedNum);
-			json.put("searchTime", searchTime);
-			json.put("transmissionTime", transmissionTime);
+			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
+				json.put("searchTime", searchTime);
+				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
+			}
 			JsonArray l = new JsonArray();
 			listSiteEnrollment.getList().stream().forEach(o -> {
 				JsonObject json2 = JsonObject.mapFrom(o);
-				List<String> fls = listSiteEnrollment.getFields();
 				if(fls.size() > 0) {
 					Set<String> fieldNames = new HashSet<String>();
 					fieldNames.addAll(json2.fieldNames());
@@ -2109,84 +1898,156 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						facetFieldCounts.put(count.getName(), count.getCount());
+					}
+				}
+			}
+
+			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
+			if(facetRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				json.put("facet_ranges", rangeJson);
+				for(RangeFacet rangeFacet : facetRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonObject rangeFacetCountsMap = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsMap);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						rangeFacetCountsMap.put(count.getValue(), count.getCount());
+					}
+				}
+			}
+
+			NamedList<List<PivotField>> facetPivot = responseSearch.getFacetPivot();
+			if(facetPivot != null) {
+				JsonObject facetPivotJson = new JsonObject();
+				json.put("facet_pivot", facetPivotJson);
+				Iterator<Entry<String, List<PivotField>>> facetPivotIterator = responseSearch.getFacetPivot().iterator();
+				while(facetPivotIterator.hasNext()) {
+					Entry<String, List<PivotField>> pivotEntry = facetPivotIterator.next();
+					List<PivotField> pivotFields = pivotEntry.getValue();
+					String[] varsIndexed = pivotEntry.getKey().trim().split(",");
+					String[] entityVars = new String[varsIndexed.length];
+					for(Integer i = 0; i < entityVars.length; i++) {
+						String entityIndexed = varsIndexed[i];
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+					}
+					JsonArray pivotArray = new JsonArray();
+					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
+					responsePivotAdminSearchSiteEnrollment(pivotFields, pivotArray);
+				}
+			}
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200AdminSearchSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200AdminSearchSiteEnrollment failed. "), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+	public void responsePivotAdminSearchSiteEnrollment(List<PivotField> pivotFields, JsonArray pivotArray) {
+		for(PivotField pivotField : pivotFields) {
+			String entityIndexed = pivotField.getField();
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			JsonObject pivotJson = new JsonObject();
+			pivotArray.add(pivotJson);
+			pivotJson.put("field", entityVar);
+			pivotJson.put("value", pivotField.getValue());
+			pivotJson.put("count", pivotField.getCount());
+			List<RangeFacet> pivotRanges = pivotField.getFacetRanges();
+			List<PivotField> pivotFields2 = pivotField.getPivot();
+			if(pivotRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				pivotJson.put("ranges", rangeJson);
+				for(RangeFacet rangeFacet : pivotRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
+					}
+				}
+			}
+			if(pivotFields2 != null) {
+				JsonArray pivotArray2 = new JsonArray();
+				pivotJson.put("pivot", pivotArray2);
+				responsePivotAdminSearchSiteEnrollment(pivotFields2, pivotArray2);
+			}
 		}
 	}
 
 	// SearchPage //
 
 	@Override
-	public void searchpageSiteEnrollmentId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		searchpageSiteEnrollment(operationRequest, eventHandler);
+	public void searchpageSiteEnrollmentId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		searchpageSiteEnrollment(serviceRequest, eventHandler);
 	}
 
 	@Override
-	public void searchpageSiteEnrollment(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest);
-		siteRequest.setRequestUri("/enrollment");
-		siteRequest.setRequestMethod("SearchPage");
-		try {
-			{
-				userSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						aSearchSiteEnrollment(siteRequest, false, true, false, "/enrollment", "SearchPage", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteEnrollment> listSiteEnrollment = c.result();
-								searchpageSiteEnrollmentResponse(listSiteEnrollment, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchpageSiteEnrollment succeeded. "));
-									} else {
-										LOGGER.error(String.format("searchpageSiteEnrollment failed. ", d.cause()));
-										errorSiteEnrollment(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("searchpageSiteEnrollment failed. ", c.cause()));
-								errorSiteEnrollment(siteRequest, eventHandler, c);
-							}
+	public void searchpageSiteEnrollment(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
+				{
+					searchSiteEnrollmentList(siteRequest, false, true, false, "/enrollment", "SearchPage").onSuccess(listSiteEnrollment -> {
+						response200SearchPageSiteEnrollment(listSiteEnrollment).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("searchpageSiteEnrollment succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("searchpageSiteEnrollment failed. "), ex);
+							error(siteRequest, eventHandler, ex);
 						});
-					} else {
-						LOGGER.error(String.format("searchpageSiteEnrollment failed. ", b.cause()));
-						errorSiteEnrollment(siteRequest, eventHandler, b);
-					}
-				});
+					}).onFailure(ex -> {
+						LOG.error(String.format("searchpageSiteEnrollment failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("searchpageSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSiteEnrollment failed. ", ex));
-			errorSiteEnrollment(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("searchpageSiteEnrollment failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("searchpageSiteEnrollment failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 
 	public void searchpageSiteEnrollmentPageInit(EnrollmentPage page, SearchList<SiteEnrollment> listSiteEnrollment) {
 	}
-	public void searchpageSiteEnrollmentResponse(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
-		try {
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(siteRequest, buffer);
-			siteRequest.setW(w);
-			response200SearchPageSiteEnrollment(listSiteEnrollment, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOGGER.error(String.format("searchpageSiteEnrollmentResponse failed. ", a.cause()));
-					errorSiteEnrollment(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSiteEnrollmentResponse failed. ", ex));
-			errorSiteEnrollment(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200SearchPageSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<ServiceResponse> response200SearchPageSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteEnrollment.getSiteRequest_();
 			Buffer buffer = Buffer.buffer();
@@ -2205,489 +2066,61 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 			page.setListSiteEnrollment(listSiteEnrollment);
 			page.setSiteRequest_(siteRequest);
 			searchpageSiteEnrollmentPageInit(page, listSiteEnrollment);
-			page.initDeepEnrollmentPage(siteRequest);
-			page.html();
-			eventHandler.handle(Future.succeededFuture(new OperationResponse(200, "OK", buffer, requestHeaders)));
-		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchPageSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			page.promiseDeepEnrollmentPage(siteRequest).onSuccess(a -> {
+				page.html();
+				promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("response200SearchPageSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
+	public static final String VAR_enrollmentKey = "enrollmentKey";
+	public static final String VAR_userKeys = "userKeys";
+	public static final String VAR_petKeys = "petKeys";
+	public static final String VAR_petSearch = "petSearch";
+	public static final String VAR_pet_ = "pet_";
 
 	// General //
 
-	public Future<SiteEnrollment> defineIndexSiteEnrollment(SiteEnrollment siteEnrollment, Handler<AsyncResult<SiteEnrollment>> eventHandler) {
+	public Future<SiteEnrollment> createSiteEnrollment(SiteRequestEnUS siteRequest) {
 		Promise<SiteEnrollment> promise = Promise.promise();
-		SiteRequestEnUS siteRequest = siteEnrollment.getSiteRequest_();
-		defineSiteEnrollment(siteEnrollment, c -> {
-			if(c.succeeded()) {
-				attributeSiteEnrollment(siteEnrollment, d -> {
-					if(d.succeeded()) {
-						indexSiteEnrollment(siteEnrollment, e -> {
-							if(e.succeeded()) {
-								sqlCommitSiteEnrollment(siteRequest, f -> {
-									if(f.succeeded()) {
-										sqlCloseSiteEnrollment(siteRequest, g -> {
-											if(g.succeeded()) {
-												refreshSiteEnrollment(siteEnrollment, h -> {
-													if(h.succeeded()) {
-														eventHandler.handle(Future.succeededFuture(siteEnrollment));
-														promise.complete(siteEnrollment);
-													} else {
-														LOGGER.error(String.format("refreshSiteEnrollment failed. ", h.cause()));
-														errorSiteEnrollment(siteRequest, null, h);
-													}
-												});
-											} else {
-												LOGGER.error(String.format("defineIndexSiteEnrollment failed. ", g.cause()));
-												errorSiteEnrollment(siteRequest, null, g);
-											}
-										});
-									} else {
-										LOGGER.error(String.format("defineIndexSiteEnrollment failed. ", f.cause()));
-										errorSiteEnrollment(siteRequest, null, f);
-									}
-								});
-							} else {
-								LOGGER.error(String.format("defineIndexSiteEnrollment failed. ", e.cause()));
-								errorSiteEnrollment(siteRequest, null, e);
-							}
-						});
-					} else {
-						LOGGER.error(String.format("defineIndexSiteEnrollment failed. ", d.cause()));
-						errorSiteEnrollment(siteRequest, null, d);
-					}
-				});
-			} else {
-				LOGGER.error(String.format("defineIndexSiteEnrollment failed. ", c.cause()));
-				errorSiteEnrollment(siteRequest, null, c);
-			}
-		});
+		try {
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
+			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+
+			sqlConnection.preparedQuery("INSERT INTO SiteEnrollment(created, userKey) VALUES($1, $2) RETURNING pk")
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)).onSuccess(result -> {
+				Row createLine = result.value().stream().findFirst().orElseGet(() -> null);
+				Long pk = createLine.getLong(0);
+				SiteEnrollment o = new SiteEnrollment();
+				o.setPk(pk);
+				o.setSiteRequest_(siteRequest);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				LOG.error("createSiteEnrollment failed. ", ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("createSiteEnrollment failed. "), ex);
+			promise.fail(ex);
+		}
 		return promise.future();
 	}
 
-	public void createSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<SiteEnrollment>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-			String userId = siteRequest.getUserId();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
-
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
-					.collecting(Collectors.toList())
-					.execute(Tuple.of(SiteEnrollment.class.getCanonicalName(), userId, created.toOffsetDateTime())
-					, createAsync
-			-> {
-				if(createAsync.succeeded()) {
-					Row createLine = createAsync.result().value().stream().findFirst().orElseGet(() -> null);
-					Long pk = createLine.getLong(0);
-					SiteEnrollment o = new SiteEnrollment();
-					o.setPk(pk);
-					o.setSiteRequest_(siteRequest);
-					eventHandler.handle(Future.succeededFuture(o));
-				} else {
-					LOGGER.error(String.format("createSiteEnrollment failed. ", createAsync.cause()));
-					eventHandler.handle(Future.failedFuture(createAsync.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("createSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void errorSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler, AsyncResult<?> resultAsync) {
-		Throwable e = resultAsync.cause();
-		JsonObject json = new JsonObject()
-				.put("error", new JsonObject()
-				.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null))
-				.put("userName", siteRequest.getUserName())
-				.put("userFullName", siteRequest.getUserFullName())
-				.put("requestUri", siteRequest.getRequestUri())
-				.put("requestMethod", siteRequest.getRequestMethod())
-				.put("params", Optional.ofNullable(siteRequest.getOperationRequest()).map(o -> o.getParams()).orElse(null))
-				);
-		ExceptionUtils.printRootCauseStackTrace(e);
-		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
-				Buffer.buffer().appendString(json.encodePrettily())
-				, MultiMap.caseInsensitiveMultiMap().add("Content-Type", "application/json")
-		);
-		SiteConfig siteConfig = siteRequest.getSiteConfig_();
-		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-		MailClient mailClient = siteContext.getMailClient();
-		MailMessage message = new MailMessage();
-		message.setFrom(siteConfig.getEmailFrom());
-		message.setTo(siteConfig.getEmailAdmin());
-		if(e != null)
-			message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-		message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-		WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-		workerExecutor.executeBlocking(
-			blockingCodeHandler -> {
-				mailClient.sendMail(message, result -> {
-					if (result.succeeded()) {
-						LOGGER.info(result.result());
-					} else {
-						LOGGER.error(result.cause());
-					}
-				});
-			}, resultHandler -> {
-			}
-		);
-		sqlRollbackSiteEnrollment(siteRequest, a -> {
-			if(a.succeeded()) {
-				LOGGER.info(String.format("sql rollback. "));
-				sqlCloseSiteEnrollment(siteRequest, b -> {
-					if(b.succeeded()) {
-						LOGGER.info(String.format("sql close. "));
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					} else {
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					}
-				});
-			} else {
-				if(eventHandler != null)
-					eventHandler.handle(Future.succeededFuture(responseOperation));
-			}
-		});
-	}
-
-	public void sqlConnectionSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
-
-			if(pgPool == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				pgPool.getConnection(a -> {
-					if(a.succeeded()) {
-						SqlConnection sqlConnection = a.result();
-						siteRequest.setSqlConnection(sqlConnection);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("sqlConnectionSiteEnrollment failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlTransactionSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				Transaction tx = sqlConnection.begin();
-				siteRequest.setTx(tx);
-				eventHandler.handle(Future.succeededFuture());
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTransactionSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCommitSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				tx.commit(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("sqlCommitSiteEnrollment failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlRollbackSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				tx.rollback(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("sqlRollbackSiteEnrollment failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCloseSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				sqlConnection.close();
-				siteRequest.setSqlConnection(null);
-				eventHandler.handle(Future.succeededFuture());
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("sqlCloseSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public SiteRequestEnUS generateSiteRequestEnUSForSiteEnrollment(SiteContextEnUS siteContext, OperationRequest operationRequest) {
-		return generateSiteRequestEnUSForSiteEnrollment(siteContext, operationRequest, null);
-	}
-
-	public SiteRequestEnUS generateSiteRequestEnUSForSiteEnrollment(SiteContextEnUS siteContext, OperationRequest operationRequest, JsonObject body) {
-		Vertx vertx = siteContext.getVertx();
-		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-		siteRequest.setJsonObject(body);
-		siteRequest.setVertx(vertx);
-		siteRequest.setSiteContext_(siteContext);
-		siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-		siteRequest.setOperationRequest(operationRequest);
-		siteRequest.initDeepSiteRequestEnUS(siteRequest);
-
-		return siteRequest;
-	}
-
-	public void userSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				sqlConnectionSiteEnrollment(siteRequest, a -> {
-					if(a.succeeded()) {
-						sqlTransactionSiteEnrollment(siteRequest, b -> {
-							if(b.succeeded()) {
-								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
-										.collecting(Collectors.toList())
-										.execute(Tuple.of("org.computate.nico.enus.user.SiteUser", userId)
-										, selectCAsync
-								-> {
-									if(selectCAsync.succeeded()) {
-										try {
-											Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-											if(userValues == null) {
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("userFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("userLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("userCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("userId", jsonPrincipal.getString("sub"));
-												jsonObject.put("userEmail", jsonPrincipal.getString("email"));
-												userSiteEnrollmentDefine(siteRequest, jsonObject, false);
-
-												SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-												siteRequest2.setTx(siteRequest.getTx());
-												siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-												siteRequest2.setJsonObject(jsonObject);
-												siteRequest2.setVertx(siteRequest.getVertx());
-												siteRequest2.setSiteContext_(siteContext);
-												siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-												siteRequest2.setUserId(siteRequest.getUserId());
-												siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-
-												ApiRequest apiRequest = new ApiRequest();
-												apiRequest.setRows(1);
-												apiRequest.setNumFound(1L);
-												apiRequest.setNumPATCH(0L);
-												apiRequest.initDeepApiRequest(siteRequest2);
-												siteRequest2.setApiRequest_(apiRequest);
-
-												userService.createSiteUser(siteRequest2, c -> {
-													if(c.succeeded()) {
-														SiteUser siteUser = c.result();
-														userService.sqlPOSTSiteUser(siteUser, false, d -> {
-															if(d.succeeded()) {
-																userService.defineIndexSiteUser(siteUser, e -> {
-																	if(e.succeeded()) {
-																		siteRequest.setSiteUser(siteUser);
-																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
-																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
-																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
-																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
-																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.getPk());
-																		eventHandler.handle(Future.succeededFuture());
-																	} else {
-																		errorSiteEnrollment(siteRequest, eventHandler, e);
-																	}
-																});
-															} else {
-																errorSiteEnrollment(siteRequest, eventHandler, d);
-															}
-														});
-													} else {
-														errorSiteEnrollment(siteRequest, eventHandler, c);
-													}
-												});
-											} else {
-												Long pkUser = userValues.getLong(0);
-												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-												searchList.setQuery("*:*");
-												searchList.setStore(true);
-												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
-												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-												searchList.initDeepSearchList(siteRequest);
-												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("setUserFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("setUserLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("setUserCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("setUserId", jsonPrincipal.getString("sub"));
-												jsonObject.put("setUserEmail", jsonPrincipal.getString("email"));
-												Boolean define = userSiteEnrollmentDefine(siteRequest, jsonObject, true);
-												if(define) {
-													SiteUser siteUser;
-													if(siteUser1 == null) {
-														siteUser = new SiteUser();
-														siteUser.setPk(pkUser);
-														siteUser.setSiteRequest_(siteRequest);
-													} else {
-														siteUser = siteUser1;
-													}
-
-													SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-													siteRequest2.setTx(siteRequest.getTx());
-													siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-													siteRequest2.setJsonObject(jsonObject);
-													siteRequest2.setVertx(siteRequest.getVertx());
-													siteRequest2.setSiteContext_(siteContext);
-													siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-													siteRequest2.setUserId(siteRequest.getUserId());
-													siteRequest2.setUserKey(siteRequest.getUserKey());
-													siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-													siteUser.setSiteRequest_(siteRequest2);
-
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(1);
-													apiRequest.setNumFound(1L);
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest2);
-													siteRequest2.setApiRequest_(apiRequest);
-
-													userService.sqlPATCHSiteUser(siteUser, false, d -> {
-														if(d.succeeded()) {
-															SiteUser siteUser2 = d.result();
-															userService.defineIndexSiteUser(siteUser2, e -> {
-																if(e.succeeded()) {
-																	siteRequest.setSiteUser(siteUser2);
-																	siteRequest.setUserName(siteUser2.getUserName());
-																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser2.getUserLastName());
-																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.getPk());
-																	eventHandler.handle(Future.succeededFuture());
-																} else {
-																	errorSiteEnrollment(siteRequest, eventHandler, e);
-																}
-															});
-														} else {
-															errorSiteEnrollment(siteRequest, eventHandler, d);
-														}
-													});
-												} else {
-													siteRequest.setSiteUser(siteUser1);
-													siteRequest.setUserName(siteUser1.getUserName());
-													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-													siteRequest.setUserLastName(siteUser1.getUserLastName());
-													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.getPk());
-													sqlRollbackSiteEnrollment(siteRequest, c -> {
-														if(c.succeeded()) {
-															eventHandler.handle(Future.succeededFuture());
-														} else {
-															eventHandler.handle(Future.failedFuture(c.cause()));
-															errorSiteEnrollment(siteRequest, eventHandler, c);
-														}
-													});
-												}
-											}
-										} catch(Exception e) {
-											LOGGER.error(String.format("userSiteEnrollment failed. ", e));
-											eventHandler.handle(Future.failedFuture(e));
-										}
-									} else {
-										LOGGER.error(String.format("userSiteEnrollment failed. ", selectCAsync.cause()));
-										eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
-									}
-								});
-							} else {
-								LOGGER.error(String.format("userSiteEnrollment failed. ", b.cause()));
-								eventHandler.handle(Future.failedFuture(b.cause()));
-							}
-						});
-					} else {
-						LOGGER.error(String.format("userSiteEnrollment failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("userSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public Boolean userSiteEnrollmentDefine(SiteRequestEnUS siteRequest, JsonObject jsonObject, Boolean patch) {
-		if(patch) {
-			return false;
-		} else {
-			return false;
-		}
-	}
-
-	public void aSearchSiteEnrollmentQ(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteEnrollmentQ(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		searchList.setQuery(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : ClientUtils.escapeQueryChars(valueIndexed)));
 		if(!"*".equals(entityVar)) {
 		}
 	}
 
-	public void aSearchSiteEnrollmentFq(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String searchSiteEnrollmentFq(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -2696,38 +2129,39 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 				throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
 			String fq1 = fqs[0].equals("*") ? fqs[0] : SiteEnrollment.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[0]);
 			String fq2 = fqs[1].equals("*") ? fqs[1] : SiteEnrollment.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
-			searchList.addFilterQuery(varIndexed + ":[" + fq1 + " TO " + fq2 + "]");
+			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			searchList.addFilterQuery(varIndexed + ":" + SiteEnrollment.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed));
+			return varIndexed + ":" + ClientUtils.escapeQueryChars(SiteEnrollment.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed)).replace("\\", "\\\\");
 		}
 	}
 
-	public void aSearchSiteEnrollmentSort(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteEnrollmentSort(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		searchList.addSort(varIndexed, ORDER.valueOf(valueIndexed));
 	}
 
-	public void aSearchSiteEnrollmentRows(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, Integer valueRows) {
-			searchList.setRows(apiMethod != null && apiMethod.contains("Search") ? valueRows : 10);
+	public void searchSiteEnrollmentRows(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, Integer valueRows) {
+			searchList.setRows(apiMethod != null ? valueRows : 10);
 	}
 
-	public void aSearchSiteEnrollmentStart(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, Integer valueStart) {
+	public void searchSiteEnrollmentStart(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, Integer valueStart) {
 		searchList.setStart(valueStart);
 	}
 
-	public void aSearchSiteEnrollmentVar(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String var, String value) {
+	public void searchSiteEnrollmentVar(String uri, String apiMethod, SearchList<SiteEnrollment> searchList, String var, String value) {
 		searchList.getSiteRequest_().getRequestVars().put(var, value);
 	}
 
-	public void aSearchSiteEnrollmentUri(String uri, String apiMethod, SearchList<SiteEnrollment> searchList) {
+	public void searchSiteEnrollmentUri(String uri, String apiMethod, SearchList<SiteEnrollment> searchList) {
 	}
 
-	public void varsSiteEnrollment(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<OperationResponse>>> eventHandler) {
+	public Future<ServiceResponse> varsSiteEnrollment(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
 				String paramName = paramRequest.getKey();
@@ -2744,268 +2178,305 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 								break;
 						}
 					}
-				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchSiteEnrollment failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
+				} catch(Exception ex) {
+					LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+					promise.fail(ex);
 				}
 			});
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete();
+		} catch(Exception ex) {
+			LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void aSearchSiteEnrollment(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteEnrollment>>> eventHandler) {
+	public Future<SearchList<SiteEnrollment>> searchSiteEnrollmentList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+		Promise<SearchList<SiteEnrollment>> promise = Promise.promise();
 		try {
-			SearchList<SiteEnrollment> searchList = aSearchSiteEnrollmentList(siteRequest, populate, store, modify, uri, apiMethod);
-			eventHandler.handle(Future.succeededFuture(searchList));
-		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+			String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
+			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+			SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
+			searchList.setPopulate(populate);
+			searchList.setStore(store);
+			searchList.setQuery("*:*");
+			searchList.setC(SiteEnrollment.class);
+			searchList.setSiteRequest_(siteRequest);
+			if(entityList != null)
+				searchList.addFields(entityList);
 
-	public SearchList<SiteEnrollment> aSearchSiteEnrollmentList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
-		OperationRequest operationRequest = siteRequest.getOperationRequest();
-		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
-		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-		SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
-		searchList.setPopulate(populate);
-		searchList.setStore(store);
-		searchList.setQuery("*:*");
-		searchList.setC(SiteEnrollment.class);
-		searchList.setSiteRequest_(siteRequest);
-		if(entityList != null)
-			searchList.addFields(entityList);
-		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
-
-		String id = operationRequest.getParams().getJsonObject("path").getString("id");
-		if(id != null && NumberUtils.isCreatable(id)) {
-			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
-		} else if(id != null) {
-			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
-		}
-
-		List<String> roles = Arrays.asList("SiteAdmin");
-		List<String> roleLires = Arrays.asList("");
-		if(
-				!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-				&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-				&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleLires))
-				&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleLires))
-				) {
-			searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-					+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
-		}
-
-		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
-			String entityVar = null;
-			String valueIndexed = null;
-			String varIndexed = null;
-			String valueSort = null;
-			Integer valueStart = null;
-			Integer valueRows = null;
-			String paramName = paramRequest.getKey();
-			Object paramValuesObject = paramRequest.getValue();
-			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
-
-			try {
-				for(Object paramObject : paramObjects) {
-					switch(paramName) {
-						case "q":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							varIndexed = "*".equals(entityVar) ? entityVar : SiteEnrollment.varSearchSiteEnrollment(entityVar);
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-							aSearchSiteEnrollmentQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "fq":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
-							aSearchSiteEnrollmentFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "sort":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-							valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-							varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
-							aSearchSiteEnrollmentSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "start":
-							valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-							aSearchSiteEnrollmentStart(uri, apiMethod, searchList, valueStart);
-							break;
-						case "rows":
-							valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-							aSearchSiteEnrollmentRows(uri, apiMethod, searchList, valueRows);
-							break;
-						case "var":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							aSearchSiteEnrollmentVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-							break;
-					}
-				}
-				aSearchSiteEnrollmentUri(uri, apiMethod, searchList);
-			} catch(Exception e) {
-				ExceptionUtils.rethrow(e);
+			String id = serviceRequest.getParams().getJsonObject("path").getString("id");
+			if(id != null && NumberUtils.isCreatable(id)) {
+				searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+			} else if(id != null) {
+				searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 			}
-		});
-		if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-			searchList.addSort("created_indexed_date", ORDER.desc);
+
+			List<String> roles = Arrays.asList("SiteAdmin");
+			List<String> roleReads = Arrays.asList("");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleReads))
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleReads))
+					) {
+				searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+						+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+			}
+
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+				String entityVar = null;
+				String valueIndexed = null;
+				String varIndexed = null;
+				String valueSort = null;
+				Integer valueStart = null;
+				Integer valueRows = null;
+				String valueCursorMark = null;
+				String paramName = paramRequest.getKey();
+				Object paramValuesObject = paramRequest.getValue();
+				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+				try {
+					if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
+						Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
+						boolean foundFacetPivot = mFacetPivot.find();
+						if(foundFacetPivot) {
+							String solrLocalParams = mFacetPivot.group(1);
+							String[] entityVars = mFacetPivot.group(2).trim().split(",");
+							String[] varsIndexed = new String[entityVars.length];
+							for(Integer i = 0; i < entityVars.length; i++) {
+								entityVar = entityVars[i];
+								varsIndexed[i] = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+							}
+							searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
+						}
+					} else if(paramValuesObject != null) {
+						for(Object paramObject : paramObjects) {
+							switch(paramName) {
+								case "q":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+									varIndexed = "*".equals(entityVar) ? entityVar : SiteEnrollment.varSearchSiteEnrollment(entityVar);
+									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+									valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+									searchSiteEnrollmentQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									break;
+								case "fq":
+									Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
+									boolean foundFq = mFq.find();
+									if(foundFq) {
+										StringBuffer sb = new StringBuffer();
+										while(foundFq) {
+											entityVar = mFq.group(1).trim();
+											valueIndexed = mFq.group(2).trim();
+											varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+											String entityFq = searchSiteEnrollmentFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											mFq.appendReplacement(sb, entityFq);
+											foundFq = mFq.find();
+										}
+										mFq.appendTail(sb);
+										searchList.addFilterQuery(sb.toString());
+									}
+									break;
+								case "sort":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+									valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+									varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+									searchSiteEnrollmentSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									break;
+								case "start":
+									valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+									searchSiteEnrollmentStart(uri, apiMethod, searchList, valueStart);
+									break;
+								case "rows":
+									valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+									searchSiteEnrollmentRows(uri, apiMethod, searchList, valueRows);
+									break;
+								case "facet":
+									searchList.add("facet", ((Boolean)paramObject).toString());
+									break;
+								case "facet.range.start":
+									String startMathStr = (String)paramObject;
+									Date start = DateMathParser.parseMath(null, startMathStr);
+									searchList.add("facet.range.start", start.toInstant().toString());
+									break;
+								case "facet.range.end":
+									String endMathStr = (String)paramObject;
+									Date end = DateMathParser.parseMath(null, endMathStr);
+									searchList.add("facet.range.end", end.toInstant().toString());
+									break;
+								case "facet.range.gap":
+									String gap = (String)paramObject;
+									searchList.add("facet.range.gap", gap);
+									break;
+								case "facet.range":
+									Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+									boolean foundFacetRange = mFacetRange.find();
+									if(foundFacetRange) {
+										String solrLocalParams = mFacetRange.group(1);
+										entityVar = mFacetRange.group(2).trim();
+										varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+										searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
+									}
+									break;
+								case "facet.field":
+									entityVar = (String)paramObject;
+									varIndexed = SiteEnrollment.varIndexedSiteEnrollment(entityVar);
+									if(varIndexed != null)
+										searchList.addFacetField(varIndexed);
+									break;
+								case "var":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+									searchSiteEnrollmentVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+									break;
+								case "cursorMark":
+									valueCursorMark = (String)paramObject;
+									searchList.add("cursorMark", (String)paramObject);
+									break;
+							}
+						}
+						searchSiteEnrollmentUri(uri, apiMethod, searchList);
+					}
+				} catch(Exception e) {
+					ExceptionUtils.rethrow(e);
+				}
+			});
+			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+				searchList.addSort("created_indexed_date", ORDER.desc);
+			}
+			searchSiteEnrollment2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+				promise.complete(searchList);
+			}).onFailure(ex -> {
+				LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("searchSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
-		aSearchSiteEnrollment2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
-		searchList.initDeepForClass(siteRequest);
-		return searchList;
+		return promise.future();
 	}
-	public void aSearchSiteEnrollment2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteEnrollment> searchList) {
+	public void searchSiteEnrollment2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteEnrollment> searchList) {
 	}
 
-	public void defineSiteEnrollment(SiteEnrollment o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> defineSiteEnrollment(SiteEnrollment o) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			sqlConnection.preparedQuery("SELECT * FROM SiteEnrollment WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
-					, defineAsync
-			-> {
-				if(defineAsync.succeeded()) {
-					try {
-						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineSiteEnrollment failed. ", e));
-								LOGGER.error(e);
+					).onSuccess(result -> {
+				try {
+					for(Row definition : result.value()) {
+						for(Integer i = 0; i < definition.size(); i++) {
+							String columnName = definition.getColumnName(i);
+							Object columnValue = definition.getValue(i);
+							if(!"pk".equals(columnName)) {
+								try {
+									o.defineForClass(columnName, columnValue);
+								} catch(Exception e) {
+									LOG.error(String.format("defineSiteEnrollment failed. "), e);
+								}
 							}
 						}
-						eventHandler.handle(Future.succeededFuture());
-					} catch(Exception e) {
-						LOGGER.error(String.format("defineSiteEnrollment failed. ", e));
-						eventHandler.handle(Future.failedFuture(e));
 					}
-				} else {
-					LOGGER.error(String.format("defineSiteEnrollment failed. ", defineAsync.cause()));
-					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
+					promise.complete();
+				} catch(Exception ex) {
+					LOG.error(String.format("defineSiteEnrollment failed. "), ex);
+					promise.fail(ex);
 				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("defineSiteEnrollment failed. "), ex);
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("defineSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("defineSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void attributeSiteEnrollment(SiteEnrollment o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> attributeSiteEnrollment(SiteEnrollment o) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+			sqlConnection.preparedQuery("SELECT pk1, 'petKeys' from SitePetenrollmentKeys_SiteEnrollmentpetKeys where pk2=$1")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk)
-					, attributeAsync
-			-> {
+					.execute(Tuple.of(pk)
+					).onSuccess(result -> {
 				try {
-					if(attributeAsync.succeeded()) {
-						if(attributeAsync.result() != null) {
-							for(Row definition : attributeAsync.result().value()) {
-								if(pk.equals(definition.getLong(0)))
-									o.attributeForClass(definition.getString(2), definition.getLong(1));
-								else
-									o.attributeForClass(definition.getString(3), definition.getLong(0));
-							}
+					if(result != null) {
+						for(Row definition : result.value()) {
+							o.attributeForClass(definition.getString(1), definition.getLong(0));
 						}
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOGGER.error(String.format("attributeSiteEnrollment failed. ", attributeAsync.cause()));
-						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
 					}
-				} catch(Exception e) {
-					LOGGER.error(String.format("attributeSiteEnrollment failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
+					promise.complete();
+				} catch(Exception ex) {
+					LOG.error(String.format("attributeSiteEnrollment failed. "), ex);
+					promise.fail(ex);
 				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("attributeSiteEnrollment failed. "), ex);
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOGGER.error(String.format("attributeSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("attributeSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void indexSiteEnrollment(SiteEnrollment o, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexSiteEnrollment(SiteEnrollment o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOGGER.error(String.format("indexSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+			o.promiseDeepForClass(siteRequest).onSuccess(a -> {
+				SolrInputDocument document = new SolrInputDocument();
+				o.indexSiteEnrollment(document);
+				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?softCommit=true&overwrite=true&wt=json");
+				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
+				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("indexSiteEnrollment failed. "), new RuntimeException(ex));
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexSiteEnrollment failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void refreshSiteEnrollment(SiteEnrollment o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public Future<Void> refreshSiteEnrollment(SiteEnrollment o) {
+		Promise<Void> promise = Promise.promise();
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && BooleanUtils.isFalse(Optional.ofNullable(siteRequest.getApiRequest_()).map(ApiRequest::getEmpty).orElse(true))) {
-				SearchList<SiteEnrollment> searchList = new SearchList<SiteEnrollment>();
-				searchList.setStore(true);
-				searchList.setQuery("*:*");
-				searchList.setC(SiteEnrollment.class);
-				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
-				searchList.add("json.facet", "{userKeys:{terms:{field:userKeys_indexed_longs, limit:1000}}}");
-				searchList.add("json.facet", "{petKeys:{terms:{field:petKeys_indexed_longs, limit:1000}}}");
-				searchList.setRows(1000);
-				searchList.initDeepSearchList(siteRequest);
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				List<Future> futures = new ArrayList<>();
 
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
-
-					if("SiteUser".equals(classSimpleName2) && pk2 != null) {
-						SearchList<SiteUser> searchList2 = new SearchList<SiteUser>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(SiteUser.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						searchList2.initDeepSearchList(siteRequest);
-						SiteUser o2 = searchList2.getList().stream().findFirst().orElse(null);
-
-						if(o2 != null) {
-							SiteUserEnUSGenApiServiceImpl service = new SiteUserEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), new JsonObject());
-							ApiRequest apiRequest2 = new ApiRequest();
-							apiRequest2.setRows(1);
-							apiRequest2.setNumFound(1l);
-							apiRequest2.setNumPATCH(0L);
-							apiRequest2.initDeepApiRequest(siteRequest2);
-							siteRequest2.setApiRequest_(apiRequest2);
-							siteRequest2.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest2).toString());
-
-							o2.setPk(pk2);
-							o2.setSiteRequest_(siteRequest2);
-							futures.add(
-								service.patchSiteUserFuture(o2, false, a -> {
-									if(a.succeeded()) {
-									} else {
-										LOGGER.info(String.format("SiteUser %s failed. ", pk2));
-										eventHandler.handle(Future.failedFuture(a.cause()));
-									}
-								})
-							);
-						}
-					}
 
 					if("SitePet".equals(classSimpleName2) && pk2 != null) {
 						SearchList<SitePet> searchList2 = new SearchList<SitePet>();
@@ -3014,72 +2485,67 @@ public class SiteEnrollmentEnUSGenApiServiceImpl implements SiteEnrollmentEnUSGe
 						searchList2.setC(SitePet.class);
 						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
 						searchList2.setRows(1);
-						searchList2.initDeepSearchList(siteRequest);
-						SitePet o2 = searchList2.getList().stream().findFirst().orElse(null);
-
-						if(o2 != null) {
-							SitePetEnUSGenApiServiceImpl service = new SitePetEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), new JsonObject());
-							ApiRequest apiRequest2 = new ApiRequest();
-							apiRequest2.setRows(1);
-							apiRequest2.setNumFound(1l);
-							apiRequest2.setNumPATCH(0L);
-							apiRequest2.initDeepApiRequest(siteRequest2);
-							siteRequest2.setApiRequest_(apiRequest2);
-							siteRequest2.getVertx().eventBus().publish("websocketSitePet", JsonObject.mapFrom(apiRequest2).toString());
-
-							o2.setPk(pk2);
-							o2.setSiteRequest_(siteRequest2);
-							futures.add(
-								service.patchSitePetFuture(o2, false, a -> {
-									if(a.succeeded()) {
-									} else {
-										LOGGER.info(String.format("SitePet %s failed. ", pk2));
-										eventHandler.handle(Future.failedFuture(a.cause()));
-									}
-								})
-							);
-						}
+						futures.add(Future.future(promise2 -> {
+							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+								SitePet o2 = searchList2.getList().stream().findFirst().orElse(null);
+								if(o2 != null) {
+									JsonObject params = new JsonObject();
+									params.put("body", new JsonObject());
+									params.put("cookie", new JsonObject());
+									params.put("path", new JsonObject());
+									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
+									JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+									JsonObject json = new JsonObject().put("context", context);
+									eventBus.request("nico-site-enUS-SitePet", json, new DeliveryOptions().addHeader("action", "patchSitePetFuture")).onSuccess(c -> {
+						JsonObject responseMessage = (JsonObject)c.body();
+										Integer statusCode = responseMessage.getInteger("statusCode");
+										if(statusCode.equals(200))
+											promise2.complete();
+										else
+											promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}
+							}).onFailure(ex -> {
+								promise2.fail(ex);
+							});
+						}));
 					}
 				}
 
-				CompositeFuture.all(futures).onComplete(a -> {
-					if(a.succeeded()) {
-						SiteEnrollmentEnUSApiServiceImpl service = new SiteEnrollmentEnUSApiServiceImpl(siteRequest.getSiteContext_());
-						List<Future> futures2 = new ArrayList<>();
-						for(SiteEnrollment o2 : searchList.getList()) {
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteEnrollment(siteContext, siteRequest.getOperationRequest(), new JsonObject());
-							o2.setSiteRequest_(siteRequest2);
-							futures2.add(
-								service.patchSiteEnrollmentFuture(o2, false, b -> {
-									if(b.succeeded()) {
-									} else {
-										LOGGER.info(String.format("SiteEnrollment %s failed. ", o2.getPk()));
-										eventHandler.handle(Future.failedFuture(b.cause()));
-									}
-								})
-							);
-						}
-
-						CompositeFuture.all(futures2).onComplete(b -> {
-							if(b.succeeded()) {
-								eventHandler.handle(Future.succeededFuture());
-							} else {
-								LOGGER.error("Refresh relations failed. ", b.cause());
-								errorSiteEnrollment(siteRequest, eventHandler, b);
-							}
-						});
-					} else {
-						LOGGER.error("Refresh relations failed. ", a.cause());
-						errorSiteEnrollment(siteRequest, eventHandler, a);
-					}
+				CompositeFuture.all(futures).onSuccess(b -> {
+					JsonObject params = new JsonObject();
+					params.put("body", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("path", new JsonObject());
+					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("nico-site-enUS-SiteEnrollment", json, new DeliveryOptions().addHeader("action", "patchSiteEnrollmentFuture")).onSuccess(c -> {
+						JsonObject responseMessage = (JsonObject)c.body();
+						Integer statusCode = responseMessage.getInteger("statusCode");
+						if(statusCode.equals(200))
+							promise.complete();
+						else
+							promise.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+					}).onFailure(ex -> {
+						LOG.error("Refresh relations failed. ", ex);
+						promise.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error("Refresh relations failed. ", ex);
+					promise.fail(ex);
 				});
 			} else {
-				eventHandler.handle(Future.succeededFuture());
+				promise.complete();
 			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("refreshSiteEnrollment failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("refreshSiteEnrollment failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 }

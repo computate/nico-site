@@ -1,4 +1,4 @@
-package org.computate.nico.enus.vertx;
+package org.computate.nico.enus.pet;
 
 import org.computate.nico.enus.java.ZonedDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
 import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
-import org.computate.nico.enus.vertx.AppSwagger2;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,6 +30,7 @@ import org.computate.nico.enus.request.api.ApiRequest;
 import io.vertx.core.Future;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
+import org.computate.nico.enus.pet.SitePetGenPage;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,49 +38,36 @@ import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.vertx.AppOpenApi3&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
-	protected static final Logger LOG = LoggerFactory.getLogger(AppOpenApi3.class);
+public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
+	protected static final Logger LOG = LoggerFactory.getLogger(SitePetPage.class);
 
 	//////////////
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedAppOpenApi3 = false;
+	protected boolean alreadyInitializedSitePetPage = false;
 
-	public AppOpenApi3 initDeepAppOpenApi3(SiteRequestEnUS siteRequest_) {
-		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedAppOpenApi3) {
-			alreadyInitializedAppOpenApi3 = true;
-			initDeepAppOpenApi3();
+	public SitePetPage initDeepSitePetPage(SiteRequestEnUS siteRequest_) {
+		if(!alreadyInitializedSitePetPage) {
+			alreadyInitializedSitePetPage = true;
+			initDeepSitePetPage();
 		}
-		return (AppOpenApi3)this;
+		return (SitePetPage)this;
 	}
 
-	public void initDeepAppOpenApi3() {
-		initAppOpenApi3();
-		super.initDeepAppSwagger2(siteRequest_);
+	public void initDeepSitePetPage() {
+		initSitePetPage();
+		super.initDeepSitePetGenPage(siteRequest_);
 	}
 
-	public void initAppOpenApi3() {
+	public void initSitePetPage() {
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepAppOpenApi3(siteRequest_);
-	}
-
-	/////////////////
-	// siteRequest //
-	/////////////////
-
-	public void siteRequestAppOpenApi3(SiteRequestEnUS siteRequest_) {
-			super.siteRequestAppSwagger2(siteRequest_);
-	}
-
-	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
-		siteRequestAppOpenApi3(siteRequest_);
+		initDeepSitePetPage(siteRequest_);
 	}
 
 	/////////////
@@ -92,7 +79,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = obtainAppOpenApi3(v);
+				o = obtainSitePetPage(v);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
 				o = baseModel.obtainForClass(v);
@@ -104,11 +91,11 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		}
 		return o;
 	}
-	public Object obtainAppOpenApi3(String var) {
-		AppOpenApi3 oAppOpenApi3 = (AppOpenApi3)this;
+	public Object obtainSitePetPage(String var) {
+		SitePetPage oSitePetPage = (SitePetPage)this;
 		switch(var) {
 			default:
-				return super.obtainAppSwagger2(var);
+				return super.obtainSitePetGenPage(var);
 		}
 	}
 
@@ -121,7 +108,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeAppOpenApi3(v, val);
+				o = attributeSitePetPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
 				o = baseModel.attributeForClass(v, val);
@@ -129,11 +116,11 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		}
 		return o != null;
 	}
-	public Object attributeAppOpenApi3(String var, Object val) {
-		AppOpenApi3 oAppOpenApi3 = (AppOpenApi3)this;
+	public Object attributeSitePetPage(String var, Object val) {
+		SitePetPage oSitePetPage = (SitePetPage)this;
 		switch(var) {
 			default:
-				return super.attributeAppSwagger2(var, val);
+				return super.attributeSitePetGenPage(var, val);
 		}
 	}
 
@@ -142,12 +129,12 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	///////////////
 
 	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSetAppOpenApi3(entityVar,  siteRequest_, o);
+		return staticSetSitePetPage(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSetAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static Object staticSetSitePetPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 			default:
-				return AppSwagger2.staticSetAppSwagger2(entityVar,  siteRequest_, o);
+				return SitePetGenPage.staticSetSitePetGenPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -156,12 +143,12 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	////////////////
 
 	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrAppOpenApi3(entityVar,  siteRequest_, o);
+		return staticSolrSitePetPage(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSolrAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static Object staticSolrSitePetPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 			default:
-				return AppSwagger2.staticSolrAppSwagger2(entityVar,  siteRequest_, o);
+				return SitePetGenPage.staticSolrSitePetGenPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -170,12 +157,12 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	///////////////////
 
 	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrStrAppOpenApi3(entityVar,  siteRequest_, o);
+		return staticSolrStrSitePetPage(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrStrAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static String staticSolrStrSitePetPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 			default:
-				return AppSwagger2.staticSolrStrAppSwagger2(entityVar,  siteRequest_, o);
+				return SitePetGenPage.staticSolrStrSitePetGenPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -184,12 +171,12 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	//////////////////
 
 	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSolrFqAppOpenApi3(entityVar,  siteRequest_, o);
+		return staticSolrFqSitePetPage(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrFqAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrFqSitePetPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 			default:
-				return AppSwagger2.staticSolrFqAppSwagger2(entityVar,  siteRequest_, o);
+				return SitePetGenPage.staticSolrFqSitePetGenPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -203,7 +190,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineAppOpenApi3(v, val);
+					o = defineSitePetPage(v, val);
 				else if(o instanceof BaseModel) {
 					BaseModel oBaseModel = (BaseModel)o;
 					o = oBaseModel.defineForClass(v, val);
@@ -212,10 +199,10 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		}
 		return o != null;
 	}
-	public Object defineAppOpenApi3(String var, String val) {
+	public Object defineSitePetPage(String var, String val) {
 		switch(var.toLowerCase()) {
 			default:
-				return super.defineAppSwagger2(var, val);
+				return super.defineSitePetGenPage(var, val);
 		}
 	}
 
@@ -225,7 +212,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineAppOpenApi3(v, val);
+					o = defineSitePetPage(v, val);
 				else if(o instanceof BaseModel) {
 					BaseModel oBaseModel = (BaseModel)o;
 					o = oBaseModel.defineForClass(v, val);
@@ -234,23 +221,10 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		}
 		return o != null;
 	}
-	public Object defineAppOpenApi3(String var, Object val) {
+	public Object defineSitePetPage(String var, Object val) {
 		switch(var.toLowerCase()) {
 			default:
-				return super.defineAppSwagger2(var, val);
-		}
-	}
-
-	//////////////////
-	// apiRequest //
-	//////////////////
-
-	public void apiRequestAppOpenApi3() {
-		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
-		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
-		if(o != null && o instanceof AppOpenApi3) {
-			AppOpenApi3 original = (AppOpenApi3)o;
-			super.apiRequestAppSwagger2();
+				return super.defineSitePetGenPage(var, val);
 		}
 	}
 
@@ -269,9 +243,9 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	@Override public boolean equals(Object o) {
 		if(this == o)
 			return true;
-		if(!(o instanceof AppOpenApi3))
+		if(!(o instanceof SitePetPage))
 			return false;
-		AppOpenApi3 that = (AppOpenApi3)o;
+		SitePetPage that = (SitePetPage)o;
 		return super.equals(o);
 	}
 
@@ -282,7 +256,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
-		sb.append("AppOpenApi3 { ");
+		sb.append("SitePetPage { ");
 		sb.append(" }");
 		return sb.toString();
 	}

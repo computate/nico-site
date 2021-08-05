@@ -1,32 +1,37 @@
 package org.computate.nico.enus.search;
 
+import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.apache.solr.common.SolrDocumentList;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
+import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
-import io.vertx.core.logging.Logger;
+import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
-import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.java.LocalDateSerializer;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import io.vertx.core.Promise;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
+import io.vertx.core.Future;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import java.util.List;
@@ -36,15 +41,15 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Class;
 import java.lang.Object;
+import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class SearchListGen<DEV> {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SearchList.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SearchList.class);
 
 	///////
 	// c //
@@ -53,32 +58,38 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity c
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
-	protected Class<DEV> c;
+	protected Class<?> c;
 	@JsonIgnore
-	public Wrap<Class<DEV>> cWrap = new Wrap<Class<DEV>>().p(this).c(Class.class).var("c").o(c);
+	public Wrap<Class<?>> cWrap = new Wrap<Class<?>>().var("c").o(c);
 
 	/**	<br/> The entity c
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:c">Find the entity c in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:c">Find the entity c in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _c(Wrap<Class<DEV>> c);
+	protected abstract void _c(Wrap<Class<?>> c);
 
-	public Class<DEV> getC() {
+	public Class<?> getC() {
 		return c;
 	}
 
-	public void setC(Class<DEV> c) {
+	public void setC(Class<?> c) {
 		this.c = c;
 		this.cWrap.alreadyInitialized = true;
+	}
+	public static Class<?> staticSetC(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SearchList cInit() {
 		if(!cWrap.alreadyInitialized) {
 			_c(cWrap);
 			if(c == null)
 				setC(cWrap.o);
+			cWrap.o(null);
 		}
 		cWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -95,11 +106,11 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -121,6 +132,7 @@ public abstract class SearchListGen<DEV> {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -133,14 +145,15 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity store
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean store;
 	@JsonIgnore
-	public Wrap<Boolean> storeWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("store").o(store);
+	public Wrap<Boolean> storeWrap = new Wrap<Boolean>().var("store").o(store);
 
 	/**	<br/> The entity store
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:store">Find the entity store in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:store">Find the entity store in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -154,6 +167,7 @@ public abstract class SearchListGen<DEV> {
 		this.store = store;
 		this.storeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStore(String o) {
 		this.store = SearchList.staticSetStore(siteRequest_, o);
 		this.storeWrap.alreadyInitialized = true;
@@ -166,6 +180,7 @@ public abstract class SearchListGen<DEV> {
 			_store(storeWrap);
 			if(store == null)
 				setStore(storeWrap.o);
+			storeWrap.o(null);
 		}
 		storeWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -199,18 +214,6 @@ public abstract class SearchListGen<DEV> {
 		return store == null ? "" : store.toString();
 	}
 
-	public String nomAffichageStore() {
-		return null;
-	}
-
-	public String htmTooltipStore() {
-		return null;
-	}
-
-	public String htmStore() {
-		return store == null ? "" : StringEscapeUtils.escapeHtml4(strStore());
-	}
-
 	//////////////
 	// populate //
 	//////////////
@@ -218,14 +221,15 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity populate
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean populate;
 	@JsonIgnore
-	public Wrap<Boolean> populateWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("populate").o(populate);
+	public Wrap<Boolean> populateWrap = new Wrap<Boolean>().var("populate").o(populate);
 
 	/**	<br/> The entity populate
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:populate">Find the entity populate in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:populate">Find the entity populate in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -239,6 +243,7 @@ public abstract class SearchListGen<DEV> {
 		this.populate = populate;
 		this.populateWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPopulate(String o) {
 		this.populate = SearchList.staticSetPopulate(siteRequest_, o);
 		this.populateWrap.alreadyInitialized = true;
@@ -251,6 +256,7 @@ public abstract class SearchListGen<DEV> {
 			_populate(populateWrap);
 			if(populate == null)
 				setPopulate(populateWrap.o);
+			populateWrap.o(null);
 		}
 		populateWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -284,18 +290,6 @@ public abstract class SearchListGen<DEV> {
 		return populate == null ? "" : populate.toString();
 	}
 
-	public String nomAffichagePopulate() {
-		return null;
-	}
-
-	public String htmTooltipPopulate() {
-		return null;
-	}
-
-	public String htmPopulate() {
-		return populate == null ? "" : StringEscapeUtils.escapeHtml4(strPopulate());
-	}
-
 	////////////
 	// fields //
 	////////////
@@ -303,14 +297,16 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity fields
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> fields = new ArrayList<String>();
 	@JsonIgnore
-	public Wrap<List<String>> fieldsWrap = new Wrap<List<String>>().p(this).c(List.class).var("fields").o(fields);
+	public Wrap<List<String>> fieldsWrap = new Wrap<List<String>>().var("fields").o(fields);
 
 	/**	<br/> The entity fields
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:fields">Find the entity fields in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:fields">Find the entity fields in Solr</a>
 	 * <br/>
 	 * @param fields is the entity already constructed. 
 	 **/
@@ -325,7 +321,7 @@ public abstract class SearchListGen<DEV> {
 		this.fieldsWrap.alreadyInitialized = true;
 	}
 	public static String staticSetFields(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public SearchList addFields(String...objets) {
 		for(String o : objets) {
@@ -338,6 +334,7 @@ public abstract class SearchListGen<DEV> {
 			this.fields.add(o);
 		return (SearchList)this;
 	}
+	@JsonIgnore
 	public void setFields(JsonArray objets) {
 		fields.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -385,18 +382,6 @@ public abstract class SearchListGen<DEV> {
 		return fields == null ? "" : fields.toString();
 	}
 
-	public String nomAffichageFields() {
-		return null;
-	}
-
-	public String htmTooltipFields() {
-		return null;
-	}
-
-	public String htmFields() {
-		return fields == null ? "" : StringEscapeUtils.escapeHtml4(strFields());
-	}
-
 	///////////////
 	// solrQuery //
 	///////////////
@@ -404,14 +389,15 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity solrQuery
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SolrQuery(). 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrQuery solrQuery = new SolrQuery();
 	@JsonIgnore
-	public Wrap<SolrQuery> solrQueryWrap = new Wrap<SolrQuery>().p(this).c(SolrQuery.class).var("solrQuery").o(solrQuery);
+	public Wrap<SolrQuery> solrQueryWrap = new Wrap<SolrQuery>().var("solrQuery").o(solrQuery);
 
 	/**	<br/> The entity solrQuery
 	 *  It is constructed before being initialized with the constructor by default SolrQuery(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrQuery">Find the entity solrQuery in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrQuery">Find the entity solrQuery in Solr</a>
 	 * <br/>
 	 * @param solrQuery is the entity already constructed. 
 	 **/
@@ -443,18 +429,19 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity queryResponse
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected QueryResponse queryResponse;
 	@JsonIgnore
-	public Wrap<QueryResponse> queryResponseWrap = new Wrap<QueryResponse>().p(this).c(QueryResponse.class).var("queryResponse").o(queryResponse);
+	public Wrap<QueryResponse> queryResponseWrap = new Wrap<QueryResponse>().var("queryResponse").o(queryResponse);
 
 	/**	<br/> The entity queryResponse
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:queryResponse">Find the entity queryResponse in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:queryResponse">Find the entity queryResponse in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _queryResponse(Wrap<QueryResponse> c);
+	protected abstract void _queryResponse(Promise<QueryResponse> promise);
 
 	public QueryResponse getQueryResponse() {
 		return queryResponse;
@@ -467,14 +454,22 @@ public abstract class SearchListGen<DEV> {
 	public static QueryResponse staticSetQueryResponse(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SearchList queryResponseInit() {
+	protected Future<QueryResponse> queryResponsePromise() {
+		Promise<QueryResponse> promise = Promise.promise();
 		if(!queryResponseWrap.alreadyInitialized) {
-			_queryResponse(queryResponseWrap);
-			if(queryResponse == null)
-				setQueryResponse(queryResponseWrap.o);
+			Promise<QueryResponse> promise2 = Promise.promise();
+			_queryResponse(promise2);
+			promise2.future().onSuccess(o -> {
+				setQueryResponse(o);
+				queryResponseWrap.alreadyInitialized(true);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		queryResponseWrap.alreadyInitialized(true);
-		return (SearchList)this;
+		return promise.future();
 	}
 
 	//////////////////////
@@ -484,14 +479,15 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity solrDocumentList
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocumentList solrDocumentList;
 	@JsonIgnore
-	public Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().p(this).c(SolrDocumentList.class).var("solrDocumentList").o(solrDocumentList);
+	public Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().var("solrDocumentList").o(solrDocumentList);
 
 	/**	<br/> The entity solrDocumentList
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrDocumentList">Find the entity solrDocumentList in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrDocumentList">Find the entity solrDocumentList in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -513,6 +509,7 @@ public abstract class SearchListGen<DEV> {
 			_solrDocumentList(solrDocumentListWrap);
 			if(solrDocumentList == null)
 				setSolrDocumentList(solrDocumentListWrap.o);
+			solrDocumentListWrap.o(null);
 		}
 		solrDocumentListWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -525,14 +522,16 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity list
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<DEV>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<DEV> list = new ArrayList<DEV>();
 	@JsonIgnore
-	public Wrap<List<DEV>> listWrap = new Wrap<List<DEV>>().p(this).c(List.class).var("list").o(list);
+	public Wrap<List<DEV>> listWrap = new Wrap<List<DEV>>().var("list").o(list);
 
 	/**	<br/> The entity list
 	 *  It is constructed before being initialized with the constructor by default List<DEV>(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:list">Find the entity list in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:list">Find the entity list in Solr</a>
 	 * <br/>
 	 * @param list is the entity already constructed. 
 	 **/
@@ -572,14 +571,15 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity first
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Object first;
 	@JsonIgnore
-	public Wrap<Object> firstWrap = new Wrap<Object>().p(this).c(Object.class).var("first").o(first);
+	public Wrap<Object> firstWrap = new Wrap<Object>().var("first").o(first);
 
 	/**	<br/> The entity first
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:first">Find the entity first in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:first">Find the entity first in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -601,6 +601,7 @@ public abstract class SearchListGen<DEV> {
 			_first(firstWrap);
 			if(first == null)
 				setFirst(firstWrap.o);
+			firstWrap.o(null);
 		}
 		firstWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -612,34 +613,72 @@ public abstract class SearchListGen<DEV> {
 
 	protected boolean alreadyInitializedSearchList = false;
 
-	public SearchList initDeepSearchList(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSearchList(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSearchList) {
 			alreadyInitializedSearchList = true;
-			initDeepSearchList();
+			return promiseDeepSearchList();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SearchList)this;
 	}
 
-	public void initDeepSearchList() {
-		initSearchList();
+	public Future<Void> promiseDeepSearchList() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSearchList(promise2);
+		promise2.future().onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSearchList() {
-		cInit();
-		siteRequest_Init();
-		storeInit();
-		populateInit();
-		fieldsInit();
-		solrQueryInit();
-		queryResponseInit();
-		solrDocumentListInit();
-		listInit();
-		firstInit();
+	public Future<Void> promiseSearchList(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				cInit();
+				siteRequest_Init();
+				storeInit();
+				populateInit();
+				fieldsInit();
+				solrQueryInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			queryResponsePromise().onSuccess(queryResponse -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				solrDocumentListInit();
+				listInit();
+				firstInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSearchList(siteRequest_);
+	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSearchList(siteRequest_);
 	}
 
 	/////////////////
@@ -663,9 +702,9 @@ public abstract class SearchListGen<DEV> {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainSearchList(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -712,9 +751,9 @@ public abstract class SearchListGen<DEV> {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeSearchList(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -818,9 +857,9 @@ public abstract class SearchListGen<DEV> {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSearchList(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -840,9 +879,9 @@ public abstract class SearchListGen<DEV> {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSearchList(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -898,4 +937,15 @@ public abstract class SearchListGen<DEV> {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_c = "c";
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_store = "store";
+	public static final String VAR_populate = "populate";
+	public static final String VAR_fields = "fields";
+	public static final String VAR_solrQuery = "solrQuery";
+	public static final String VAR_queryResponse = "queryResponse";
+	public static final String VAR_solrDocumentList = "solrDocumentList";
+	public static final String VAR_list = "list";
+	public static final String VAR_first = "first";
 }
