@@ -32,6 +32,7 @@ import java.math.MathContext;
 import org.apache.commons.collections.CollectionUtils;
 import java.util.Objects;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
+import io.vertx.core.Promise;
 
 
 /**
@@ -42,16 +43,22 @@ public class SiteEnrollmentGenPage extends SiteEnrollmentGenPageGen<Object> {
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
 	public static final List<String> ROLE_READS = Arrays.asList("");
 
+	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
 	 **/
-	protected void _listSiteEnrollment(Wrap<SearchList<SiteEnrollment>> c) {
+	protected void _listSiteEnrollment_(Wrap<SearchList<SiteEnrollment>> c) {
 	}
 
 	protected void _siteEnrollment_(Wrap<SiteEnrollment> c) {
-		if(listSiteEnrollment != null && listSiteEnrollment.size() == 1)
-			c.o(listSiteEnrollment.get(0));
+		if(listSiteEnrollment_ != null && listSiteEnrollment_.size() == 1)
+			c.o(listSiteEnrollment_.get(0));
+	}
+
+	protected void _promiseBefore(Promise<Void> promise) {
 	}
 
 	protected void _pageH1(Wrap<String> c) {
@@ -71,7 +78,7 @@ public class SiteEnrollmentGenPage extends SiteEnrollmentGenPageGen<Object> {
 			c.o(siteEnrollment_.getObjectTitle());
 		else if(siteEnrollment_ != null)
 			c.o("enrollments");
-		else if(listSiteEnrollment == null || listSiteEnrollment.size() == 0)
+		else if(listSiteEnrollment_ == null || listSiteEnrollment_.size() == 0)
 			c.o("no enrollment found");
 		else
 			c.o("enrollments");
@@ -79,6 +86,9 @@ public class SiteEnrollmentGenPage extends SiteEnrollmentGenPageGen<Object> {
 
 	protected void _pageUri(Wrap<String> c) {
 		c.o("/api/enrollment");
+	}
+
+	protected void _promiseAfter(Promise<Void> promise) {
 	}
 
 	protected void _pageImageUri(Wrap<String> c) {
@@ -91,9 +101,5 @@ public class SiteEnrollmentGenPage extends SiteEnrollmentGenPageGen<Object> {
 
 	protected void _contextIconName(Wrap<String> c) {
 			c.o("clipboard-list");
-	}
-
-	public void initDeepSiteEnrollmentGenPage() {
-		initSiteEnrollmentGenPage();
 	}
 }

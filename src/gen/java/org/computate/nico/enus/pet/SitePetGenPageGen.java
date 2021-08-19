@@ -48,49 +48,90 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public abstract class SitePetGenPageGen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(SitePetGenPage.class);
 
-	/////////////////
-	// listSitePet //
-	/////////////////
+	//////////////////
+	// siteRequest_ //
+	//////////////////
 
-	/**	 The entity listSitePet
+	/**	 The entity siteRequest_
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected SiteRequestEnUS siteRequest_;
+	@JsonIgnore
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+
+	/**	<br/> The entity siteRequest_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
+
+	public SiteRequestEnUS getSiteRequest_() {
+		return siteRequest_;
+	}
+
+	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
+		this.siteRequest_ = siteRequest_;
+		this.siteRequest_Wrap.alreadyInitialized = true;
+	}
+	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SitePetGenPage siteRequest_Init() {
+		if(!siteRequest_Wrap.alreadyInitialized) {
+			_siteRequest_(siteRequest_Wrap);
+			if(siteRequest_ == null)
+				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
+		}
+		siteRequest_Wrap.alreadyInitialized(true);
+		return (SitePetGenPage)this;
+	}
+
+	//////////////////
+	// listSitePet_ //
+	//////////////////
+
+	/**	 The entity listSitePet_
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SitePet> listSitePet;
+	protected SearchList<SitePet> listSitePet_;
 	@JsonIgnore
-	public Wrap<SearchList<SitePet>> listSitePetWrap = new Wrap<SearchList<SitePet>>().var("listSitePet").o(listSitePet);
+	public Wrap<SearchList<SitePet>> listSitePet_Wrap = new Wrap<SearchList<SitePet>>().var("listSitePet_").o(listSitePet_);
 
-	/**	<br/> The entity listSitePet
+	/**	<br/> The entity listSitePet_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSitePet">Find the entity listSitePet in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSitePet_">Find the entity listSitePet_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _listSitePet(Wrap<SearchList<SitePet>> c);
+	protected abstract void _listSitePet_(Wrap<SearchList<SitePet>> c);
 
-	public SearchList<SitePet> getListSitePet() {
-		return listSitePet;
+	public SearchList<SitePet> getListSitePet_() {
+		return listSitePet_;
 	}
 
-	public void setListSitePet(SearchList<SitePet> listSitePet) {
-		this.listSitePet = listSitePet;
-		this.listSitePetWrap.alreadyInitialized = true;
+	public void setListSitePet_(SearchList<SitePet> listSitePet_) {
+		this.listSitePet_ = listSitePet_;
+		this.listSitePet_Wrap.alreadyInitialized = true;
 	}
-	public static SearchList<SitePet> staticSetListSitePet(SiteRequestEnUS siteRequest_, String o) {
+	public static SearchList<SitePet> staticSetListSitePet_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SitePetGenPage listSitePetInit() {
-		if(!listSitePetWrap.alreadyInitialized) {
-			_listSitePet(listSitePetWrap);
-			if(listSitePet == null)
-				setListSitePet(listSitePetWrap.o);
-			listSitePetWrap.o(null);
+	protected SitePetGenPage listSitePet_Init() {
+		if(!listSitePet_Wrap.alreadyInitialized) {
+			_listSitePet_(listSitePet_Wrap);
+			if(listSitePet_ == null)
+				setListSitePet_(listSitePet_Wrap.o);
+			listSitePet_Wrap.o(null);
 		}
-		if(listSitePet != null)
-			listSitePet.initDeepForClass(null);
-		listSitePetWrap.alreadyInitialized(true);
+		listSitePet_Wrap.alreadyInitialized(true);
 		return (SitePetGenPage)this;
 	}
 
@@ -212,7 +253,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageH1;
 	}
 	public void setPageH1(String o) {
-		this.pageH1 = SitePetGenPage.staticSetPageH1(null, o);
+		this.pageH1 = SitePetGenPage.staticSetPageH1(siteRequest_, o);
 		this.pageH1Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
@@ -229,16 +270,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPageH1(siteRequest_, SitePetGenPage.staticSolrPageH1(siteRequest_, SitePetGenPage.staticSetPageH1(siteRequest_, o)));
+	}
+
+	public String solrPageH1() {
+		return SitePetGenPage.staticSolrPageH1(siteRequest_, pageH1);
+	}
+
+	public String strPageH1() {
+		return pageH1 == null ? "" : pageH1;
+	}
+
+	public String sqlPageH1() {
+		return pageH1;
+	}
+
+	public String jsonPageH1() {
+		return pageH1 == null ? "" : pageH1;
 	}
 
 	////////////
@@ -266,7 +323,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageH2;
 	}
 	public void setPageH2(String o) {
-		this.pageH2 = SitePetGenPage.staticSetPageH2(null, o);
+		this.pageH2 = SitePetGenPage.staticSetPageH2(siteRequest_, o);
 		this.pageH2Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH2(SiteRequestEnUS siteRequest_, String o) {
@@ -283,16 +340,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageH2(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageH2(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageH2(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageH2(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPageH2(siteRequest_, SitePetGenPage.staticSolrPageH2(siteRequest_, SitePetGenPage.staticSetPageH2(siteRequest_, o)));
+	}
+
+	public String solrPageH2() {
+		return SitePetGenPage.staticSolrPageH2(siteRequest_, pageH2);
+	}
+
+	public String strPageH2() {
+		return pageH2 == null ? "" : pageH2;
+	}
+
+	public String sqlPageH2() {
+		return pageH2;
+	}
+
+	public String jsonPageH2() {
+		return pageH2 == null ? "" : pageH2;
 	}
 
 	////////////
@@ -320,7 +393,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageH3;
 	}
 	public void setPageH3(String o) {
-		this.pageH3 = SitePetGenPage.staticSetPageH3(null, o);
+		this.pageH3 = SitePetGenPage.staticSetPageH3(siteRequest_, o);
 		this.pageH3Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH3(SiteRequestEnUS siteRequest_, String o) {
@@ -337,16 +410,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageH3(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageH3(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageH3(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageH3(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPageH3(siteRequest_, SitePetGenPage.staticSolrPageH3(siteRequest_, SitePetGenPage.staticSetPageH3(siteRequest_, o)));
+	}
+
+	public String solrPageH3() {
+		return SitePetGenPage.staticSolrPageH3(siteRequest_, pageH3);
+	}
+
+	public String strPageH3() {
+		return pageH3 == null ? "" : pageH3;
+	}
+
+	public String sqlPageH3() {
+		return pageH3;
+	}
+
+	public String jsonPageH3() {
+		return pageH3 == null ? "" : pageH3;
 	}
 
 	///////////////
@@ -374,7 +463,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageTitle;
 	}
 	public void setPageTitle(String o) {
-		this.pageTitle = SitePetGenPage.staticSetPageTitle(null, o);
+		this.pageTitle = SitePetGenPage.staticSetPageTitle(siteRequest_, o);
 		this.pageTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageTitle(SiteRequestEnUS siteRequest_, String o) {
@@ -391,16 +480,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrPageTitle(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageTitle(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageTitle(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPageTitle(siteRequest_, SitePetGenPage.staticSolrPageTitle(siteRequest_, SitePetGenPage.staticSetPageTitle(siteRequest_, o)));
+	}
+
+	public String solrPageTitle() {
+		return SitePetGenPage.staticSolrPageTitle(siteRequest_, pageTitle);
+	}
+
+	public String strPageTitle() {
+		return pageTitle == null ? "" : pageTitle;
+	}
+
+	public String sqlPageTitle() {
+		return pageTitle;
+	}
+
+	public String jsonPageTitle() {
+		return pageTitle == null ? "" : pageTitle;
 	}
 
 	/////////////
@@ -428,7 +533,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageUri;
 	}
 	public void setPageUri(String o) {
-		this.pageUri = SitePetGenPage.staticSetPageUri(null, o);
+		this.pageUri = SitePetGenPage.staticSetPageUri(siteRequest_, o);
 		this.pageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUri(SiteRequestEnUS siteRequest_, String o) {
@@ -445,16 +550,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrPageUri(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageUri(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageUri(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPageUri(siteRequest_, SitePetGenPage.staticSolrPageUri(siteRequest_, SitePetGenPage.staticSetPageUri(siteRequest_, o)));
+	}
+
+	public String solrPageUri() {
+		return SitePetGenPage.staticSolrPageUri(siteRequest_, pageUri);
+	}
+
+	public String strPageUri() {
+		return pageUri == null ? "" : pageUri;
+	}
+
+	public String sqlPageUri() {
+		return pageUri;
+	}
+
+	public String jsonPageUri() {
+		return pageUri == null ? "" : pageUri;
 	}
 
 	//////////////////
@@ -532,7 +653,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageImageUri;
 	}
 	public void setPageImageUri(String o) {
-		this.pageImageUri = SitePetGenPage.staticSetPageImageUri(null, o);
+		this.pageImageUri = SitePetGenPage.staticSetPageImageUri(siteRequest_, o);
 		this.pageImageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageImageUri(SiteRequestEnUS siteRequest_, String o) {
@@ -549,16 +670,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageImageUri(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageImageUri(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPageImageUri(siteRequest_, SitePetGenPage.staticSolrPageImageUri(siteRequest_, SitePetGenPage.staticSetPageImageUri(siteRequest_, o)));
+	}
+
+	public String solrPageImageUri() {
+		return SitePetGenPage.staticSolrPageImageUri(siteRequest_, pageImageUri);
+	}
+
+	public String strPageImageUri() {
+		return pageImageUri == null ? "" : pageImageUri;
+	}
+
+	public String sqlPageImageUri() {
+		return pageImageUri;
+	}
+
+	public String jsonPageImageUri() {
+		return pageImageUri == null ? "" : pageImageUri;
 	}
 
 	//////////////////////
@@ -586,7 +723,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return contextIconGroup;
 	}
 	public void setContextIconGroup(String o) {
-		this.contextIconGroup = SitePetGenPage.staticSetContextIconGroup(null, o);
+		this.contextIconGroup = SitePetGenPage.staticSetContextIconGroup(siteRequest_, o);
 		this.contextIconGroupWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
@@ -603,16 +740,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrContextIconGroup(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrContextIconGroup(siteRequest_, SitePetGenPage.staticSolrContextIconGroup(siteRequest_, SitePetGenPage.staticSetContextIconGroup(siteRequest_, o)));
+	}
+
+	public String solrContextIconGroup() {
+		return SitePetGenPage.staticSolrContextIconGroup(siteRequest_, contextIconGroup);
+	}
+
+	public String strContextIconGroup() {
+		return contextIconGroup == null ? "" : contextIconGroup;
+	}
+
+	public String sqlContextIconGroup() {
+		return contextIconGroup;
+	}
+
+	public String jsonContextIconGroup() {
+		return contextIconGroup == null ? "" : contextIconGroup;
 	}
 
 	/////////////////////
@@ -640,7 +793,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return contextIconName;
 	}
 	public void setContextIconName(String o) {
-		this.contextIconName = SitePetGenPage.staticSetContextIconName(null, o);
+		this.contextIconName = SitePetGenPage.staticSetContextIconName(siteRequest_, o);
 		this.contextIconNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconName(SiteRequestEnUS siteRequest_, String o) {
@@ -657,16 +810,32 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return (SitePetGenPage)this;
 	}
 
-	public static Object staticSolrContextIconName(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrContextIconName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrContextIconName(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrContextIconName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqContextIconName(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrContextIconName(siteRequest_, SitePetGenPage.staticSolrContextIconName(siteRequest_, SitePetGenPage.staticSetContextIconName(siteRequest_, o)));
+	}
+
+	public String solrContextIconName() {
+		return SitePetGenPage.staticSolrContextIconName(siteRequest_, contextIconName);
+	}
+
+	public String strContextIconName() {
+		return contextIconName == null ? "" : contextIconName;
+	}
+
+	public String sqlContextIconName() {
+		return contextIconName;
+	}
+
+	public String jsonContextIconName() {
+		return contextIconName == null ? "" : contextIconName;
 	}
 
 	//////////////
@@ -676,6 +845,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 	protected boolean alreadyInitializedSitePetGenPage = false;
 
 	public Future<Void> promiseDeepSitePetGenPage(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSitePetGenPage) {
 			alreadyInitializedSitePetGenPage = true;
 			return promiseDeepSitePetGenPage();
@@ -700,7 +870,8 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
-				listSitePetInit();
+				siteRequest_Init();
+				listSitePet_Init();
 				sitePet_Init();
 				promise2.complete();
 			} catch(Exception ex) {
@@ -759,6 +930,17 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return promiseDeepSitePetGenPage(siteRequest_);
 	}
 
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestSitePetGenPage(SiteRequestEnUS siteRequest_) {
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestSitePetGenPage(siteRequest_);
+	}
+
 	/////////////
 	// obtain //
 	/////////////
@@ -783,8 +965,10 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 	public Object obtainSitePetGenPage(String var) {
 		SitePetGenPage oSitePetGenPage = (SitePetGenPage)this;
 		switch(var) {
-			case "listSitePet":
-				return oSitePetGenPage.listSitePet;
+			case "siteRequest_":
+				return oSitePetGenPage.siteRequest_;
+			case "listSitePet_":
+				return oSitePetGenPage.listSitePet_;
 			case "sitePet_":
 				return oSitePetGenPage.sitePet_;
 			case "promiseBefore":
@@ -1005,6 +1189,18 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		}
 	}
 
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestSitePetGenPage() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof SitePetGenPage) {
+			SitePetGenPage original = (SitePetGenPage)o;
+		}
+	}
+
 	//////////////
 	// hashCode //
 	//////////////
@@ -1037,7 +1233,8 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return sb.toString();
 	}
 
-	public static final String VAR_listSitePet = "listSitePet";
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_listSitePet_ = "listSitePet_";
 	public static final String VAR_sitePet_ = "sitePet_";
 	public static final String VAR_promiseBefore = "promiseBefore";
 	public static final String VAR_pageH1 = "pageH1";

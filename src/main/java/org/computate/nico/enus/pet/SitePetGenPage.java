@@ -43,16 +43,19 @@ public class SitePetGenPage extends SitePetGenPageGen<Object> {
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
 	public static final List<String> ROLE_READS = Arrays.asList("");
 
+	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
 	 **/
-	protected void _listSitePet(Wrap<SearchList<SitePet>> c) {
+	protected void _listSitePet_(Wrap<SearchList<SitePet>> c) {
 	}
 
 	protected void _sitePet_(Wrap<SitePet> c) {
-		if(listSitePet != null && listSitePet.size() == 1)
-			c.o(listSitePet.get(0));
+		if(listSitePet_ != null && listSitePet_.size() == 1)
+			c.o(listSitePet_.get(0));
 	}
 
 	protected void _promiseBefore(Promise<Void> promise) {
@@ -75,7 +78,7 @@ public class SitePetGenPage extends SitePetGenPageGen<Object> {
 			c.o(sitePet_.getObjectTitle());
 		else if(sitePet_ != null)
 			c.o("pets");
-		else if(listSitePet == null || listSitePet.size() == 0)
+		else if(listSitePet_ == null || listSitePet_.size() == 0)
 			c.o("no pet found");
 		else
 			c.o("pets");

@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet;
+package org.computate.nico.enus.pet; 
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/         
+ **/               
 public class SitePet extends SitePetGen<BaseModel> {
 	
 

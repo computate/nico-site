@@ -21,6 +21,7 @@ import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
 import org.computate.nico.enus.java.LocalDateSerializer;
+import java.lang.Void;
 import org.slf4j.Logger;
 import java.math.MathContext;
 import io.vertx.core.Promise;
@@ -47,49 +48,90 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteEnrollmentGenPage.class);
 
-	////////////////////////
-	// listSiteEnrollment //
-	////////////////////////
+	//////////////////
+	// siteRequest_ //
+	//////////////////
 
-	/**	 The entity listSiteEnrollment
+	/**	 The entity siteRequest_
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected SiteRequestEnUS siteRequest_;
+	@JsonIgnore
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+
+	/**	<br/> The entity siteRequest_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollmentGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
+
+	public SiteRequestEnUS getSiteRequest_() {
+		return siteRequest_;
+	}
+
+	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
+		this.siteRequest_ = siteRequest_;
+		this.siteRequest_Wrap.alreadyInitialized = true;
+	}
+	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SiteEnrollmentGenPage siteRequest_Init() {
+		if(!siteRequest_Wrap.alreadyInitialized) {
+			_siteRequest_(siteRequest_Wrap);
+			if(siteRequest_ == null)
+				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
+		}
+		siteRequest_Wrap.alreadyInitialized(true);
+		return (SiteEnrollmentGenPage)this;
+	}
+
+	/////////////////////////
+	// listSiteEnrollment_ //
+	/////////////////////////
+
+	/**	 The entity listSiteEnrollment_
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteEnrollment> listSiteEnrollment;
+	protected SearchList<SiteEnrollment> listSiteEnrollment_;
 	@JsonIgnore
-	public Wrap<SearchList<SiteEnrollment>> listSiteEnrollmentWrap = new Wrap<SearchList<SiteEnrollment>>().var("listSiteEnrollment").o(listSiteEnrollment);
+	public Wrap<SearchList<SiteEnrollment>> listSiteEnrollment_Wrap = new Wrap<SearchList<SiteEnrollment>>().var("listSiteEnrollment_").o(listSiteEnrollment_);
 
-	/**	<br/> The entity listSiteEnrollment
+	/**	<br/> The entity listSiteEnrollment_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollmentGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteEnrollment">Find the entity listSiteEnrollment in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollmentGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteEnrollment_">Find the entity listSiteEnrollment_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _listSiteEnrollment(Wrap<SearchList<SiteEnrollment>> c);
+	protected abstract void _listSiteEnrollment_(Wrap<SearchList<SiteEnrollment>> c);
 
-	public SearchList<SiteEnrollment> getListSiteEnrollment() {
-		return listSiteEnrollment;
+	public SearchList<SiteEnrollment> getListSiteEnrollment_() {
+		return listSiteEnrollment_;
 	}
 
-	public void setListSiteEnrollment(SearchList<SiteEnrollment> listSiteEnrollment) {
-		this.listSiteEnrollment = listSiteEnrollment;
-		this.listSiteEnrollmentWrap.alreadyInitialized = true;
+	public void setListSiteEnrollment_(SearchList<SiteEnrollment> listSiteEnrollment_) {
+		this.listSiteEnrollment_ = listSiteEnrollment_;
+		this.listSiteEnrollment_Wrap.alreadyInitialized = true;
 	}
-	public static SearchList<SiteEnrollment> staticSetListSiteEnrollment(SiteRequestEnUS siteRequest_, String o) {
+	public static SearchList<SiteEnrollment> staticSetListSiteEnrollment_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteEnrollmentGenPage listSiteEnrollmentInit() {
-		if(!listSiteEnrollmentWrap.alreadyInitialized) {
-			_listSiteEnrollment(listSiteEnrollmentWrap);
-			if(listSiteEnrollment == null)
-				setListSiteEnrollment(listSiteEnrollmentWrap.o);
-			listSiteEnrollmentWrap.o(null);
+	protected SiteEnrollmentGenPage listSiteEnrollment_Init() {
+		if(!listSiteEnrollment_Wrap.alreadyInitialized) {
+			_listSiteEnrollment_(listSiteEnrollment_Wrap);
+			if(listSiteEnrollment_ == null)
+				setListSiteEnrollment_(listSiteEnrollment_Wrap.o);
+			listSiteEnrollment_Wrap.o(null);
 		}
-		if(listSiteEnrollment != null)
-			listSiteEnrollment.initDeepForClass(null);
-		listSiteEnrollmentWrap.alreadyInitialized(true);
+		listSiteEnrollment_Wrap.alreadyInitialized(true);
 		return (SiteEnrollmentGenPage)this;
 	}
 
@@ -136,6 +178,56 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
+	///////////////////
+	// promiseBefore //
+	///////////////////
+
+	/**	 The entity promiseBefore
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected Void promiseBefore;
+	@JsonIgnore
+	public Wrap<Void> promiseBeforeWrap = new Wrap<Void>().var("promiseBefore").o(promiseBefore);
+
+	/**	<br/> The entity promiseBefore
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollmentGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:promiseBefore">Find the entity promiseBefore in Solr</a>
+	 * <br/>
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _promiseBefore(Promise<Void> promise);
+
+	public Void getPromiseBefore() {
+		return promiseBefore;
+	}
+
+	public void setPromiseBefore(Void promiseBefore) {
+		this.promiseBefore = promiseBefore;
+		this.promiseBeforeWrap.alreadyInitialized = true;
+	}
+	public static Void staticSetPromiseBefore(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected Future<Void> promiseBeforePromise() {
+		Promise<Void> promise = Promise.promise();
+		if(!promiseBeforeWrap.alreadyInitialized) {
+			Promise<Void> promise2 = Promise.promise();
+			_promiseBefore(promise2);
+			promise2.future().onSuccess(o -> {
+				setPromiseBefore(o);
+				promiseBeforeWrap.alreadyInitialized(true);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
+		}
+		return promise.future();
+	}
+
 	////////////
 	// pageH1 //
 	////////////
@@ -161,7 +253,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return pageH1;
 	}
 	public void setPageH1(String o) {
-		this.pageH1 = SiteEnrollmentGenPage.staticSetPageH1(null, o);
+		this.pageH1 = SiteEnrollmentGenPage.staticSetPageH1(siteRequest_, o);
 		this.pageH1Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
@@ -178,16 +270,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPageH1(siteRequest_, SiteEnrollmentGenPage.staticSolrPageH1(siteRequest_, SiteEnrollmentGenPage.staticSetPageH1(siteRequest_, o)));
+	}
+
+	public String solrPageH1() {
+		return SiteEnrollmentGenPage.staticSolrPageH1(siteRequest_, pageH1);
+	}
+
+	public String strPageH1() {
+		return pageH1 == null ? "" : pageH1;
+	}
+
+	public String sqlPageH1() {
+		return pageH1;
+	}
+
+	public String jsonPageH1() {
+		return pageH1 == null ? "" : pageH1;
 	}
 
 	////////////
@@ -215,7 +323,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return pageH2;
 	}
 	public void setPageH2(String o) {
-		this.pageH2 = SiteEnrollmentGenPage.staticSetPageH2(null, o);
+		this.pageH2 = SiteEnrollmentGenPage.staticSetPageH2(siteRequest_, o);
 		this.pageH2Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH2(SiteRequestEnUS siteRequest_, String o) {
@@ -232,16 +340,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageH2(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageH2(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageH2(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageH2(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPageH2(siteRequest_, SiteEnrollmentGenPage.staticSolrPageH2(siteRequest_, SiteEnrollmentGenPage.staticSetPageH2(siteRequest_, o)));
+	}
+
+	public String solrPageH2() {
+		return SiteEnrollmentGenPage.staticSolrPageH2(siteRequest_, pageH2);
+	}
+
+	public String strPageH2() {
+		return pageH2 == null ? "" : pageH2;
+	}
+
+	public String sqlPageH2() {
+		return pageH2;
+	}
+
+	public String jsonPageH2() {
+		return pageH2 == null ? "" : pageH2;
 	}
 
 	////////////
@@ -269,7 +393,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return pageH3;
 	}
 	public void setPageH3(String o) {
-		this.pageH3 = SiteEnrollmentGenPage.staticSetPageH3(null, o);
+		this.pageH3 = SiteEnrollmentGenPage.staticSetPageH3(siteRequest_, o);
 		this.pageH3Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH3(SiteRequestEnUS siteRequest_, String o) {
@@ -286,16 +410,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageH3(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageH3(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageH3(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageH3(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPageH3(siteRequest_, SiteEnrollmentGenPage.staticSolrPageH3(siteRequest_, SiteEnrollmentGenPage.staticSetPageH3(siteRequest_, o)));
+	}
+
+	public String solrPageH3() {
+		return SiteEnrollmentGenPage.staticSolrPageH3(siteRequest_, pageH3);
+	}
+
+	public String strPageH3() {
+		return pageH3 == null ? "" : pageH3;
+	}
+
+	public String sqlPageH3() {
+		return pageH3;
+	}
+
+	public String jsonPageH3() {
+		return pageH3 == null ? "" : pageH3;
 	}
 
 	///////////////
@@ -323,7 +463,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return pageTitle;
 	}
 	public void setPageTitle(String o) {
-		this.pageTitle = SiteEnrollmentGenPage.staticSetPageTitle(null, o);
+		this.pageTitle = SiteEnrollmentGenPage.staticSetPageTitle(siteRequest_, o);
 		this.pageTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageTitle(SiteRequestEnUS siteRequest_, String o) {
@@ -340,16 +480,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrPageTitle(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageTitle(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageTitle(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPageTitle(siteRequest_, SiteEnrollmentGenPage.staticSolrPageTitle(siteRequest_, SiteEnrollmentGenPage.staticSetPageTitle(siteRequest_, o)));
+	}
+
+	public String solrPageTitle() {
+		return SiteEnrollmentGenPage.staticSolrPageTitle(siteRequest_, pageTitle);
+	}
+
+	public String strPageTitle() {
+		return pageTitle == null ? "" : pageTitle;
+	}
+
+	public String sqlPageTitle() {
+		return pageTitle;
+	}
+
+	public String jsonPageTitle() {
+		return pageTitle == null ? "" : pageTitle;
 	}
 
 	/////////////
@@ -377,7 +533,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return pageUri;
 	}
 	public void setPageUri(String o) {
-		this.pageUri = SiteEnrollmentGenPage.staticSetPageUri(null, o);
+		this.pageUri = SiteEnrollmentGenPage.staticSetPageUri(siteRequest_, o);
 		this.pageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUri(SiteRequestEnUS siteRequest_, String o) {
@@ -394,16 +550,82 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrPageUri(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageUri(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageUri(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPageUri(siteRequest_, SiteEnrollmentGenPage.staticSolrPageUri(siteRequest_, SiteEnrollmentGenPage.staticSetPageUri(siteRequest_, o)));
+	}
+
+	public String solrPageUri() {
+		return SiteEnrollmentGenPage.staticSolrPageUri(siteRequest_, pageUri);
+	}
+
+	public String strPageUri() {
+		return pageUri == null ? "" : pageUri;
+	}
+
+	public String sqlPageUri() {
+		return pageUri;
+	}
+
+	public String jsonPageUri() {
+		return pageUri == null ? "" : pageUri;
+	}
+
+	//////////////////
+	// promiseAfter //
+	//////////////////
+
+	/**	 The entity promiseAfter
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected Void promiseAfter;
+	@JsonIgnore
+	public Wrap<Void> promiseAfterWrap = new Wrap<Void>().var("promiseAfter").o(promiseAfter);
+
+	/**	<br/> The entity promiseAfter
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollmentGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:promiseAfter">Find the entity promiseAfter in Solr</a>
+	 * <br/>
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _promiseAfter(Promise<Void> promise);
+
+	public Void getPromiseAfter() {
+		return promiseAfter;
+	}
+
+	public void setPromiseAfter(Void promiseAfter) {
+		this.promiseAfter = promiseAfter;
+		this.promiseAfterWrap.alreadyInitialized = true;
+	}
+	public static Void staticSetPromiseAfter(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected Future<Void> promiseAfterPromise() {
+		Promise<Void> promise = Promise.promise();
+		if(!promiseAfterWrap.alreadyInitialized) {
+			Promise<Void> promise2 = Promise.promise();
+			_promiseAfter(promise2);
+			promise2.future().onSuccess(o -> {
+				setPromiseAfter(o);
+				promiseAfterWrap.alreadyInitialized(true);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
+		}
+		return promise.future();
 	}
 
 	//////////////////
@@ -431,7 +653,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return pageImageUri;
 	}
 	public void setPageImageUri(String o) {
-		this.pageImageUri = SiteEnrollmentGenPage.staticSetPageImageUri(null, o);
+		this.pageImageUri = SiteEnrollmentGenPage.staticSetPageImageUri(siteRequest_, o);
 		this.pageImageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageImageUri(SiteRequestEnUS siteRequest_, String o) {
@@ -448,16 +670,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrPageImageUri(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqPageImageUri(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPageImageUri(siteRequest_, SiteEnrollmentGenPage.staticSolrPageImageUri(siteRequest_, SiteEnrollmentGenPage.staticSetPageImageUri(siteRequest_, o)));
+	}
+
+	public String solrPageImageUri() {
+		return SiteEnrollmentGenPage.staticSolrPageImageUri(siteRequest_, pageImageUri);
+	}
+
+	public String strPageImageUri() {
+		return pageImageUri == null ? "" : pageImageUri;
+	}
+
+	public String sqlPageImageUri() {
+		return pageImageUri;
+	}
+
+	public String jsonPageImageUri() {
+		return pageImageUri == null ? "" : pageImageUri;
 	}
 
 	//////////////////////
@@ -485,7 +723,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return contextIconGroup;
 	}
 	public void setContextIconGroup(String o) {
-		this.contextIconGroup = SiteEnrollmentGenPage.staticSetContextIconGroup(null, o);
+		this.contextIconGroup = SiteEnrollmentGenPage.staticSetContextIconGroup(siteRequest_, o);
 		this.contextIconGroupWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
@@ -502,16 +740,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrContextIconGroup(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrContextIconGroup(siteRequest_, SiteEnrollmentGenPage.staticSolrContextIconGroup(siteRequest_, SiteEnrollmentGenPage.staticSetContextIconGroup(siteRequest_, o)));
+	}
+
+	public String solrContextIconGroup() {
+		return SiteEnrollmentGenPage.staticSolrContextIconGroup(siteRequest_, contextIconGroup);
+	}
+
+	public String strContextIconGroup() {
+		return contextIconGroup == null ? "" : contextIconGroup;
+	}
+
+	public String sqlContextIconGroup() {
+		return contextIconGroup;
+	}
+
+	public String jsonContextIconGroup() {
+		return contextIconGroup == null ? "" : contextIconGroup;
 	}
 
 	/////////////////////
@@ -539,7 +793,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return contextIconName;
 	}
 	public void setContextIconName(String o) {
-		this.contextIconName = SiteEnrollmentGenPage.staticSetContextIconName(null, o);
+		this.contextIconName = SiteEnrollmentGenPage.staticSetContextIconName(siteRequest_, o);
 		this.contextIconNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconName(SiteRequestEnUS siteRequest_, String o) {
@@ -556,16 +810,32 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return (SiteEnrollmentGenPage)this;
 	}
 
-	public static Object staticSolrContextIconName(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrContextIconName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrContextIconName(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrContextIconName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqContextIconName(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrContextIconName(siteRequest_, SiteEnrollmentGenPage.staticSolrContextIconName(siteRequest_, SiteEnrollmentGenPage.staticSetContextIconName(siteRequest_, o)));
+	}
+
+	public String solrContextIconName() {
+		return SiteEnrollmentGenPage.staticSolrContextIconName(siteRequest_, contextIconName);
+	}
+
+	public String strContextIconName() {
+		return contextIconName == null ? "" : contextIconName;
+	}
+
+	public String sqlContextIconName() {
+		return contextIconName;
+	}
+
+	public String jsonContextIconName() {
+		return contextIconName == null ? "" : contextIconName;
 	}
 
 	//////////////
@@ -574,33 +844,101 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 
 	protected boolean alreadyInitializedSiteEnrollmentGenPage = false;
 
-	public SiteEnrollmentGenPage initDeepSiteEnrollmentGenPage(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSiteEnrollmentGenPage(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSiteEnrollmentGenPage) {
 			alreadyInitializedSiteEnrollmentGenPage = true;
-			initDeepSiteEnrollmentGenPage();
+			return promiseDeepSiteEnrollmentGenPage();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SiteEnrollmentGenPage)this;
 	}
 
-	public void initDeepSiteEnrollmentGenPage() {
-		initSiteEnrollmentGenPage();
+	public Future<Void> promiseDeepSiteEnrollmentGenPage() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSiteEnrollmentGenPage(promise2);
+		promise2.future().onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSiteEnrollmentGenPage() {
-				listSiteEnrollmentInit();
+	public Future<Void> promiseSiteEnrollmentGenPage(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				siteRequest_Init();
+				listSiteEnrollment_Init();
 				siteEnrollment_Init();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			promiseBeforePromise().onSuccess(promiseBefore -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
 				pageH1Init();
 				pageH2Init();
 				pageH3Init();
 				pageTitleInit();
 				pageUriInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			promiseAfterPromise().onSuccess(promiseAfter -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
 				pageImageUriInit();
 				contextIconGroupInit();
 				contextIconNameInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSiteEnrollmentGenPage(siteRequest_);
+	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSiteEnrollmentGenPage(siteRequest_);
+	}
+
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestSiteEnrollmentGenPage(SiteRequestEnUS siteRequest_) {
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestSiteEnrollmentGenPage(siteRequest_);
 	}
 
 	/////////////
@@ -627,10 +965,14 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 	public Object obtainSiteEnrollmentGenPage(String var) {
 		SiteEnrollmentGenPage oSiteEnrollmentGenPage = (SiteEnrollmentGenPage)this;
 		switch(var) {
-			case "listSiteEnrollment":
-				return oSiteEnrollmentGenPage.listSiteEnrollment;
+			case "siteRequest_":
+				return oSiteEnrollmentGenPage.siteRequest_;
+			case "listSiteEnrollment_":
+				return oSiteEnrollmentGenPage.listSiteEnrollment_;
 			case "siteEnrollment_":
 				return oSiteEnrollmentGenPage.siteEnrollment_;
+			case "promiseBefore":
+				return oSiteEnrollmentGenPage.promiseBefore;
 			case "pageH1":
 				return oSiteEnrollmentGenPage.pageH1;
 			case "pageH2":
@@ -641,6 +983,8 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 				return oSiteEnrollmentGenPage.pageTitle;
 			case "pageUri":
 				return oSiteEnrollmentGenPage.pageUri;
+			case "promiseAfter":
+				return oSiteEnrollmentGenPage.promiseAfter;
 			case "pageImageUri":
 				return oSiteEnrollmentGenPage.pageImageUri;
 			case "contextIconGroup":
@@ -845,6 +1189,18 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		}
 	}
 
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestSiteEnrollmentGenPage() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof SiteEnrollmentGenPage) {
+			SiteEnrollmentGenPage original = (SiteEnrollmentGenPage)o;
+		}
+	}
+
 	//////////////
 	// hashCode //
 	//////////////
@@ -877,13 +1233,16 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends Object {
 		return sb.toString();
 	}
 
-	public static final String VAR_listSiteEnrollment = "listSiteEnrollment";
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_listSiteEnrollment_ = "listSiteEnrollment_";
 	public static final String VAR_siteEnrollment_ = "siteEnrollment_";
+	public static final String VAR_promiseBefore = "promiseBefore";
 	public static final String VAR_pageH1 = "pageH1";
 	public static final String VAR_pageH2 = "pageH2";
 	public static final String VAR_pageH3 = "pageH3";
 	public static final String VAR_pageTitle = "pageTitle";
 	public static final String VAR_pageUri = "pageUri";
+	public static final String VAR_promiseAfter = "promiseAfter";
 	public static final String VAR_pageImageUri = "pageImageUri";
 	public static final String VAR_contextIconGroup = "contextIconGroup";
 	public static final String VAR_contextIconName = "contextIconName";

@@ -61,7 +61,14 @@ CREATE TABLE SiteUser(
 	, userFullName text
 	);
 CREATE TABLE SitePet(
-	petName text
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	, petName text
 	, petFoodAmount text
 	, petFood text
 	, petSick boolean
@@ -71,6 +78,13 @@ CREATE TABLE SitePet(
 	, petAmount text
 	);
 CREATE TABLE SiteEnrollment(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
 	);
 CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
 	pk bigserial primary key

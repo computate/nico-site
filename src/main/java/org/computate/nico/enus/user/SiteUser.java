@@ -1,4 +1,4 @@
-package org.computate.nico.enus.user;  
+package org.computate.nico.enus.user;    
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import org.computate.nico.enus.wrap.Wrap;
 /**   
  * Model: true
  * Api: true
+ * Page: true
  * Indexed: true
  * Map.Integer.sqlSort: 3
  * 
@@ -18,6 +19,11 @@ import org.computate.nico.enus.wrap.Wrap;
  * ApiMethod.enUS: Search
  * ApiMethod: PATCH
  * ApiMethod: POST
+ * 
+ * ApiMethod.enUS: SearchPage
+ * PageSearchPage.enUS: SiteUserPage
+ * PageSuperSearchPage.enUS: ClusterPage
+ * ApiUriSearchPage.enUS: /user
  * 
  * Keyword: classSimpleNameSiteUser
  * Role.enUS: SiteAdmin

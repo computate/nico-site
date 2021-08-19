@@ -1,4 +1,4 @@
-package org.computate.nico.enus.enrollment;
+package org.computate.nico.enus.enrollment;                 
 
 import java.util.List;
 
@@ -34,7 +34,6 @@ import io.vertx.core.Promise;
  * 
  * ApiMethod.enUS: SearchPage
  * PageSearchPage.enUS: EnrollmentPage
- * PageSuperSearchPage.enUS: ClusterPage
  * ApiUriSearchPage.enUS: /enrollment
  * 
  * AName.enUS: an enrollment
@@ -48,7 +47,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/    
+ **/          
 public class SiteEnrollment extends SiteEnrollmentGen<BaseModel> {
 
 	/**

@@ -18,6 +18,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.computate.nico.enus.config.ConfigKeys;
+import org.computate.nico.enus.enrollment.SiteEnrollmentEnUSGenApiService;
 import org.computate.nico.enus.user.SiteUserEnUSGenApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +104,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	OAuth2Auth oauth2AuthenticationProvider;
 
 	AuthorizationProvider authorizationProvider;
+
+	HandlebarsTemplateEngine templateEngine;
 
 	/**	
 	 *	The main method for the Vert.x application that runs the Vert.x Runner class
@@ -628,7 +631,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	private Future<Void> configureApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			templateEngine = HandlebarsTemplateEngine.create(vertx);
+
+			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine, vertx);
+			SiteEnrollmentEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();
@@ -649,9 +655,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			String staticPath = config().getString(ConfigKeys.STATIC_PATH);
 			String staticBaseUrl = config().getString(ConfigKeys.STATIC_BASE_URL);
 			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
-			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
-			Handlebars handlebars = (Handlebars)engine.unwrap();
-			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
+			Handlebars handlebars = (Handlebars)templateEngine.unwrap();
+			TemplateHandler templateHandler = TemplateHandler.create(templateEngine, staticPath + "/template", "text/html");
 
 			handlebars.registerHelpers(ConditionalHelpers.class);
 			handlebars.registerHelpers(StringHelpers.class);

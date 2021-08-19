@@ -1,43 +1,48 @@
 package org.computate.nico.enus.user;
 
+import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
+import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.logging.Logger;
+import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
-import org.computate.nico.enus.cluster.Cluster;
+import org.computate.nico.enus.java.LocalDateSerializer;
+import org.slf4j.Logger;
 import java.math.MathContext;
+import io.vertx.core.Promise;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
+import io.vertx.core.Future;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.computate.nico.enus.user.SiteUserGenPage;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteUserPage.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SiteUserPage.class);
 
 	//////////////
 	// initDeep //
@@ -45,25 +50,51 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 
 	protected boolean alreadyInitializedSiteUserPage = false;
 
-	public SiteUserPage initDeepSiteUserPage(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSiteUserPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSiteUserPage) {
 			alreadyInitializedSiteUserPage = true;
-			initDeepSiteUserPage();
+			return promiseDeepSiteUserPage();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SiteUserPage)this;
 	}
 
-	public void initDeepSiteUserPage() {
-		initSiteUserPage();
-		super.initDeepSiteUserGenPage(siteRequest_);
+	public Future<Void> promiseDeepSiteUserPage() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSiteUserPage(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepSiteUserGenPage(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSiteUserPage() {
+	public Future<Void> promiseSiteUserPage(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSiteUserPage(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSiteUserPage(siteRequest_);
 	}
 
 	/////////////////
@@ -88,9 +119,9 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainSiteUserPage(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -117,9 +148,9 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeSiteUserPage(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -199,9 +230,9 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSiteUserPage(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -221,9 +252,9 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSiteUserPage(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -234,90 +265,6 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 			default:
 				return super.defineSiteUserGenPage(var, val);
 		}
-	}
-
-	/////////////////
-	// htmlScripts //
-	/////////////////
-
-	@Override public void htmlScripts() {
-		htmlScriptsSiteUserPage();
-		super.htmlScripts();
-	}
-
-	public void htmlScriptsSiteUserPage() {
-	}
-
-	////////////////
-	// htmlScript //
-	////////////////
-
-	@Override public void htmlScript() {
-		htmlScriptSiteUserPage();
-		super.htmlScript();
-	}
-
-	public void htmlScriptSiteUserPage() {
-	}
-
-	//////////////
-	// htmlBody //
-	//////////////
-
-	@Override public void htmlBody() {
-		htmlBodySiteUserPage();
-		super.htmlBody();
-	}
-
-	public void htmlBodySiteUserPage() {
-	}
-
-	//////////
-	// html //
-	//////////
-
-	@Override public void html() {
-		htmlSiteUserPage();
-		super.html();
-	}
-
-	public void htmlSiteUserPage() {
-	}
-
-	//////////////
-	// htmlMeta //
-	//////////////
-
-	@Override public void htmlMeta() {
-		htmlMetaSiteUserPage();
-		super.htmlMeta();
-	}
-
-	public void htmlMetaSiteUserPage() {
-	}
-
-	////////////////
-	// htmlStyles //
-	////////////////
-
-	@Override public void htmlStyles() {
-		htmlStylesSiteUserPage();
-		super.htmlStyles();
-	}
-
-	public void htmlStylesSiteUserPage() {
-	}
-
-	///////////////
-	// htmlStyle //
-	///////////////
-
-	@Override public void htmlStyle() {
-		htmlStyleSiteUserPage();
-		super.htmlStyle();
-	}
-
-	public void htmlStyleSiteUserPage() {
 	}
 
 	//////////////////
@@ -365,4 +312,5 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 		sb.append(" }");
 		return sb.toString();
 	}
+
 }

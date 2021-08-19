@@ -1,0 +1,4089 @@
+openapi: 3.0.0
+info:
+  title: ""
+  version: 3.0.0
+paths:
+
+  /callback:
+    get:
+      operationId: callback
+      x-vertx-event-bus: nico-site-enUS-callback
+      description: >+
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+
+  /logout:
+    get:
+      operationId: logout
+      x-vertx-event-bus: nico-site-enUS-logout
+      description: >+
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+
+  /api/admin/enrollment:
+    get:
+      operationId: adminsearchSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/AdminSearchSiteEnrollmentResponse'
+  /api/enrollment:
+    post:
+      operationId: postSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POSTSiteEnrollmentRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/POSTSiteEnrollmentResponse'
+    patch:
+      operationId: patchSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PATCHSiteEnrollmentRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PATCHSiteEnrollmentResponse'
+    get:
+      operationId: searchSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchSiteEnrollmentResponse'
+  /api/enrollment/copy:
+    put:
+      operationId: putcopySiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTCopySiteEnrollmentRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTCopySiteEnrollmentResponse'
+  /api/enrollment/import:
+    put:
+      operationId: putimportSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTImportSiteEnrollmentRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTImportSiteEnrollmentResponse'
+  /api/enrollment/merge:
+    put:
+      operationId: putmergeSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTMergeSiteEnrollmentRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTMergeSiteEnrollmentResponse'
+  /api/enrollment/{id}:
+    get:
+      operationId: getSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/GETSiteEnrollmentResponse'
+  /enrollment:
+    get:
+      operationId: searchpageSiteEnrollment
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageSiteEnrollmentResponse'
+  /enrollment/{id}:
+    get:
+      operationId: searchpageSiteEnrollmentId
+      x-vertx-event-bus: nico-site-enUS-SiteEnrollment
+      description: >+
+      summary: >+
+      tags:
+        - State
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageSiteEnrollmentResponse'
+  /api/admin/pet:
+    get:
+      operationId: adminsearchSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/AdminSearchSitePetResponse'
+  /api/pet:
+    post:
+      operationId: postSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POSTSitePetRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/POSTSitePetResponse'
+    patch:
+      operationId: patchSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PATCHSitePetRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PATCHSitePetResponse'
+    get:
+      operationId: searchSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchSitePetResponse'
+  /api/pet/copy:
+    put:
+      operationId: putcopySitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTCopySitePetRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTCopySitePetResponse'
+  /api/pet/import:
+    put:
+      operationId: putimportSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTImportSitePetRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTImportSitePetResponse'
+  /api/pet/merge:
+    put:
+      operationId: putmergeSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTMergeSitePetRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTMergeSitePetResponse'
+  /api/pet/{id}:
+    get:
+      operationId: getSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/GETSitePetResponse'
+  /pet:
+    get:
+      operationId: searchpageSitePet
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageSitePetResponse'
+  /pet/{id}:
+    get:
+      operationId: searchpageSitePetId
+      x-vertx-event-bus: nico-site-enUS-SitePet
+      description: >+
+      summary: >+
+      tags:
+        - Pet
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageSitePetResponse'
+  /api/user:
+    get:
+      operationId: searchSiteUser
+      x-vertx-event-bus: nico-site-enUS-SiteUser
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - User
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchSiteUserResponse'
+    patch:
+      operationId: patchSiteUser
+      x-vertx-event-bus: nico-site-enUS-SiteUser
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - User
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PATCHSiteUserRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PATCHSiteUserResponse'
+    post:
+      operationId: postSiteUser
+      x-vertx-event-bus: nico-site-enUS-SiteUser
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - User
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POSTSiteUserRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/POSTSiteUserResponse'
+  /user:
+    get:
+      operationId: searchpageSiteUser
+      x-vertx-event-bus: nico-site-enUS-SiteUser
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - User
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageSiteUserResponse'
+  /user/{id}:
+    get:
+      operationId: searchpageSiteUserId
+      x-vertx-event-bus: nico-site-enUS-SiteUser
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - User
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageSiteUserResponse'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://sso.computate.org/auth/realms/COMPUTATE.ORG/.well-known/openid-configuration
+  requestBodies:
+    AdminSearchSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/AdminSearchSiteEnrollmentResponse'
+    POSTSiteEnrollmentRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/POSTSiteEnrollmentRequest'
+    POSTSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/POSTSiteEnrollmentResponse'
+    PATCHSiteEnrollmentRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PATCHSiteEnrollmentRequest'
+    PATCHSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PATCHSiteEnrollmentResponse'
+    SearchSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchSiteEnrollmentResponse'
+    PUTCopySiteEnrollmentRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTCopySiteEnrollmentRequest'
+    PUTCopySiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTCopySiteEnrollmentResponse'
+    PUTImportSiteEnrollmentRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTImportSiteEnrollmentRequest'
+    PUTImportSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTImportSiteEnrollmentResponse'
+    PUTMergeSiteEnrollmentRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTMergeSiteEnrollmentRequest'
+    PUTMergeSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTMergeSiteEnrollmentResponse'
+    GETSiteEnrollmentResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/GETSiteEnrollmentResponse'
+    SearchPageSiteEnrollmentResponse:
+      content:
+        text/html; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchPageSiteEnrollmentResponse'
+    AdminSearchSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/AdminSearchSitePetResponse'
+    POSTSitePetRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/POSTSitePetRequest'
+    POSTSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/POSTSitePetResponse'
+    PATCHSitePetRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PATCHSitePetRequest'
+    PATCHSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PATCHSitePetResponse'
+    SearchSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchSitePetResponse'
+    PUTCopySitePetRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTCopySitePetRequest'
+    PUTCopySitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTCopySitePetResponse'
+    PUTImportSitePetRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTImportSitePetRequest'
+    PUTImportSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTImportSitePetResponse'
+    PUTMergeSitePetRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTMergeSitePetRequest'
+    PUTMergeSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTMergeSitePetResponse'
+    GETSitePetResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/GETSitePetResponse'
+    SearchPageSitePetResponse:
+      content:
+        text/html; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchPageSitePetResponse'
+    SearchSiteUserResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchSiteUserResponse'
+    PATCHSiteUserRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PATCHSiteUserRequest'
+    PATCHSiteUserResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PATCHSiteUserResponse'
+    POSTSiteUserRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/POSTSiteUserRequest'
+    POSTSiteUserResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/POSTSiteUserResponse'
+    SearchPageSiteUserResponse:
+      content:
+        text/html; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchPageSiteUserResponse'
+  schemas:
+    AdminSearchSiteEnrollmentResponse:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              enrollmentKey:
+                type: string
+              userKeys:
+                type: array
+                items:
+                  type: string
+              petKeys:
+                type: array
+                items:
+                  type: string
+    POSTSiteEnrollmentRequest:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    POSTSiteEnrollmentResponse:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    PATCHSiteEnrollmentRequest:
+      allOf:
+        - type: object
+          properties:
+            setEnrollmentKey:
+              type: string
+              nullable: true
+            removeEnrollmentKey:
+              type: string
+            removeAllEnrollmentKey:
+              type: string
+            setUserKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeUserKeys:
+              type: string
+            removeAllUserKeys:
+              type: array
+              items:
+                type: string
+            addUserKeys:
+              type: string
+            addAllUserKeys:
+              type: array
+              items:
+                type: string
+            setPetKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePetKeys:
+              type: string
+            removeAllPetKeys:
+              type: array
+              items:
+                type: string
+            addPetKeys:
+              type: string
+            addAllPetKeys:
+              type: array
+              items:
+                type: string
+    PATCHSiteEnrollmentResponse:
+      allOf:
+        - type: object
+          properties:
+            setEnrollmentKey:
+              type: string
+              nullable: true
+            removeEnrollmentKey:
+              type: string
+            removeAllEnrollmentKey:
+              type: string
+            setUserKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeUserKeys:
+              type: string
+            removeAllUserKeys:
+              type: array
+              items:
+                type: string
+            addUserKeys:
+              type: string
+            addAllUserKeys:
+              type: array
+              items:
+                type: string
+            setPetKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePetKeys:
+              type: string
+            removeAllPetKeys:
+              type: array
+              items:
+                type: string
+            addPetKeys:
+              type: string
+            addAllPetKeys:
+              type: array
+              items:
+                type: string
+    SearchSiteEnrollmentResponse:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              enrollmentKey:
+                type: string
+              userKeys:
+                type: array
+                items:
+                  type: string
+              petKeys:
+                type: array
+                items:
+                  type: string
+    PUTCopySiteEnrollmentRequest:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    PUTCopySiteEnrollmentResponse:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    PUTImportSiteEnrollmentRequest:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    PUTImportSiteEnrollmentResponse:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    PUTMergeSiteEnrollmentRequest:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    PUTMergeSiteEnrollmentResponse:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    GETSiteEnrollmentResponse:
+      allOf:
+        - type: object
+          properties:
+            enrollmentKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            petKeys:
+              type: array
+              items:
+                type: string
+    SearchPageSiteEnrollmentResponse:
+      allOf:
+        - type: string
+    AdminSearchSitePetResponse:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              petKey:
+                type: string
+              userKeys:
+                type: array
+                items:
+                  type: string
+              enrollmentKeys:
+                type: array
+                items:
+                  type: string
+              petName:
+                type: string
+              petFoodAmount:
+                type: string
+              petFood:
+                type: string
+              petSick:
+                type: boolean
+              petMedNote:
+                type: string
+              petTrouble:
+                type: string
+              update:
+                type: boolean
+              petAmount:
+                type: string
+    POSTSitePetRequest:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    POSTSitePetResponse:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    PATCHSitePetRequest:
+      allOf:
+        - type: object
+          properties:
+            setPetKey:
+              type: string
+              nullable: true
+            removePetKey:
+              type: string
+            removeAllPetKey:
+              type: string
+            setUserKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeUserKeys:
+              type: string
+            removeAllUserKeys:
+              type: array
+              items:
+                type: string
+            addUserKeys:
+              type: string
+            addAllUserKeys:
+              type: array
+              items:
+                type: string
+            setEnrollmentKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeEnrollmentKeys:
+              type: string
+            removeAllEnrollmentKeys:
+              type: array
+              items:
+                type: string
+            addEnrollmentKeys:
+              type: string
+            addAllEnrollmentKeys:
+              type: array
+              items:
+                type: string
+            setPetName:
+              type: string
+              nullable: true
+            removePetName:
+              type: string
+            removeAllPetName:
+              type: string
+            setPetFoodAmount:
+              type: string
+              nullable: true
+            removePetFoodAmount:
+              type: string
+            removeAllPetFoodAmount:
+              type: string
+            setPetFood:
+              type: string
+              nullable: true
+            removePetFood:
+              type: string
+            removeAllPetFood:
+              type: string
+            setPetSick:
+              type: boolean
+              nullable: true
+            removePetSick:
+              type: boolean
+            removeAllPetSick:
+              type: boolean
+            setPetMedNote:
+              type: string
+              nullable: true
+            removePetMedNote:
+              type: string
+            removeAllPetMedNote:
+              type: string
+            setPetTrouble:
+              type: string
+              nullable: true
+            removePetTrouble:
+              type: string
+            removeAllPetTrouble:
+              type: string
+            setUpdate:
+              type: boolean
+              nullable: true
+            removeUpdate:
+              type: boolean
+            removeAllUpdate:
+              type: boolean
+            setPetAmount:
+              type: string
+              nullable: true
+            removePetAmount:
+              type: string
+            removeAllPetAmount:
+              type: string
+    PATCHSitePetResponse:
+      allOf:
+        - type: object
+          properties:
+            setPetKey:
+              type: string
+              nullable: true
+            removePetKey:
+              type: string
+            removeAllPetKey:
+              type: string
+            setUserKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeUserKeys:
+              type: string
+            removeAllUserKeys:
+              type: array
+              items:
+                type: string
+            addUserKeys:
+              type: string
+            addAllUserKeys:
+              type: array
+              items:
+                type: string
+            setEnrollmentKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeEnrollmentKeys:
+              type: string
+            removeAllEnrollmentKeys:
+              type: array
+              items:
+                type: string
+            addEnrollmentKeys:
+              type: string
+            addAllEnrollmentKeys:
+              type: array
+              items:
+                type: string
+            setPetName:
+              type: string
+              nullable: true
+            removePetName:
+              type: string
+            removeAllPetName:
+              type: string
+            setPetFoodAmount:
+              type: string
+              nullable: true
+            removePetFoodAmount:
+              type: string
+            removeAllPetFoodAmount:
+              type: string
+            setPetFood:
+              type: string
+              nullable: true
+            removePetFood:
+              type: string
+            removeAllPetFood:
+              type: string
+            setPetSick:
+              type: boolean
+              nullable: true
+            removePetSick:
+              type: boolean
+            removeAllPetSick:
+              type: boolean
+            setPetMedNote:
+              type: string
+              nullable: true
+            removePetMedNote:
+              type: string
+            removeAllPetMedNote:
+              type: string
+            setPetTrouble:
+              type: string
+              nullable: true
+            removePetTrouble:
+              type: string
+            removeAllPetTrouble:
+              type: string
+            setUpdate:
+              type: boolean
+              nullable: true
+            removeUpdate:
+              type: boolean
+            removeAllUpdate:
+              type: boolean
+            setPetAmount:
+              type: string
+              nullable: true
+            removePetAmount:
+              type: string
+            removeAllPetAmount:
+              type: string
+    SearchSitePetResponse:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              petKey:
+                type: string
+              userKeys:
+                type: array
+                items:
+                  type: string
+              enrollmentKeys:
+                type: array
+                items:
+                  type: string
+              petName:
+                type: string
+              petFoodAmount:
+                type: string
+              petFood:
+                type: string
+              petSick:
+                type: boolean
+              petMedNote:
+                type: string
+              petTrouble:
+                type: string
+              update:
+                type: boolean
+              petAmount:
+                type: string
+    PUTCopySitePetRequest:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    PUTCopySitePetResponse:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    PUTImportSitePetRequest:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    PUTImportSitePetResponse:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    PUTMergeSitePetRequest:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    PUTMergeSitePetResponse:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    GETSitePetResponse:
+      allOf:
+        - type: object
+          properties:
+            petKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            enrollmentKeys:
+              type: array
+              items:
+                type: string
+            petName:
+              type: string
+            petFoodAmount:
+              type: string
+            petFood:
+              type: string
+            petSick:
+              type: boolean
+            petMedNote:
+              type: string
+            petTrouble:
+              type: string
+            update:
+              type: boolean
+            petAmount:
+              type: string
+    SearchPageSitePetResponse:
+      allOf:
+        - type: string
+    SearchSiteUserResponse:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              userKey:
+                type: string
+              userKeys:
+                type: array
+                items:
+                  type: string
+              userId:
+                type: string
+              userName:
+                type: string
+              userEmail:
+                type: string
+              userFirstName:
+                type: string
+              userLastName:
+                type: string
+              userFullName:
+                type: string
+    PATCHSiteUserRequest:
+      allOf:
+        - type: object
+          properties:
+            setUserKey:
+              type: string
+              nullable: true
+            removeUserKey:
+              type: string
+            removeAllUserKey:
+              type: string
+            setUserKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeUserKeys:
+              type: string
+            removeAllUserKeys:
+              type: array
+              items:
+                type: string
+            addUserKeys:
+              type: string
+            addAllUserKeys:
+              type: array
+              items:
+                type: string
+            setUserId:
+              type: string
+              nullable: true
+            removeUserId:
+              type: string
+            removeAllUserId:
+              type: string
+            setUserName:
+              type: string
+              nullable: true
+            removeUserName:
+              type: string
+            removeAllUserName:
+              type: string
+            setUserEmail:
+              type: string
+              nullable: true
+            removeUserEmail:
+              type: string
+            removeAllUserEmail:
+              type: string
+            setUserFirstName:
+              type: string
+              nullable: true
+            removeUserFirstName:
+              type: string
+            removeAllUserFirstName:
+              type: string
+            setUserLastName:
+              type: string
+              nullable: true
+            removeUserLastName:
+              type: string
+            removeAllUserLastName:
+              type: string
+            setUserFullName:
+              type: string
+              nullable: true
+            removeUserFullName:
+              type: string
+            removeAllUserFullName:
+              type: string
+    PATCHSiteUserResponse:
+      allOf:
+        - type: object
+          properties:
+            setUserKey:
+              type: string
+              nullable: true
+            removeUserKey:
+              type: string
+            removeAllUserKey:
+              type: string
+            setUserKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeUserKeys:
+              type: string
+            removeAllUserKeys:
+              type: array
+              items:
+                type: string
+            addUserKeys:
+              type: string
+            addAllUserKeys:
+              type: array
+              items:
+                type: string
+            setUserId:
+              type: string
+              nullable: true
+            removeUserId:
+              type: string
+            removeAllUserId:
+              type: string
+            setUserName:
+              type: string
+              nullable: true
+            removeUserName:
+              type: string
+            removeAllUserName:
+              type: string
+            setUserEmail:
+              type: string
+              nullable: true
+            removeUserEmail:
+              type: string
+            removeAllUserEmail:
+              type: string
+            setUserFirstName:
+              type: string
+              nullable: true
+            removeUserFirstName:
+              type: string
+            removeAllUserFirstName:
+              type: string
+            setUserLastName:
+              type: string
+              nullable: true
+            removeUserLastName:
+              type: string
+            removeAllUserLastName:
+              type: string
+            setUserFullName:
+              type: string
+              nullable: true
+            removeUserFullName:
+              type: string
+            removeAllUserFullName:
+              type: string
+    POSTSiteUserRequest:
+      allOf:
+        - type: object
+          properties:
+            userKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            userId:
+              type: string
+            userName:
+              type: string
+            userEmail:
+              type: string
+            userFirstName:
+              type: string
+            userLastName:
+              type: string
+            userFullName:
+              type: string
+    POSTSiteUserResponse:
+      allOf:
+        - type: object
+          properties:
+            userKey:
+              type: string
+            userKeys:
+              type: array
+              items:
+                type: string
+            userId:
+              type: string
+            userName:
+              type: string
+            userEmail:
+              type: string
+            userFirstName:
+              type: string
+            userLastName:
+              type: string
+            userFullName:
+              type: string
+    SearchPageSiteUserResponse:
+      allOf:
+        - type: string

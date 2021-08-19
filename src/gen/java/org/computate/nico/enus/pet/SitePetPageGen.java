@@ -50,24 +50,63 @@ public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
 
 	protected boolean alreadyInitializedSitePetPage = false;
 
-	public SitePetPage initDeepSitePetPage(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSitePetPage(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSitePetPage) {
 			alreadyInitializedSitePetPage = true;
-			initDeepSitePetPage();
+			return promiseDeepSitePetPage();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SitePetPage)this;
 	}
 
-	public void initDeepSitePetPage() {
-		initSitePetPage();
-		super.initDeepSitePetGenPage(siteRequest_);
+	public Future<Void> promiseDeepSitePetPage() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSitePetPage(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepSitePetGenPage(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSitePetPage() {
+	public Future<Void> promiseSitePetPage(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSitePetPage(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSitePetPage(siteRequest_);
+	}
+
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestSitePetPage(SiteRequestEnUS siteRequest_) {
+			super.siteRequestSitePetGenPage(siteRequest_);
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestSitePetPage(siteRequest_);
 	}
 
 	/////////////
@@ -225,6 +264,19 @@ public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
 		switch(var.toLowerCase()) {
 			default:
 				return super.defineSitePetGenPage(var, val);
+		}
+	}
+
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestSitePetPage() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof SitePetPage) {
+			SitePetPage original = (SitePetPage)o;
+			super.apiRequestSitePetGenPage();
 		}
 	}
 

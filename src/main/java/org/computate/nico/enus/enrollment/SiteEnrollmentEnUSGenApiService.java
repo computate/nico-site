@@ -12,6 +12,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.ext.web.api.service.WebApiServiceGen;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
@@ -24,8 +25,8 @@ import io.vertx.ext.auth.authorization.AuthorizationProvider;
 @WebApiServiceGen
 @ProxyGen
 public interface SiteEnrollmentEnUSGenApiService {
-	static void registerService(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, Vertx vertx) {
-		new ServiceBinder(vertx).setAddress("nico-site-enUS-SiteEnrollment").register(SiteEnrollmentEnUSGenApiService.class, new SiteEnrollmentEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider));
+	static void registerService(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, HandlebarsTemplateEngine templateEngine, Vertx vertx) {
+		new ServiceBinder(vertx).setAddress("nico-site-enUS-SiteEnrollment").register(SiteEnrollmentEnUSGenApiService.class, new SiteEnrollmentEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine));
 	}
 
 	public void putimportSiteEnrollment(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);

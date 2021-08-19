@@ -17,6 +17,7 @@ import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
@@ -111,8 +112,8 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SitePetEnUSGenApiServiceImpl.class);
 
-	public SitePetEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SitePetEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, HandlebarsTemplateEngine templateEngine) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine);
 	}
 
 	// PUTImport //
@@ -190,7 +191,14 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit)
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("nico-site-enUS-SitePet", json, new DeliveryOptions().addHeader("action", "putimportSitePetFuture")).onSuccess(a -> {
@@ -328,6 +336,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		});
 	}
 
+
 	public Future<ServiceResponse> response200PUTImportSitePet(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -415,7 +424,14 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit)
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("nico-site-enUS-SitePet", json, new DeliveryOptions().addHeader("action", "putmergeSitePetFuture")).onSuccess(a -> {
@@ -553,6 +569,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		});
 	}
 
+
 	public Future<ServiceResponse> response200PUTMergeSitePet(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -589,18 +606,18 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							listPUTCopySitePet(apiRequest, listSitePet).onSuccess(e -> {
 								response200PUTCopySitePet(siteRequest).onSuccess(f -> {
 									LOG.debug(String.format("putcopySitePet succeeded. "));
-									blockingCodeHandler.complete();
+									eventHandler.handle(Future.succeededFuture(response));
 								}).onFailure(ex -> {
 									LOG.error(String.format("putcopySitePet failed. "), ex);
-									blockingCodeHandler.fail(ex);
+									error(siteRequest, eventHandler, ex);
 								});
 							}).onFailure(ex -> {
 								LOG.error(String.format("putcopySitePet failed. "), ex);
-								blockingCodeHandler.fail(ex);
+								error(siteRequest, eventHandler, ex);
 							});
 						}).onFailure(ex -> {
 							LOG.error(String.format("putcopySitePet failed. "), ex);
-							blockingCodeHandler.fail(ex);
+							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putcopySitePet failed. "), ex);
@@ -915,6 +932,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200PUTCopySitePet(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -951,7 +969,14 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit)
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("nico-site-enUS-SitePet", json, new DeliveryOptions().addHeader("action", "postSitePetFuture")).onSuccess(a -> {
@@ -1280,6 +1305,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200POSTSitePet(SitePet o) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1304,7 +1330,6 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
 					searchSitePetList(siteRequest, false, true, true, "/api/pet", "PATCH").onSuccess(listSitePet -> {
 						try {
 							List<String> roles2 = Arrays.asList("SiteAdmin");
@@ -1325,7 +1350,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 								siteRequest.setApiRequest_(apiRequest);
 								if(apiRequest.getNumFound() == 1L)
 									apiRequest.setOriginal(listSitePet.first());
-								apiRequest.setPk(listSitePet.first().getPk());
+								apiRequest.setPk(Optional.ofNullable(listSitePet.first()).map(o2 -> o2.getPk()).orElse(null));
 								eventBus.publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
 
 								listPATCHSitePet(apiRequest, listSitePet).onSuccess(e -> {
@@ -1431,7 +1456,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							}
 							if(apiRequest.getNumFound() == 1L)
 								apiRequest.setOriginal(o);
-							apiRequest.setPk(listSitePet.first().getPk());
+							apiRequest.setPk(Optional.ofNullable(listSitePet.first()).map(o2 -> o2.getPk()).orElse(null));
 							eventBus.publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
 							patchSitePetFuture(o, false).onSuccess(a -> {
 								eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -1754,6 +1779,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200PATCHSitePet(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1806,6 +1832,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 			}
 		});
 	}
+
 
 
 	public Future<ServiceResponse> response200GETSitePet(SearchList<SitePet> listSitePet) {
@@ -1863,6 +1890,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 			}
 		});
 	}
+
 
 
 	public Future<ServiceResponse> response200SearchSitePet(SearchList<SitePet> listSitePet) {
@@ -2054,6 +2082,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 			}
 		});
 	}
+
 
 
 	public Future<ServiceResponse> response200AdminSearchSitePet(SearchList<SitePet> listSitePet) {
@@ -2252,31 +2281,30 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 	}
 
 
-	public void searchpageSitePetPageInit(PetPage page, SearchList<SitePet> listSitePet) {
+	public void searchpageSitePetPageInit(SitePetPage page, SearchList<SitePet> listSitePet) {
+	}
+	public String templateSearchPageSitePet() {
+		return ConfigKeys.TEMPLATE_PATH + "/SitePetPage";
 	}
 	public Future<ServiceResponse> response200SearchPageSitePet(SearchList<SitePet> listSitePet) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSitePet.getSiteRequest_();
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(listSitePet.getSiteRequest_(), buffer);
-			PetPage page = new PetPage();
-			SolrDocument pageSolrDocument = new SolrDocument();
+			SitePetPage page = new SitePetPage();
 			MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
 			siteRequest.setRequestHeaders(requestHeaders);
 
-			pageSolrDocument.setField("pageUri_frFR_stored_string", "/pet");
-			page.setPageSolrDocument(pageSolrDocument);
-			page.setW(w);
 			if(listSitePet.size() == 1)
 				siteRequest.setRequestPk(listSitePet.get(0).getPk());
-			siteRequest.setW(w);
-			page.setListSitePet(listSitePet);
+			page.setListSitePet_(listSitePet);
 			page.setSiteRequest_(siteRequest);
-			searchpageSitePetPageInit(page, listSitePet);
-			page.promiseDeepPetPage(siteRequest).onSuccess(a -> {
-				page.html();
-				promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+			page.promiseDeepSitePetPage(siteRequest).onSuccess(a -> {
+				JsonObject json = JsonObject.mapFrom(page);
+				templateEngine.render(json, templateSearchPageSitePet()).onSuccess(buffer -> {
+					promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
 			}).onFailure(ex -> {
 				promise.fail(ex);
 			});
@@ -2376,22 +2404,17 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		try {
 			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").stream().filter(paramRequest -> "var".equals(paramRequest.getKey()) && paramRequest.getValue() != null).findFirst().ifPresent(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
-				String paramName = paramRequest.getKey();
 				Object paramValuesObject = paramRequest.getValue();
 				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 				try {
 					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								siteRequest.getRequestVars().put(entityVar, valueIndexed);
-								break;
-						}
+						entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+						valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+						siteRequest.getRequestVars().put(entityVar, valueIndexed);
 					}
 				} catch(Exception ex) {
 					LOG.error(String.format("searchSitePet failed. "), ex);
@@ -2659,7 +2682,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
-				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?softCommit=true&overwrite=true&wt=json");
+				Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+				Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+				String solrRequestUri = String.format("/solr/%s/update%s%s%s", solrCollection, "?overwrite=true&wt=json", softCommit ? "&softCommit=true" : "", commitWithin != null ? ("&commitWithin=" + commitWithin) : "");
 				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
 				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
@@ -2736,7 +2761,15 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
-					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit)
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					query.put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk()));
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("nico-site-enUS-SitePet", json, new DeliveryOptions().addHeader("action", "patchSitePetFuture")).onSuccess(c -> {

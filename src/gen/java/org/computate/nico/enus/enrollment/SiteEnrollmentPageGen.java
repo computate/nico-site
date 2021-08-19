@@ -50,24 +50,63 @@ public abstract class SiteEnrollmentPageGen<DEV> extends SiteEnrollmentGenPage {
 
 	protected boolean alreadyInitializedSiteEnrollmentPage = false;
 
-	public SiteEnrollmentPage initDeepSiteEnrollmentPage(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSiteEnrollmentPage(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSiteEnrollmentPage) {
 			alreadyInitializedSiteEnrollmentPage = true;
-			initDeepSiteEnrollmentPage();
+			return promiseDeepSiteEnrollmentPage();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SiteEnrollmentPage)this;
 	}
 
-	public void initDeepSiteEnrollmentPage() {
-		initSiteEnrollmentPage();
-		super.initDeepSiteEnrollmentGenPage(siteRequest_);
+	public Future<Void> promiseDeepSiteEnrollmentPage() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSiteEnrollmentPage(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepSiteEnrollmentGenPage(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSiteEnrollmentPage() {
+	public Future<Void> promiseSiteEnrollmentPage(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSiteEnrollmentPage(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSiteEnrollmentPage(siteRequest_);
+	}
+
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestSiteEnrollmentPage(SiteRequestEnUS siteRequest_) {
+			super.siteRequestSiteEnrollmentGenPage(siteRequest_);
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestSiteEnrollmentPage(siteRequest_);
 	}
 
 	/////////////
@@ -225,6 +264,19 @@ public abstract class SiteEnrollmentPageGen<DEV> extends SiteEnrollmentGenPage {
 		switch(var.toLowerCase()) {
 			default:
 				return super.defineSiteEnrollmentGenPage(var, val);
+		}
+	}
+
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestSiteEnrollmentPage() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof SiteEnrollmentPage) {
+			SiteEnrollmentPage original = (SiteEnrollmentPage)o;
+			super.apiRequestSiteEnrollmentGenPage();
 		}
 	}
 

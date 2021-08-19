@@ -35,6 +35,7 @@ import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Tuple;
 
@@ -60,6 +61,8 @@ public class BaseApiServiceImpl {
 
 	protected AuthorizationProvider authorizationProvider;
 
+	protected HandlebarsTemplateEngine templateEngine;
+
 	public BaseApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
 		this.eventBus = eventBus;
 		this.config = config;
@@ -68,6 +71,17 @@ public class BaseApiServiceImpl {
 		this.webClient = webClient;
 		this.oauth2AuthenticationProvider = oauth2AuthenticationProvider;
 		this.authorizationProvider = authorizationProvider;
+	}
+
+	public BaseApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, HandlebarsTemplateEngine templateEngine) {
+		this.eventBus = eventBus;
+		this.config = config;
+		this.workerExecutor = workerExecutor;
+		this.pgPool = pgPool;
+		this.webClient = webClient;
+		this.oauth2AuthenticationProvider = oauth2AuthenticationProvider;
+		this.authorizationProvider = authorizationProvider;
+		this.templateEngine = templateEngine;
 	}
 
 	// General //
@@ -140,7 +154,7 @@ public class BaseApiServiceImpl {
 							searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
 							searchList.promiseDeepSearchList(siteRequest).onSuccess(c -> {
 								SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-								SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+								SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine);
 
 								if(siteUser1 == null) {
 									JsonObject jsonObject = new JsonObject();
