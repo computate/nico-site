@@ -144,6 +144,8 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
+	 * Modify: false
 	 */ 
 	protected void _sessionId(Wrap<String> c) {
 	}

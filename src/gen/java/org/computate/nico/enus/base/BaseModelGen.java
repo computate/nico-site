@@ -2305,6 +2305,11 @@ public abstract class BaseModelGen<DEV> extends Object {
 					setDeleted(val);
 				saves.add("deleted");
 				return val;
+			case "sessionid":
+				if(val != null)
+					setSessionId(val);
+				saves.add("sessionId");
+				return val;
 			case "userid":
 				if(val != null)
 					setUserId(val);
@@ -2358,6 +2363,11 @@ public abstract class BaseModelGen<DEV> extends Object {
 				if(val instanceof Boolean)
 					setDeleted((Boolean)val);
 				saves.add("deleted");
+				return val;
+			case "sessionid":
+				if(val instanceof String)
+					setSessionId((String)val);
+				saves.add("sessionId");
 				return val;
 			case "userid":
 				if(val instanceof String)

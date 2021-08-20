@@ -50,15 +50,24 @@ CREATE TABLE SiteUser(
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
+	, sessionId text
 	, userId text
 	, userKey bigint
-	, userKey bigint
-	, userId text
 	, userName text
 	, userEmail text
 	, userFirstName text
 	, userLastName text
 	, userFullName text
+	);
+CREATE TABLE SiteEnrollment(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, sessionId text
+	, userId text
+	, userKey bigint
 	);
 CREATE TABLE SitePet(
 	pk bigserial primary key
@@ -66,6 +75,7 @@ CREATE TABLE SitePet(
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
+	, sessionId text
 	, userId text
 	, userKey bigint
 	, petName text
@@ -74,17 +84,8 @@ CREATE TABLE SitePet(
 	, petSick boolean
 	, petMedNote text
 	, petTrouble text
-	, update boolean
+	, sendpdates boolean
 	, petAmount text
-	);
-CREATE TABLE SiteEnrollment(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
 	);
 CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
 	pk bigserial primary key
@@ -93,8 +94,8 @@ CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
 	);
 
 DROP TABLE SiteUser CASCADE;
-DROP TABLE SitePet CASCADE;
 DROP TABLE SiteEnrollment CASCADE;
+DROP TABLE SitePet CASCADE;
 DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 */
 

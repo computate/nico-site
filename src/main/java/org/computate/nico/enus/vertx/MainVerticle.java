@@ -1,4 +1,4 @@
-package org.computate.nico.enus.vertx;
+package org.computate.nico.enus.vertx;     
 
 import java.net.URLDecoder;
 import java.text.Normalizer;

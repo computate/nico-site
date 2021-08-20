@@ -940,88 +940,88 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return petTrouble == null ? "" : StringEscapeUtils.escapeHtml4(strPetTrouble());
 	}
 
-	////////////
-	// update //
-	////////////
+	////////////////
+	// sendpdates //
+	////////////////
 
-	/**	 The entity update
+	/**	 The entity sendpdates
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected Boolean update;
+	protected Boolean sendpdates;
 	@JsonIgnore
-	public Wrap<Boolean> updateWrap = new Wrap<Boolean>().var("update").o(update);
+	public Wrap<Boolean> sendpdatesWrap = new Wrap<Boolean>().var("sendpdates").o(sendpdates);
 
-	/**	<br/> The entity update
+	/**	<br/> The entity sendpdates
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:update">Find the entity update in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePet&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sendpdates">Find the entity sendpdates in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _update(Wrap<Boolean> w);
+	protected abstract void _sendpdates(Wrap<Boolean> w);
 
-	public Boolean getUpdate() {
-		return update;
+	public Boolean getSendpdates() {
+		return sendpdates;
 	}
 
-	public void setUpdate(Boolean update) {
-		this.update = update;
-		this.updateWrap.alreadyInitialized = true;
+	public void setSendpdates(Boolean sendpdates) {
+		this.sendpdates = sendpdates;
+		this.sendpdatesWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
-	public void setUpdate(String o) {
-		this.update = SitePet.staticSetUpdate(siteRequest_, o);
-		this.updateWrap.alreadyInitialized = true;
+	public void setSendpdates(String o) {
+		this.sendpdates = SitePet.staticSetSendpdates(siteRequest_, o);
+		this.sendpdatesWrap.alreadyInitialized = true;
 	}
-	public static Boolean staticSetUpdate(SiteRequestEnUS siteRequest_, String o) {
+	public static Boolean staticSetSendpdates(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
-	protected SitePet updateInit() {
-		if(!updateWrap.alreadyInitialized) {
-			_update(updateWrap);
-			if(update == null)
-				setUpdate(updateWrap.o);
-			updateWrap.o(null);
+	protected SitePet sendpdatesInit() {
+		if(!sendpdatesWrap.alreadyInitialized) {
+			_sendpdates(sendpdatesWrap);
+			if(sendpdates == null)
+				setSendpdates(sendpdatesWrap.o);
+			sendpdatesWrap.o(null);
 		}
-		updateWrap.alreadyInitialized(true);
+		sendpdatesWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
-	public static Boolean staticSolrUpdate(SiteRequestEnUS siteRequest_, Boolean o) {
+	public static Boolean staticSolrSendpdates(SiteRequestEnUS siteRequest_, Boolean o) {
 		return o;
 	}
 
-	public static String staticSolrStrUpdate(SiteRequestEnUS siteRequest_, Boolean o) {
+	public static String staticSolrStrSendpdates(SiteRequestEnUS siteRequest_, Boolean o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqUpdate(SiteRequestEnUS siteRequest_, String o) {
-		return SitePet.staticSolrStrUpdate(siteRequest_, SitePet.staticSolrUpdate(siteRequest_, SitePet.staticSetUpdate(siteRequest_, o)));
+	public static String staticSolrFqSendpdates(SiteRequestEnUS siteRequest_, String o) {
+		return SitePet.staticSolrStrSendpdates(siteRequest_, SitePet.staticSolrSendpdates(siteRequest_, SitePet.staticSetSendpdates(siteRequest_, o)));
 	}
 
-	public Boolean solrUpdate() {
-		return SitePet.staticSolrUpdate(siteRequest_, update);
+	public Boolean solrSendpdates() {
+		return SitePet.staticSolrSendpdates(siteRequest_, sendpdates);
 	}
 
-	public String strUpdate() {
-		return update == null ? "" : update.toString();
+	public String strSendpdates() {
+		return sendpdates == null ? "" : sendpdates.toString();
 	}
 
-	public Boolean sqlUpdate() {
-		return update;
+	public Boolean sqlSendpdates() {
+		return sendpdates;
 	}
 
-	public String jsonUpdate() {
-		return update == null ? "" : update.toString();
+	public String jsonSendpdates() {
+		return sendpdates == null ? "" : sendpdates.toString();
 	}
 
-	public String htmTooltipUpdate() {
+	public String htmTooltipSendpdates() {
 		return null;
 	}
 
-	public String htmUpdate() {
-		return update == null ? "" : StringEscapeUtils.escapeHtml4(strUpdate());
+	public String htmSendpdates() {
+		return sendpdates == null ? "" : StringEscapeUtils.escapeHtml4(strSendpdates());
 	}
 
 	///////////////
@@ -1163,7 +1163,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 				petSickInit();
 				petMedNoteInit();
 				petTroubleInit();
-				updateInit();
+				sendpdatesInit();
 				petAmountInit();
 				promise2.complete();
 			} catch(Exception ex) {
@@ -1240,8 +1240,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 				return oSitePet.petMedNote;
 			case "petTrouble":
 				return oSitePet.petTrouble;
-			case "update":
-				return oSitePet.update;
+			case "sendpdates":
+				return oSitePet.sendpdates;
 			case "petAmount":
 				return oSitePet.petAmount;
 			default:
@@ -1306,8 +1306,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 			return SitePet.staticSetPetMedNote(siteRequest_, o);
 		case "petTrouble":
 			return SitePet.staticSetPetTrouble(siteRequest_, o);
-		case "update":
-			return SitePet.staticSetUpdate(siteRequest_, o);
+		case "sendpdates":
+			return SitePet.staticSetSendpdates(siteRequest_, o);
 		case "petAmount":
 			return SitePet.staticSetPetAmount(siteRequest_, o);
 			default:
@@ -1342,8 +1342,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 			return SitePet.staticSolrPetMedNote(siteRequest_, (String)o);
 		case "petTrouble":
 			return SitePet.staticSolrPetTrouble(siteRequest_, (String)o);
-		case "update":
-			return SitePet.staticSolrUpdate(siteRequest_, (Boolean)o);
+		case "sendpdates":
+			return SitePet.staticSolrSendpdates(siteRequest_, (Boolean)o);
 		case "petAmount":
 			return SitePet.staticSolrPetAmount(siteRequest_, (String)o);
 			default:
@@ -1378,8 +1378,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 			return SitePet.staticSolrStrPetMedNote(siteRequest_, (String)o);
 		case "petTrouble":
 			return SitePet.staticSolrStrPetTrouble(siteRequest_, (String)o);
-		case "update":
-			return SitePet.staticSolrStrUpdate(siteRequest_, (Boolean)o);
+		case "sendpdates":
+			return SitePet.staticSolrStrSendpdates(siteRequest_, (Boolean)o);
 		case "petAmount":
 			return SitePet.staticSolrStrPetAmount(siteRequest_, (String)o);
 			default:
@@ -1414,8 +1414,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 			return SitePet.staticSolrFqPetMedNote(siteRequest_, o);
 		case "petTrouble":
 			return SitePet.staticSolrFqPetTrouble(siteRequest_, o);
-		case "update":
-			return SitePet.staticSolrFqUpdate(siteRequest_, o);
+		case "sendpdates":
+			return SitePet.staticSolrFqSendpdates(siteRequest_, o);
 		case "petAmount":
 			return SitePet.staticSolrFqPetAmount(siteRequest_, o);
 			default:
@@ -1474,10 +1474,10 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					setPetTrouble(val);
 				saves.add("petTrouble");
 				return val;
-			case "update":
+			case "sendpdates":
 				if(val != null)
-					setUpdate(val);
-				saves.add("update");
+					setSendpdates(val);
+				saves.add("sendpdates");
 				return val;
 			case "petamount":
 				if(val != null)
@@ -1536,10 +1536,10 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					setPetTrouble((String)val);
 				saves.add("petTrouble");
 				return val;
-			case "update":
+			case "sendpdates":
 				if(val instanceof Boolean)
-					setUpdate((Boolean)val);
-				saves.add("update");
+					setSendpdates((Boolean)val);
+				saves.add("sendpdates");
 				return val;
 			case "petamount":
 				if(val instanceof String)
@@ -1615,10 +1615,10 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					oSitePet.setPetTrouble(petTrouble);
 			}
 
-			if(saves.contains("update")) {
-				Boolean update = (Boolean)solrDocument.get("update_stored_boolean");
-				if(update != null)
-					oSitePet.setUpdate(update);
+			if(saves.contains("sendpdates")) {
+				Boolean sendpdates = (Boolean)solrDocument.get("sendpdates_stored_boolean");
+				if(sendpdates != null)
+					oSitePet.setSendpdates(sendpdates);
 			}
 
 			if(saves.contains("petAmount")) {
@@ -1676,9 +1676,9 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 			document.addField("petTrouble_indexed_string", petTrouble);
 			document.addField("petTrouble_stored_string", petTrouble);
 		}
-		if(update != null) {
-			document.addField("update_indexed_boolean", update);
-			document.addField("update_stored_boolean", update);
+		if(sendpdates != null) {
+			document.addField("sendpdates_indexed_boolean", sendpdates);
+			document.addField("sendpdates_stored_boolean", sendpdates);
 		}
 		if(petAmount != null) {
 			document.addField("petAmount_indexed_string", petAmount);
@@ -1708,8 +1708,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 				return "petMedNote_indexed_string";
 			case "petTrouble":
 				return "petTrouble_indexed_string";
-			case "update":
-				return "update_indexed_boolean";
+			case "sendpdates":
+				return "sendpdates_indexed_boolean";
 			case "petAmount":
 				return "petAmount_indexed_string";
 			default:
@@ -1754,7 +1754,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		oSitePet.setPetSick(Optional.ofNullable(solrDocument.get("petSick_stored_boolean")).map(v -> v.toString()).orElse(null));
 		oSitePet.setPetMedNote(Optional.ofNullable(solrDocument.get("petMedNote_stored_string")).map(v -> v.toString()).orElse(null));
 		oSitePet.setPetTrouble(Optional.ofNullable(solrDocument.get("petTrouble_stored_string")).map(v -> v.toString()).orElse(null));
-		oSitePet.setUpdate(Optional.ofNullable(solrDocument.get("update_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oSitePet.setSendpdates(Optional.ofNullable(solrDocument.get("sendpdates_stored_boolean")).map(v -> v.toString()).orElse(null));
 		oSitePet.setPetAmount(Optional.ofNullable(solrDocument.get("petAmount_stored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
@@ -1787,8 +1787,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 				apiRequest.addVars("petMedNote");
 			if(!Objects.equals(petTrouble, original.getPetTrouble()))
 				apiRequest.addVars("petTrouble");
-			if(!Objects.equals(update, original.getUpdate()))
-				apiRequest.addVars("update");
+			if(!Objects.equals(sendpdates, original.getSendpdates()))
+				apiRequest.addVars("sendpdates");
 			if(!Objects.equals(petAmount, original.getPetAmount()))
 				apiRequest.addVars("petAmount");
 			super.apiRequestBaseModel();
@@ -1800,7 +1800,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), petKey, userKeys, enrollmentKeys, petName, petFoodAmount, petFood, petSick, petMedNote, petTrouble, update, petAmount);
+		return Objects.hash(super.hashCode(), petKey, userKeys, enrollmentKeys, petName, petFoodAmount, petFood, petSick, petMedNote, petTrouble, sendpdates, petAmount);
 	}
 
 	////////////
@@ -1823,7 +1823,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 				&& Objects.equals( petSick, that.petSick )
 				&& Objects.equals( petMedNote, that.petMedNote )
 				&& Objects.equals( petTrouble, that.petTrouble )
-				&& Objects.equals( update, that.update )
+				&& Objects.equals( sendpdates, that.sendpdates )
 				&& Objects.equals( petAmount, that.petAmount );
 	}
 
@@ -1844,7 +1844,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		sb.append( ", petSick: " ).append(petSick);
 		sb.append( ", petMedNote: \"" ).append(petMedNote).append( "\"" );
 		sb.append( ", petTrouble: \"" ).append(petTrouble).append( "\"" );
-		sb.append( ", update: " ).append(update);
+		sb.append( ", sendpdates: " ).append(sendpdates);
 		sb.append( ", petAmount: \"" ).append(petAmount).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
@@ -1860,6 +1860,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	public static final String VAR_petSick = "petSick";
 	public static final String VAR_petMedNote = "petMedNote";
 	public static final String VAR_petTrouble = "petTrouble";
-	public static final String VAR_update = "update";
+	public static final String VAR_sendpdates = "sendpdates";
 	public static final String VAR_petAmount = "petAmount";
 }

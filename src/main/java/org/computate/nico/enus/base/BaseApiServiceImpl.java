@@ -186,7 +186,7 @@ public class BaseApiServiceImpl {
 										siteRequest.setUserKey(siteUser.getPk());
 										promise.complete(siteRequest);
 									}).onFailure(ex -> {
-										error(siteRequest, null, ex);
+										promise.fail(ex);
 									});
 								} else {
 									JsonObject jsonObject = new JsonObject();

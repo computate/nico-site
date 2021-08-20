@@ -704,57 +704,53 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 								indexSitePet(sitePet).onSuccess(e -> {
 									promise1.complete(sitePet);
 								}).onFailure(ex -> {
-									LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(sitePet -> {
 				Promise<SitePet> promise2 = Promise.promise();
 				refreshSitePet(sitePet).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						sitePet.apiRequestSitePet();
-						eventBus.publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							sitePet.apiRequestSitePet();
+							eventBus.publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(sitePet);
+					} catch(Exception ex) {
+						LOG.error(String.format("putcopySitePetFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(sitePet);
 				}).onFailure(ex -> {
-					LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(sitePet -> {
 				promise.complete(sitePet);
-				LOG.debug(String.format("putcopySitePetFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("putcopySitePetFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -813,12 +809,12 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 								futures.add(Future.future(a -> {
 									sqlConnection.preparedQuery("INSERT INTO SitePetEnrollmentKeys_SiteEnrollmentPetKeys(pk1, pk2) values($1, $2)")
 											.execute(Tuple.of(pk, l)
-											, b
-									-> {
-										if(b.succeeded())
-											a.handle(Future.succeededFuture());
-										else
-											a.handle(Future.failedFuture(new Exception("value SitePet.enrollmentKeys failed", b.cause())));
+											).onSuccess(b -> {
+										a.handle(Future.succeededFuture());
+									}).onFailure(ex -> {
+										RuntimeException ex2 = new RuntimeException("value SitePet.enrollmentKeys failed", ex);
+										LOG.error(String.format("attributeSitePet failed. "), ex2);
+										a.handle(Future.failedFuture(ex2));
 									});
 								}));
 								if(!pks.contains(l)) {
@@ -882,14 +878,14 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 						num++;
 						bParams.add(o2.sqlPetTrouble());
 						break;
-					case SitePet.VAR_update:
-						o2.setUpdate(jsonObject.getBoolean(entityVar));
+					case SitePet.VAR_sendpdates:
+						o2.setSendpdates(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append(SitePet.VAR_update + "=$" + num);
+						bSql.append(SitePet.VAR_sendpdates + "=$" + num);
 						num++;
-						bParams.add(o2.sqlUpdate());
+						bParams.add(o2.sqlSendpdates());
 						break;
 					case SitePet.VAR_petAmount:
 						o2.setPetAmount(jsonObject.getString(entityVar));
@@ -910,12 +906,12 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				futures.add(Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SitePet.petAmount failed", ex);
+						LOG.error(String.format("attributeSitePet failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -1056,57 +1052,53 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 								indexSitePet(sitePet).onSuccess(e -> {
 									promise1.complete(sitePet);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postSitePetFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postSitePetFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSitePetFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postSitePetFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSitePetFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(sitePet -> {
 				Promise<SitePet> promise2 = Promise.promise();
 				refreshSitePet(sitePet).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						sitePet.apiRequestSitePet();
-						eventBus.publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							sitePet.apiRequestSitePet();
+							eventBus.publish("websocketSitePet", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(sitePet);
+					} catch(Exception ex) {
+						LOG.error(String.format("postSitePetFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(sitePet);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSitePetFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(sitePet -> {
 				promise.complete(sitePet);
-				LOG.debug(String.format("postSitePetFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postSitePetFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -1250,14 +1242,14 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 						num++;
 						bParams.add(o2.sqlPetTrouble());
 						break;
-					case SitePet.VAR_update:
-						o2.setUpdate(jsonObject.getBoolean(entityVar));
+					case SitePet.VAR_sendpdates:
+						o2.setSendpdates(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append(SitePet.VAR_update + "=$" + num);
+						bSql.append(SitePet.VAR_sendpdates + "=$" + num);
 						num++;
-						bParams.add(o2.sqlUpdate());
+						bParams.add(o2.sqlSendpdates());
 						break;
 					case SitePet.VAR_petAmount:
 						o2.setPetAmount(jsonObject.getString(entityVar));
@@ -1278,12 +1270,12 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SitePet.petAmount failed", ex);
+						LOG.error(String.format("attributeSitePet failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -1499,47 +1491,39 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							indexSitePet(sitePet).onSuccess(e -> {
 								promise1.complete(sitePet);
 							}).onFailure(ex -> {
-								LOG.error(String.format("patchSitePetFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("patchSitePetFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchSitePetFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSitePetFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(sitePet -> {
 				Promise<SitePet> promise2 = Promise.promise();
 				refreshSitePet(sitePet).onSuccess(a -> {
 					promise2.complete(sitePet);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSitePetFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(sitePet -> {
 				promise.complete(sitePet);
-				LOG.debug(String.format("patchSitePetFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchSitePetFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -1724,13 +1708,13 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							num++;
 							bParams.add(o2.sqlPetTrouble());
 						break;
-					case "setUpdate":
-							o2.setUpdate(jsonObject.getBoolean(entityVar));
+					case "setSendpdates":
+							o2.setSendpdates(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append(SitePet.VAR_update + "=$" + num);
+							bSql.append(SitePet.VAR_sendpdates + "=$" + num);
 							num++;
-							bParams.add(o2.sqlUpdate());
+							bParams.add(o2.sqlSendpdates());
 						break;
 					case "setPetAmount":
 							o2.setPetAmount(jsonObject.getString(entityVar));
@@ -1749,12 +1733,12 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SitePet.petAmount failed", ex);
+						LOG.error(String.format("attributeSitePet failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -2324,7 +2308,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 	public static final String VAR_petSick = "petSick";
 	public static final String VAR_petMedNote = "petMedNote";
 	public static final String VAR_petTrouble = "petTrouble";
-	public static final String VAR_update = "update";
+	public static final String VAR_sendpdates = "sendpdates";
 	public static final String VAR_petAmount = "petAmount";
 
 	// General //
@@ -2335,7 +2319,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
 			sqlConnection.preparedQuery("INSERT INTO SitePet(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
@@ -2347,8 +2331,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				o.setSiteRequest_(siteRequest);
 				promise.complete(o);
 			}).onFailure(ex -> {
-				LOG.error("createSitePet failed. ", ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error("createSitePet failed. ", ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("createSitePet failed. "), ex);
@@ -2629,8 +2614,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineSitePet failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("defineSitePet failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("defineSitePet failed. "), ex);
@@ -2661,8 +2647,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("attributeSitePet failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("attributeSitePet failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("attributeSitePet failed. "), ex);

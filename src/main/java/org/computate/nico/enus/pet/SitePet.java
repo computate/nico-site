@@ -182,7 +182,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 1
 	 * DisplayName.enUS: Do you want updates, if you do how many?
 	 */           
-	protected void _update(Wrap<Boolean> w) {
+	protected void _sendpdates(Wrap<Boolean> w) {
 	}
 
 	/**
