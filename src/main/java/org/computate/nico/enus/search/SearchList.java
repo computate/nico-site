@@ -1,6 +1,5 @@
 package org.computate.nico.enus.search;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
@@ -19,7 +18,6 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -27,10 +25,11 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CursorMarkParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
-
 import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.wrap.Wrap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -41,6 +40,10 @@ import io.vertx.core.json.JsonObject;
  */
 public class SearchList<DEV> extends SearchListGen<DEV> {
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _c(Wrap<Class<?>> c) {
 		
 	}
@@ -52,17 +55,33 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _store(Wrap<Boolean> c) {
 		c.o(false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _populate(Wrap<Boolean> c) {
 		c.o(false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _fields(List<String> c) {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _solrQuery(SolrQuery o) {
 	}
 
@@ -136,6 +155,10 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return promise.future();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _queryResponse(Promise<QueryResponse> promise) {        
 		try {
 			if(this.c != null)
@@ -363,6 +386,10 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _solrDocumentList(Wrap<SolrDocumentList> c) {
 		if(solrQuery.getQuery() != null) {
 			SolrDocumentList o = queryResponse.getResults();
@@ -412,6 +439,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTerms(b);
 	}
 
+	@JsonIgnore
 	public boolean getTerms() {
 		return solrQuery.getTerms();
 	}
@@ -424,6 +452,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.addTermsField(field);
 	}
 
+	@JsonIgnore
 	public String[] getTermsFields() {
 		return solrQuery.getTermsFields();
 	}
@@ -432,6 +461,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsLower(lower);
 	}
 
+	@JsonIgnore
 	public String getTermsLower() {
 		return solrQuery.getTermsLower();
 	}
@@ -440,6 +470,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsUpper(upper);
 	}
 
+	@JsonIgnore
 	public String getTermsUpper() {
 		return solrQuery.getTermsUpper();
 	}
@@ -448,6 +479,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsUpperInclusive(b);
 	}
 
+	@JsonIgnore
 	public boolean getTermsUpperInclusive() {
 		return solrQuery.getTermsUpperInclusive();
 	}
@@ -456,6 +488,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsLowerInclusive(b);
 	}
 
+	@JsonIgnore
 	public boolean getTermsLowerInclusive() {
 		return solrQuery.getTermsLowerInclusive();
 	}
@@ -464,6 +497,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsLimit(limit);
 	}
 
+	@JsonIgnore
 	public int getTermsLimit() {
 		return solrQuery.getTermsLimit();
 	}
@@ -472,6 +506,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsMinCount(cnt);
 	}
 
+	@JsonIgnore
 	public int getTermsMinCount() {
 		return solrQuery.getTermsMinCount();
 	}
@@ -480,6 +515,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsMaxCount(cnt);
 	}
 
+	@JsonIgnore
 	public int getTermsMaxCount() {
 		return solrQuery.getTermsMaxCount();
 	}
@@ -488,6 +524,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsPrefix(prefix);
 	}
 
+	@JsonIgnore
 	public String getTermsPrefix() {
 		return solrQuery.getTermsPrefix();
 	}
@@ -496,6 +533,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsRaw(b);
 	}
 
+	@JsonIgnore
 	public boolean getTermsRaw() {
 		return solrQuery.getTermsRaw();
 	}
@@ -504,6 +542,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsSortString(type);
 	}
 
+	@JsonIgnore
 	public String getTermsSortString() {
 		return solrQuery.getTermsSortString();
 	}
@@ -512,6 +551,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsRegex(regex);
 	}
 
+	@JsonIgnore
 	public String getTermsRegex() {
 		return solrQuery.getTermsRegex();
 	}
@@ -520,6 +560,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTermsRegexFlag(flag);
 	}
 
+	@JsonIgnore
 	public String[] getTermsRegexFlags() {
 		return solrQuery.getTermsRegexFlags();
 	}
@@ -548,6 +589,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.removeIntervalFacets(field);
 	}
 
+	@JsonIgnore
 	public String[] getFacetFields() {
 		return solrQuery.getFacetFields();
 	}
@@ -572,6 +614,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.addFacetQuery(f);
 	}
 
+	@JsonIgnore
 	public String[] getFacetQuery() {
 		return solrQuery.getFacetQuery();
 	}
@@ -584,6 +627,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setFacetLimit(lim);
 	}
 
+	@JsonIgnore
 	public int getFacetLimit() {
 		return solrQuery.getFacetLimit();
 	}
@@ -592,6 +636,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setFacetMinCount(cnt);
 	}
 
+	@JsonIgnore
 	public int getFacetMinCount() {
 		return solrQuery.getFacetMinCount();
 	}
@@ -600,6 +645,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setFacetMissing(v);
 	}
 
+	@JsonIgnore
 	public String getFacetSortString() {
 		return solrQuery.getFacetSortString();
 	}
@@ -616,6 +662,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.removeHighlightField(f);
 	}
 
+	@JsonIgnore
 	public String[] getHighlightFields() {
 		return solrQuery.getHighlightFields();
 	}
@@ -624,6 +671,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setHighlightSnippets(num);
 	}
 
+	@JsonIgnore
 	public int getHighlightSnippets() {
 		return solrQuery.getHighlightSnippets();
 	}
@@ -632,6 +680,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setHighlightFragsize(num);
 	}
 
+	@JsonIgnore
 	public int getHighlightFragsize() {
 		return solrQuery.getHighlightFragsize();
 	}
@@ -640,6 +689,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setHighlightRequireFieldMatch(flag);
 	}
 
+	@JsonIgnore
 	public boolean getHighlightRequireFieldMatch() {
 		return solrQuery.getHighlightRequireFieldMatch();
 	}
@@ -648,6 +698,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setHighlightSimplePre(f);
 	}
 
+	@JsonIgnore
 	public String getHighlightSimplePre() {
 		return solrQuery.getHighlightSimplePre();
 	}
@@ -656,10 +707,12 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setHighlightSimplePost(f);
 	}
 
+	@JsonIgnore
 	public String getHighlightSimplePost() {
 		return solrQuery.getHighlightSimplePost();
 	}
 
+	@JsonIgnore
 	public String getSortField() {
 		return solrQuery.getSortField();
 	}
@@ -672,6 +725,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setSorts(value);
 	}
 
+	@JsonIgnore
 	public List<SortClause> getSorts() {
 		return solrQuery.getSorts();
 	}
@@ -740,10 +794,12 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.removeFilterQuery(fq);
 	}
 
+	@JsonIgnore
 	public String[] getFilterQueries() {
 		return solrQuery.getFilterQueries();
 	}
 
+	@JsonIgnore
 	public boolean getHighlight() {
 		return solrQuery.getHighlight();
 	}
@@ -760,6 +816,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisFields(fields);
 	}
 
+	@JsonIgnore
 	public String[] getMoreLikeThisFields() {
 		return solrQuery.getMoreLikeThisFields();
 	}
@@ -768,6 +825,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisMinTermFreq(mintf);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisMinTermFreq() {
 		return solrQuery.getMoreLikeThisMinTermFreq();
 	}
@@ -776,6 +834,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisMinDocFreq(mindf);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisMinDocFreq() {
 		return solrQuery.getMoreLikeThisMinDocFreq();
 	}
@@ -784,6 +843,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisMinWordLen(minwl);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisMinWordLen() {
 		return solrQuery.getMoreLikeThisMinWordLen();
 	}
@@ -792,6 +852,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisMaxWordLen(maxwl);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisMaxWordLen() {
 		return solrQuery.getMoreLikeThisMaxWordLen();
 	}
@@ -800,6 +861,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisMaxQueryTerms(maxqt);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisMaxQueryTerms() {
 		return solrQuery.getMoreLikeThisMaxQueryTerms();
 	}
@@ -808,6 +870,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisMaxTokensParsed(maxntp);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisMaxTokensParsed() {
 		return solrQuery.getMoreLikeThisMaxTokensParsed();	
 	}
@@ -816,6 +879,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisBoost(b);
 	}
 
+	@JsonIgnore
 	public boolean getMoreLikeThisBoost() {
 		return solrQuery.getMoreLikeThisBoost();
 	}
@@ -824,6 +888,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisQF(qf);
 	}
 
+	@JsonIgnore
 	public String getMoreLikeThisQF() {
 		return solrQuery.getMoreLikeThisQF();
 	}
@@ -832,6 +897,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThisCount(count);
 	}
 
+	@JsonIgnore
 	public int getMoreLikeThisCount() {
 		return solrQuery.getMoreLikeThisCount();
 	}
@@ -840,6 +906,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setMoreLikeThis(b);
 	}
 
+	@JsonIgnore
 	public boolean getMoreLikeThis() {
 		return solrQuery.getMoreLikeThis();
 	}
@@ -852,6 +919,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setQuery(query);
 	}
 
+	@JsonIgnore
 	public String getQuery() {
 		return solrQuery.getQuery();
 	}
@@ -860,6 +928,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setRows(rows);
 	}
 
+	@JsonIgnore
 	public Integer getRows() {
 		return solrQuery.getRows();
 	}
@@ -892,6 +961,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setStart(start);
 	}
 
+	@JsonIgnore
 	public Integer getStart() {
 		return solrQuery.getStart();
 	}
@@ -900,6 +970,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setRequestHandler(qt);
 	}
 
+	@JsonIgnore
 	public String getRequestHandler() {
 		return solrQuery.getRequestHandler();
 	}
@@ -912,6 +983,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setParam(name, value);
 	}
 
+	@JsonIgnore
 	public SolrQuery getCopy() {
 		return solrQuery.getCopy();
 	}
@@ -920,6 +992,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return solrQuery.setTimeAllowed(milliseconds);
 	}
 
+	@JsonIgnore
 	public Integer getTimeAllowed() {
 		return solrQuery.getTimeAllowed();
 	}

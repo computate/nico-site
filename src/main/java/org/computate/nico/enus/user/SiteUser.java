@@ -1,4 +1,4 @@
-package org.computate.nico.enus.user;     
+package org.computate.nico.enus.user;          
 
 import java.util.List;
 

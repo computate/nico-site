@@ -43,6 +43,9 @@ public class SiteUserGenPage extends SiteUserGenPageGen<Object> {
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin", "SiteAdmin");
 	public static final List<String> ROLE_READS = Arrays.asList("");
 
+	/**
+	 * Ignore: true
+	**/
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
 	}
 
@@ -58,7 +61,11 @@ public class SiteUserGenPage extends SiteUserGenPageGen<Object> {
 			c.o(listSiteUser_.get(0));
 	}
 
+	/**
+	 * Ignore: true
+	**/
 	protected void _promiseBefore(Promise<Void> promise) {
+		promise.complete();
 	}
 
 	protected void _pageH1(Wrap<String> c) {
@@ -88,7 +95,11 @@ public class SiteUserGenPage extends SiteUserGenPageGen<Object> {
 		c.o("/api/user");
 	}
 
+	/**
+	 * Ignore: true
+	**/
 	protected void _promiseAfter(Promise<Void> promise) {
+		promise.complete();
 	}
 
 	protected void _pageImageUri(Wrap<String> c) {

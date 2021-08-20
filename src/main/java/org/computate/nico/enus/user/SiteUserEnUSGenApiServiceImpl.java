@@ -1032,7 +1032,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 	public void searchpageSiteUserPageInit(SiteUserPage page, SearchList<SiteUser> listSiteUser) {
 	}
 	public String templateSearchPageSiteUser() {
-		return ConfigKeys.TEMPLATE_PATH + "/SiteUserPage";
+		return config.getString(ConfigKeys.TEMPLATE_PATH) + "/enUS/SiteUserPage";
 	}
 	public Future<ServiceResponse> response200SearchPageSiteUser(SearchList<SiteUser> listSiteUser) {
 		Promise<ServiceResponse> promise = Promise.promise();
@@ -1437,39 +1437,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					String classSimpleName2 = classes.get(i);
 				}
 
-				CompositeFuture.all(futures).onSuccess(b -> {
-					JsonObject params = new JsonObject();
-					params.put("body", new JsonObject());
-					params.put("cookie", new JsonObject());
-					params.put("header", new JsonObject());
-					params.put("form", new JsonObject());
-					params.put("path", new JsonObject());
-					JsonObject query = new JsonObject();
-					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
-					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit)
-						query.put("softCommit", softCommit);
-					if(commitWithin != null)
-						query.put("commitWithin", commitWithin);
-					query.put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk()));
-					params.put("query", query);
-					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
-					JsonObject json = new JsonObject().put("context", context);
-					eventBus.request("nico-site-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture")).onSuccess(c -> {
-						JsonObject responseMessage = (JsonObject)c.body();
-						Integer statusCode = responseMessage.getInteger("statusCode");
-						if(statusCode.equals(200))
-							promise.complete();
-						else
-							promise.fail(new RuntimeException(responseMessage.getString("statusMessage")));
-					}).onFailure(ex -> {
-						LOG.error("Refresh relations failed. ", ex);
-						promise.fail(ex);
-					});
-				}).onFailure(ex -> {
-					LOG.error("Refresh relations failed. ", ex);
-					promise.fail(ex);
-				});
+				promise.complete();
 			} else {
 				promise.complete();
 			}

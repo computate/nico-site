@@ -58,8 +58,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity c
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Class<?> c;
 	@JsonIgnore
@@ -145,7 +144,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity store
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean store;
 	@JsonIgnore
@@ -221,7 +220,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity populate
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean populate;
 	@JsonIgnore
@@ -297,8 +296,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity fields
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> fields = new ArrayList<String>();
 	@JsonIgnore
@@ -389,7 +387,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity solrQuery
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SolrQuery(). 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SolrQuery solrQuery = new SolrQuery();
 	@JsonIgnore
@@ -429,7 +427,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity queryResponse
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected QueryResponse queryResponse;
 	@JsonIgnore
@@ -479,7 +477,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity solrDocumentList
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocumentList solrDocumentList;
 	@JsonIgnore

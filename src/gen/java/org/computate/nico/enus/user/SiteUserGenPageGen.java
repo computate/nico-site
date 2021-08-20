@@ -55,7 +55,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -185,7 +185,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	/**	 The entity promiseBefore
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Void promiseBefore;
 	@JsonIgnore
@@ -585,7 +585,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	/**	 The entity promiseAfter
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Void promiseAfter;
 	@JsonIgnore
