@@ -59,7 +59,7 @@ import java.lang.Object;
 import org.computate.nico.enus.config.ConfigKeys;
 
 /**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class BaseModelGen<DEV> extends Object {
@@ -80,7 +80,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -124,7 +124,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity pk
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -140,7 +140,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	@JsonIgnore
 	public void setPk(String o) {
-		this.pk = BaseModel.staticSetPk(siteRequest_, o);
+		this.pk = BaseModel.staticSetPk(null, o);
 		this.pkWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
@@ -159,32 +159,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static Long staticSolrPk(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
+	public static Object staticSolrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return null;
 	}
 
-	public static String staticSolrStrPk(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrPk(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPk(siteRequest_, BaseModel.staticSolrPk(siteRequest_, BaseModel.staticSetPk(siteRequest_, o)));
-	}
-
-	public Long solrPk() {
-		return BaseModel.staticSolrPk(siteRequest_, pk);
-	}
-
-	public String strPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public Long sqlPk() {
-		return pk;
-	}
-
-	public String jsonPk() {
-		return pk == null ? "" : pk.toString();
 	}
 
 	///////////////
@@ -195,6 +179,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String inheritPk;
 	@JsonIgnore
@@ -202,7 +187,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity inheritPk
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:inheritPk">Find the entity inheritPk in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:inheritPk">Find the entity inheritPk in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -212,7 +197,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return inheritPk;
 	}
 	public void setInheritPk(String o) {
-		this.inheritPk = BaseModel.staticSetInheritPk(siteRequest_, o);
+		this.inheritPk = BaseModel.staticSetInheritPk(null, o);
 		this.inheritPkWrap.alreadyInitialized = true;
 	}
 	public static String staticSetInheritPk(SiteRequestEnUS siteRequest_, String o) {
@@ -229,32 +214,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrInheritPk(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrInheritPk(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrInheritPk(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrInheritPk(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqInheritPk(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrInheritPk(siteRequest_, BaseModel.staticSolrInheritPk(siteRequest_, BaseModel.staticSetInheritPk(siteRequest_, o)));
-	}
-
-	public String solrInheritPk() {
-		return BaseModel.staticSolrInheritPk(siteRequest_, inheritPk);
-	}
-
-	public String strInheritPk() {
-		return inheritPk == null ? "" : inheritPk;
-	}
-
-	public String sqlInheritPk() {
-		return inheritPk;
-	}
-
-	public String jsonInheritPk() {
-		return inheritPk == null ? "" : inheritPk;
 	}
 
 	////////
@@ -265,6 +234,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
 	@JsonIgnore
@@ -272,7 +242,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity id
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:id">Find the entity id in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:id">Find the entity id in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -282,7 +252,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return id;
 	}
 	public void setId(String o) {
-		this.id = BaseModel.staticSetId(siteRequest_, o);
+		this.id = BaseModel.staticSetId(null, o);
 		this.idWrap.alreadyInitialized = true;
 	}
 	public static String staticSetId(SiteRequestEnUS siteRequest_, String o) {
@@ -299,32 +269,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrId(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrId(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqId(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrId(siteRequest_, BaseModel.staticSolrId(siteRequest_, BaseModel.staticSetId(siteRequest_, o)));
-	}
-
-	public String solrId() {
-		return BaseModel.staticSolrId(siteRequest_, id);
-	}
-
-	public String strId() {
-		return id == null ? "" : id;
-	}
-
-	public String sqlId() {
-		return id;
-	}
-
-	public String jsonId() {
-		return id == null ? "" : id;
 	}
 
 	/////////////
@@ -345,7 +299,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity created
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:created">Find the entity created in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:created">Find the entity created in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -367,7 +321,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setCreated(String o) {
-		this.created = BaseModel.staticSetCreated(siteRequest_, o);
+		this.created = BaseModel.staticSetCreated(null, o);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
@@ -392,32 +346,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static Date staticSolrCreated(SiteRequestEnUS siteRequest_, ZonedDateTime o) {
-		return o == null ? null : Date.from(o.toInstant());
+	public static Object staticSolrCreated(SiteRequestEnUS siteRequest_, ZonedDateTime o) {
+		return null;
 	}
 
-	public static String staticSolrStrCreated(SiteRequestEnUS siteRequest_, Date o) {
-		return "\"" + DateTimeFormatter.ISO_DATE_TIME.format(o.toInstant().atOffset(ZoneOffset.UTC)) + "\"";
+	public static String staticSolrStrCreated(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqCreated(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrCreated(siteRequest_, BaseModel.staticSolrCreated(siteRequest_, BaseModel.staticSetCreated(siteRequest_, o)));
-	}
-
-	public Date solrCreated() {
-		return BaseModel.staticSolrCreated(siteRequest_, created);
-	}
-
-	public String strCreated() {
-		return created == null ? "" : created.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
-	}
-
-	public OffsetDateTime sqlCreated() {
-		return created == null ? null : created.toOffsetDateTime();
-	}
-
-	public String jsonCreated() {
-		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
 	//////////////
@@ -438,7 +376,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity modified
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:modified">Find the entity modified in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:modified">Find the entity modified in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -460,7 +398,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setModified(String o) {
-		this.modified = BaseModel.staticSetModified(siteRequest_, o);
+		this.modified = BaseModel.staticSetModified(null, o);
 		this.modifiedWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetModified(SiteRequestEnUS siteRequest_, String o) {
@@ -485,32 +423,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static Date staticSolrModified(SiteRequestEnUS siteRequest_, ZonedDateTime o) {
-		return o == null ? null : Date.from(o.toInstant());
+	public static Object staticSolrModified(SiteRequestEnUS siteRequest_, ZonedDateTime o) {
+		return null;
 	}
 
-	public static String staticSolrStrModified(SiteRequestEnUS siteRequest_, Date o) {
-		return "\"" + DateTimeFormatter.ISO_DATE_TIME.format(o.toInstant().atOffset(ZoneOffset.UTC)) + "\"";
+	public static String staticSolrStrModified(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqModified(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrModified(siteRequest_, BaseModel.staticSolrModified(siteRequest_, BaseModel.staticSetModified(siteRequest_, o)));
-	}
-
-	public Date solrModified() {
-		return BaseModel.staticSolrModified(siteRequest_, modified);
-	}
-
-	public String strModified() {
-		return modified == null ? "" : modified.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
-	}
-
-	public OffsetDateTime sqlModified() {
-		return modified == null ? null : modified.toOffsetDateTime();
-	}
-
-	public String jsonModified() {
-		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
 	//////////////
@@ -521,6 +443,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean archived;
 	@JsonIgnore
@@ -528,7 +451,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity archived
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:archived">Find the entity archived in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:archived">Find the entity archived in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -544,7 +467,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	@JsonIgnore
 	public void setArchived(String o) {
-		this.archived = BaseModel.staticSetArchived(siteRequest_, o);
+		this.archived = BaseModel.staticSetArchived(null, o);
 		this.archivedWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetArchived(SiteRequestEnUS siteRequest_, String o) {
@@ -561,32 +484,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static Boolean staticSolrArchived(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
+	public static Object staticSolrArchived(SiteRequestEnUS siteRequest_, Boolean o) {
+		return null;
 	}
 
-	public static String staticSolrStrArchived(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrArchived(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqArchived(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrArchived(siteRequest_, BaseModel.staticSolrArchived(siteRequest_, BaseModel.staticSetArchived(siteRequest_, o)));
-	}
-
-	public Boolean solrArchived() {
-		return BaseModel.staticSolrArchived(siteRequest_, archived);
-	}
-
-	public String strArchived() {
-		return archived == null ? "" : archived.toString();
-	}
-
-	public Boolean sqlArchived() {
-		return archived;
-	}
-
-	public String jsonArchived() {
-		return archived == null ? "" : archived.toString();
 	}
 
 	/////////////
@@ -597,6 +504,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean deleted;
 	@JsonIgnore
@@ -604,7 +512,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity deleted
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:deleted">Find the entity deleted in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:deleted">Find the entity deleted in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -620,7 +528,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	@JsonIgnore
 	public void setDeleted(String o) {
-		this.deleted = BaseModel.staticSetDeleted(siteRequest_, o);
+		this.deleted = BaseModel.staticSetDeleted(null, o);
 		this.deletedWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetDeleted(SiteRequestEnUS siteRequest_, String o) {
@@ -637,32 +545,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static Boolean staticSolrDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
+	public static Object staticSolrDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
+		return null;
 	}
 
-	public static String staticSolrStrDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrDeleted(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqDeleted(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrDeleted(siteRequest_, BaseModel.staticSolrDeleted(siteRequest_, BaseModel.staticSetDeleted(siteRequest_, o)));
-	}
-
-	public Boolean solrDeleted() {
-		return BaseModel.staticSolrDeleted(siteRequest_, deleted);
-	}
-
-	public String strDeleted() {
-		return deleted == null ? "" : deleted.toString();
-	}
-
-	public Boolean sqlDeleted() {
-		return deleted;
-	}
-
-	public String jsonDeleted() {
-		return deleted == null ? "" : deleted.toString();
 	}
 
 	////////////////////////
@@ -673,6 +565,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String classCanonicalName;
 	@JsonIgnore
@@ -680,7 +573,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity classCanonicalName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalName">Find the entity classCanonicalName in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalName">Find the entity classCanonicalName in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -690,7 +583,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return classCanonicalName;
 	}
 	public void setClassCanonicalName(String o) {
-		this.classCanonicalName = BaseModel.staticSetClassCanonicalName(siteRequest_, o);
+		this.classCanonicalName = BaseModel.staticSetClassCanonicalName(null, o);
 		this.classCanonicalNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
@@ -707,32 +600,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrClassCanonicalName(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrClassCanonicalName(siteRequest_, BaseModel.staticSolrClassCanonicalName(siteRequest_, BaseModel.staticSetClassCanonicalName(siteRequest_, o)));
-	}
-
-	public String solrClassCanonicalName() {
-		return BaseModel.staticSolrClassCanonicalName(siteRequest_, classCanonicalName);
-	}
-
-	public String strClassCanonicalName() {
-		return classCanonicalName == null ? "" : classCanonicalName;
-	}
-
-	public String sqlClassCanonicalName() {
-		return classCanonicalName;
-	}
-
-	public String jsonClassCanonicalName() {
-		return classCanonicalName == null ? "" : classCanonicalName;
 	}
 
 	/////////////////////
@@ -743,6 +620,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
 	@JsonIgnore
@@ -750,7 +628,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -760,7 +638,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return classSimpleName;
 	}
 	public void setClassSimpleName(String o) {
-		this.classSimpleName = BaseModel.staticSetClassSimpleName(siteRequest_, o);
+		this.classSimpleName = BaseModel.staticSetClassSimpleName(null, o);
 		this.classSimpleNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
@@ -777,32 +655,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrClassSimpleName(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrClassSimpleName(siteRequest_, BaseModel.staticSolrClassSimpleName(siteRequest_, BaseModel.staticSetClassSimpleName(siteRequest_, o)));
-	}
-
-	public String solrClassSimpleName() {
-		return BaseModel.staticSolrClassSimpleName(siteRequest_, classSimpleName);
-	}
-
-	public String strClassSimpleName() {
-		return classSimpleName == null ? "" : classSimpleName;
-	}
-
-	public String sqlClassSimpleName() {
-		return classSimpleName;
-	}
-
-	public String jsonClassSimpleName() {
-		return classSimpleName == null ? "" : classSimpleName;
 	}
 
 	/////////////////////////
@@ -821,7 +683,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity classCanonicalNames
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalNames">Find the entity classCanonicalNames in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalNames">Find the entity classCanonicalNames in Solr</a>
 	 * <br/>
 	 * @param classCanonicalNames is the entity already constructed. 
 	 **/
@@ -865,36 +727,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrClassCanonicalNames(SiteRequestEnUS siteRequest_, List<String> o) {
+		return null;
 	}
 
-	public static String staticSolrStrClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrClassCanonicalNames(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, BaseModel.staticSolrClassCanonicalNames(siteRequest_, BaseModel.staticSetClassCanonicalNames(siteRequest_, o)));
-	}
-
-	public List<String> solrClassCanonicalNames() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classCanonicalNames) {
-			l.add(BaseModel.staticSolrClassCanonicalNames(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
-	}
-
-	public List<String> sqlClassCanonicalNames() {
-		return classCanonicalNames;
-	}
-
-	public String jsonClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
 
 	///////////////
@@ -905,6 +747,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String sessionId;
 	@JsonIgnore
@@ -912,7 +755,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity sessionId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sessionId">Find the entity sessionId in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sessionId">Find the entity sessionId in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -922,7 +765,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return sessionId;
 	}
 	public void setSessionId(String o) {
-		this.sessionId = BaseModel.staticSetSessionId(siteRequest_, o);
+		this.sessionId = BaseModel.staticSetSessionId(null, o);
 		this.sessionIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetSessionId(SiteRequestEnUS siteRequest_, String o) {
@@ -939,32 +782,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrSessionId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrSessionId(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrSessionId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrSessionId(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqSessionId(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrSessionId(siteRequest_, BaseModel.staticSolrSessionId(siteRequest_, BaseModel.staticSetSessionId(siteRequest_, o)));
-	}
-
-	public String solrSessionId() {
-		return BaseModel.staticSolrSessionId(siteRequest_, sessionId);
-	}
-
-	public String strSessionId() {
-		return sessionId == null ? "" : sessionId;
-	}
-
-	public String sqlSessionId() {
-		return sessionId;
-	}
-
-	public String jsonSessionId() {
-		return sessionId == null ? "" : sessionId;
 	}
 
 	////////////
@@ -975,6 +802,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String userId;
 	@JsonIgnore
@@ -982,7 +810,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity userId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userId">Find the entity userId in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userId">Find the entity userId in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -992,7 +820,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return userId;
 	}
 	public void setUserId(String o) {
-		this.userId = BaseModel.staticSetUserId(siteRequest_, o);
+		this.userId = BaseModel.staticSetUserId(null, o);
 		this.userIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserId(SiteRequestEnUS siteRequest_, String o) {
@@ -1009,32 +837,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrUserId(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrUserId(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqUserId(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrUserId(siteRequest_, BaseModel.staticSolrUserId(siteRequest_, BaseModel.staticSetUserId(siteRequest_, o)));
-	}
-
-	public String solrUserId() {
-		return BaseModel.staticSolrUserId(siteRequest_, userId);
-	}
-
-	public String strUserId() {
-		return userId == null ? "" : userId;
-	}
-
-	public String sqlUserId() {
-		return userId;
-	}
-
-	public String jsonUserId() {
-		return userId == null ? "" : userId;
 	}
 
 	/////////////
@@ -1053,7 +865,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity userKey
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKey">Find the entity userKey in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKey">Find the entity userKey in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1069,7 +881,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	@JsonIgnore
 	public void setUserKey(String o) {
-		this.userKey = BaseModel.staticSetUserKey(siteRequest_, o);
+		this.userKey = BaseModel.staticSetUserKey(null, o);
 		this.userKeyWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetUserKey(SiteRequestEnUS siteRequest_, String o) {
@@ -1088,32 +900,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static Long staticSolrUserKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
+	public static Object staticSolrUserKey(SiteRequestEnUS siteRequest_, Long o) {
+		return null;
 	}
 
-	public static String staticSolrStrUserKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrUserKey(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqUserKey(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrUserKey(siteRequest_, BaseModel.staticSolrUserKey(siteRequest_, BaseModel.staticSetUserKey(siteRequest_, o)));
-	}
-
-	public Long solrUserKey() {
-		return BaseModel.staticSolrUserKey(siteRequest_, userKey);
-	}
-
-	public String strUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public Long sqlUserKey() {
-		return userKey;
-	}
-
-	public String jsonUserKey() {
-		return userKey == null ? "" : userKey.toString();
 	}
 
 	///////////
@@ -1132,7 +928,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity saves
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:saves">Find the entity saves in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:saves">Find the entity saves in Solr</a>
 	 * <br/>
 	 * @param saves is the entity already constructed. 
 	 **/
@@ -1176,36 +972,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrSaves(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrSaves(SiteRequestEnUS siteRequest_, List<String> o) {
+		return null;
 	}
 
-	public static String staticSolrStrSaves(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrSaves(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqSaves(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrSaves(siteRequest_, BaseModel.staticSolrSaves(siteRequest_, BaseModel.staticSetSaves(siteRequest_, o)));
-	}
-
-	public List<String> solrSaves() {
-		List<String> l = new ArrayList<String>();
-		for(String o : saves) {
-			l.add(BaseModel.staticSolrSaves(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strSaves() {
-		return saves == null ? "" : saves.toString();
-	}
-
-	public List<String> sqlSaves() {
-		return saves;
-	}
-
-	public String jsonSaves() {
-		return saves == null ? "" : saves.toString();
 	}
 
 	/////////////////
@@ -1216,6 +992,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String objectTitle;
 	@JsonIgnore
@@ -1223,7 +1000,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity objectTitle
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1233,7 +1010,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectTitle;
 	}
 	public void setObjectTitle(String o) {
-		this.objectTitle = BaseModel.staticSetObjectTitle(siteRequest_, o);
+		this.objectTitle = BaseModel.staticSetObjectTitle(null, o);
 		this.objectTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectTitle(SiteRequestEnUS siteRequest_, String o) {
@@ -1250,32 +1027,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrObjectTitle(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqObjectTitle(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectTitle(siteRequest_, BaseModel.staticSolrObjectTitle(siteRequest_, BaseModel.staticSetObjectTitle(siteRequest_, o)));
-	}
-
-	public String solrObjectTitle() {
-		return BaseModel.staticSolrObjectTitle(siteRequest_, objectTitle);
-	}
-
-	public String strObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String sqlObjectTitle() {
-		return objectTitle;
-	}
-
-	public String jsonObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
 	}
 
 	//////////////
@@ -1286,6 +1047,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String objectId;
 	@JsonIgnore
@@ -1293,7 +1055,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity objectId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectId">Find the entity objectId in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectId">Find the entity objectId in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1303,7 +1065,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectId;
 	}
 	public void setObjectId(String o) {
-		this.objectId = BaseModel.staticSetObjectId(siteRequest_, o);
+		this.objectId = BaseModel.staticSetObjectId(null, o);
 		this.objectIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectId(SiteRequestEnUS siteRequest_, String o) {
@@ -1320,32 +1082,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrObjectId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrObjectId(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrObjectId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrObjectId(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqObjectId(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectId(siteRequest_, BaseModel.staticSolrObjectId(siteRequest_, BaseModel.staticSetObjectId(siteRequest_, o)));
-	}
-
-	public String solrObjectId() {
-		return BaseModel.staticSolrObjectId(siteRequest_, objectId);
-	}
-
-	public String strObjectId() {
-		return objectId == null ? "" : objectId;
-	}
-
-	public String sqlObjectId() {
-		return objectId;
-	}
-
-	public String jsonObjectId() {
-		return objectId == null ? "" : objectId;
 	}
 
 	///////////////////
@@ -1356,6 +1102,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String objectNameVar;
 	@JsonIgnore
@@ -1363,7 +1110,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity objectNameVar
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectNameVar">Find the entity objectNameVar in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectNameVar">Find the entity objectNameVar in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1373,7 +1120,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectNameVar;
 	}
 	public void setObjectNameVar(String o) {
-		this.objectNameVar = BaseModel.staticSetObjectNameVar(siteRequest_, o);
+		this.objectNameVar = BaseModel.staticSetObjectNameVar(null, o);
 		this.objectNameVarWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
@@ -1390,32 +1137,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrObjectNameVar(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectNameVar(siteRequest_, BaseModel.staticSolrObjectNameVar(siteRequest_, BaseModel.staticSetObjectNameVar(siteRequest_, o)));
-	}
-
-	public String solrObjectNameVar() {
-		return BaseModel.staticSolrObjectNameVar(siteRequest_, objectNameVar);
-	}
-
-	public String strObjectNameVar() {
-		return objectNameVar == null ? "" : objectNameVar;
-	}
-
-	public String sqlObjectNameVar() {
-		return objectNameVar;
-	}
-
-	public String jsonObjectNameVar() {
-		return objectNameVar == null ? "" : objectNameVar;
 	}
 
 	///////////////////
@@ -1426,6 +1157,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String objectSuggest;
 	@JsonIgnore
@@ -1433,7 +1165,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity objectSuggest
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectSuggest">Find the entity objectSuggest in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectSuggest">Find the entity objectSuggest in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1443,7 +1175,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectSuggest;
 	}
 	public void setObjectSuggest(String o) {
-		this.objectSuggest = BaseModel.staticSetObjectSuggest(siteRequest_, o);
+		this.objectSuggest = BaseModel.staticSetObjectSuggest(null, o);
 		this.objectSuggestWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
@@ -1460,32 +1192,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrObjectSuggest(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectSuggest(siteRequest_, BaseModel.staticSolrObjectSuggest(siteRequest_, BaseModel.staticSetObjectSuggest(siteRequest_, o)));
-	}
-
-	public String solrObjectSuggest() {
-		return BaseModel.staticSolrObjectSuggest(siteRequest_, objectSuggest);
-	}
-
-	public String strObjectSuggest() {
-		return objectSuggest == null ? "" : objectSuggest;
-	}
-
-	public String sqlObjectSuggest() {
-		return objectSuggest;
-	}
-
-	public String jsonObjectSuggest() {
-		return objectSuggest == null ? "" : objectSuggest;
 	}
 
 	////////////////
@@ -1496,6 +1212,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String objectText;
 	@JsonIgnore
@@ -1503,7 +1220,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity objectText
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectText">Find the entity objectText in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectText">Find the entity objectText in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1513,7 +1230,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectText;
 	}
 	public void setObjectText(String o) {
-		this.objectText = BaseModel.staticSetObjectText(siteRequest_, o);
+		this.objectText = BaseModel.staticSetObjectText(null, o);
 		this.objectTextWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectText(SiteRequestEnUS siteRequest_, String o) {
@@ -1530,32 +1247,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrObjectText(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrObjectText(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrObjectText(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrObjectText(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqObjectText(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectText(siteRequest_, BaseModel.staticSolrObjectText(siteRequest_, BaseModel.staticSetObjectText(siteRequest_, o)));
-	}
-
-	public String solrObjectText() {
-		return BaseModel.staticSolrObjectText(siteRequest_, objectText);
-	}
-
-	public String strObjectText() {
-		return objectText == null ? "" : objectText;
-	}
-
-	public String sqlObjectText() {
-		return objectText;
-	}
-
-	public String jsonObjectText() {
-		return objectText == null ? "" : objectText;
 	}
 
 	///////////////
@@ -1566,6 +1267,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrlId;
 	@JsonIgnore
@@ -1573,7 +1275,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity pageUrlId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlId">Find the entity pageUrlId in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlId">Find the entity pageUrlId in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1583,7 +1285,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pageUrlId;
 	}
 	public void setPageUrlId(String o) {
-		this.pageUrlId = BaseModel.staticSetPageUrlId(siteRequest_, o);
+		this.pageUrlId = BaseModel.staticSetPageUrlId(null, o);
 		this.pageUrlIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUrlId(SiteRequestEnUS siteRequest_, String o) {
@@ -1600,32 +1302,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrPageUrlId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrPageUrlId(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrPageUrlId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrPageUrlId(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqPageUrlId(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPageUrlId(siteRequest_, BaseModel.staticSolrPageUrlId(siteRequest_, BaseModel.staticSetPageUrlId(siteRequest_, o)));
-	}
-
-	public String solrPageUrlId() {
-		return BaseModel.staticSolrPageUrlId(siteRequest_, pageUrlId);
-	}
-
-	public String strPageUrlId() {
-		return pageUrlId == null ? "" : pageUrlId;
-	}
-
-	public String sqlPageUrlId() {
-		return pageUrlId;
-	}
-
-	public String jsonPageUrlId() {
-		return pageUrlId == null ? "" : pageUrlId;
 	}
 
 	///////////////
@@ -1636,6 +1322,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrlPk;
 	@JsonIgnore
@@ -1643,7 +1330,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity pageUrlPk
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlPk">Find the entity pageUrlPk in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlPk">Find the entity pageUrlPk in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1653,7 +1340,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pageUrlPk;
 	}
 	public void setPageUrlPk(String o) {
-		this.pageUrlPk = BaseModel.staticSetPageUrlPk(siteRequest_, o);
+		this.pageUrlPk = BaseModel.staticSetPageUrlPk(null, o);
 		this.pageUrlPkWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
@@ -1670,32 +1357,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrPageUrlPk(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPageUrlPk(siteRequest_, BaseModel.staticSolrPageUrlPk(siteRequest_, BaseModel.staticSetPageUrlPk(siteRequest_, o)));
-	}
-
-	public String solrPageUrlPk() {
-		return BaseModel.staticSolrPageUrlPk(siteRequest_, pageUrlPk);
-	}
-
-	public String strPageUrlPk() {
-		return pageUrlPk == null ? "" : pageUrlPk;
-	}
-
-	public String sqlPageUrlPk() {
-		return pageUrlPk;
-	}
-
-	public String jsonPageUrlPk() {
-		return pageUrlPk == null ? "" : pageUrlPk;
 	}
 
 	////////////////
@@ -1706,6 +1377,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrlApi;
 	@JsonIgnore
@@ -1713,7 +1385,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity pageUrlApi
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlApi">Find the entity pageUrlApi in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlApi">Find the entity pageUrlApi in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1723,7 +1395,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pageUrlApi;
 	}
 	public void setPageUrlApi(String o) {
-		this.pageUrlApi = BaseModel.staticSetPageUrlApi(siteRequest_, o);
+		this.pageUrlApi = BaseModel.staticSetPageUrlApi(null, o);
 		this.pageUrlApiWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
@@ -1740,32 +1412,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrPageUrlApi(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPageUrlApi(siteRequest_, BaseModel.staticSolrPageUrlApi(siteRequest_, BaseModel.staticSetPageUrlApi(siteRequest_, o)));
-	}
-
-	public String solrPageUrlApi() {
-		return BaseModel.staticSolrPageUrlApi(siteRequest_, pageUrlApi);
-	}
-
-	public String strPageUrlApi() {
-		return pageUrlApi == null ? "" : pageUrlApi;
-	}
-
-	public String sqlPageUrlApi() {
-		return pageUrlApi;
-	}
-
-	public String jsonPageUrlApi() {
-		return pageUrlApi == null ? "" : pageUrlApi;
 	}
 
 	////////////
@@ -1776,6 +1432,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH1;
 	@JsonIgnore
@@ -1783,7 +1440,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	/**	<br/> The entity pageH1
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
+	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -1793,7 +1450,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pageH1;
 	}
 	public void setPageH1(String o) {
-		this.pageH1 = BaseModel.staticSetPageH1(siteRequest_, o);
+		this.pageH1 = BaseModel.staticSetPageH1(null, o);
 		this.pageH1Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
@@ -1810,32 +1467,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return (BaseModel)this;
 	}
 
-	public static String staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+	public static Object staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 
-	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
+	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, Object o) {
+		return null;
 	}
 
 	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPageH1(siteRequest_, BaseModel.staticSolrPageH1(siteRequest_, BaseModel.staticSetPageH1(siteRequest_, o)));
-	}
-
-	public String solrPageH1() {
-		return BaseModel.staticSolrPageH1(siteRequest_, pageH1);
-	}
-
-	public String strPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String sqlPageH1() {
-		return pageH1;
-	}
-
-	public String jsonPageH1() {
-		return pageH1 == null ? "" : pageH1;
 	}
 
 	//////////////
@@ -1845,7 +1486,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	protected boolean alreadyInitializedBaseModel = false;
 
 	public Future<Void> promiseDeepBaseModel(SiteRequestEnUS siteRequest_) {
-		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedBaseModel) {
 			alreadyInitializedBaseModel = true;
 			return promiseDeepBaseModel();
@@ -1909,17 +1549,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
 		return promiseDeepBaseModel(siteRequest_);
-	}
-
-	/////////////////
-	// siteRequest //
-	/////////////////
-
-	public void siteRequestBaseModel(SiteRequestEnUS siteRequest_) {
-	}
-
-	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
-		siteRequestBaseModel(siteRequest_);
 	}
 
 	/////////////
@@ -2590,58 +2219,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		oBaseModel.setObjectText(Optional.ofNullable(solrDocument.get("objectText_stored_string")).map(v -> v.toString()).orElse(null));
 		oBaseModel.setPageUrlId(Optional.ofNullable(solrDocument.get("pageUrlId_stored_string")).map(v -> v.toString()).orElse(null));
 		oBaseModel.setPageUrlPk(Optional.ofNullable(solrDocument.get("pageUrlPk_stored_string")).map(v -> v.toString()).orElse(null));
-	}
-
-	//////////////////
-	// apiRequest //
-	//////////////////
-
-	public void apiRequestBaseModel() {
-		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
-		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
-		if(o != null && o instanceof BaseModel) {
-			BaseModel original = (BaseModel)o;
-			if(!Objects.equals(pk, original.getPk()))
-				apiRequest.addVars("pk");
-			if(!Objects.equals(inheritPk, original.getInheritPk()))
-				apiRequest.addVars("inheritPk");
-			if(!Objects.equals(id, original.getId()))
-				apiRequest.addVars("id");
-			if(!Objects.equals(created, original.getCreated()))
-				apiRequest.addVars("created");
-			if(!Objects.equals(modified, original.getModified()))
-				apiRequest.addVars("modified");
-			if(!Objects.equals(archived, original.getArchived()))
-				apiRequest.addVars("archived");
-			if(!Objects.equals(deleted, original.getDeleted()))
-				apiRequest.addVars("deleted");
-			if(!Objects.equals(classCanonicalName, original.getClassCanonicalName()))
-				apiRequest.addVars("classCanonicalName");
-			if(!Objects.equals(classSimpleName, original.getClassSimpleName()))
-				apiRequest.addVars("classSimpleName");
-			if(!Objects.equals(classCanonicalNames, original.getClassCanonicalNames()))
-				apiRequest.addVars("classCanonicalNames");
-			if(!Objects.equals(sessionId, original.getSessionId()))
-				apiRequest.addVars("sessionId");
-			if(!Objects.equals(userId, original.getUserId()))
-				apiRequest.addVars("userId");
-			if(!Objects.equals(userKey, original.getUserKey()))
-				apiRequest.addVars("userKey");
-			if(!Objects.equals(saves, original.getSaves()))
-				apiRequest.addVars("saves");
-			if(!Objects.equals(objectTitle, original.getObjectTitle()))
-				apiRequest.addVars("objectTitle");
-			if(!Objects.equals(objectId, original.getObjectId()))
-				apiRequest.addVars("objectId");
-			if(!Objects.equals(objectSuggest, original.getObjectSuggest()))
-				apiRequest.addVars("objectSuggest");
-			if(!Objects.equals(objectText, original.getObjectText()))
-				apiRequest.addVars("objectText");
-			if(!Objects.equals(pageUrlId, original.getPageUrlId()))
-				apiRequest.addVars("pageUrlId");
-			if(!Objects.equals(pageUrlPk, original.getPageUrlPk()))
-				apiRequest.addVars("pageUrlPk");
-		}
 	}
 
 	//////////////
