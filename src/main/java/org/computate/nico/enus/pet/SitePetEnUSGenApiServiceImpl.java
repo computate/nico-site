@@ -242,9 +242,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(SitePet.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
-				searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
+				searchList.addFilterQuery("deleted_indexedstored_boolean:false");
+				searchList.addFilterQuery("archived_indexedstored_boolean:false");
+				searchList.addFilterQuery("inheritPk_indexedstored_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 				searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 					try {
 						if(searchList.size() >= 1) {
@@ -475,9 +475,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(SitePet.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
-				searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
+				searchList.addFilterQuery("deleted_indexedstored_boolean:false");
+				searchList.addFilterQuery("archived_indexedstored_boolean:false");
+				searchList.addFilterQuery("pk_indexedstored_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 				searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 					try {
 						if(searchList.size() >= 1) {
@@ -1933,7 +1933,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				JsonObject facetFieldsJson = new JsonObject();
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
-					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexedstored_");
 					JsonObject facetFieldCounts = new JsonObject();
 					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
@@ -1950,7 +1950,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				json.put("facet_ranges", rangeJson);
 				for(RangeFacet rangeFacet : facetRanges) {
 					JsonObject rangeFacetJson = new JsonObject();
-					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexedstored_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
 					JsonObject rangeFacetCountsMap = new JsonObject();
 					rangeFacetJson.put("counts", rangeFacetCountsMap);
@@ -1974,7 +1974,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					String[] entityVars = new String[varsIndexed.length];
 					for(Integer i = 0; i < entityVars.length; i++) {
 						String entityIndexed = varsIndexed[i];
-						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexedstored_");
 					}
 					JsonArray pivotArray = new JsonArray();
 					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
@@ -1994,7 +1994,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 	public void responsePivotSearchSitePet(List<PivotField> pivotFields, JsonArray pivotArray) {
 		for(PivotField pivotField : pivotFields) {
 			String entityIndexed = pivotField.getField();
-			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexedstored_");
 			JsonObject pivotJson = new JsonObject();
 			pivotArray.add(pivotJson);
 			pivotJson.put("field", entityVar);
@@ -2007,7 +2007,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				pivotJson.put("ranges", rangeJson);
 				for(RangeFacet rangeFacet : pivotRanges) {
 					JsonObject rangeFacetJson = new JsonObject();
-					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexedstored_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
 					JsonObject rangeFacetCountsObject = new JsonObject();
 					rangeFacetJson.put("counts", rangeFacetCountsObject);
@@ -2125,7 +2125,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				JsonObject facetFieldsJson = new JsonObject();
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
-					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexedstored_");
 					JsonObject facetFieldCounts = new JsonObject();
 					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
@@ -2142,7 +2142,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				json.put("facet_ranges", rangeJson);
 				for(RangeFacet rangeFacet : facetRanges) {
 					JsonObject rangeFacetJson = new JsonObject();
-					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexedstored_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
 					JsonObject rangeFacetCountsMap = new JsonObject();
 					rangeFacetJson.put("counts", rangeFacetCountsMap);
@@ -2166,7 +2166,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					String[] entityVars = new String[varsIndexed.length];
 					for(Integer i = 0; i < entityVars.length; i++) {
 						String entityIndexed = varsIndexed[i];
-						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexedstored_");
 					}
 					JsonArray pivotArray = new JsonArray();
 					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
@@ -2186,7 +2186,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 	public void responsePivotAdminSearchSitePet(List<PivotField> pivotFields, JsonArray pivotArray) {
 		for(PivotField pivotField : pivotFields) {
 			String entityIndexed = pivotField.getField();
-			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexedstored_");
 			JsonObject pivotJson = new JsonObject();
 			pivotArray.add(pivotJson);
 			pivotJson.put("field", entityVar);
@@ -2199,7 +2199,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				pivotJson.put("ranges", rangeJson);
 				for(RangeFacet rangeFacet : pivotRanges) {
 					JsonObject rangeFacetJson = new JsonObject();
-					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexedstored_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
 					JsonObject rangeFacetCountsObject = new JsonObject();
 					rangeFacetJson.put("counts", rangeFacetCountsObject);
@@ -2268,7 +2268,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 	public void searchpageSitePetPageInit(SitePetPage page, SearchList<SitePet> listSitePet) {
 	}
 	public String templateSearchPageSitePet() {
-		return ConfigKeys.TEMPLATE_PATH + "/SitePetPage";
+		return config.getString(ConfigKeys.TEMPLATE_PATH) + "/enUS/SitePetPage";
 	}
 	public Future<ServiceResponse> response200SearchPageSitePet(SearchList<SitePet> listSitePet) {
 		Promise<ServiceResponse> promise = Promise.promise();
@@ -2431,9 +2431,9 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 
 			String id = serviceRequest.getParams().getJsonObject("path").getString("id");
 			if(id != null && NumberUtils.isCreatable(id)) {
-				searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+				searchList.addFilterQuery("(pk_indexedstored_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexedstored_string:" + ClientUtils.escapeQueryChars(id) + ")");
 			} else if(id != null) {
-				searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
+				searchList.addFilterQuery("objectId_indexedstored_string:" + ClientUtils.escapeQueryChars(id));
 			}
 
 			List<String> roles = Arrays.asList("SiteAdmin");
@@ -2444,8 +2444,8 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleReads))
 					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleReads))
 					) {
-				searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
-						+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+				searchList.addFilterQuery("sessionId_indexedstored_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexedstored_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+						+ " OR userKeys_indexedstored_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
 			}
 
 			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
@@ -2566,7 +2566,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				}
 			});
 			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-				searchList.addSort("created_indexed_date", ORDER.desc);
+				searchList.addSort("created_indexedstored_date", ORDER.desc);
 			}
 			searchSitePet2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {

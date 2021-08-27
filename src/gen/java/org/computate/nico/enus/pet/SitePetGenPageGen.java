@@ -16,6 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.vertx.core.json.JsonObject;
 import java.lang.String;
 import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
@@ -55,7 +56,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -185,7 +186,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 	/**	 The entity promiseBefore
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Void promiseBefore;
 	@JsonIgnore
@@ -578,6 +579,86 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 		return pageUri == null ? "" : pageUri;
 	}
 
+	////////////////
+	// pagination //
+	////////////////
+
+	/**	 The entity pagination
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonObject(). 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected JsonObject pagination = new JsonObject();
+	@JsonIgnore
+	public Wrap<JsonObject> paginationWrap = new Wrap<JsonObject>().var("pagination").o(pagination);
+
+	/**	<br/> The entity pagination
+	 *  It is constructed before being initialized with the constructor by default JsonObject(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pagination">Find the entity pagination in Solr</a>
+	 * <br/>
+	 * @param pagination is the entity already constructed. 
+	 **/
+	protected abstract void _pagination(JsonObject pagination);
+
+	public JsonObject getPagination() {
+		return pagination;
+	}
+
+	public void setPagination(JsonObject pagination) {
+		this.pagination = pagination;
+		this.paginationWrap.alreadyInitialized = true;
+	}
+	public static JsonObject staticSetPagination(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SitePetGenPage paginationInit() {
+		if(!paginationWrap.alreadyInitialized) {
+			_pagination(pagination);
+		}
+		paginationWrap.alreadyInitialized(true);
+		return (SitePetGenPage)this;
+	}
+
+	///////////
+	// query //
+	///////////
+
+	/**	 The entity query
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonObject(). 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected JsonObject query = new JsonObject();
+	@JsonIgnore
+	public Wrap<JsonObject> queryWrap = new Wrap<JsonObject>().var("query").o(query);
+
+	/**	<br/> The entity query
+	 *  It is constructed before being initialized with the constructor by default JsonObject(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:query">Find the entity query in Solr</a>
+	 * <br/>
+	 * @param query is the entity already constructed. 
+	 **/
+	protected abstract void _query(JsonObject query);
+
+	public JsonObject getQuery() {
+		return query;
+	}
+
+	public void setQuery(JsonObject query) {
+		this.query = query;
+		this.queryWrap.alreadyInitialized = true;
+	}
+	public static JsonObject staticSetQuery(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SitePetGenPage queryInit() {
+		if(!queryWrap.alreadyInitialized) {
+			_query(query);
+		}
+		queryWrap.alreadyInitialized(true);
+		return (SitePetGenPage)this;
+	}
+
 	//////////////////
 	// promiseAfter //
 	//////////////////
@@ -585,7 +666,7 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 	/**	 The entity promiseAfter
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Void promiseAfter;
 	@JsonIgnore
@@ -894,6 +975,8 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 				pageH3Init();
 				pageTitleInit();
 				pageUriInit();
+				paginationInit();
+				queryInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -983,6 +1066,10 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 				return oSitePetGenPage.pageTitle;
 			case "pageUri":
 				return oSitePetGenPage.pageUri;
+			case "pagination":
+				return oSitePetGenPage.pagination;
+			case "query":
+				return oSitePetGenPage.query;
 			case "promiseAfter":
 				return oSitePetGenPage.promiseAfter;
 			case "pageImageUri":
@@ -1242,6 +1329,8 @@ public abstract class SitePetGenPageGen<DEV> extends Object {
 	public static final String VAR_pageH3 = "pageH3";
 	public static final String VAR_pageTitle = "pageTitle";
 	public static final String VAR_pageUri = "pageUri";
+	public static final String VAR_pagination = "pagination";
+	public static final String VAR_query = "query";
 	public static final String VAR_promiseAfter = "promiseAfter";
 	public static final String VAR_pageImageUri = "pageImageUri";
 	public static final String VAR_contextIconGroup = "contextIconGroup";

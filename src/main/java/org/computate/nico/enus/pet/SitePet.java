@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet; 
+package org.computate.nico.enus.pet;    
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/               
+ **/                 
 public class SitePet extends SitePetGen<BaseModel> {
 	
 
@@ -56,7 +56,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 */           
+	 */            
 	protected void _petKey(Wrap<Long> w) {
 		w.o(pk);
 	}
@@ -131,7 +131,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 1
 	 * Multiline: true
 	 * DisplayName.enUS: What does your pet eat?
-	 */           
+	 */                      
 	protected void _petFood(Wrap<String> w) {
 	}
 
@@ -169,7 +169,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 2
 	 * Multiline: true
 	 * DisplayName.enUS: What would get your pet in trouble?
-	 */           
+	 */          
 	protected void _petTrouble(Wrap<String> w) {
 	}
 

@@ -1560,69 +1560,69 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void populateSitePet(SolrDocument solrDocument) {
 		SitePet oSitePet = (SitePet)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("petKey")) {
-				Long petKey = (Long)solrDocument.get("petKey_stored_long");
+				Long petKey = (Long)solrDocument.get("petKey_indexedstored_long");
 				if(petKey != null)
 					oSitePet.setPetKey(petKey);
 			}
 
 			if(saves.contains("userKeys")) {
-				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_indexedstored_longs");
 				if(userKeys != null)
 					oSitePet.userKeys.addAll(userKeys);
 			}
 
-			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_stored_longs");
+			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
 			if(enrollmentKeys != null)
 				oSitePet.enrollmentKeys.addAll(enrollmentKeys);
 
 			if(saves.contains("petName")) {
-				String petName = (String)solrDocument.get("petName_stored_string");
+				String petName = (String)solrDocument.get("petName_indexedstored_string");
 				if(petName != null)
 					oSitePet.setPetName(petName);
 			}
 
 			if(saves.contains("petFoodAmount")) {
-				String petFoodAmount = (String)solrDocument.get("petFoodAmount_stored_string");
+				String petFoodAmount = (String)solrDocument.get("petFoodAmount_indexedstored_string");
 				if(petFoodAmount != null)
 					oSitePet.setPetFoodAmount(petFoodAmount);
 			}
 
 			if(saves.contains("petFood")) {
-				String petFood = (String)solrDocument.get("petFood_stored_string");
+				String petFood = (String)solrDocument.get("petFood_indexedstored_string");
 				if(petFood != null)
 					oSitePet.setPetFood(petFood);
 			}
 
 			if(saves.contains("petSick")) {
-				Boolean petSick = (Boolean)solrDocument.get("petSick_stored_boolean");
+				Boolean petSick = (Boolean)solrDocument.get("petSick_indexedstored_boolean");
 				if(petSick != null)
 					oSitePet.setPetSick(petSick);
 			}
 
 			if(saves.contains("petMedNote")) {
-				String petMedNote = (String)solrDocument.get("petMedNote_stored_string");
+				String petMedNote = (String)solrDocument.get("petMedNote_indexedstored_string");
 				if(petMedNote != null)
 					oSitePet.setPetMedNote(petMedNote);
 			}
 
 			if(saves.contains("petTrouble")) {
-				String petTrouble = (String)solrDocument.get("petTrouble_stored_string");
+				String petTrouble = (String)solrDocument.get("petTrouble_indexedstored_string");
 				if(petTrouble != null)
 					oSitePet.setPetTrouble(petTrouble);
 			}
 
 			if(saves.contains("sendpdates")) {
-				Boolean sendpdates = (Boolean)solrDocument.get("sendpdates_stored_boolean");
+				Boolean sendpdates = (Boolean)solrDocument.get("sendpdates_indexedstored_boolean");
 				if(sendpdates != null)
 					oSitePet.setSendpdates(sendpdates);
 			}
 
 			if(saves.contains("petAmount")) {
-				String petAmount = (String)solrDocument.get("petAmount_stored_string");
+				String petAmount = (String)solrDocument.get("petAmount_indexedstored_string");
 				if(petAmount != null)
 					oSitePet.setPetAmount(petAmount);
 			}
@@ -1633,56 +1633,41 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void indexSitePet(SolrInputDocument document) {
 		if(petKey != null) {
-			document.addField("petKey_indexed_long", petKey);
-			document.addField("petKey_stored_long", petKey);
+			document.addField("petKey_indexedstored_long", petKey);
 		}
 		if(userKeys != null) {
 			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_stored_longs", o);
+				document.addField("userKeys_indexedstored_longs", o);
 			}
 		}
 		if(enrollmentKeys != null) {
 			for(java.lang.Long o : enrollmentKeys) {
-				document.addField("enrollmentKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : enrollmentKeys) {
-				document.addField("enrollmentKeys_stored_longs", o);
+				document.addField("enrollmentKeys_indexedstored_longs", o);
 			}
 		}
 		if(petName != null) {
-			document.addField("petName_indexed_string", petName);
-			document.addField("petName_stored_string", petName);
+			document.addField("petName_indexedstored_string", petName);
 		}
 		if(petFoodAmount != null) {
-			document.addField("petFoodAmount_indexed_string", petFoodAmount);
-			document.addField("petFoodAmount_stored_string", petFoodAmount);
+			document.addField("petFoodAmount_indexedstored_string", petFoodAmount);
 		}
 		if(petFood != null) {
-			document.addField("petFood_indexed_string", petFood);
-			document.addField("petFood_stored_string", petFood);
+			document.addField("petFood_indexedstored_string", petFood);
 		}
 		if(petSick != null) {
-			document.addField("petSick_indexed_boolean", petSick);
-			document.addField("petSick_stored_boolean", petSick);
+			document.addField("petSick_indexedstored_boolean", petSick);
 		}
 		if(petMedNote != null) {
-			document.addField("petMedNote_indexed_string", petMedNote);
-			document.addField("petMedNote_stored_string", petMedNote);
+			document.addField("petMedNote_indexedstored_string", petMedNote);
 		}
 		if(petTrouble != null) {
-			document.addField("petTrouble_indexed_string", petTrouble);
-			document.addField("petTrouble_stored_string", petTrouble);
+			document.addField("petTrouble_indexedstored_string", petTrouble);
 		}
 		if(sendpdates != null) {
-			document.addField("sendpdates_indexed_boolean", sendpdates);
-			document.addField("sendpdates_stored_boolean", sendpdates);
+			document.addField("sendpdates_indexedstored_boolean", sendpdates);
 		}
 		if(petAmount != null) {
-			document.addField("petAmount_indexed_string", petAmount);
-			document.addField("petAmount_stored_string", petAmount);
+			document.addField("petAmount_indexedstored_string", petAmount);
 		}
 		super.indexBaseModel(document);
 
@@ -1691,27 +1676,27 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	public static String varIndexedSitePet(String entityVar) {
 		switch(entityVar) {
 			case "petKey":
-				return "petKey_indexed_long";
+				return "petKey_indexedstored_long";
 			case "userKeys":
-				return "userKeys_indexed_longs";
+				return "userKeys_indexedstored_longs";
 			case "enrollmentKeys":
-				return "enrollmentKeys_indexed_longs";
+				return "enrollmentKeys_indexedstored_longs";
 			case "petName":
-				return "petName_indexed_string";
+				return "petName_indexedstored_string";
 			case "petFoodAmount":
-				return "petFoodAmount_indexed_string";
+				return "petFoodAmount_indexedstored_string";
 			case "petFood":
-				return "petFood_indexed_string";
+				return "petFood_indexedstored_string";
 			case "petSick":
-				return "petSick_indexed_boolean";
+				return "petSick_indexedstored_boolean";
 			case "petMedNote":
-				return "petMedNote_indexed_string";
+				return "petMedNote_indexedstored_string";
 			case "petTrouble":
-				return "petTrouble_indexed_string";
+				return "petTrouble_indexedstored_string";
 			case "sendpdates":
-				return "sendpdates_indexed_boolean";
+				return "sendpdates_indexedstored_boolean";
 			case "petAmount":
-				return "petAmount_indexed_string";
+				return "petAmount_indexedstored_string";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -1741,21 +1726,21 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	public void storeSitePet(SolrDocument solrDocument) {
 		SitePet oSitePet = (SitePet)this;
 
-		oSitePet.setPetKey(Optional.ofNullable(solrDocument.get("petKey_stored_long")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("userKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		oSitePet.setPetKey(Optional.ofNullable(solrDocument.get("petKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("userKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSitePet.addUserKeys(v.toString());
 		});
-		Optional.ofNullable((List<?>)solrDocument.get("enrollmentKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		Optional.ofNullable((List<?>)solrDocument.get("enrollmentKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSitePet.addEnrollmentKeys(v.toString());
 		});
-		oSitePet.setPetName(Optional.ofNullable(solrDocument.get("petName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSitePet.setPetFoodAmount(Optional.ofNullable(solrDocument.get("petFoodAmount_stored_string")).map(v -> v.toString()).orElse(null));
-		oSitePet.setPetFood(Optional.ofNullable(solrDocument.get("petFood_stored_string")).map(v -> v.toString()).orElse(null));
-		oSitePet.setPetSick(Optional.ofNullable(solrDocument.get("petSick_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oSitePet.setPetMedNote(Optional.ofNullable(solrDocument.get("petMedNote_stored_string")).map(v -> v.toString()).orElse(null));
-		oSitePet.setPetTrouble(Optional.ofNullable(solrDocument.get("petTrouble_stored_string")).map(v -> v.toString()).orElse(null));
-		oSitePet.setSendpdates(Optional.ofNullable(solrDocument.get("sendpdates_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oSitePet.setPetAmount(Optional.ofNullable(solrDocument.get("petAmount_stored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetName(Optional.ofNullable(solrDocument.get("petName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetFoodAmount(Optional.ofNullable(solrDocument.get("petFoodAmount_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetFood(Optional.ofNullable(solrDocument.get("petFood_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetSick(Optional.ofNullable(solrDocument.get("petSick_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetMedNote(Optional.ofNullable(solrDocument.get("petMedNote_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetTrouble(Optional.ofNullable(solrDocument.get("petTrouble_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSitePet.setSendpdates(Optional.ofNullable(solrDocument.get("sendpdates_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oSitePet.setPetAmount(Optional.ofNullable(solrDocument.get("petAmount_indexedstored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
 	}

@@ -2400,75 +2400,56 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void indexBaseModel(SolrInputDocument document) {
 		if(pk != null) {
-			document.addField("pk_indexed_long", pk);
-			document.addField("pk_stored_long", pk);
+			document.addField("pk_indexedstored_long", pk);
 		}
 		if(inheritPk != null) {
-			document.addField("inheritPk_indexed_string", inheritPk);
-			document.addField("inheritPk_stored_string", inheritPk);
+			document.addField("inheritPk_indexedstored_string", inheritPk);
 		}
 		if(id != null) {
 			document.addField("id", id);
 		}
 		if(created != null) {
-			document.addField("created_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
-			document.addField("created_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
+			document.addField("created_indexedstored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
 		}
 		if(modified != null) {
-			document.addField("modified_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
-			document.addField("modified_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
+			document.addField("modified_indexedstored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
 		}
 		if(archived != null) {
-			document.addField("archived_indexed_boolean", archived);
-			document.addField("archived_stored_boolean", archived);
+			document.addField("archived_indexedstored_boolean", archived);
 		}
 		if(deleted != null) {
-			document.addField("deleted_indexed_boolean", deleted);
-			document.addField("deleted_stored_boolean", deleted);
+			document.addField("deleted_indexedstored_boolean", deleted);
 		}
 		if(classCanonicalName != null) {
-			document.addField("classCanonicalName_indexed_string", classCanonicalName);
-			document.addField("classCanonicalName_stored_string", classCanonicalName);
+			document.addField("classCanonicalName_indexedstored_string", classCanonicalName);
 		}
 		if(classSimpleName != null) {
-			document.addField("classSimpleName_indexed_string", classSimpleName);
-			document.addField("classSimpleName_stored_string", classSimpleName);
+			document.addField("classSimpleName_indexedstored_string", classSimpleName);
 		}
 		if(classCanonicalNames != null) {
 			for(java.lang.String o : classCanonicalNames) {
-				document.addField("classCanonicalNames_indexed_strings", o);
-			}
-			for(java.lang.String o : classCanonicalNames) {
-				document.addField("classCanonicalNames_stored_strings", o);
+				document.addField("classCanonicalNames_indexedstored_strings", o);
 			}
 		}
 		if(sessionId != null) {
-			document.addField("sessionId_indexed_string", sessionId);
-			document.addField("sessionId_stored_string", sessionId);
+			document.addField("sessionId_indexedstored_string", sessionId);
 		}
 		if(userId != null) {
-			document.addField("userId_indexed_string", userId);
-			document.addField("userId_stored_string", userId);
+			document.addField("userId_indexedstored_string", userId);
 		}
 		if(userKey != null) {
-			document.addField("userKey_indexed_long", userKey);
-			document.addField("userKey_stored_long", userKey);
+			document.addField("userKey_indexedstored_long", userKey);
 		}
 		if(saves != null) {
 			for(java.lang.String o : saves) {
-				document.addField("saves_indexed_strings", o);
-			}
-			for(java.lang.String o : saves) {
-				document.addField("saves_stored_strings", o);
+				document.addField("saves_indexedstored_strings", o);
 			}
 		}
 		if(objectTitle != null) {
-			document.addField("objectTitle_indexed_string", objectTitle);
-			document.addField("objectTitle_stored_string", objectTitle);
+			document.addField("objectTitle_indexedstored_string", objectTitle);
 		}
 		if(objectId != null) {
-			document.addField("objectId_indexed_string", objectId);
-			document.addField("objectId_stored_string", objectId);
+			document.addField("objectId_indexedstored_string", objectId);
 		}
 		if(objectSuggest != null) {
 			document.addField("objectSuggest_suggested", objectSuggest);
@@ -2478,57 +2459,55 @@ public abstract class BaseModelGen<DEV> extends Object {
 			document.addField("objectText_indexed_string", objectText);
 		}
 		if(pageUrlId != null) {
-			document.addField("pageUrlId_indexed_string", pageUrlId);
-			document.addField("pageUrlId_stored_string", pageUrlId);
+			document.addField("pageUrlId_indexedstored_string", pageUrlId);
 		}
 		if(pageUrlPk != null) {
-			document.addField("pageUrlPk_indexed_string", pageUrlPk);
-			document.addField("pageUrlPk_stored_string", pageUrlPk);
+			document.addField("pageUrlPk_indexedstored_string", pageUrlPk);
 		}
 	}
 
 	public static String varIndexedBaseModel(String entityVar) {
 		switch(entityVar) {
 			case "pk":
-				return "pk_indexed_long";
+				return "pk_indexedstored_long";
 			case "inheritPk":
-				return "inheritPk_indexed_string";
+				return "inheritPk_indexedstored_string";
 			case "id":
 				return "id";
 			case "created":
-				return "created_indexed_date";
+				return "created_indexedstored_date";
 			case "modified":
-				return "modified_indexed_date";
+				return "modified_indexedstored_date";
 			case "archived":
-				return "archived_indexed_boolean";
+				return "archived_indexedstored_boolean";
 			case "deleted":
-				return "deleted_indexed_boolean";
+				return "deleted_indexedstored_boolean";
 			case "classCanonicalName":
-				return "classCanonicalName_indexed_string";
+				return "classCanonicalName_indexedstored_string";
 			case "classSimpleName":
-				return "classSimpleName_indexed_string";
+				return "classSimpleName_indexedstored_string";
 			case "classCanonicalNames":
-				return "classCanonicalNames_indexed_strings";
+				return "classCanonicalNames_indexedstored_strings";
 			case "sessionId":
-				return "sessionId_indexed_string";
+				return "sessionId_indexedstored_string";
 			case "userId":
-				return "userId_indexed_string";
+				return "userId_indexedstored_string";
 			case "userKey":
-				return "userKey_indexed_long";
+				return "userKey_indexedstored_long";
 			case "saves":
-				return "saves_indexed_strings";
+				return "saves_indexedstored_strings";
 			case "objectTitle":
-				return "objectTitle_indexed_string";
+				return "objectTitle_indexedstored_string";
 			case "objectId":
-				return "objectId_indexed_string";
+				return "objectId_indexedstored_string";
 			case "objectSuggest":
 				return "objectSuggest_suggested";
 			case "objectText":
 				return "objectText_text_enUS";
 			case "pageUrlId":
-				return "pageUrlId_indexed_string";
+				return "pageUrlId_indexedstored_string";
 			case "pageUrlPk":
-				return "pageUrlPk_indexed_string";
+				return "pageUrlPk_indexedstored_string";
 			default:
 				return null;
 		}
@@ -2564,32 +2543,32 @@ public abstract class BaseModelGen<DEV> extends Object {
 	public void storeBaseModel(SolrDocument solrDocument) {
 		BaseModel oBaseModel = (BaseModel)this;
 
-		oBaseModel.setPk(Optional.ofNullable(solrDocument.get("pk_stored_long")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setPk(Optional.ofNullable(solrDocument.get("pk_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		String id = (String)solrDocument.get("id");
 		oBaseModel.setId(id);
-		oBaseModel.setCreated(Optional.ofNullable(solrDocument.get("created_stored_date")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setModified(Optional.ofNullable(solrDocument.get("modified_stored_date")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setArchived(Optional.ofNullable(solrDocument.get("archived_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setDeleted(Optional.ofNullable(solrDocument.get("deleted_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_stored_string")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("classCanonicalNames_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		oBaseModel.setCreated(Optional.ofNullable(solrDocument.get("created_indexedstored_date")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setModified(Optional.ofNullable(solrDocument.get("modified_indexedstored_date")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setArchived(Optional.ofNullable(solrDocument.get("archived_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setDeleted(Optional.ofNullable(solrDocument.get("deleted_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("classCanonicalNames_indexedstored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oBaseModel.addClassCanonicalNames(v.toString());
 		});
-		oBaseModel.setSessionId(Optional.ofNullable(solrDocument.get("sessionId_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setUserId(Optional.ofNullable(solrDocument.get("userId_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setUserKey(Optional.ofNullable(solrDocument.get("userKey_stored_long")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("saves_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		oBaseModel.setSessionId(Optional.ofNullable(solrDocument.get("sessionId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setUserId(Optional.ofNullable(solrDocument.get("userId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setUserKey(Optional.ofNullable(solrDocument.get("userKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("saves_indexedstored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oBaseModel.addSaves(v.toString());
 		});
-		oBaseModel.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setObjectId(Optional.ofNullable(solrDocument.get("objectId_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectId(Optional.ofNullable(solrDocument.get("objectId_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		String objectSuggest = (String)solrDocument.get("objectSuggest_suggested");
 		oBaseModel.setObjectSuggest(objectSuggest);
-		oBaseModel.setObjectText(Optional.ofNullable(solrDocument.get("objectText_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setPageUrlId(Optional.ofNullable(solrDocument.get("pageUrlId_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setPageUrlPk(Optional.ofNullable(solrDocument.get("pageUrlPk_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectText(Optional.ofNullable(solrDocument.get("objectText_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setPageUrlId(Optional.ofNullable(solrDocument.get("pageUrlId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setPageUrlPk(Optional.ofNullable(solrDocument.get("pageUrlPk_indexedstored_string")).map(v -> v.toString()).orElse(null));
 	}
 
 	//////////////////
