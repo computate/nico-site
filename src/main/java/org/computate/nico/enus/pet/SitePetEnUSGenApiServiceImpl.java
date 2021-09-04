@@ -2478,11 +2478,21 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 						for(Object paramObject : paramObjects) {
 							switch(paramName) {
 								case "q":
-									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-									varIndexed = "*".equals(entityVar) ? entityVar : SitePet.varSearchSitePet(entityVar);
-									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-									valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-									searchSitePetQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									Matcher mQ = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|\\^|$)))").matcher((String)paramObject);
+									boolean foundQ = mQ.find();
+									if(foundQ) {
+										StringBuffer sb = new StringBuffer();
+										while(foundQ) {
+											entityVar = mQ.group(1).trim();
+											valueIndexed = mQ.group(2).trim();
+											varIndexed = SitePet.varIndexedSitePet(entityVar);
+											String entityQ = searchSitePetFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											mQ.appendReplacement(sb, entityQ);
+											foundQ = mQ.find();
+										}
+										mQ.appendTail(sb);
+										searchList.setQuery(sb.toString());
+									}
 									break;
 								case "fq":
 									Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);

@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet;    
+package org.computate.nico.enus.pet;                     
 
 import java.util.List;
 

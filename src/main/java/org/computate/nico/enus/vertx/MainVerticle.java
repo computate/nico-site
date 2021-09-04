@@ -19,6 +19,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.enrollment.SiteEnrollmentEnUSGenApiService;
+import org.computate.nico.enus.pet.SitePetEnUSGenApiService;
 import org.computate.nico.enus.user.SiteUserEnUSGenApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -635,6 +636,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine, vertx);
 			SiteEnrollmentEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine, vertx);
+			SitePetEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();
