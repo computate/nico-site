@@ -1,4 +1,4 @@
-package org.computate.nico.enus.user;
+package org.computate.nico.enus.page;
 
 import org.computate.nico.enus.java.ZonedDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +16,6 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.computate.nico.enus.user.SiteUser;
 import io.vertx.core.json.JsonObject;
 import java.lang.String;
 import org.computate.nico.enus.base.BaseModel;
@@ -31,7 +30,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
-import org.computate.nico.enus.search.SearchList;
 import io.vertx.core.Future;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
@@ -43,11 +41,11 @@ import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class SiteUserGenPageGen<DEV> extends Object {
-	protected static final Logger LOG = LoggerFactory.getLogger(SiteUserGenPage.class);
+public abstract class PageLayoutGen<DEV> extends Object {
+	protected static final Logger LOG = LoggerFactory.getLogger(PageLayout.class);
 
 	//////////////////
 	// siteRequest_ //
@@ -64,7 +62,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -81,7 +79,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteUserGenPage siteRequest_Init() {
+	protected PageLayout siteRequest_Init() {
 		if(!siteRequest_Wrap.alreadyInitialized) {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
@@ -89,94 +87,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
-	}
-
-	///////////////////
-	// listSiteUser_ //
-	///////////////////
-
-	/**	 The entity listSiteUser_
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteUser> listSiteUser_;
-	@JsonIgnore
-	public Wrap<SearchList<SiteUser>> listSiteUser_Wrap = new Wrap<SearchList<SiteUser>>().var("listSiteUser_").o(listSiteUser_);
-
-	/**	<br/> The entity listSiteUser_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteUser_">Find the entity listSiteUser_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _listSiteUser_(Wrap<SearchList<SiteUser>> c);
-
-	public SearchList<SiteUser> getListSiteUser_() {
-		return listSiteUser_;
-	}
-
-	public void setListSiteUser_(SearchList<SiteUser> listSiteUser_) {
-		this.listSiteUser_ = listSiteUser_;
-		this.listSiteUser_Wrap.alreadyInitialized = true;
-	}
-	public static SearchList<SiteUser> staticSetListSiteUser_(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteUserGenPage listSiteUser_Init() {
-		if(!listSiteUser_Wrap.alreadyInitialized) {
-			_listSiteUser_(listSiteUser_Wrap);
-			if(listSiteUser_ == null)
-				setListSiteUser_(listSiteUser_Wrap.o);
-			listSiteUser_Wrap.o(null);
-		}
-		listSiteUser_Wrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
-	}
-
-	///////////////
-	// siteUser_ //
-	///////////////
-
-	/**	 The entity siteUser_
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected SiteUser siteUser_;
-	@JsonIgnore
-	public Wrap<SiteUser> siteUser_Wrap = new Wrap<SiteUser>().var("siteUser_").o(siteUser_);
-
-	/**	<br/> The entity siteUser_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteUser_">Find the entity siteUser_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _siteUser_(Wrap<SiteUser> c);
-
-	public SiteUser getSiteUser_() {
-		return siteUser_;
-	}
-
-	public void setSiteUser_(SiteUser siteUser_) {
-		this.siteUser_ = siteUser_;
-		this.siteUser_Wrap.alreadyInitialized = true;
-	}
-	public static SiteUser staticSetSiteUser_(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteUserGenPage siteUser_Init() {
-		if(!siteUser_Wrap.alreadyInitialized) {
-			_siteUser_(siteUser_Wrap);
-			if(siteUser_ == null)
-				setSiteUser_(siteUser_Wrap.o);
-			siteUser_Wrap.o(null);
-		}
-		siteUser_Wrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	///////////////////
@@ -194,7 +105,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity promiseBefore
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:promiseBefore">Find the entity promiseBefore in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:promiseBefore">Find the entity promiseBefore in Solr</a>
 	 * <br/>
 	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -244,7 +155,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pageH1
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -254,13 +165,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return pageH1;
 	}
 	public void setPageH1(String o) {
-		this.pageH1 = SiteUserGenPage.staticSetPageH1(siteRequest_, o);
+		this.pageH1 = PageLayout.staticSetPageH1(siteRequest_, o);
 		this.pageH1Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage pageH1Init() {
+	protected PageLayout pageH1Init() {
 		if(!pageH1Wrap.alreadyInitialized) {
 			_pageH1(pageH1Wrap);
 			if(pageH1 == null)
@@ -268,7 +179,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			pageH1Wrap.o(null);
 		}
 		pageH1Wrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
@@ -280,11 +191,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrPageH1(siteRequest_, SiteUserGenPage.staticSolrPageH1(siteRequest_, SiteUserGenPage.staticSetPageH1(siteRequest_, o)));
+		return PageLayout.staticSolrStrPageH1(siteRequest_, PageLayout.staticSolrPageH1(siteRequest_, PageLayout.staticSetPageH1(siteRequest_, o)));
 	}
 
 	public String solrPageH1() {
-		return SiteUserGenPage.staticSolrPageH1(siteRequest_, pageH1);
+		return PageLayout.staticSolrPageH1(siteRequest_, pageH1);
 	}
 
 	public String strPageH1() {
@@ -314,7 +225,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pageH2
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH2">Find the entity pageH2 in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH2">Find the entity pageH2 in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -324,13 +235,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return pageH2;
 	}
 	public void setPageH2(String o) {
-		this.pageH2 = SiteUserGenPage.staticSetPageH2(siteRequest_, o);
+		this.pageH2 = PageLayout.staticSetPageH2(siteRequest_, o);
 		this.pageH2Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH2(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage pageH2Init() {
+	protected PageLayout pageH2Init() {
 		if(!pageH2Wrap.alreadyInitialized) {
 			_pageH2(pageH2Wrap);
 			if(pageH2 == null)
@@ -338,7 +249,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			pageH2Wrap.o(null);
 		}
 		pageH2Wrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrPageH2(SiteRequestEnUS siteRequest_, String o) {
@@ -350,11 +261,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrPageH2(siteRequest_, SiteUserGenPage.staticSolrPageH2(siteRequest_, SiteUserGenPage.staticSetPageH2(siteRequest_, o)));
+		return PageLayout.staticSolrStrPageH2(siteRequest_, PageLayout.staticSolrPageH2(siteRequest_, PageLayout.staticSetPageH2(siteRequest_, o)));
 	}
 
 	public String solrPageH2() {
-		return SiteUserGenPage.staticSolrPageH2(siteRequest_, pageH2);
+		return PageLayout.staticSolrPageH2(siteRequest_, pageH2);
 	}
 
 	public String strPageH2() {
@@ -384,7 +295,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pageH3
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH3">Find the entity pageH3 in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH3">Find the entity pageH3 in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -394,13 +305,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return pageH3;
 	}
 	public void setPageH3(String o) {
-		this.pageH3 = SiteUserGenPage.staticSetPageH3(siteRequest_, o);
+		this.pageH3 = PageLayout.staticSetPageH3(siteRequest_, o);
 		this.pageH3Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH3(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage pageH3Init() {
+	protected PageLayout pageH3Init() {
 		if(!pageH3Wrap.alreadyInitialized) {
 			_pageH3(pageH3Wrap);
 			if(pageH3 == null)
@@ -408,7 +319,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			pageH3Wrap.o(null);
 		}
 		pageH3Wrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrPageH3(SiteRequestEnUS siteRequest_, String o) {
@@ -420,11 +331,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrPageH3(siteRequest_, SiteUserGenPage.staticSolrPageH3(siteRequest_, SiteUserGenPage.staticSetPageH3(siteRequest_, o)));
+		return PageLayout.staticSolrStrPageH3(siteRequest_, PageLayout.staticSolrPageH3(siteRequest_, PageLayout.staticSetPageH3(siteRequest_, o)));
 	}
 
 	public String solrPageH3() {
-		return SiteUserGenPage.staticSolrPageH3(siteRequest_, pageH3);
+		return PageLayout.staticSolrPageH3(siteRequest_, pageH3);
 	}
 
 	public String strPageH3() {
@@ -454,7 +365,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pageTitle
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageTitle">Find the entity pageTitle in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageTitle">Find the entity pageTitle in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -464,13 +375,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return pageTitle;
 	}
 	public void setPageTitle(String o) {
-		this.pageTitle = SiteUserGenPage.staticSetPageTitle(siteRequest_, o);
+		this.pageTitle = PageLayout.staticSetPageTitle(siteRequest_, o);
 		this.pageTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage pageTitleInit() {
+	protected PageLayout pageTitleInit() {
 		if(!pageTitleWrap.alreadyInitialized) {
 			_pageTitle(pageTitleWrap);
 			if(pageTitle == null)
@@ -478,7 +389,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			pageTitleWrap.o(null);
 		}
 		pageTitleWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrPageTitle(SiteRequestEnUS siteRequest_, String o) {
@@ -490,11 +401,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPageTitle(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrPageTitle(siteRequest_, SiteUserGenPage.staticSolrPageTitle(siteRequest_, SiteUserGenPage.staticSetPageTitle(siteRequest_, o)));
+		return PageLayout.staticSolrStrPageTitle(siteRequest_, PageLayout.staticSolrPageTitle(siteRequest_, PageLayout.staticSetPageTitle(siteRequest_, o)));
 	}
 
 	public String solrPageTitle() {
-		return SiteUserGenPage.staticSolrPageTitle(siteRequest_, pageTitle);
+		return PageLayout.staticSolrPageTitle(siteRequest_, pageTitle);
 	}
 
 	public String strPageTitle() {
@@ -524,7 +435,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pageUri
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUri">Find the entity pageUri in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUri">Find the entity pageUri in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -534,13 +445,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return pageUri;
 	}
 	public void setPageUri(String o) {
-		this.pageUri = SiteUserGenPage.staticSetPageUri(siteRequest_, o);
+		this.pageUri = PageLayout.staticSetPageUri(siteRequest_, o);
 		this.pageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUri(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage pageUriInit() {
+	protected PageLayout pageUriInit() {
 		if(!pageUriWrap.alreadyInitialized) {
 			_pageUri(pageUriWrap);
 			if(pageUri == null)
@@ -548,7 +459,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			pageUriWrap.o(null);
 		}
 		pageUriWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrPageUri(SiteRequestEnUS siteRequest_, String o) {
@@ -560,11 +471,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPageUri(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrPageUri(siteRequest_, SiteUserGenPage.staticSolrPageUri(siteRequest_, SiteUserGenPage.staticSetPageUri(siteRequest_, o)));
+		return PageLayout.staticSolrStrPageUri(siteRequest_, PageLayout.staticSolrPageUri(siteRequest_, PageLayout.staticSetPageUri(siteRequest_, o)));
 	}
 
 	public String solrPageUri() {
-		return SiteUserGenPage.staticSolrPageUri(siteRequest_, pageUri);
+		return PageLayout.staticSolrPageUri(siteRequest_, pageUri);
 	}
 
 	public String strPageUri() {
@@ -594,7 +505,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pagination
 	 *  It is constructed before being initialized with the constructor by default JsonObject(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pagination">Find the entity pagination in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pagination">Find the entity pagination in Solr</a>
 	 * <br/>
 	 * @param pagination is the entity already constructed. 
 	 **/
@@ -611,12 +522,12 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	public static JsonObject staticSetPagination(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteUserGenPage paginationInit() {
+	protected PageLayout paginationInit() {
 		if(!paginationWrap.alreadyInitialized) {
 			_pagination(pagination);
 		}
 		paginationWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	///////////
@@ -634,7 +545,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity query
 	 *  It is constructed before being initialized with the constructor by default JsonObject(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:query">Find the entity query in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:query">Find the entity query in Solr</a>
 	 * <br/>
 	 * @param query is the entity already constructed. 
 	 **/
@@ -651,12 +562,12 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	public static JsonObject staticSetQuery(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteUserGenPage queryInit() {
+	protected PageLayout queryInit() {
 		if(!queryWrap.alreadyInitialized) {
 			_query(query);
 		}
 		queryWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	//////////////////
@@ -674,7 +585,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity promiseAfter
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:promiseAfter">Find the entity promiseAfter in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:promiseAfter">Find the entity promiseAfter in Solr</a>
 	 * <br/>
 	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -724,7 +635,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity pageImageUri
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageUri">Find the entity pageImageUri in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageUri">Find the entity pageImageUri in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -734,13 +645,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return pageImageUri;
 	}
 	public void setPageImageUri(String o) {
-		this.pageImageUri = SiteUserGenPage.staticSetPageImageUri(siteRequest_, o);
+		this.pageImageUri = PageLayout.staticSetPageImageUri(siteRequest_, o);
 		this.pageImageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageImageUri(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage pageImageUriInit() {
+	protected PageLayout pageImageUriInit() {
 		if(!pageImageUriWrap.alreadyInitialized) {
 			_pageImageUri(pageImageUriWrap);
 			if(pageImageUri == null)
@@ -748,7 +659,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			pageImageUriWrap.o(null);
 		}
 		pageImageUriWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrPageImageUri(SiteRequestEnUS siteRequest_, String o) {
@@ -760,11 +671,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPageImageUri(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrPageImageUri(siteRequest_, SiteUserGenPage.staticSolrPageImageUri(siteRequest_, SiteUserGenPage.staticSetPageImageUri(siteRequest_, o)));
+		return PageLayout.staticSolrStrPageImageUri(siteRequest_, PageLayout.staticSolrPageImageUri(siteRequest_, PageLayout.staticSetPageImageUri(siteRequest_, o)));
 	}
 
 	public String solrPageImageUri() {
-		return SiteUserGenPage.staticSolrPageImageUri(siteRequest_, pageImageUri);
+		return PageLayout.staticSolrPageImageUri(siteRequest_, pageImageUri);
 	}
 
 	public String strPageImageUri() {
@@ -794,7 +705,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity contextIconGroup
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconGroup">Find the entity contextIconGroup in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconGroup">Find the entity contextIconGroup in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -804,13 +715,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return contextIconGroup;
 	}
 	public void setContextIconGroup(String o) {
-		this.contextIconGroup = SiteUserGenPage.staticSetContextIconGroup(siteRequest_, o);
+		this.contextIconGroup = PageLayout.staticSetContextIconGroup(siteRequest_, o);
 		this.contextIconGroupWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage contextIconGroupInit() {
+	protected PageLayout contextIconGroupInit() {
 		if(!contextIconGroupWrap.alreadyInitialized) {
 			_contextIconGroup(contextIconGroupWrap);
 			if(contextIconGroup == null)
@@ -818,7 +729,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			contextIconGroupWrap.o(null);
 		}
 		contextIconGroupWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
@@ -830,11 +741,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrContextIconGroup(siteRequest_, SiteUserGenPage.staticSolrContextIconGroup(siteRequest_, SiteUserGenPage.staticSetContextIconGroup(siteRequest_, o)));
+		return PageLayout.staticSolrStrContextIconGroup(siteRequest_, PageLayout.staticSolrContextIconGroup(siteRequest_, PageLayout.staticSetContextIconGroup(siteRequest_, o)));
 	}
 
 	public String solrContextIconGroup() {
-		return SiteUserGenPage.staticSolrContextIconGroup(siteRequest_, contextIconGroup);
+		return PageLayout.staticSolrContextIconGroup(siteRequest_, contextIconGroup);
 	}
 
 	public String strContextIconGroup() {
@@ -864,7 +775,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	/**	<br/> The entity contextIconName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconName">Find the entity contextIconName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconName">Find the entity contextIconName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -874,13 +785,13 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return contextIconName;
 	}
 	public void setContextIconName(String o) {
-		this.contextIconName = SiteUserGenPage.staticSetContextIconName(siteRequest_, o);
+		this.contextIconName = PageLayout.staticSetContextIconName(siteRequest_, o);
 		this.contextIconNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteUserGenPage contextIconNameInit() {
+	protected PageLayout contextIconNameInit() {
 		if(!contextIconNameWrap.alreadyInitialized) {
 			_contextIconName(contextIconNameWrap);
 			if(contextIconName == null)
@@ -888,7 +799,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 			contextIconNameWrap.o(null);
 		}
 		contextIconNameWrap.alreadyInitialized(true);
-		return (SiteUserGenPage)this;
+		return (PageLayout)this;
 	}
 
 	public static String staticSolrContextIconName(SiteRequestEnUS siteRequest_, String o) {
@@ -900,11 +811,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqContextIconName(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUserGenPage.staticSolrStrContextIconName(siteRequest_, SiteUserGenPage.staticSolrContextIconName(siteRequest_, SiteUserGenPage.staticSetContextIconName(siteRequest_, o)));
+		return PageLayout.staticSolrStrContextIconName(siteRequest_, PageLayout.staticSolrContextIconName(siteRequest_, PageLayout.staticSetContextIconName(siteRequest_, o)));
 	}
 
 	public String solrContextIconName() {
-		return SiteUserGenPage.staticSolrContextIconName(siteRequest_, contextIconName);
+		return PageLayout.staticSolrContextIconName(siteRequest_, contextIconName);
 	}
 
 	public String strContextIconName() {
@@ -923,22 +834,22 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSiteUserGenPage = false;
+	protected boolean alreadyInitializedPageLayout = false;
 
-	public Future<Void> promiseDeepSiteUserGenPage(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepPageLayout(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSiteUserGenPage) {
-			alreadyInitializedSiteUserGenPage = true;
-			return promiseDeepSiteUserGenPage();
+		if(!alreadyInitializedPageLayout) {
+			alreadyInitializedPageLayout = true;
+			return promiseDeepPageLayout();
 		} else {
 			return Future.succeededFuture();
 		}
 	}
 
-	public Future<Void> promiseDeepSiteUserGenPage() {
+	public Future<Void> promiseDeepPageLayout() {
 		Promise<Void> promise = Promise.promise();
 		Promise<Void> promise2 = Promise.promise();
-		promiseSiteUserGenPage(promise2);
+		promisePageLayout(promise2);
 		promise2.future().onSuccess(a -> {
 			promise.complete();
 		}).onFailure(ex -> {
@@ -947,13 +858,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		return promise.future();
 	}
 
-	public Future<Void> promiseSiteUserGenPage(Promise<Void> promise) {
+	public Future<Void> promisePageLayout(Promise<Void> promise) {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				siteRequest_Init();
-				listSiteUser_Init();
-				siteUser_Init();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -1010,18 +919,18 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	}
 
 	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
-		return promiseDeepSiteUserGenPage(siteRequest_);
+		return promiseDeepPageLayout(siteRequest_);
 	}
 
 	/////////////////
 	// siteRequest //
 	/////////////////
 
-	public void siteRequestSiteUserGenPage(SiteRequestEnUS siteRequest_) {
+	public void siteRequestPageLayout(SiteRequestEnUS siteRequest_) {
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
-		siteRequestSiteUserGenPage(siteRequest_);
+		siteRequestPageLayout(siteRequest_);
 	}
 
 	/////////////
@@ -1033,7 +942,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = obtainSiteUserGenPage(v);
+				o = obtainPageLayout(v);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
 				o = baseModel.obtainForClass(v);
@@ -1045,39 +954,35 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		}
 		return o;
 	}
-	public Object obtainSiteUserGenPage(String var) {
-		SiteUserGenPage oSiteUserGenPage = (SiteUserGenPage)this;
+	public Object obtainPageLayout(String var) {
+		PageLayout oPageLayout = (PageLayout)this;
 		switch(var) {
 			case "siteRequest_":
-				return oSiteUserGenPage.siteRequest_;
-			case "listSiteUser_":
-				return oSiteUserGenPage.listSiteUser_;
-			case "siteUser_":
-				return oSiteUserGenPage.siteUser_;
+				return oPageLayout.siteRequest_;
 			case "promiseBefore":
-				return oSiteUserGenPage.promiseBefore;
+				return oPageLayout.promiseBefore;
 			case "pageH1":
-				return oSiteUserGenPage.pageH1;
+				return oPageLayout.pageH1;
 			case "pageH2":
-				return oSiteUserGenPage.pageH2;
+				return oPageLayout.pageH2;
 			case "pageH3":
-				return oSiteUserGenPage.pageH3;
+				return oPageLayout.pageH3;
 			case "pageTitle":
-				return oSiteUserGenPage.pageTitle;
+				return oPageLayout.pageTitle;
 			case "pageUri":
-				return oSiteUserGenPage.pageUri;
+				return oPageLayout.pageUri;
 			case "pagination":
-				return oSiteUserGenPage.pagination;
+				return oPageLayout.pagination;
 			case "query":
-				return oSiteUserGenPage.query;
+				return oPageLayout.query;
 			case "promiseAfter":
-				return oSiteUserGenPage.promiseAfter;
+				return oPageLayout.promiseAfter;
 			case "pageImageUri":
-				return oSiteUserGenPage.pageImageUri;
+				return oPageLayout.pageImageUri;
 			case "contextIconGroup":
-				return oSiteUserGenPage.contextIconGroup;
+				return oPageLayout.contextIconGroup;
 			case "contextIconName":
-				return oSiteUserGenPage.contextIconName;
+				return oPageLayout.contextIconName;
 			default:
 				return null;
 		}
@@ -1092,7 +997,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSiteUserGenPage(v, val);
+				o = attributePageLayout(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
 				o = baseModel.attributeForClass(v, val);
@@ -1100,8 +1005,8 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		}
 		return o != null;
 	}
-	public Object attributeSiteUserGenPage(String var, Object val) {
-		SiteUserGenPage oSiteUserGenPage = (SiteUserGenPage)this;
+	public Object attributePageLayout(String var, Object val) {
+		PageLayout oPageLayout = (PageLayout)this;
 		switch(var) {
 			default:
 				return null;
@@ -1113,26 +1018,26 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	///////////////
 
 	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSetSiteUserGenPage(entityVar,  siteRequest_, o);
+		return staticSetPageLayout(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSetSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static Object staticSetPageLayout(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 		case "pageH1":
-			return SiteUserGenPage.staticSetPageH1(siteRequest_, o);
+			return PageLayout.staticSetPageH1(siteRequest_, o);
 		case "pageH2":
-			return SiteUserGenPage.staticSetPageH2(siteRequest_, o);
+			return PageLayout.staticSetPageH2(siteRequest_, o);
 		case "pageH3":
-			return SiteUserGenPage.staticSetPageH3(siteRequest_, o);
+			return PageLayout.staticSetPageH3(siteRequest_, o);
 		case "pageTitle":
-			return SiteUserGenPage.staticSetPageTitle(siteRequest_, o);
+			return PageLayout.staticSetPageTitle(siteRequest_, o);
 		case "pageUri":
-			return SiteUserGenPage.staticSetPageUri(siteRequest_, o);
+			return PageLayout.staticSetPageUri(siteRequest_, o);
 		case "pageImageUri":
-			return SiteUserGenPage.staticSetPageImageUri(siteRequest_, o);
+			return PageLayout.staticSetPageImageUri(siteRequest_, o);
 		case "contextIconGroup":
-			return SiteUserGenPage.staticSetContextIconGroup(siteRequest_, o);
+			return PageLayout.staticSetContextIconGroup(siteRequest_, o);
 		case "contextIconName":
-			return SiteUserGenPage.staticSetContextIconName(siteRequest_, o);
+			return PageLayout.staticSetContextIconName(siteRequest_, o);
 			default:
 				return null;
 		}
@@ -1143,26 +1048,26 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	////////////////
 
 	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrSiteUserGenPage(entityVar,  siteRequest_, o);
+		return staticSolrPageLayout(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSolrSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static Object staticSolrPageLayout(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 		case "pageH1":
-			return SiteUserGenPage.staticSolrPageH1(siteRequest_, (String)o);
+			return PageLayout.staticSolrPageH1(siteRequest_, (String)o);
 		case "pageH2":
-			return SiteUserGenPage.staticSolrPageH2(siteRequest_, (String)o);
+			return PageLayout.staticSolrPageH2(siteRequest_, (String)o);
 		case "pageH3":
-			return SiteUserGenPage.staticSolrPageH3(siteRequest_, (String)o);
+			return PageLayout.staticSolrPageH3(siteRequest_, (String)o);
 		case "pageTitle":
-			return SiteUserGenPage.staticSolrPageTitle(siteRequest_, (String)o);
+			return PageLayout.staticSolrPageTitle(siteRequest_, (String)o);
 		case "pageUri":
-			return SiteUserGenPage.staticSolrPageUri(siteRequest_, (String)o);
+			return PageLayout.staticSolrPageUri(siteRequest_, (String)o);
 		case "pageImageUri":
-			return SiteUserGenPage.staticSolrPageImageUri(siteRequest_, (String)o);
+			return PageLayout.staticSolrPageImageUri(siteRequest_, (String)o);
 		case "contextIconGroup":
-			return SiteUserGenPage.staticSolrContextIconGroup(siteRequest_, (String)o);
+			return PageLayout.staticSolrContextIconGroup(siteRequest_, (String)o);
 		case "contextIconName":
-			return SiteUserGenPage.staticSolrContextIconName(siteRequest_, (String)o);
+			return PageLayout.staticSolrContextIconName(siteRequest_, (String)o);
 			default:
 				return null;
 		}
@@ -1173,26 +1078,26 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	///////////////////
 
 	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrStrSiteUserGenPage(entityVar,  siteRequest_, o);
+		return staticSolrStrPageLayout(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrStrSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static String staticSolrStrPageLayout(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 		case "pageH1":
-			return SiteUserGenPage.staticSolrStrPageH1(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrPageH1(siteRequest_, (String)o);
 		case "pageH2":
-			return SiteUserGenPage.staticSolrStrPageH2(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrPageH2(siteRequest_, (String)o);
 		case "pageH3":
-			return SiteUserGenPage.staticSolrStrPageH3(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrPageH3(siteRequest_, (String)o);
 		case "pageTitle":
-			return SiteUserGenPage.staticSolrStrPageTitle(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrPageTitle(siteRequest_, (String)o);
 		case "pageUri":
-			return SiteUserGenPage.staticSolrStrPageUri(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrPageUri(siteRequest_, (String)o);
 		case "pageImageUri":
-			return SiteUserGenPage.staticSolrStrPageImageUri(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrPageImageUri(siteRequest_, (String)o);
 		case "contextIconGroup":
-			return SiteUserGenPage.staticSolrStrContextIconGroup(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrContextIconGroup(siteRequest_, (String)o);
 		case "contextIconName":
-			return SiteUserGenPage.staticSolrStrContextIconName(siteRequest_, (String)o);
+			return PageLayout.staticSolrStrContextIconName(siteRequest_, (String)o);
 			default:
 				return null;
 		}
@@ -1203,26 +1108,26 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	//////////////////
 
 	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSolrFqSiteUserGenPage(entityVar,  siteRequest_, o);
+		return staticSolrFqPageLayout(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrFqSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrFqPageLayout(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 		case "pageH1":
-			return SiteUserGenPage.staticSolrFqPageH1(siteRequest_, o);
+			return PageLayout.staticSolrFqPageH1(siteRequest_, o);
 		case "pageH2":
-			return SiteUserGenPage.staticSolrFqPageH2(siteRequest_, o);
+			return PageLayout.staticSolrFqPageH2(siteRequest_, o);
 		case "pageH3":
-			return SiteUserGenPage.staticSolrFqPageH3(siteRequest_, o);
+			return PageLayout.staticSolrFqPageH3(siteRequest_, o);
 		case "pageTitle":
-			return SiteUserGenPage.staticSolrFqPageTitle(siteRequest_, o);
+			return PageLayout.staticSolrFqPageTitle(siteRequest_, o);
 		case "pageUri":
-			return SiteUserGenPage.staticSolrFqPageUri(siteRequest_, o);
+			return PageLayout.staticSolrFqPageUri(siteRequest_, o);
 		case "pageImageUri":
-			return SiteUserGenPage.staticSolrFqPageImageUri(siteRequest_, o);
+			return PageLayout.staticSolrFqPageImageUri(siteRequest_, o);
 		case "contextIconGroup":
-			return SiteUserGenPage.staticSolrFqContextIconGroup(siteRequest_, o);
+			return PageLayout.staticSolrFqContextIconGroup(siteRequest_, o);
 		case "contextIconName":
-			return SiteUserGenPage.staticSolrFqContextIconName(siteRequest_, o);
+			return PageLayout.staticSolrFqContextIconName(siteRequest_, o);
 			default:
 				return null;
 		}
@@ -1238,7 +1143,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineSiteUserGenPage(v, val);
+					o = definePageLayout(v, val);
 				else if(o instanceof BaseModel) {
 					BaseModel oBaseModel = (BaseModel)o;
 					o = oBaseModel.defineForClass(v, val);
@@ -1247,7 +1152,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		}
 		return o != null;
 	}
-	public Object defineSiteUserGenPage(String var, String val) {
+	public Object definePageLayout(String var, String val) {
 		switch(var.toLowerCase()) {
 			default:
 				return null;
@@ -1260,7 +1165,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineSiteUserGenPage(v, val);
+					o = definePageLayout(v, val);
 				else if(o instanceof BaseModel) {
 					BaseModel oBaseModel = (BaseModel)o;
 					o = oBaseModel.defineForClass(v, val);
@@ -1269,7 +1174,7 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 		}
 		return o != null;
 	}
-	public Object defineSiteUserGenPage(String var, Object val) {
+	public Object definePageLayout(String var, Object val) {
 		switch(var.toLowerCase()) {
 			default:
 				return null;
@@ -1280,11 +1185,11 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	// apiRequest //
 	//////////////////
 
-	public void apiRequestSiteUserGenPage() {
+	public void apiRequestPageLayout() {
 		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
-		if(o != null && o instanceof SiteUserGenPage) {
-			SiteUserGenPage original = (SiteUserGenPage)o;
+		if(o != null && o instanceof PageLayout) {
+			PageLayout original = (PageLayout)o;
 		}
 	}
 
@@ -1303,9 +1208,9 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 	@Override public boolean equals(Object o) {
 		if(this == o)
 			return true;
-		if(!(o instanceof SiteUserGenPage))
+		if(!(o instanceof PageLayout))
 			return false;
-		SiteUserGenPage that = (SiteUserGenPage)o;
+		PageLayout that = (PageLayout)o;
 		return true;
 	}
 
@@ -1315,14 +1220,12 @@ public abstract class SiteUserGenPageGen<DEV> extends Object {
 
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("SiteUserGenPage { ");
+		sb.append("PageLayout { ");
 		sb.append(" }");
 		return sb.toString();
 	}
 
 	public static final String VAR_siteRequest_ = "siteRequest_";
-	public static final String VAR_listSiteUser_ = "listSiteUser_";
-	public static final String VAR_siteUser_ = "siteUser_";
 	public static final String VAR_promiseBefore = "promiseBefore";
 	public static final String VAR_pageH1 = "pageH1";
 	public static final String VAR_pageH2 = "pageH2";

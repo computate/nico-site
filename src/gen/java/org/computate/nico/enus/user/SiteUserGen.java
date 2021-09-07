@@ -50,7 +50,7 @@ import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class SiteUserGen<DEV> extends BaseModel {
@@ -98,7 +98,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	/**	<br/> The entity userKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKeys">Find the entity userKeys in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKeys">Find the entity userKeys in Solr</a>
 	 * <br/>
 	 * @param userKeys is the entity already constructed. 
 	 **/
@@ -206,7 +206,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String userName;
 	@JsonIgnore
@@ -214,7 +213,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	/**	<br/> The entity userName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userName">Find the entity userName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userName">Find the entity userName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -285,7 +284,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String userEmail;
 	@JsonIgnore
@@ -293,7 +291,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	/**	<br/> The entity userEmail
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userEmail">Find the entity userEmail in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userEmail">Find the entity userEmail in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -364,7 +362,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String userFirstName;
 	@JsonIgnore
@@ -372,7 +369,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	/**	<br/> The entity userFirstName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userFirstName">Find the entity userFirstName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userFirstName">Find the entity userFirstName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -443,7 +440,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String userLastName;
 	@JsonIgnore
@@ -451,7 +447,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	/**	<br/> The entity userLastName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userLastName">Find the entity userLastName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userLastName">Find the entity userLastName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -522,7 +518,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected String userFullName;
 	@JsonIgnore
@@ -530,7 +525,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	/**	<br/> The entity userFullName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userFullName">Find the entity userFullName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userFullName">Find the entity userFullName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -941,41 +936,41 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void populateSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("userKeys")) {
-				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_indexedstored_longs");
 				if(userKeys != null)
 					oSiteUser.userKeys.addAll(userKeys);
 			}
 
 			if(saves.contains("userName")) {
-				String userName = (String)solrDocument.get("userName_stored_string");
+				String userName = (String)solrDocument.get("userName_indexedstored_string");
 				if(userName != null)
 					oSiteUser.setUserName(userName);
 			}
 
 			if(saves.contains("userEmail")) {
-				String userEmail = (String)solrDocument.get("userEmail_stored_string");
+				String userEmail = (String)solrDocument.get("userEmail_indexedstored_string");
 				if(userEmail != null)
 					oSiteUser.setUserEmail(userEmail);
 			}
 
 			if(saves.contains("userFirstName")) {
-				String userFirstName = (String)solrDocument.get("userFirstName_stored_string");
+				String userFirstName = (String)solrDocument.get("userFirstName_indexedstored_string");
 				if(userFirstName != null)
 					oSiteUser.setUserFirstName(userFirstName);
 			}
 
 			if(saves.contains("userLastName")) {
-				String userLastName = (String)solrDocument.get("userLastName_stored_string");
+				String userLastName = (String)solrDocument.get("userLastName_indexedstored_string");
 				if(userLastName != null)
 					oSiteUser.setUserLastName(userLastName);
 			}
 
 			if(saves.contains("userFullName")) {
-				String userFullName = (String)solrDocument.get("userFullName_stored_string");
+				String userFullName = (String)solrDocument.get("userFullName_indexedstored_string");
 				if(userFullName != null)
 					oSiteUser.setUserFullName(userFullName);
 			}
@@ -987,31 +982,23 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public void indexSiteUser(SolrInputDocument document) {
 		if(userKeys != null) {
 			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_stored_longs", o);
+				document.addField("userKeys_indexedstored_longs", o);
 			}
 		}
 		if(userName != null) {
-			document.addField("userName_indexed_string", userName);
-			document.addField("userName_stored_string", userName);
+			document.addField("userName_indexedstored_string", userName);
 		}
 		if(userEmail != null) {
-			document.addField("userEmail_indexed_string", userEmail);
-			document.addField("userEmail_stored_string", userEmail);
+			document.addField("userEmail_indexedstored_string", userEmail);
 		}
 		if(userFirstName != null) {
-			document.addField("userFirstName_indexed_string", userFirstName);
-			document.addField("userFirstName_stored_string", userFirstName);
+			document.addField("userFirstName_indexedstored_string", userFirstName);
 		}
 		if(userLastName != null) {
-			document.addField("userLastName_indexed_string", userLastName);
-			document.addField("userLastName_stored_string", userLastName);
+			document.addField("userLastName_indexedstored_string", userLastName);
 		}
 		if(userFullName != null) {
-			document.addField("userFullName_indexed_string", userFullName);
-			document.addField("userFullName_stored_string", userFullName);
+			document.addField("userFullName_indexedstored_string", userFullName);
 		}
 		super.indexBaseModel(document);
 
@@ -1020,17 +1007,17 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public static String varIndexedSiteUser(String entityVar) {
 		switch(entityVar) {
 			case "userKeys":
-				return "userKeys_indexed_longs";
+				return "userKeys_indexedstored_longs";
 			case "userName":
-				return "userName_indexed_string";
+				return "userName_indexedstored_string";
 			case "userEmail":
-				return "userEmail_indexed_string";
+				return "userEmail_indexedstored_string";
 			case "userFirstName":
-				return "userFirstName_indexed_string";
+				return "userFirstName_indexedstored_string";
 			case "userLastName":
-				return "userLastName_indexed_string";
+				return "userLastName_indexedstored_string";
 			case "userFullName":
-				return "userFullName_indexed_string";
+				return "userFullName_indexedstored_string";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -1060,14 +1047,14 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public void storeSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
 
-		Optional.ofNullable((List<?>)solrDocument.get("userKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		Optional.ofNullable((List<?>)solrDocument.get("userKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSiteUser.addUserKeys(v.toString());
 		});
-		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserFirstName(Optional.ofNullable(solrDocument.get("userFirstName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserLastName(Optional.ofNullable(solrDocument.get("userLastName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserFullName(Optional.ofNullable(solrDocument.get("userFullName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserFirstName(Optional.ofNullable(solrDocument.get("userFirstName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserLastName(Optional.ofNullable(solrDocument.get("userLastName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserFullName(Optional.ofNullable(solrDocument.get("userFullName_indexedstored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
 	}

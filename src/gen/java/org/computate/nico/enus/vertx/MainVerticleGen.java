@@ -38,7 +38,7 @@ import org.computate.nico.enus.config.ConfigKeys;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**	
- * <br/><a href="http://localhost:10383/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.vertx.MainVerticle&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.vertx.MainVerticle&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
 public abstract class MainVerticleGen<DEV> extends AbstractVerticle {
@@ -59,59 +59,22 @@ CREATE TABLE SiteUser(
 	, userLastName text
 	, userFullName text
 	);
-CREATE TABLE PageDesign(
+CREATE TABLE SiteEnrollment(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
 	, sessionId text
 	, userId text
 	, userKey bigint
-	, pageDesignCompleteName text
-	, designHidden boolean
-	, pageContentType text
-	);
-CREATE TABLE HtmlPart(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, sessionId text
-	, userId text
-	, userKey bigint
-	, htmlLink text
-	, htmlElement text
-	, htmlId text
-	, htmlClasses text
-	, htmlStyle text
-	, htmlBefore text
-	, htmlAfter text
-	, htmlText text
-	, htmlVar text
-	, htmlVarSpan text
-	, htmlVarForm text
-	, htmlVarInput text
-	, htmlVarForEach text
-	, htmlVarHtml text
-	, htmlVarBase64Decode text
-	, htmlExclude boolean
-	, pdfExclude boolean
-	, loginLogout boolean
-	, searchUri text
-	, mapTo text
-	, sort1 double
-	, sort2 double
-	, sort3 double
-	, sort4 double
-	, sort5 double
-	, sort6 double
-	, sort7 double
-	, sort8 double
-	, sort9 double
-	, sort10 double
 	);
 CREATE TABLE SitePet(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
 	, sessionId text
 	, userId text
 	, userKey bigint
@@ -121,25 +84,8 @@ CREATE TABLE SitePet(
 	, petSick boolean
 	, petMedNote text
 	, petTrouble text
-	);
-CREATE TABLE SiteEnrollment(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, sessionId text
-	, userId text
-	, userKey bigint
-	, update boolean
-	);
-CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
-	pk bigserial primary key
-	, pk1 bigint references PageDesign(pk)
-	, pk2 bigint references PageDesign(pk)
-	);
-CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
-	pk bigserial primary key
-	, pk1 bigint references PageDesign(pk)
-	, pk2 bigint references HtmlPart(pk)
+	, sendpdates boolean
+	, petAmount text
 	);
 CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
 	pk bigserial primary key
@@ -148,12 +94,8 @@ CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
 	);
 
 DROP TABLE SiteUser CASCADE;
-DROP TABLE PageDesign CASCADE;
-DROP TABLE HtmlPart CASCADE;
-DROP TABLE SitePet CASCADE;
 DROP TABLE SiteEnrollment CASCADE;
-DROP TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys CASCADE;
-DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
+DROP TABLE SitePet CASCADE;
 DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 */
 

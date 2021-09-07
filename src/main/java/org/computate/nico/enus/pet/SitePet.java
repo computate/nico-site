@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet;                     
+package org.computate.nico.enus.pet;                                                              
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import io.vertx.core.Promise;
  * Model: true
  * Api: true
  * Page: true
+ * PageSuper.enUS: PageLayout
  * Indexed: true
  * Saved: true
  * 
@@ -34,7 +35,6 @@ import io.vertx.core.Promise;
  * 
  * ApiMethod.enUS: SearchPage
  * PageSearchPage.enUS: PetPage
- * PageSuperSearchPage.enUS: ClusterPage
  * ApiUriSearchPage.enUS: /pet
  * 
  * AName.enUS: a pet
@@ -48,7 +48,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/                 
+ **/                
 public class SitePet extends SitePetGen<BaseModel> {
 	
 

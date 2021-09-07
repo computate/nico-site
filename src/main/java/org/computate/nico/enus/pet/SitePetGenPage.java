@@ -1,5 +1,6 @@
 package org.computate.nico.enus.pet;
 
+import org.computate.nico.enus.page.PageLayout;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import java.io.IOException;
@@ -38,16 +39,10 @@ import io.vertx.core.Promise;
 /**
  * Translate: false
  **/
-public class SitePetGenPage extends SitePetGenPageGen<Object> {
+public class SitePetGenPage extends SitePetGenPageGen<PageLayout> {
 
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
 	public static final List<String> ROLE_READS = Arrays.asList("");
-
-	/**
-	 * Ignore: true
-	**/
-	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -61,25 +56,27 @@ public class SitePetGenPage extends SitePetGenPageGen<Object> {
 			c.o(listSitePet_.get(0));
 	}
 
-	/**
-	 * Ignore: true
-	**/
+	@Override
 	protected void _promiseBefore(Promise<Void> promise) {
 		promise.complete();
 	}
 
+	@Override
 	protected void _pageH1(Wrap<String> c) {
 			c.o("pets");
 	}
 
+	@Override
 	protected void _pageH2(Wrap<String> c) {
 		c.o("");
 	}
 
+	@Override
 	protected void _pageH3(Wrap<String> c) {
 		c.o("");
 	}
 
+	@Override
 	protected void _pageTitle(Wrap<String> c) {
 		if(sitePet_ != null && sitePet_.getObjectTitle() != null)
 			c.o(sitePet_.getObjectTitle());
@@ -91,10 +88,12 @@ public class SitePetGenPage extends SitePetGenPageGen<Object> {
 			c.o("pets");
 	}
 
+	@Override
 	protected void _pageUri(Wrap<String> c) {
 		c.o("/api/pet");
 	}
 
+	@Override
 	protected void _pagination(JsonObject pagination) {
 		JsonArray pages = new JsonArray();
 		Long start = listSitePet_.getStart().longValue();
@@ -135,6 +134,7 @@ public class SitePetGenPage extends SitePetGenPageGen<Object> {
 		}
 	}
 
+	@Override
 	protected void _query(JsonObject query) {
 		ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 		JsonObject params = serviceRequest.getParams();
@@ -193,21 +193,22 @@ public class SitePetGenPage extends SitePetGenPageGen<Object> {
 		query.put("sort", sorts);
 	}
 
-	/**
-	 * Ignore: true
-	**/
+	@Override
 	protected void _promiseAfter(Promise<Void> promise) {
 		promise.complete();
 	}
 
+	@Override
 	protected void _pageImageUri(Wrap<String> c) {
 			c.o("/png/api/pet-999.png");
 	}
 
+	@Override
 	protected void _contextIconGroup(Wrap<String> c) {
 			c.o("solid");
 	}
 
+	@Override
 	protected void _contextIconName(Wrap<String> c) {
 			c.o("dog");
 	}

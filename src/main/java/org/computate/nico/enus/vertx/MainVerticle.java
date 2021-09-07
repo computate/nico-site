@@ -662,6 +662,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 			handlebars.registerHelpers(ConditionalHelpers.class);
 			handlebars.registerHelpers(StringHelpers.class);
+			handlebars.registerHelpers(AuthHelpers.class);
 
 			router.get("/enrollment-form").handler(a -> {
 				a.reroute("/template/enrollment-form");
