@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet;                                                              
+package org.computate.nico.enus.pet;                
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import io.vertx.core.Promise;
  * Model: true
  * Api: true
  * Page: true
- * PageSuper.enUS: PageLayout
+ * SuperPage.enUS: BaseModelPage
  * Indexed: true
  * Saved: true
  * 
@@ -34,7 +34,8 @@ import io.vertx.core.Promise;
  * RoleUtilisateurAdminSearch.enUS: true
  * 
  * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: PetPage
+ * PageSearchPage.enUS: SitePetPage
+ * PageSuperSearchPage.enUS: BaseModelPage
  * ApiUriSearchPage.enUS: /pet
  * 
  * AName.enUS: a pet
@@ -48,7 +49,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/                
+ **/                                             
 public class SitePet extends SitePetGen<BaseModel> {
 	
 
@@ -181,7 +182,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlRow: 6
 	 * HtmlCell: 1
 	 * DisplayName.enUS: Do you want updates, if you do how many?
-	 */           
+	 */               
 	protected void _sendpdates(Wrap<Boolean> w) {
 	}
 
@@ -194,7 +195,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 2
 	 * Multiline: true
 	 * DisplayName.enUS: How many updates? (If any.)
-	 */           
+	 */                 
 	protected void _petAmount(Wrap<String> w) {
 	}
 	

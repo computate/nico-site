@@ -42,8 +42,8 @@ public enum AuthHelpers implements Helper<Object> {
 	ifContainsAnyRoles {
 		@Override
 		public Object apply(final Object a, final Options options) throws IOException {
-			List<String> userRoles = options.param(4, null);
-			List<String> requiredRoles = Optional.ofNullable(options.param(5, null)).map(o -> o instanceof List ? (List<String>)o : Arrays.asList(o.toString())).orElse(Arrays.asList());
+			List<String> userRoles = Optional.ofNullable(a).map(o -> o instanceof List ? (List<String>)o : Arrays.asList(o.toString())).orElse(Arrays.asList());
+			List<String> requiredRoles = Optional.ofNullable(options.param(0, null)).map(o -> o instanceof List ? (List<String>)o : Arrays.asList(o.toString())).orElse(Arrays.asList());
 
 			Boolean result = CollectionUtils.containsAny(userRoles, requiredRoles)
 					;
@@ -76,8 +76,8 @@ public enum AuthHelpers implements Helper<Object> {
 	ifContainsSessionId {
 		@Override
 		public Object apply(final Object a, final Options options) throws IOException {
-			String expectedSessionId = options.param(2, null);
-			String sessionId = options.param(3, null);
+			String expectedSessionId = options.param(0, null);
+			String sessionId = options.param(1, null);
 
 			Boolean result = Objects.equals(sessionId, expectedSessionId)
 					;

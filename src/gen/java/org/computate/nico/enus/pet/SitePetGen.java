@@ -1269,11 +1269,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	public Object attributeSitePet(String var, Object val) {
 		SitePet oSitePet = (SitePet)this;
 		switch(var) {
-			case "enrollmentKeys":
-				oSitePet.addEnrollmentKeys((Long)val);
-				if(!saves.contains("enrollmentKeys"))
-					saves.add("enrollmentKeys");
-				return val;
 			default:
 				return super.attributeBaseModel(var, val);
 		}
@@ -1575,9 +1570,11 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					oSitePet.userKeys.addAll(userKeys);
 			}
 
-			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
-			if(enrollmentKeys != null)
-				oSitePet.enrollmentKeys.addAll(enrollmentKeys);
+			if(saves.contains("enrollmentKeys")) {
+				List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
+				if(enrollmentKeys != null)
+					oSitePet.enrollmentKeys.addAll(enrollmentKeys);
+			}
 
 			if(saves.contains("petName")) {
 				String petName = (String)solrDocument.get("petName_indexedstored_string");

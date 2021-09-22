@@ -1,10 +1,17 @@
-package org.computate.nico.enus.page;
+package org.computate.nico.enus.page; 
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.wrap.Wrap;
 
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.api.service.ServiceRequest;
 
 /**
  * Keyword: classSimpleNamePageLayout
@@ -14,7 +21,39 @@ public class PageLayout extends PageLayoutGen<Object> {
 	/**
 	 * Ignore: true
 	**/
-	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
+	protected void _siteRequest_(Wrap<SiteRequestEnUS> w) {
+	}
+
+	protected void _serviceRequest(Wrap<ServiceRequest> w) {
+		w.o(siteRequest_.getServiceRequest());
+	}
+
+	protected void _pageUri(Wrap<String> w) {
+		w.o(serviceRequest.getExtra().getString("uri"));
+	}
+
+	protected void _pageUriBase(Wrap<String> w) {
+		w.o(StringUtils.substringBefore(pageUri, "?"));
+	}
+
+	protected void _pageMethod(Wrap<String> w) {
+		w.o(serviceRequest.getExtra().getString("method"));
+	}
+
+	protected void _long0(Wrap<Long> w) {
+		w.o(0L);
+	}
+
+	protected void _long1(Wrap<Long> w) {
+		w.o(1L);
+	}
+
+	protected void _int0(Wrap<Integer> w) {
+		w.o(0);
+	}
+
+	protected void _int1(Wrap<Integer> w) {
+		w.o(1);
 	}
 
 	/**
@@ -25,21 +64,28 @@ public class PageLayout extends PageLayoutGen<Object> {
 	}
 
 	protected void _pageH1(Wrap<String> c) {
-			c.o("pets");
 	}
 
 	protected void _pageH2(Wrap<String> c) {
-		c.o("");
 	}
 
 	protected void _pageH3(Wrap<String> c) {
-		c.o("");
 	}
 
 	protected void _pageTitle(Wrap<String> c) {
 	}
 
-	protected void _pageUri(Wrap<String> c) {
+	protected void _roles(List<String> l) {
+		if(siteRequest_ != null) {
+			l.addAll(Stream.concat(siteRequest_.getUserResourceRoles().stream(), siteRequest_.getUserResourceRoles().stream()).collect(Collectors.toList()));
+		}
+	}
+
+	protected void _rolesRequired(List<String> l) {
+	}
+
+	protected void _authRolesAdmin(List<String> l) {
+		l.addAll(Arrays.asList("SiteAdmin"));
 	}
 
 	protected void _pagination(JsonObject pagination) {

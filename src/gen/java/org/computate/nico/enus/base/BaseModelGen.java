@@ -65,6 +65,7 @@ import org.computate.nico.enus.config.ConfigKeys;
 public abstract class BaseModelGen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(BaseModel.class);
 
+
 	//////////////////
 	// siteRequest_ //
 	//////////////////
@@ -187,6 +188,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pk == null ? "" : pk.toString();
 	}
 
+	public String htmTooltipPk() {
+		return null;
+	}
+
+	public String htmPk() {
+		return pk == null ? "" : StringEscapeUtils.escapeHtml4(strPk());
+	}
+
 	///////////////
 	// inheritPk //
 	///////////////
@@ -257,6 +266,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return inheritPk == null ? "" : inheritPk;
 	}
 
+	public String htmTooltipInheritPk() {
+		return null;
+	}
+
+	public String htmInheritPk() {
+		return inheritPk == null ? "" : StringEscapeUtils.escapeHtml4(strInheritPk());
+	}
+
 	////////
 	// id //
 	////////
@@ -325,6 +342,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonId() {
 		return id == null ? "" : id;
+	}
+
+	public String htmTooltipId() {
+		return null;
+	}
+
+	public String htmId() {
+		return id == null ? "" : StringEscapeUtils.escapeHtml4(strId());
 	}
 
 	/////////////
@@ -420,6 +445,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
+	public String htmTooltipCreated() {
+		return null;
+	}
+
+	public String htmCreated() {
+		return created == null ? "" : StringEscapeUtils.escapeHtml4(strCreated());
+	}
+
 	//////////////
 	// modified //
 	//////////////
@@ -513,6 +546,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
+	public String htmTooltipModified() {
+		return null;
+	}
+
+	public String htmModified() {
+		return modified == null ? "" : StringEscapeUtils.escapeHtml4(strModified());
+	}
+
 	//////////////
 	// archived //
 	//////////////
@@ -587,6 +628,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonArchived() {
 		return archived == null ? "" : archived.toString();
+	}
+
+	public String htmTooltipArchived() {
+		return null;
+	}
+
+	public String htmArchived() {
+		return archived == null ? "" : StringEscapeUtils.escapeHtml4(strArchived());
 	}
 
 	/////////////
@@ -665,6 +714,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return deleted == null ? "" : deleted.toString();
 	}
 
+	public String htmTooltipDeleted() {
+		return null;
+	}
+
+	public String htmDeleted() {
+		return deleted == null ? "" : StringEscapeUtils.escapeHtml4(strDeleted());
+	}
+
 	////////////////////////
 	// classCanonicalName //
 	////////////////////////
@@ -735,6 +792,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
 
+	public String htmTooltipClassCanonicalName() {
+		return null;
+	}
+
+	public String htmClassCanonicalName() {
+		return classCanonicalName == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalName());
+	}
+
 	/////////////////////
 	// classSimpleName //
 	/////////////////////
@@ -803,6 +868,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonClassSimpleName() {
 		return classSimpleName == null ? "" : classSimpleName;
+	}
+
+	public String htmTooltipClassSimpleName() {
+		return null;
+	}
+
+	public String htmClassSimpleName() {
+		return classSimpleName == null ? "" : StringEscapeUtils.escapeHtml4(strClassSimpleName());
 	}
 
 	/////////////////////////
@@ -897,6 +970,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
 
+	public String htmTooltipClassCanonicalNames() {
+		return null;
+	}
+
+	public String htmClassCanonicalNames() {
+		return classCanonicalNames == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalNames());
+	}
+
 	///////////////
 	// sessionId //
 	///////////////
@@ -967,6 +1048,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return sessionId == null ? "" : sessionId;
 	}
 
+	public String htmTooltipSessionId() {
+		return null;
+	}
+
+	public String htmSessionId() {
+		return sessionId == null ? "" : StringEscapeUtils.escapeHtml4(strSessionId());
+	}
+
 	////////////
 	// userId //
 	////////////
@@ -1035,6 +1124,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonUserId() {
 		return userId == null ? "" : userId;
+	}
+
+	public String htmTooltipUserId() {
+		return null;
+	}
+
+	public String htmUserId() {
+		return userId == null ? "" : StringEscapeUtils.escapeHtml4(strUserId());
 	}
 
 	/////////////
@@ -1114,6 +1211,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonUserKey() {
 		return userKey == null ? "" : userKey.toString();
+	}
+
+	public String htmTooltipUserKey() {
+		return null;
+	}
+
+	public String htmUserKey() {
+		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
 	}
 
 	///////////
@@ -1208,6 +1313,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return saves == null ? "" : saves.toString();
 	}
 
+	public String htmTooltipSaves() {
+		return null;
+	}
+
+	public String htmSaves() {
+		return saves == null ? "" : StringEscapeUtils.escapeHtml4(strSaves());
+	}
+
 	/////////////////
 	// objectTitle //
 	/////////////////
@@ -1276,6 +1389,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonObjectTitle() {
 		return objectTitle == null ? "" : objectTitle;
+	}
+
+	public String htmTooltipObjectTitle() {
+		return null;
+	}
+
+	public String htmObjectTitle() {
+		return objectTitle == null ? "" : StringEscapeUtils.escapeHtml4(strObjectTitle());
 	}
 
 	//////////////
@@ -1348,6 +1469,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectId == null ? "" : objectId;
 	}
 
+	public String htmTooltipObjectId() {
+		return null;
+	}
+
+	public String htmObjectId() {
+		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
+	}
+
 	///////////////////
 	// objectNameVar //
 	///////////////////
@@ -1416,6 +1545,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonObjectNameVar() {
 		return objectNameVar == null ? "" : objectNameVar;
+	}
+
+	public String htmTooltipObjectNameVar() {
+		return null;
+	}
+
+	public String htmObjectNameVar() {
+		return objectNameVar == null ? "" : StringEscapeUtils.escapeHtml4(strObjectNameVar());
 	}
 
 	///////////////////
@@ -1488,6 +1625,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return objectSuggest == null ? "" : objectSuggest;
 	}
 
+	public String htmTooltipObjectSuggest() {
+		return null;
+	}
+
+	public String htmObjectSuggest() {
+		return objectSuggest == null ? "" : StringEscapeUtils.escapeHtml4(strObjectSuggest());
+	}
+
 	////////////////
 	// objectText //
 	////////////////
@@ -1556,6 +1701,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonObjectText() {
 		return objectText == null ? "" : objectText;
+	}
+
+	public String htmTooltipObjectText() {
+		return null;
+	}
+
+	public String htmObjectText() {
+		return objectText == null ? "" : StringEscapeUtils.escapeHtml4(strObjectText());
 	}
 
 	///////////////
@@ -1628,6 +1781,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pageUrlId == null ? "" : pageUrlId;
 	}
 
+	public String htmTooltipPageUrlId() {
+		return null;
+	}
+
+	public String htmPageUrlId() {
+		return pageUrlId == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlId());
+	}
+
 	///////////////
 	// pageUrlPk //
 	///////////////
@@ -1696,6 +1857,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonPageUrlPk() {
 		return pageUrlPk == null ? "" : pageUrlPk;
+	}
+
+	public String htmTooltipPageUrlPk() {
+		return null;
+	}
+
+	public String htmPageUrlPk() {
+		return pageUrlPk == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlPk());
 	}
 
 	////////////////
@@ -1768,6 +1937,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return pageUrlApi == null ? "" : pageUrlApi;
 	}
 
+	public String htmTooltipPageUrlApi() {
+		return null;
+	}
+
+	public String htmPageUrlApi() {
+		return pageUrlApi == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlApi());
+	}
+
 	////////////
 	// pageH1 //
 	////////////
@@ -1836,6 +2013,14 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public String jsonPageH1() {
 		return pageH1 == null ? "" : pageH1;
+	}
+
+	public String htmTooltipPageH1() {
+		return null;
+	}
+
+	public String htmPageH1() {
+		return pageH1 == null ? "" : StringEscapeUtils.escapeHtml4(strPageH1());
 	}
 
 	//////////////

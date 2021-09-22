@@ -1,4 +1,4 @@
-package org.computate.nico.enus.vertx;     
+package org.computate.nico.enus.vertx;      
 
 import java.net.URLDecoder;
 import java.text.Normalizer;
@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.helper.StringHelpers;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -129,7 +130,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 			String configPath = System.getenv(ConfigKeys.CONFIG_PATH);
 			if(StringUtils.isNotBlank(configPath)) {
-				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", configPath));
+				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("yaml").setConfig(new JsonObject().put("path", configPath));
 				retrieverOptions.addStore(configIni);
 			}
 
@@ -658,7 +659,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			String staticBaseUrl = config().getString(ConfigKeys.STATIC_BASE_URL);
 			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
 			Handlebars handlebars = (Handlebars)templateEngine.unwrap();
-			TemplateHandler templateHandler = TemplateHandler.create(templateEngine, staticPath + "/template", "text/html");
+			TemplateHandler templateHandler = TemplateHandler.create(templateEngine, staticPath + "/template/enUS", "text/html");
+//			new ClassPathTemplateLoader("/partials/");
+//			handlebars.setPreEvaluatePartialBlocks(true);
+
 
 			handlebars.registerHelpers(ConditionalHelpers.class);
 			handlebars.registerHelpers(StringHelpers.class);

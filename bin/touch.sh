@@ -21,3 +21,4 @@ touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/LocalD
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/LocalTimeSerializer.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/ZonedDateTimeSerializer.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/ZonedDateTimeDeserializer.java
+touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/page/PageLayout.java

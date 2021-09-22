@@ -22,7 +22,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * 
  * ApiMethod.enUS: SearchPage
  * PageSearchPage.enUS: SiteUserPage
- * PageSuperSearchPage.enUS: ClusterPage
+ * PageSuperSearchPage.enUS: BaseModelPage
  * ApiUriSearchPage.enUS: /user
  * 
  * Keyword: classSimpleNameSiteUser
@@ -37,7 +37,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * 
  * RoleUser: true
  * Role.enUS: SiteAdmin
- */
+ */ 
 public class SiteUser extends SiteUserGen<BaseModel> {
 
 	/**

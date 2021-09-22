@@ -1,13 +1,19 @@
 package org.computate.nico.enus.pet;
 
-import org.computate.nico.enus.page.PageLayout;
+import java.lang.Long;
+import org.computate.nico.enus.search.SearchList;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
+import java.util.List;
+import java.lang.String;
+import java.lang.Boolean;
+import org.computate.nico.enus.base.BaseModelPage;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import java.io.IOException;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import org.computate.nico.enus.search.SearchList;
 import org.computate.nico.enus.wrap.Wrap;
+import org.computate.nico.enus.page.PageLayout;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -21,8 +27,8 @@ import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import java.util.stream.Collectors;
 import java.util.Arrays;
@@ -39,10 +45,7 @@ import io.vertx.core.Promise;
 /**
  * Translate: false
  **/
-public class SitePetGenPage extends SitePetGenPageGen<PageLayout> {
-
-	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
-	public static final List<String> ROLE_READS = Arrays.asList("");
+public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 
 	/**
 	 * {@inheritDoc}
@@ -51,8 +54,12 @@ public class SitePetGenPage extends SitePetGenPageGen<PageLayout> {
 	protected void _listSitePet_(Wrap<SearchList<SitePet>> c) {
 	}
 
+	protected void _sitePetCount(Wrap<Integer> w) {
+		w.o(listSitePet_ == null ? 0 : listSitePet_.size());
+	}
+
 	protected void _sitePet_(Wrap<SitePet> c) {
-		if(listSitePet_ != null && listSitePet_.size() == 1)
+		if(sitePetCount == 1)
 			c.o(listSitePet_.get(0));
 	}
 
@@ -82,7 +89,7 @@ public class SitePetGenPage extends SitePetGenPageGen<PageLayout> {
 			c.o(sitePet_.getObjectTitle());
 		else if(sitePet_ != null)
 			c.o("pets");
-		else if(listSitePet_ == null || listSitePet_.size() == 0)
+		else if(listSitePet_ == null || sitePetCount == 0)
 			c.o("no pet found");
 		else
 			c.o("pets");
@@ -94,26 +101,47 @@ public class SitePetGenPage extends SitePetGenPageGen<PageLayout> {
 	}
 
 	@Override
+	protected void _roles(List<String> l) {
+		if(siteRequest_ != null) {
+			l.addAll(Stream.concat(siteRequest_.getUserResourceRoles().stream(), siteRequest_.getUserRealmRoles().stream()).distinct().collect(Collectors.toList()));
+		}
+	}
+
+	@Override
+	protected void _rolesRequired(List<String> l) {
+		l.addAll(Arrays.asList("SiteAdmin"));
+	}
+
+	@Override
+	protected void _authRolesAdmin(List<String> l) {
+		l.addAll(Arrays.asList(""));
+	}
+
+	@Override
 	protected void _pagination(JsonObject pagination) {
 		JsonArray pages = new JsonArray();
 		Long start = listSitePet_.getStart().longValue();
 		Long rows = listSitePet_.getRows().longValue();
 		Long foundNum = listSitePet_.getQueryResponse().getResults().getNumFound();
-		Long startNum = start + 1;
+		Long startNum = start + 1L;
 		Long endNum = start + rows;
 		Long floorMod = Math.floorMod(foundNum, rows);
 		Long last = Math.floorDiv(foundNum, rows) - (floorMod.equals(0L) ? 1L : 0L) * rows;
 		endNum = endNum < foundNum ? endNum : foundNum;
 		startNum = foundNum == 0L ? 0L : startNum;
-		Long paginationStart = start - 10 * rows;
-		if(paginationStart < 0)
+		Long paginationStart = start - 10L * rows;
+		if(paginationStart < 0L)
 			paginationStart = 0L;
-		Long paginationEnd = start + 10 * rows;
+		Long paginationEnd = start + 10L * rows;
 		if(paginationEnd > foundNum)
 			paginationEnd = foundNum;
 
+		pagination.put("1L", 1L);
+		pagination.put("0L", 0L);
 		pagination.put("start", start);
 		pagination.put("rows", rows);
+		pagination.put("rowsPrevious", rows / 2);
+		pagination.put("rowsNext", rows * 2);
 		pagination.put("startNum", startNum);
 		pagination.put("endNum", endNum);
 		pagination.put("foundNum", foundNum);
@@ -121,7 +149,7 @@ public class SitePetGenPage extends SitePetGenPageGen<PageLayout> {
 		if(start > 0L)
 			pagination.put("pagePrevious", new JsonObject().put("start", start - rows).put("pageNumber", start - rows + 1L));
 		if(start + rows < foundNum)
-			pagination.put("pagePrevious", new JsonObject().put("start", start + rows).put("pageNumber", start + rows + 1L));
+			pagination.put("pageNext", new JsonObject().put("start", start + rows).put("pageNumber", start + rows + 1L));
 		pagination.put("pageEnd", new JsonObject().put("start", last).put("pageNumber", last + 1L));
 		pagination.put("pages", pages);
 		for(Long i = paginationStart; i < paginationEnd; i += rows) {

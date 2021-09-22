@@ -431,6 +431,10 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			return null;
 	}
 
+	public int getSize() {
+		return list.size();
+	}
+
 	public int size() {
 		return list.size();
 	}

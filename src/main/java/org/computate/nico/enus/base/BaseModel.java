@@ -1,4 +1,4 @@
-package org.computate.nico.enus.base;
+package org.computate.nico.enus.base;                            
 
 import java.text.Normalizer;
 import java.time.ZoneId;
@@ -15,9 +15,11 @@ import org.computate.nico.enus.wrap.Wrap;
 
 /**
  * Indexed: true
+ * Page: true
+ * SuperPage: PageLayout
  * 
  * Keyword: classSimpleNameCluster
- */
+ */    
 public class BaseModel extends BaseModelGen<Object> {
 
 	/**
@@ -35,7 +37,7 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * HtmlRow: 1
 	 * HtmlCell: 1
 	 * DisplayName.enUS: primary key
-	 */
+	 */ 
 	protected void _pk(Wrap<Long> w) {}
 
 	/**
