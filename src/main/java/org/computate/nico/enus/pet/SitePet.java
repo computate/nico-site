@@ -49,7 +49,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/                                             
+ **/     
 public class SitePet extends SitePetGen<BaseModel> {
 	
 

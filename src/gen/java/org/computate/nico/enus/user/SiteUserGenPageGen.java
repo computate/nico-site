@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
+import java.lang.Integer;
 import org.computate.nico.enus.writer.AllWriter;
 import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.computate.nico.enus.user.SiteUser;
+import java.lang.String;
 import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
 import java.math.RoundingMode;
@@ -88,6 +90,85 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		}
 		listSiteUser_Wrap.alreadyInitialized(true);
 		return (SiteUserGenPage)this;
+	}
+
+	///////////////////
+	// siteUserCount //
+	///////////////////
+
+	/**	 The entity siteUserCount
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Integer siteUserCount;
+	@JsonIgnore
+	public Wrap<Integer> siteUserCountWrap = new Wrap<Integer>().var("siteUserCount").o(siteUserCount);
+
+	/**	<br/> The entity siteUserCount
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteUserCount">Find the entity siteUserCount in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _siteUserCount(Wrap<Integer> w);
+
+	public Integer getSiteUserCount() {
+		return siteUserCount;
+	}
+
+	public void setSiteUserCount(Integer siteUserCount) {
+		this.siteUserCount = siteUserCount;
+		this.siteUserCountWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setSiteUserCount(String o) {
+		this.siteUserCount = SiteUserGenPage.staticSetSiteUserCount(siteRequest_, o);
+		this.siteUserCountWrap.alreadyInitialized = true;
+	}
+	public static Integer staticSetSiteUserCount(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Integer.parseInt(o);
+		return null;
+	}
+	protected SiteUserGenPage siteUserCountInit() {
+		if(!siteUserCountWrap.alreadyInitialized) {
+			_siteUserCount(siteUserCountWrap);
+			if(siteUserCount == null)
+				setSiteUserCount(siteUserCountWrap.o);
+			siteUserCountWrap.o(null);
+		}
+		siteUserCountWrap.alreadyInitialized(true);
+		return (SiteUserGenPage)this;
+	}
+
+	public static Integer staticSolrSiteUserCount(SiteRequestEnUS siteRequest_, Integer o) {
+		return o;
+	}
+
+	public static String staticSolrStrSiteUserCount(SiteRequestEnUS siteRequest_, Integer o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSiteUserCount(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUserGenPage.staticSolrStrSiteUserCount(siteRequest_, SiteUserGenPage.staticSolrSiteUserCount(siteRequest_, SiteUserGenPage.staticSetSiteUserCount(siteRequest_, o)));
+	}
+
+	public Integer solrSiteUserCount() {
+		return SiteUserGenPage.staticSolrSiteUserCount(siteRequest_, siteUserCount);
+	}
+
+	public String strSiteUserCount() {
+		return siteUserCount == null ? "" : siteUserCount.toString();
+	}
+
+	public Integer sqlSiteUserCount() {
+		return siteUserCount;
+	}
+
+	public String jsonSiteUserCount() {
+		return siteUserCount == null ? "" : siteUserCount.toString();
 	}
 
 	///////////////
@@ -170,6 +251,7 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				listSiteUser_Init();
+				siteUserCountInit();
 				siteUser_Init();
 				promise2.complete();
 			} catch(Exception ex) {
@@ -226,6 +308,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		switch(var) {
 			case "listSiteUser_":
 				return oSiteUserGenPage.listSiteUser_;
+			case "siteUserCount":
+				return oSiteUserGenPage.siteUserCount;
 			case "siteUser_":
 				return oSiteUserGenPage.siteUser_;
 			default:
@@ -267,6 +351,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	}
 	public static Object staticSetSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "siteUserCount":
+			return SiteUserGenPage.staticSetSiteUserCount(siteRequest_, o);
 			default:
 				return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -281,6 +367,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	}
 	public static Object staticSolrSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "siteUserCount":
+			return SiteUserGenPage.staticSolrSiteUserCount(siteRequest_, (Integer)o);
 			default:
 				return PageLayout.staticSolrPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -295,6 +383,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	}
 	public static String staticSolrStrSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "siteUserCount":
+			return SiteUserGenPage.staticSolrStrSiteUserCount(siteRequest_, (Integer)o);
 			default:
 				return PageLayout.staticSolrStrPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -309,6 +399,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	}
 	public static String staticSolrFqSiteUserGenPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "siteUserCount":
+			return SiteUserGenPage.staticSolrFqSiteUserCount(siteRequest_, o);
 			default:
 				return PageLayout.staticSolrFqPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -409,5 +501,6 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	}
 
 	public static final String VAR_listSiteUser_ = "listSiteUser_";
+	public static final String VAR_siteUserCount = "siteUserCount";
 	public static final String VAR_siteUser_ = "siteUser_";
 }

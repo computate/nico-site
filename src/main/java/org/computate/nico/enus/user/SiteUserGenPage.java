@@ -1,5 +1,8 @@
 package org.computate.nico.enus.user;
 
+import java.util.List;
+import java.lang.Long;
+import java.lang.String;
 import org.computate.nico.enus.page.PageLayout;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
@@ -21,7 +24,6 @@ import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.solr.common.util.SimpleOrderedMap;
@@ -35,6 +37,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.Objects;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import io.vertx.core.Promise;
+import org.computate.nico.enus.config.ConfigKeys;
 
 
 /**
@@ -49,8 +52,12 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	protected void _listSiteUser_(Wrap<SearchList<SiteUser>> c) {
 	}
 
+	protected void _siteUserCount(Wrap<Integer> w) {
+		w.o(listSiteUser_ == null ? 0 : listSiteUser_.size());
+	}
+
 	protected void _siteUser_(Wrap<SiteUser> c) {
-		if(listSiteUser_ != null && listSiteUser_.size() == 1)
+		if(siteUserCount == 1)
 			c.o(listSiteUser_.get(0));
 	}
 
@@ -80,7 +87,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			c.o(siteUser_.getObjectTitle());
 		else if(siteUser_ != null)
 			c.o("site users");
-		else if(listSiteUser_ == null || listSiteUser_.size() == 0)
+		else if(listSiteUser_ == null || siteUserCount == 0)
 			c.o("no site user found");
 		else
 			c.o("site users");
@@ -100,12 +107,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
 	@Override
 	protected void _rolesRequired(List<String> l) {
-		l.addAll(Arrays.asList("SiteAdmin", "SiteAdmin"));
-	}
-
-	@Override
-	protected void _authRolesAdmin(List<String> l) {
-		l.addAll(Arrays.asList(""));
+		l.addAll(Optional.ofNullable(siteRequest_.getConfig().getJsonArray(ConfigKeys.AUTH_ROLES_REQUIRED + "_SiteUser")).orElse(new JsonArray()).stream().map(o -> o.toString()).collect(Collectors.toList()));
 	}
 
 	@Override

@@ -40,6 +40,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.Objects;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import io.vertx.core.Promise;
+import org.computate.nico.enus.config.ConfigKeys;
 
 
 /**
@@ -109,12 +110,7 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 
 	@Override
 	protected void _rolesRequired(List<String> l) {
-		l.addAll(Arrays.asList("SiteAdmin"));
-	}
-
-	@Override
-	protected void _authRolesAdmin(List<String> l) {
-		l.addAll(Arrays.asList(""));
+		l.addAll(Optional.ofNullable(siteRequest_.getConfig().getJsonArray(ConfigKeys.AUTH_ROLES_REQUIRED + "_SitePet")).orElse(new JsonArray()).stream().map(o -> o.toString()).collect(Collectors.toList()));
 	}
 
 	@Override

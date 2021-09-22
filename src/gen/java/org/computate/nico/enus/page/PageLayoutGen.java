@@ -207,76 +207,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageUri == null ? "" : pageUri;
 	}
 
-	/////////////////
-	// pageUriBase //
-	/////////////////
-
-	/**	 The entity pageUriBase
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected String pageUriBase;
-	@JsonIgnore
-	public Wrap<String> pageUriBaseWrap = new Wrap<String>().var("pageUriBase").o(pageUriBase);
-
-	/**	<br/> The entity pageUriBase
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUriBase">Find the entity pageUriBase in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageUriBase(Wrap<String> w);
-
-	public String getPageUriBase() {
-		return pageUriBase;
-	}
-	public void setPageUriBase(String o) {
-		this.pageUriBase = PageLayout.staticSetPageUriBase(siteRequest_, o);
-		this.pageUriBaseWrap.alreadyInitialized = true;
-	}
-	public static String staticSetPageUriBase(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected PageLayout pageUriBaseInit() {
-		if(!pageUriBaseWrap.alreadyInitialized) {
-			_pageUriBase(pageUriBaseWrap);
-			if(pageUriBase == null)
-				setPageUriBase(pageUriBaseWrap.o);
-			pageUriBaseWrap.o(null);
-		}
-		pageUriBaseWrap.alreadyInitialized(true);
-		return (PageLayout)this;
-	}
-
-	public static String staticSolrPageUriBase(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageUriBase(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageUriBase(SiteRequestEnUS siteRequest_, String o) {
-		return PageLayout.staticSolrStrPageUriBase(siteRequest_, PageLayout.staticSolrPageUriBase(siteRequest_, PageLayout.staticSetPageUriBase(siteRequest_, o)));
-	}
-
-	public String solrPageUriBase() {
-		return PageLayout.staticSolrPageUriBase(siteRequest_, pageUriBase);
-	}
-
-	public String strPageUriBase() {
-		return pageUriBase == null ? "" : pageUriBase;
-	}
-
-	public String sqlPageUriBase() {
-		return pageUriBase;
-	}
-
-	public String jsonPageUriBase() {
-		return pageUriBase == null ? "" : pageUriBase;
-	}
-
 	////////////////
 	// pageMethod //
 	////////////////
@@ -1644,7 +1574,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				siteRequest_Init();
 				serviceRequestInit();
 				pageUriInit();
-				pageUriBaseInit();
 				pageMethodInit();
 				long0Init();
 				long1Init();
@@ -1752,8 +1681,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				return oPageLayout.serviceRequest;
 			case "pageUri":
 				return oPageLayout.pageUri;
-			case "pageUriBase":
-				return oPageLayout.pageUriBase;
 			case "pageMethod":
 				return oPageLayout.pageMethod;
 			case "long0":
@@ -1833,8 +1760,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		switch(entityVar) {
 		case "pageUri":
 			return PageLayout.staticSetPageUri(siteRequest_, o);
-		case "pageUriBase":
-			return PageLayout.staticSetPageUriBase(siteRequest_, o);
 		case "pageMethod":
 			return PageLayout.staticSetPageMethod(siteRequest_, o);
 		case "long0":
@@ -1881,8 +1806,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		switch(entityVar) {
 		case "pageUri":
 			return PageLayout.staticSolrPageUri(siteRequest_, (String)o);
-		case "pageUriBase":
-			return PageLayout.staticSolrPageUriBase(siteRequest_, (String)o);
 		case "pageMethod":
 			return PageLayout.staticSolrPageMethod(siteRequest_, (String)o);
 		case "long0":
@@ -1929,8 +1852,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		switch(entityVar) {
 		case "pageUri":
 			return PageLayout.staticSolrStrPageUri(siteRequest_, (String)o);
-		case "pageUriBase":
-			return PageLayout.staticSolrStrPageUriBase(siteRequest_, (String)o);
 		case "pageMethod":
 			return PageLayout.staticSolrStrPageMethod(siteRequest_, (String)o);
 		case "long0":
@@ -1977,8 +1898,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		switch(entityVar) {
 		case "pageUri":
 			return PageLayout.staticSolrFqPageUri(siteRequest_, o);
-		case "pageUriBase":
-			return PageLayout.staticSolrFqPageUriBase(siteRequest_, o);
 		case "pageMethod":
 			return PageLayout.staticSolrFqPageMethod(siteRequest_, o);
 		case "long0":
@@ -2109,7 +2028,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	public static final String VAR_siteRequest_ = "siteRequest_";
 	public static final String VAR_serviceRequest = "serviceRequest";
 	public static final String VAR_pageUri = "pageUri";
-	public static final String VAR_pageUriBase = "pageUriBase";
 	public static final String VAR_pageMethod = "pageMethod";
 	public static final String VAR_long0 = "long0";
 	public static final String VAR_long1 = "long1";

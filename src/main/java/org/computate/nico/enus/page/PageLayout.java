@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
+import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.wrap.Wrap;
 
@@ -30,10 +30,6 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 	protected void _pageUri(Wrap<String> w) {
 		w.o(serviceRequest.getExtra().getString("uri"));
-	}
-
-	protected void _pageUriBase(Wrap<String> w) {
-		w.o(StringUtils.substringBefore(pageUri, "?"));
 	}
 
 	protected void _pageMethod(Wrap<String> w) {
@@ -82,10 +78,11 @@ public class PageLayout extends PageLayoutGen<Object> {
 	}
 
 	protected void _rolesRequired(List<String> l) {
+		l.addAll(siteRequest_.getConfig().getJsonArray(ConfigKeys.AUTH_ROLES_ADMIN).stream().map(o -> o.toString()).collect(Collectors.toList()));
 	}
 
 	protected void _authRolesAdmin(List<String> l) {
-		l.addAll(Arrays.asList("SiteAdmin"));
+		l.addAll(siteRequest_.getConfig().getJsonArray(ConfigKeys.AUTH_ROLES_ADMIN).stream().map(o -> o.toString()).collect(Collectors.toList()));
 	}
 
 	protected void _pagination(JsonObject pagination) {

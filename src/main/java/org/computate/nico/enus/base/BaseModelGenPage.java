@@ -38,6 +38,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.Objects;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import io.vertx.core.Promise;
+import org.computate.nico.enus.config.ConfigKeys;
 
 
 /**
@@ -101,11 +102,6 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 		if(siteRequest_ != null) {
 			l.addAll(Stream.concat(siteRequest_.getUserResourceRoles().stream(), siteRequest_.getUserRealmRoles().stream()).distinct().collect(Collectors.toList()));
 		}
-	}
-
-	@Override
-	protected void _authRolesAdmin(List<String> l) {
-		l.addAll(Arrays.asList(""));
 	}
 
 	@Override
