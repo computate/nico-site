@@ -1,4 +1,4 @@
-package org.computate.nico.enus.base;       
+package org.computate.nico.enus.base;             
 
 import java.text.Normalizer;
 import java.time.ZoneId;

@@ -21,8 +21,6 @@ import io.vertx.core.Promise;
  * ApiUri.enUS: /api/pet
  * 
  * ApiMethod.enUS: PUTImport
- * ApiMethod.enUS: PUTMerge
- * ApiMethod.enUS: PUTCopy
 
  * ApiMethod: POST
  * ApiMethod: PATCH
@@ -49,7 +47,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/     
+ **/                 
 public class SitePet extends SitePetGen<BaseModel> {
 	
 
@@ -84,7 +82,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlRow: 8
 	 * HtmlCell: 1
 	 * DisplayName.enUS: users
-	 */         
+	 */                   
 	protected void _userKeys(List<Long> c) {}
 
 	/**  

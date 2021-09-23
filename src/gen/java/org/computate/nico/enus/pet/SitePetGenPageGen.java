@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.base.BaseModelPage;
 import org.apache.commons.collections.CollectionUtils;
+import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -66,9 +67,9 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSitePet_">Find the entity listSitePet_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _listSitePet_(Wrap<SearchList<SitePet>> c);
+	protected abstract void _listSitePet_(Wrap<SearchList<SitePet>> w);
 
 	public SearchList<SitePet> getListSitePet_() {
 		return listSitePet_;
@@ -188,9 +189,9 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sitePet_">Find the entity sitePet_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _sitePet_(Wrap<SitePet> c);
+	protected abstract void _sitePet_(Wrap<SitePet> w);
 
 	public SitePet getSitePet_() {
 		return sitePet_;
@@ -212,6 +213,85 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		}
 		sitePet_Wrap.alreadyInitialized(true);
 		return (SitePetGenPage)this;
+	}
+
+	////////
+	// pk //
+	////////
+
+	/**	 The entity pk
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long pk;
+	@JsonIgnore
+	public Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
+
+	/**	<br/> The entity pk
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _pk(Wrap<Long> w);
+
+	public Long getPk() {
+		return pk;
+	}
+
+	public void setPk(Long pk) {
+		this.pk = pk;
+		this.pkWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setPk(String o) {
+		this.pk = SitePetGenPage.staticSetPk(siteRequest_, o);
+		this.pkWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SitePetGenPage pkInit() {
+		if(!pkWrap.alreadyInitialized) {
+			_pk(pkWrap);
+			if(pk == null)
+				setPk(pkWrap.o);
+			pkWrap.o(null);
+		}
+		pkWrap.alreadyInitialized(true);
+		return (SitePetGenPage)this;
+	}
+
+	public static Long staticSolrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
+		return SitePetGenPage.staticSolrStrPk(siteRequest_, SitePetGenPage.staticSolrPk(siteRequest_, SitePetGenPage.staticSetPk(siteRequest_, o)));
+	}
+
+	public Long solrPk() {
+		return SitePetGenPage.staticSolrPk(siteRequest_, pk);
+	}
+
+	public String strPk() {
+		return pk == null ? "" : pk.toString();
+	}
+
+	public Long sqlPk() {
+		return pk;
+	}
+
+	public String jsonPk() {
+		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
@@ -253,6 +333,7 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 				listSitePet_Init();
 				sitePetCountInit();
 				sitePet_Init();
+				pkInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -312,6 +393,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 				return oSitePetGenPage.sitePetCount;
 			case "sitePet_":
 				return oSitePetGenPage.sitePet_;
+			case "pk":
+				return oSitePetGenPage.pk;
 			default:
 				return super.obtainBaseModelPage(var);
 		}
@@ -353,6 +436,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		switch(entityVar) {
 		case "sitePetCount":
 			return SitePetGenPage.staticSetSitePetCount(siteRequest_, o);
+		case "pk":
+			return SitePetGenPage.staticSetPk(siteRequest_, o);
 			default:
 				return BaseModelPage.staticSetBaseModelPage(entityVar,  siteRequest_, o);
 		}
@@ -369,6 +454,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		switch(entityVar) {
 		case "sitePetCount":
 			return SitePetGenPage.staticSolrSitePetCount(siteRequest_, (Integer)o);
+		case "pk":
+			return SitePetGenPage.staticSolrPk(siteRequest_, (Long)o);
 			default:
 				return BaseModelPage.staticSolrBaseModelPage(entityVar,  siteRequest_, o);
 		}
@@ -385,6 +472,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		switch(entityVar) {
 		case "sitePetCount":
 			return SitePetGenPage.staticSolrStrSitePetCount(siteRequest_, (Integer)o);
+		case "pk":
+			return SitePetGenPage.staticSolrStrPk(siteRequest_, (Long)o);
 			default:
 				return BaseModelPage.staticSolrStrBaseModelPage(entityVar,  siteRequest_, o);
 		}
@@ -401,6 +490,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		switch(entityVar) {
 		case "sitePetCount":
 			return SitePetGenPage.staticSolrFqSitePetCount(siteRequest_, o);
+		case "pk":
+			return SitePetGenPage.staticSolrFqPk(siteRequest_, o);
 			default:
 				return BaseModelPage.staticSolrFqBaseModelPage(entityVar,  siteRequest_, o);
 		}
@@ -503,4 +594,5 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	public static final String VAR_listSitePet_ = "listSitePet_";
 	public static final String VAR_sitePetCount = "sitePetCount";
 	public static final String VAR_sitePet_ = "sitePet_";
+	public static final String VAR_pk = "pk";
 }

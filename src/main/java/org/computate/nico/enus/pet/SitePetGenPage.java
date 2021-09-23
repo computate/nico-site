@@ -52,16 +52,21 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 	 * {@inheritDoc}
 	 * 
 	 **/
-	protected void _listSitePet_(Wrap<SearchList<SitePet>> c) {
+	protected void _listSitePet_(Wrap<SearchList<SitePet>> w) {
 	}
 
 	protected void _sitePetCount(Wrap<Integer> w) {
 		w.o(listSitePet_ == null ? 0 : listSitePet_.size());
 	}
 
-	protected void _sitePet_(Wrap<SitePet> c) {
+	protected void _sitePet_(Wrap<SitePet> w) {
 		if(sitePetCount == 1)
-			c.o(listSitePet_.get(0));
+			w.o(listSitePet_.get(0));
+	}
+
+	protected void _pk(Wrap<Long> w) {
+		if(sitePetCount == 1)
+			w.o(sitePet_.getPk());
 	}
 
 	@Override
