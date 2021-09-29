@@ -96,8 +96,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long enrollmentKey;
-	@JsonIgnore
-	public Wrap<Long> enrollmentKeyWrap = new Wrap<Long>().var("enrollmentKey").o(enrollmentKey);
 
 	/**	<br/> The entity enrollmentKey
 	 *  is defined as null before being initialized. 
@@ -113,12 +111,10 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public void setEnrollmentKey(Long enrollmentKey) {
 		this.enrollmentKey = enrollmentKey;
-		this.enrollmentKeyWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setEnrollmentKey(String o) {
 		this.enrollmentKey = SiteEnrollment.staticSetEnrollmentKey(siteRequest_, o);
-		this.enrollmentKeyWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetEnrollmentKey(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -126,13 +122,12 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return null;
 	}
 	protected SiteEnrollment enrollmentKeyInit() {
-		if(!enrollmentKeyWrap.alreadyInitialized) {
+		Wrap<Long> enrollmentKeyWrap = new Wrap<Long>().var("enrollmentKey").o(enrollmentKey);
+		if(enrollmentKey == null) {
 			_enrollmentKey(enrollmentKeyWrap);
-			if(enrollmentKey == null)
-				setEnrollmentKey(enrollmentKeyWrap.o);
-			enrollmentKeyWrap.o(null);
+			setEnrollmentKey(enrollmentKeyWrap.o);
 		}
-		enrollmentKeyWrap.alreadyInitialized(true);
+		enrollmentKeyWrap.o(null);
 		return (SiteEnrollment)this;
 	}
 
@@ -184,8 +179,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> userKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().var("userKeys").o(userKeys);
 
 	/**	<br/> The entity userKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -201,14 +194,12 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public void setUserKeys(List<Long> userKeys) {
 		this.userKeys = userKeys;
-		this.userKeysWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setUserKeys(String o) {
 		Long l = SiteEnrollment.staticSetUserKeys(siteRequest_, o);
 		if(l != null)
 			addUserKeys(l);
-		this.userKeysWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetUserKeys(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -242,10 +233,7 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return (SiteEnrollment)this;
 	}
 	protected SiteEnrollment userKeysInit() {
-		if(!userKeysWrap.alreadyInitialized) {
-			_userKeys(userKeys);
-		}
-		userKeysWrap.alreadyInitialized(true);
+		_userKeys(userKeys);
 		return (SiteEnrollment)this;
 	}
 
@@ -301,8 +289,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> petKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> petKeysWrap = new Wrap<List<Long>>().var("petKeys").o(petKeys);
 
 	/**	<br/> The entity petKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -318,14 +304,12 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public void setPetKeys(List<Long> petKeys) {
 		this.petKeys = petKeys;
-		this.petKeysWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPetKeys(String o) {
 		Long l = SiteEnrollment.staticSetPetKeys(siteRequest_, o);
 		if(l != null)
 			addPetKeys(l);
-		this.petKeysWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPetKeys(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -359,10 +343,7 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return (SiteEnrollment)this;
 	}
 	protected SiteEnrollment petKeysInit() {
-		if(!petKeysWrap.alreadyInitialized) {
-			_petKeys(petKeys);
-		}
-		petKeysWrap.alreadyInitialized(true);
+		_petKeys(petKeys);
 		return (SiteEnrollment)this;
 	}
 
@@ -416,8 +397,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SitePet> petSearch;
-	@JsonIgnore
-	public Wrap<SearchList<SitePet>> petSearchWrap = new Wrap<SearchList<SitePet>>().var("petSearch").o(petSearch);
 
 	/**	<br/> The entity petSearch
 	 *  is defined as null before being initialized. 
@@ -433,35 +412,28 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public void setPetSearch(SearchList<SitePet> petSearch) {
 		this.petSearch = petSearch;
-		this.petSearchWrap.alreadyInitialized = true;
 	}
 	public static SearchList<SitePet> staticSetPetSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected Future<SearchList<SitePet>> petSearchPromise() {
 		Promise<SearchList<SitePet>> promise = Promise.promise();
-		if(!petSearchWrap.alreadyInitialized) {
-			Promise<SearchList<SitePet>> promise2 = Promise.promise();
-			_petSearch(promise2);
-			promise2.future().onSuccess(o -> {
-				if(o != null && petSearch == null) {
-					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
-						setPetSearch(o);
-						petSearchWrap.alreadyInitialized(true);
-						promise.complete(o);
-					}).onFailure(ex -> {
-						promise.fail(ex);
-					});
-				} else {
-					petSearchWrap.alreadyInitialized(true);
+		Promise<SearchList<SitePet>> promise2 = Promise.promise();
+		_petSearch(promise2);
+		promise2.future().onSuccess(o -> {
+			if(o != null && petSearch == null) {
+				o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+					setPetSearch(o);
 					promise.complete(o);
-				}
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			} else {
+				promise.complete(o);
+			}
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
 		return promise.future();
 	}
 
@@ -475,8 +447,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SitePet pet_;
-	@JsonIgnore
-	public Wrap<SitePet> pet_Wrap = new Wrap<SitePet>().var("pet_").o(pet_);
 
 	/**	<br/> The entity pet_
 	 *  is defined as null before being initialized. 
@@ -492,19 +462,17 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public void setPet_(SitePet pet_) {
 		this.pet_ = pet_;
-		this.pet_Wrap.alreadyInitialized = true;
 	}
 	public static SitePet staticSetPet_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected SiteEnrollment pet_Init() {
-		if(!pet_Wrap.alreadyInitialized) {
+		Wrap<SitePet> pet_Wrap = new Wrap<SitePet>().var("pet_").o(pet_);
+		if(pet_ == null) {
 			_pet_(pet_Wrap);
-			if(pet_ == null)
-				setPet_(pet_Wrap.o);
-			pet_Wrap.o(null);
+			setPet_(pet_Wrap.o);
 		}
-		pet_Wrap.alreadyInitialized(true);
+		pet_Wrap.o(null);
 		return (SiteEnrollment)this;
 	}
 
@@ -512,16 +480,9 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSiteEnrollment = false;
-
 	public Future<Void> promiseDeepSiteEnrollment(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSiteEnrollment) {
-			alreadyInitializedSiteEnrollment = true;
-			return promiseDeepSiteEnrollment();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSiteEnrollment();
 	}
 
 	public Future<Void> promiseDeepSiteEnrollment() {
@@ -801,22 +762,22 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	}
 	public void populateSiteEnrollment(SolrDocument solrDocument) {
 		SiteEnrollment oSiteEnrollment = (SiteEnrollment)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("enrollmentKey")) {
-				Long enrollmentKey = (Long)solrDocument.get("enrollmentKey_stored_long");
+				Long enrollmentKey = (Long)solrDocument.get("enrollmentKey_indexedstored_long");
 				if(enrollmentKey != null)
 					oSiteEnrollment.setEnrollmentKey(enrollmentKey);
 			}
 
 			if(saves.contains("userKeys")) {
-				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_indexedstored_longs");
 				if(userKeys != null)
 					oSiteEnrollment.userKeys.addAll(userKeys);
 			}
 
-			List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_stored_longs");
+			List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_indexedstored_longs");
 			if(petKeys != null)
 				oSiteEnrollment.petKeys.addAll(petKeys);
 		}
@@ -826,23 +787,16 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public void indexSiteEnrollment(SolrInputDocument document) {
 		if(enrollmentKey != null) {
-			document.addField("enrollmentKey_indexed_long", enrollmentKey);
-			document.addField("enrollmentKey_stored_long", enrollmentKey);
+			document.addField("enrollmentKey_indexedstored_long", enrollmentKey);
 		}
 		if(userKeys != null) {
 			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_stored_longs", o);
+				document.addField("userKeys_indexedstored_longs", o);
 			}
 		}
 		if(petKeys != null) {
 			for(java.lang.Long o : petKeys) {
-				document.addField("petKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : petKeys) {
-				document.addField("petKeys_stored_longs", o);
+				document.addField("petKeys_indexedstored_longs", o);
 			}
 		}
 		super.indexBaseModel(document);
@@ -852,11 +806,11 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	public static String varIndexedSiteEnrollment(String entityVar) {
 		switch(entityVar) {
 			case "enrollmentKey":
-				return "enrollmentKey_indexed_long";
+				return "enrollmentKey_indexedstored_long";
 			case "userKeys":
-				return "userKeys_indexed_longs";
+				return "userKeys_indexedstored_longs";
 			case "petKeys":
-				return "petKeys_indexed_longs";
+				return "petKeys_indexedstored_longs";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -886,11 +840,11 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	public void storeSiteEnrollment(SolrDocument solrDocument) {
 		SiteEnrollment oSiteEnrollment = (SiteEnrollment)this;
 
-		oSiteEnrollment.setEnrollmentKey(Optional.ofNullable(solrDocument.get("enrollmentKey_stored_long")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("userKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		oSiteEnrollment.setEnrollmentKey(Optional.ofNullable(solrDocument.get("enrollmentKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("userKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSiteEnrollment.addUserKeys(v.toString());
 		});
-		Optional.ofNullable((List<?>)solrDocument.get("petKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		Optional.ofNullable((List<?>)solrDocument.get("petKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSiteEnrollment.addPetKeys(v.toString());
 		});
 

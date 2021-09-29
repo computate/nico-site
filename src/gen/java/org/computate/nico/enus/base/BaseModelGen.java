@@ -76,8 +76,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
-	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -93,19 +91,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
 		this.siteRequest_ = siteRequest_;
-		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected BaseModel siteRequest_Init() {
-		if(!siteRequest_Wrap.alreadyInitialized) {
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
+		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
-			if(siteRequest_ == null)
-				setSiteRequest_(siteRequest_Wrap.o);
-			siteRequest_Wrap.o(null);
+			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -120,8 +115,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
-	@JsonIgnore
-	public Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
 
 	/**	<br/> The entity pk
 	 *  is defined as null before being initialized. 
@@ -137,12 +130,10 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setPk(Long pk) {
 		this.pk = pk;
-		this.pkWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPk(String o) {
 		this.pk = BaseModel.staticSetPk(siteRequest_, o);
-		this.pkWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -150,13 +141,11 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return null;
 	}
 	protected BaseModel pkInit() {
-		if(!pkWrap.alreadyInitialized) {
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
+		if(pk == null) {
 			_pk(pkWrap);
-			if(pk == null)
-				setPk(pkWrap.o);
-			pkWrap.o(null);
+			setPk(pkWrap.o);
 		}
-		pkWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -206,8 +195,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String inheritPk;
-	@JsonIgnore
-	public Wrap<String> inheritPkWrap = new Wrap<String>().var("inheritPk").o(inheritPk);
 
 	/**	<br/> The entity inheritPk
 	 *  is defined as null before being initialized. 
@@ -222,19 +209,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setInheritPk(String o) {
 		this.inheritPk = BaseModel.staticSetInheritPk(siteRequest_, o);
-		this.inheritPkWrap.alreadyInitialized = true;
 	}
 	public static String staticSetInheritPk(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel inheritPkInit() {
-		if(!inheritPkWrap.alreadyInitialized) {
+		Wrap<String> inheritPkWrap = new Wrap<String>().var("inheritPk");
+		if(inheritPk == null) {
 			_inheritPk(inheritPkWrap);
-			if(inheritPk == null)
-				setInheritPk(inheritPkWrap.o);
-			inheritPkWrap.o(null);
+			setInheritPk(inheritPkWrap.o);
 		}
-		inheritPkWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -284,8 +268,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
-	@JsonIgnore
-	public Wrap<String> idWrap = new Wrap<String>().var("id").o(id);
 
 	/**	<br/> The entity id
 	 *  is defined as null before being initialized. 
@@ -300,19 +282,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setId(String o) {
 		this.id = BaseModel.staticSetId(siteRequest_, o);
-		this.idWrap.alreadyInitialized = true;
 	}
 	public static String staticSetId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel idInit() {
-		if(!idWrap.alreadyInitialized) {
+		Wrap<String> idWrap = new Wrap<String>().var("id");
+		if(id == null) {
 			_id(idWrap);
-			if(id == null)
-				setId(idWrap.o);
-			idWrap.o(null);
+			setId(idWrap.o);
 		}
-		idWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -365,8 +344,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSV'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
-	@JsonIgnore
-	public Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created").o(created);
 
 	/**	<br/> The entity created
 	 *  is defined as null before being initialized. 
@@ -382,18 +359,15 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setCreated(ZonedDateTime created) {
 		this.created = created;
-		this.createdWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setCreated(Instant o) {
 		this.created = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
-		this.createdWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setCreated(String o) {
 		this.created = BaseModel.staticSetCreated(siteRequest_, o);
-		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
 		if(StringUtils.endsWith(o, "Z"))
@@ -404,16 +378,13 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonIgnore
 	public void setCreated(Date o) {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
-		this.createdWrap.alreadyInitialized = true;
 	}
 	protected BaseModel createdInit() {
-		if(!createdWrap.alreadyInitialized) {
+		Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created");
+		if(created == null) {
 			_created(createdWrap);
-			if(created == null)
-				setCreated(createdWrap.o);
-			createdWrap.o(null);
+			setCreated(createdWrap.o);
 		}
-		createdWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -466,8 +437,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSV'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime modified;
-	@JsonIgnore
-	public Wrap<ZonedDateTime> modifiedWrap = new Wrap<ZonedDateTime>().var("modified").o(modified);
 
 	/**	<br/> The entity modified
 	 *  is defined as null before being initialized. 
@@ -483,18 +452,15 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setModified(ZonedDateTime modified) {
 		this.modified = modified;
-		this.modifiedWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setModified(Instant o) {
 		this.modified = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
-		this.modifiedWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setModified(String o) {
 		this.modified = BaseModel.staticSetModified(siteRequest_, o);
-		this.modifiedWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetModified(SiteRequestEnUS siteRequest_, String o) {
 		if(StringUtils.endsWith(o, "Z"))
@@ -505,16 +471,13 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonIgnore
 	public void setModified(Date o) {
 		this.modified = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
-		this.modifiedWrap.alreadyInitialized = true;
 	}
 	protected BaseModel modifiedInit() {
-		if(!modifiedWrap.alreadyInitialized) {
+		Wrap<ZonedDateTime> modifiedWrap = new Wrap<ZonedDateTime>().var("modified");
+		if(modified == null) {
 			_modified(modifiedWrap);
-			if(modified == null)
-				setModified(modifiedWrap.o);
-			modifiedWrap.o(null);
+			setModified(modifiedWrap.o);
 		}
-		modifiedWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -564,8 +527,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean archived;
-	@JsonIgnore
-	public Wrap<Boolean> archivedWrap = new Wrap<Boolean>().var("archived").o(archived);
 
 	/**	<br/> The entity archived
 	 *  is defined as null before being initialized. 
@@ -581,24 +542,20 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setArchived(Boolean archived) {
 		this.archived = archived;
-		this.archivedWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setArchived(String o) {
 		this.archived = BaseModel.staticSetArchived(siteRequest_, o);
-		this.archivedWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetArchived(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected BaseModel archivedInit() {
-		if(!archivedWrap.alreadyInitialized) {
+		Wrap<Boolean> archivedWrap = new Wrap<Boolean>().var("archived");
+		if(archived == null) {
 			_archived(archivedWrap);
-			if(archived == null)
-				setArchived(archivedWrap.o);
-			archivedWrap.o(null);
+			setArchived(archivedWrap.o);
 		}
-		archivedWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -648,8 +605,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean deleted;
-	@JsonIgnore
-	public Wrap<Boolean> deletedWrap = new Wrap<Boolean>().var("deleted").o(deleted);
 
 	/**	<br/> The entity deleted
 	 *  is defined as null before being initialized. 
@@ -665,24 +620,20 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
-		this.deletedWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setDeleted(String o) {
 		this.deleted = BaseModel.staticSetDeleted(siteRequest_, o);
-		this.deletedWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetDeleted(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected BaseModel deletedInit() {
-		if(!deletedWrap.alreadyInitialized) {
+		Wrap<Boolean> deletedWrap = new Wrap<Boolean>().var("deleted");
+		if(deleted == null) {
 			_deleted(deletedWrap);
-			if(deleted == null)
-				setDeleted(deletedWrap.o);
-			deletedWrap.o(null);
+			setDeleted(deletedWrap.o);
 		}
-		deletedWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -732,8 +683,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classCanonicalName;
-	@JsonIgnore
-	public Wrap<String> classCanonicalNameWrap = new Wrap<String>().var("classCanonicalName").o(classCanonicalName);
 
 	/**	<br/> The entity classCanonicalName
 	 *  is defined as null before being initialized. 
@@ -748,19 +697,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setClassCanonicalName(String o) {
 		this.classCanonicalName = BaseModel.staticSetClassCanonicalName(siteRequest_, o);
-		this.classCanonicalNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel classCanonicalNameInit() {
-		if(!classCanonicalNameWrap.alreadyInitialized) {
+		Wrap<String> classCanonicalNameWrap = new Wrap<String>().var("classCanonicalName");
+		if(classCanonicalName == null) {
 			_classCanonicalName(classCanonicalNameWrap);
-			if(classCanonicalName == null)
-				setClassCanonicalName(classCanonicalNameWrap.o);
-			classCanonicalNameWrap.o(null);
+			setClassCanonicalName(classCanonicalNameWrap.o);
 		}
-		classCanonicalNameWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -810,8 +756,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
-	@JsonIgnore
-	public Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName").o(classSimpleName);
 
 	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
@@ -826,19 +770,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setClassSimpleName(String o) {
 		this.classSimpleName = BaseModel.staticSetClassSimpleName(siteRequest_, o);
-		this.classSimpleNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel classSimpleNameInit() {
-		if(!classSimpleNameWrap.alreadyInitialized) {
+		Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName");
+		if(classSimpleName == null) {
 			_classSimpleName(classSimpleNameWrap);
-			if(classSimpleName == null)
-				setClassSimpleName(classSimpleNameWrap.o);
-			classSimpleNameWrap.o(null);
+			setClassSimpleName(classSimpleNameWrap.o);
 		}
-		classSimpleNameWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -889,8 +830,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classCanonicalNames = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> classCanonicalNamesWrap = new Wrap<List<String>>().var("classCanonicalNames").o(classCanonicalNames);
 
 	/**	<br/> The entity classCanonicalNames
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -906,7 +845,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setClassCanonicalNames(List<String> classCanonicalNames) {
 		this.classCanonicalNames = classCanonicalNames;
-		this.classCanonicalNamesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -931,10 +869,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		}
 	}
 	protected BaseModel classCanonicalNamesInit() {
-		if(!classCanonicalNamesWrap.alreadyInitialized) {
-			_classCanonicalNames(classCanonicalNames);
-		}
-		classCanonicalNamesWrap.alreadyInitialized(true);
+		_classCanonicalNames(classCanonicalNames);
 		return (BaseModel)this;
 	}
 
@@ -988,8 +923,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String sessionId;
-	@JsonIgnore
-	public Wrap<String> sessionIdWrap = new Wrap<String>().var("sessionId").o(sessionId);
 
 	/**	<br/> The entity sessionId
 	 *  is defined as null before being initialized. 
@@ -1004,19 +937,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setSessionId(String o) {
 		this.sessionId = BaseModel.staticSetSessionId(siteRequest_, o);
-		this.sessionIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetSessionId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel sessionIdInit() {
-		if(!sessionIdWrap.alreadyInitialized) {
+		Wrap<String> sessionIdWrap = new Wrap<String>().var("sessionId");
+		if(sessionId == null) {
 			_sessionId(sessionIdWrap);
-			if(sessionId == null)
-				setSessionId(sessionIdWrap.o);
-			sessionIdWrap.o(null);
+			setSessionId(sessionIdWrap.o);
 		}
-		sessionIdWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1066,8 +996,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userId;
-	@JsonIgnore
-	public Wrap<String> userIdWrap = new Wrap<String>().var("userId").o(userId);
 
 	/**	<br/> The entity userId
 	 *  is defined as null before being initialized. 
@@ -1082,19 +1010,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setUserId(String o) {
 		this.userId = BaseModel.staticSetUserId(siteRequest_, o);
-		this.userIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel userIdInit() {
-		if(!userIdWrap.alreadyInitialized) {
+		Wrap<String> userIdWrap = new Wrap<String>().var("userId");
+		if(userId == null) {
 			_userId(userIdWrap);
-			if(userId == null)
-				setUserId(userIdWrap.o);
-			userIdWrap.o(null);
+			setUserId(userIdWrap.o);
 		}
-		userIdWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1145,8 +1070,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long userKey;
-	@JsonIgnore
-	public Wrap<Long> userKeyWrap = new Wrap<Long>().var("userKey").o(userKey);
 
 	/**	<br/> The entity userKey
 	 *  is defined as null before being initialized. 
@@ -1162,12 +1085,10 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setUserKey(Long userKey) {
 		this.userKey = userKey;
-		this.userKeyWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setUserKey(String o) {
 		this.userKey = BaseModel.staticSetUserKey(siteRequest_, o);
-		this.userKeyWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetUserKey(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -1175,13 +1096,11 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return null;
 	}
 	protected BaseModel userKeyInit() {
-		if(!userKeyWrap.alreadyInitialized) {
+		Wrap<Long> userKeyWrap = new Wrap<Long>().var("userKey");
+		if(userKey == null) {
 			_userKey(userKeyWrap);
-			if(userKey == null)
-				setUserKey(userKeyWrap.o);
-			userKeyWrap.o(null);
+			setUserKey(userKeyWrap.o);
 		}
-		userKeyWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1232,8 +1151,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> saves = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> savesWrap = new Wrap<List<String>>().var("saves").o(saves);
 
 	/**	<br/> The entity saves
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -1249,7 +1166,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public void setSaves(List<String> saves) {
 		this.saves = saves;
-		this.savesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetSaves(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -1274,10 +1190,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		}
 	}
 	protected BaseModel savesInit() {
-		if(!savesWrap.alreadyInitialized) {
-			_saves(saves);
-		}
-		savesWrap.alreadyInitialized(true);
+		_saves(saves);
 		return (BaseModel)this;
 	}
 
@@ -1331,8 +1244,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectTitle;
-	@JsonIgnore
-	public Wrap<String> objectTitleWrap = new Wrap<String>().var("objectTitle").o(objectTitle);
 
 	/**	<br/> The entity objectTitle
 	 *  is defined as null before being initialized. 
@@ -1347,19 +1258,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setObjectTitle(String o) {
 		this.objectTitle = BaseModel.staticSetObjectTitle(siteRequest_, o);
-		this.objectTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel objectTitleInit() {
-		if(!objectTitleWrap.alreadyInitialized) {
+		Wrap<String> objectTitleWrap = new Wrap<String>().var("objectTitle");
+		if(objectTitle == null) {
 			_objectTitle(objectTitleWrap);
-			if(objectTitle == null)
-				setObjectTitle(objectTitleWrap.o);
-			objectTitleWrap.o(null);
+			setObjectTitle(objectTitleWrap.o);
 		}
-		objectTitleWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1409,8 +1317,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectId;
-	@JsonIgnore
-	public Wrap<String> objectIdWrap = new Wrap<String>().var("objectId").o(objectId);
 
 	/**	<br/> The entity objectId
 	 *  is defined as null before being initialized. 
@@ -1425,19 +1331,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setObjectId(String o) {
 		this.objectId = BaseModel.staticSetObjectId(siteRequest_, o);
-		this.objectIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel objectIdInit() {
-		if(!objectIdWrap.alreadyInitialized) {
+		Wrap<String> objectIdWrap = new Wrap<String>().var("objectId");
+		if(objectId == null) {
 			_objectId(objectIdWrap);
-			if(objectId == null)
-				setObjectId(objectIdWrap.o);
-			objectIdWrap.o(null);
+			setObjectId(objectIdWrap.o);
 		}
-		objectIdWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1487,8 +1390,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectNameVar;
-	@JsonIgnore
-	public Wrap<String> objectNameVarWrap = new Wrap<String>().var("objectNameVar").o(objectNameVar);
 
 	/**	<br/> The entity objectNameVar
 	 *  is defined as null before being initialized. 
@@ -1503,19 +1404,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setObjectNameVar(String o) {
 		this.objectNameVar = BaseModel.staticSetObjectNameVar(siteRequest_, o);
-		this.objectNameVarWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel objectNameVarInit() {
-		if(!objectNameVarWrap.alreadyInitialized) {
+		Wrap<String> objectNameVarWrap = new Wrap<String>().var("objectNameVar");
+		if(objectNameVar == null) {
 			_objectNameVar(objectNameVarWrap);
-			if(objectNameVar == null)
-				setObjectNameVar(objectNameVarWrap.o);
-			objectNameVarWrap.o(null);
+			setObjectNameVar(objectNameVarWrap.o);
 		}
-		objectNameVarWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1565,8 +1463,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectSuggest;
-	@JsonIgnore
-	public Wrap<String> objectSuggestWrap = new Wrap<String>().var("objectSuggest").o(objectSuggest);
 
 	/**	<br/> The entity objectSuggest
 	 *  is defined as null before being initialized. 
@@ -1581,19 +1477,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setObjectSuggest(String o) {
 		this.objectSuggest = BaseModel.staticSetObjectSuggest(siteRequest_, o);
-		this.objectSuggestWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel objectSuggestInit() {
-		if(!objectSuggestWrap.alreadyInitialized) {
+		Wrap<String> objectSuggestWrap = new Wrap<String>().var("objectSuggest");
+		if(objectSuggest == null) {
 			_objectSuggest(objectSuggestWrap);
-			if(objectSuggest == null)
-				setObjectSuggest(objectSuggestWrap.o);
-			objectSuggestWrap.o(null);
+			setObjectSuggest(objectSuggestWrap.o);
 		}
-		objectSuggestWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1643,8 +1536,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectText;
-	@JsonIgnore
-	public Wrap<String> objectTextWrap = new Wrap<String>().var("objectText").o(objectText);
 
 	/**	<br/> The entity objectText
 	 *  is defined as null before being initialized. 
@@ -1659,19 +1550,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setObjectText(String o) {
 		this.objectText = BaseModel.staticSetObjectText(siteRequest_, o);
-		this.objectTextWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectText(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel objectTextInit() {
-		if(!objectTextWrap.alreadyInitialized) {
+		Wrap<String> objectTextWrap = new Wrap<String>().var("objectText");
+		if(objectText == null) {
 			_objectText(objectTextWrap);
-			if(objectText == null)
-				setObjectText(objectTextWrap.o);
-			objectTextWrap.o(null);
+			setObjectText(objectTextWrap.o);
 		}
-		objectTextWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1721,8 +1609,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrlId;
-	@JsonIgnore
-	public Wrap<String> pageUrlIdWrap = new Wrap<String>().var("pageUrlId").o(pageUrlId);
 
 	/**	<br/> The entity pageUrlId
 	 *  is defined as null before being initialized. 
@@ -1737,19 +1623,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setPageUrlId(String o) {
 		this.pageUrlId = BaseModel.staticSetPageUrlId(siteRequest_, o);
-		this.pageUrlIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUrlId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel pageUrlIdInit() {
-		if(!pageUrlIdWrap.alreadyInitialized) {
+		Wrap<String> pageUrlIdWrap = new Wrap<String>().var("pageUrlId");
+		if(pageUrlId == null) {
 			_pageUrlId(pageUrlIdWrap);
-			if(pageUrlId == null)
-				setPageUrlId(pageUrlIdWrap.o);
-			pageUrlIdWrap.o(null);
+			setPageUrlId(pageUrlIdWrap.o);
 		}
-		pageUrlIdWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1799,8 +1682,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrlPk;
-	@JsonIgnore
-	public Wrap<String> pageUrlPkWrap = new Wrap<String>().var("pageUrlPk").o(pageUrlPk);
 
 	/**	<br/> The entity pageUrlPk
 	 *  is defined as null before being initialized. 
@@ -1815,19 +1696,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setPageUrlPk(String o) {
 		this.pageUrlPk = BaseModel.staticSetPageUrlPk(siteRequest_, o);
-		this.pageUrlPkWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel pageUrlPkInit() {
-		if(!pageUrlPkWrap.alreadyInitialized) {
+		Wrap<String> pageUrlPkWrap = new Wrap<String>().var("pageUrlPk");
+		if(pageUrlPk == null) {
 			_pageUrlPk(pageUrlPkWrap);
-			if(pageUrlPk == null)
-				setPageUrlPk(pageUrlPkWrap.o);
-			pageUrlPkWrap.o(null);
+			setPageUrlPk(pageUrlPkWrap.o);
 		}
-		pageUrlPkWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1877,8 +1755,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrlApi;
-	@JsonIgnore
-	public Wrap<String> pageUrlApiWrap = new Wrap<String>().var("pageUrlApi").o(pageUrlApi);
 
 	/**	<br/> The entity pageUrlApi
 	 *  is defined as null before being initialized. 
@@ -1893,19 +1769,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setPageUrlApi(String o) {
 		this.pageUrlApi = BaseModel.staticSetPageUrlApi(siteRequest_, o);
-		this.pageUrlApiWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel pageUrlApiInit() {
-		if(!pageUrlApiWrap.alreadyInitialized) {
+		Wrap<String> pageUrlApiWrap = new Wrap<String>().var("pageUrlApi");
+		if(pageUrlApi == null) {
 			_pageUrlApi(pageUrlApiWrap);
-			if(pageUrlApi == null)
-				setPageUrlApi(pageUrlApiWrap.o);
-			pageUrlApiWrap.o(null);
+			setPageUrlApi(pageUrlApiWrap.o);
 		}
-		pageUrlApiWrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -1955,8 +1828,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH1;
-	@JsonIgnore
-	public Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1").o(pageH1);
 
 	/**	<br/> The entity pageH1
 	 *  is defined as null before being initialized. 
@@ -1971,19 +1842,16 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void setPageH1(String o) {
 		this.pageH1 = BaseModel.staticSetPageH1(siteRequest_, o);
-		this.pageH1Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected BaseModel pageH1Init() {
-		if(!pageH1Wrap.alreadyInitialized) {
+		Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1");
+		if(pageH1 == null) {
 			_pageH1(pageH1Wrap);
-			if(pageH1 == null)
-				setPageH1(pageH1Wrap.o);
-			pageH1Wrap.o(null);
+			setPageH1(pageH1Wrap.o);
 		}
-		pageH1Wrap.alreadyInitialized(true);
 		return (BaseModel)this;
 	}
 
@@ -2027,16 +1895,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedBaseModel = false;
-
 	public Future<Void> promiseDeepBaseModel(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedBaseModel) {
-			alreadyInitializedBaseModel = true;
-			return promiseDeepBaseModel();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepBaseModel();
 	}
 
 	public Future<Void> promiseDeepBaseModel() {

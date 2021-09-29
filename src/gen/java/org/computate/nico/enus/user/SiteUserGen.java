@@ -93,8 +93,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> userKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().var("userKeys").o(userKeys);
 
 	/**	<br/> The entity userKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -110,14 +108,12 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	public void setUserKeys(List<Long> userKeys) {
 		this.userKeys = userKeys;
-		this.userKeysWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setUserKeys(String o) {
 		Long l = SiteUser.staticSetUserKeys(siteRequest_, o);
 		if(l != null)
 			addUserKeys(l);
-		this.userKeysWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetUserKeys(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -151,10 +147,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		return (SiteUser)this;
 	}
 	protected SiteUser userKeysInit() {
-		if(!userKeysWrap.alreadyInitialized) {
-			_userKeys(userKeys);
-		}
-		userKeysWrap.alreadyInitialized(true);
+		_userKeys(userKeys);
 		return (SiteUser)this;
 	}
 
@@ -208,8 +201,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userName;
-	@JsonIgnore
-	public Wrap<String> userNameWrap = new Wrap<String>().var("userName").o(userName);
 
 	/**	<br/> The entity userName
 	 *  is defined as null before being initialized. 
@@ -224,19 +215,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void setUserName(String o) {
 		this.userName = SiteUser.staticSetUserName(siteRequest_, o);
-		this.userNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SiteUser userNameInit() {
-		if(!userNameWrap.alreadyInitialized) {
+		Wrap<String> userNameWrap = new Wrap<String>().var("userName");
+		if(userName == null) {
 			_userName(userNameWrap);
-			if(userName == null)
-				setUserName(userNameWrap.o);
-			userNameWrap.o(null);
+			setUserName(userNameWrap.o);
 		}
-		userNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
 	}
 
@@ -286,8 +274,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userEmail;
-	@JsonIgnore
-	public Wrap<String> userEmailWrap = new Wrap<String>().var("userEmail").o(userEmail);
 
 	/**	<br/> The entity userEmail
 	 *  is defined as null before being initialized. 
@@ -302,19 +288,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void setUserEmail(String o) {
 		this.userEmail = SiteUser.staticSetUserEmail(siteRequest_, o);
-		this.userEmailWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserEmail(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SiteUser userEmailInit() {
-		if(!userEmailWrap.alreadyInitialized) {
+		Wrap<String> userEmailWrap = new Wrap<String>().var("userEmail");
+		if(userEmail == null) {
 			_userEmail(userEmailWrap);
-			if(userEmail == null)
-				setUserEmail(userEmailWrap.o);
-			userEmailWrap.o(null);
+			setUserEmail(userEmailWrap.o);
 		}
-		userEmailWrap.alreadyInitialized(true);
 		return (SiteUser)this;
 	}
 
@@ -364,8 +347,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userFirstName;
-	@JsonIgnore
-	public Wrap<String> userFirstNameWrap = new Wrap<String>().var("userFirstName").o(userFirstName);
 
 	/**	<br/> The entity userFirstName
 	 *  is defined as null before being initialized. 
@@ -380,19 +361,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void setUserFirstName(String o) {
 		this.userFirstName = SiteUser.staticSetUserFirstName(siteRequest_, o);
-		this.userFirstNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserFirstName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SiteUser userFirstNameInit() {
-		if(!userFirstNameWrap.alreadyInitialized) {
+		Wrap<String> userFirstNameWrap = new Wrap<String>().var("userFirstName");
+		if(userFirstName == null) {
 			_userFirstName(userFirstNameWrap);
-			if(userFirstName == null)
-				setUserFirstName(userFirstNameWrap.o);
-			userFirstNameWrap.o(null);
+			setUserFirstName(userFirstNameWrap.o);
 		}
-		userFirstNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
 	}
 
@@ -442,8 +420,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userLastName;
-	@JsonIgnore
-	public Wrap<String> userLastNameWrap = new Wrap<String>().var("userLastName").o(userLastName);
 
 	/**	<br/> The entity userLastName
 	 *  is defined as null before being initialized. 
@@ -458,19 +434,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void setUserLastName(String o) {
 		this.userLastName = SiteUser.staticSetUserLastName(siteRequest_, o);
-		this.userLastNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserLastName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SiteUser userLastNameInit() {
-		if(!userLastNameWrap.alreadyInitialized) {
+		Wrap<String> userLastNameWrap = new Wrap<String>().var("userLastName");
+		if(userLastName == null) {
 			_userLastName(userLastNameWrap);
-			if(userLastName == null)
-				setUserLastName(userLastNameWrap.o);
-			userLastNameWrap.o(null);
+			setUserLastName(userLastNameWrap.o);
 		}
-		userLastNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
 	}
 
@@ -520,8 +493,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userFullName;
-	@JsonIgnore
-	public Wrap<String> userFullNameWrap = new Wrap<String>().var("userFullName").o(userFullName);
 
 	/**	<br/> The entity userFullName
 	 *  is defined as null before being initialized. 
@@ -536,19 +507,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void setUserFullName(String o) {
 		this.userFullName = SiteUser.staticSetUserFullName(siteRequest_, o);
-		this.userFullNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserFullName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SiteUser userFullNameInit() {
-		if(!userFullNameWrap.alreadyInitialized) {
+		Wrap<String> userFullNameWrap = new Wrap<String>().var("userFullName");
+		if(userFullName == null) {
 			_userFullName(userFullNameWrap);
-			if(userFullName == null)
-				setUserFullName(userFullNameWrap.o);
-			userFullNameWrap.o(null);
+			setUserFullName(userFullNameWrap.o);
 		}
-		userFullNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
 	}
 
@@ -592,16 +560,9 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSiteUser = false;
-
 	public Future<Void> promiseDeepSiteUser(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSiteUser) {
-			alreadyInitializedSiteUser = true;
-			return promiseDeepSiteUser();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSiteUser();
 	}
 
 	public Future<Void> promiseDeepSiteUser() {

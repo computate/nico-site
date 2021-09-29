@@ -17,6 +17,8 @@ touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/vertx/AppSw
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/vertx/MainVerticle.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/user/SiteUser.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/base/BaseModel.java
+touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/pet/SitePet.java
+touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/enrollment/SiteEnrollment.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/LocalDateSerializer.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/LocalTimeSerializer.java
 touch /usr/local/src/nico-site/src/main/java/org/computate/nico/enus/java/ZonedDateTimeSerializer.java

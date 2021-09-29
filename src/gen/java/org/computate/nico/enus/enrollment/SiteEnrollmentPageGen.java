@@ -48,16 +48,9 @@ public abstract class SiteEnrollmentPageGen<DEV> extends SiteEnrollmentGenPage {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSiteEnrollmentPage = false;
-
 	public Future<Void> promiseDeepSiteEnrollmentPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSiteEnrollmentPage) {
-			alreadyInitializedSiteEnrollmentPage = true;
-			return promiseDeepSiteEnrollmentPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSiteEnrollmentPage();
 	}
 
 	public Future<Void> promiseDeepSiteEnrollmentPage() {

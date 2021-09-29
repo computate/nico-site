@@ -19,7 +19,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * SuperPage: PageLayout
  * 
  * Keyword: classSimpleNameCluster
- */    
+ */      
 public class BaseModel extends BaseModelGen<Object> {
 
 	/**

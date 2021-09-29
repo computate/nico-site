@@ -2,6 +2,8 @@ package org.computate.nico.enus.pet;
 
 import org.computate.nico.enus.user.SiteUserEnUSApiServiceImpl;
 import org.computate.nico.enus.user.SiteUser;
+import org.computate.nico.enus.enrollment.SiteEnrollmentEnUSApiServiceImpl;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.request.api.ApiRequest;
@@ -372,7 +374,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					JsonObject query = new JsonObject();
-					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(true);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
 					if(softCommit)
 						query.put("softCommit", softCommit);
@@ -575,6 +577,25 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 						num++;
 						bParams.add(o2.sqlDeleted());
 						break;
+					case SitePet.VAR_enrollmentKeys:
+						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteEnrollment.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteEnrollment");
+									}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
 					case SitePet.VAR_petName:
 						o2.setPetName(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
@@ -660,7 +681,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							).onSuccess(b -> {
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
-						RuntimeException ex2 = new RuntimeException("value SitePet.petAmount failed", ex);
+						RuntimeException ex2 = new RuntimeException("value SitePet failed", ex);
 						LOG.error(String.format("attributeSitePet failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
@@ -709,7 +730,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSitePetList(siteRequest, false, true, true, "/api/pet", "PATCH").onSuccess(listSitePet -> {
+					searchSitePetList(siteRequest, false, true, true).onSuccess(listSitePet -> {
 						try {
 							List<String> roles2 = Arrays.asList("SiteAdmin");
 							if(listSitePet.getQueryResponse().getResults().getNumFound() > 1
@@ -820,7 +841,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 			try {
 				siteRequest.setJsonObject(body);
 				serviceRequest.getParams().getJsonObject("query").put("rows", 1);
-				searchSitePetList(siteRequest, false, true, true, "/api/pet", "PATCH").onSuccess(listSitePet -> {
+				searchSitePetList(siteRequest, false, true, true).onSuccess(listSitePet -> {
 					try {
 						SitePet o = listSitePet.first();
 						if(o != null && listSitePet.getQueryResponse().getResults().getNumFound() == 1) {
@@ -960,6 +981,93 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							num++;
 							bParams.add(o2.sqlDeleted());
 						break;
+					case "setEnrollmentKeys":
+						JsonArray setEnrollmentKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						setEnrollmentKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteEnrollment.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteEnrollment");
+									}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						Optional.ofNullable(o.getEnrollmentKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setEnrollmentKeysValues.contains(oVal.toString())).forEach(pk2 -> {
+							if(!pks.contains(pk2)) {
+								pks.add(pk2);
+								classes.add("SiteEnrollment");
+							}
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).deleteFrom(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).where(pk, pk2).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
+					case "addAllEnrollmentKeys":
+						JsonArray addAllEnrollmentKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						addAllEnrollmentKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteEnrollment.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteEnrollment");
+									}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
+					case "addEnrollmentKeys":
+						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteEnrollment.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteEnrollment");
+									}
+									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
+					case "removeEnrollmentKeys":
+						Optional.ofNullable(jsonObject.getString(entityVar)).map(val -> Long.parseLong(val)).ifPresent(pk2 -> {
+							if(!pks.contains(pk2)) {
+								pks.add(pk2);
+								classes.add("SiteEnrollment");
+							}
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).deleteFrom(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).where(pk, pk2).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						break;
 					case "setPetName":
 							o2.setPetName(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -1036,7 +1144,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							).onSuccess(b -> {
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
-						RuntimeException ex2 = new RuntimeException("value SitePet.petAmount failed", ex);
+						RuntimeException ex2 = new RuntimeException("value SitePet failed", ex);
 						LOG.error(String.format("attributeSitePet failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
@@ -1085,7 +1193,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSitePetList(siteRequest, false, true, false, "/api/pet/{id}", "GET").onSuccess(listSitePet -> {
+					searchSitePetList(siteRequest, false, true, false).onSuccess(listSitePet -> {
 						response200GETSitePet(listSitePet).onSuccess(response -> {
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("getSitePet succeeded. "));
@@ -1143,7 +1251,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSitePetList(siteRequest, false, true, false, "/api/pet", "Search").onSuccess(listSitePet -> {
+					searchSitePetList(siteRequest, false, true, false).onSuccess(listSitePet -> {
 						response200SearchSitePet(listSitePet).onSuccess(response -> {
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("searchSitePet succeeded. "));
@@ -1335,7 +1443,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSitePetList(siteRequest, false, true, false, "/api/admin/pet", "AdminSearch").onSuccess(listSitePet -> {
+					searchSitePetList(siteRequest, false, true, false).onSuccess(listSitePet -> {
 						response200AdminSearchSitePet(listSitePet).onSuccess(response -> {
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("adminsearchSitePet succeeded. "));
@@ -1532,7 +1640,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSitePetList(siteRequest, false, true, false, "/pet", "SearchPage").onSuccess(listSitePet -> {
+					searchSitePetList(siteRequest, false, true, false).onSuccess(listSitePet -> {
 						response200SearchPageSitePet(listSitePet).onSuccess(response -> {
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("searchpageSitePet succeeded. "));
@@ -1580,7 +1688,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 
 			if(listSitePet.size() == 1)
 				siteRequest.setRequestPk(listSitePet.get(0).getPk());
-			page.setListSitePet_(listSitePet);
+			page.setSearchListSitePet_(listSitePet);
 			page.setSiteRequest_(siteRequest);
 			page.promiseDeepSitePetPage(siteRequest).onSuccess(a -> {
 				JsonObject json = JsonObject.mapFrom(page);
@@ -1642,13 +1750,13 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		return promise.future();
 	}
 
-	public void searchSitePetQ(String uri, String apiMethod, SearchList<SitePet> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSitePetQ(SearchList<SitePet> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		searchList.setQuery(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : ClientUtils.escapeQueryChars(valueIndexed)));
 		if(!"*".equals(entityVar)) {
 		}
 	}
 
-	public String searchSitePetFq(String uri, String apiMethod, SearchList<SitePet> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String searchSitePetFq(SearchList<SitePet> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -1663,25 +1771,25 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		}
 	}
 
-	public void searchSitePetSort(String uri, String apiMethod, SearchList<SitePet> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSitePetSort(SearchList<SitePet> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		searchList.addSort(varIndexed, ORDER.valueOf(valueIndexed));
 	}
 
-	public void searchSitePetRows(String uri, String apiMethod, SearchList<SitePet> searchList, Integer valueRows) {
-			searchList.setRows(apiMethod != null ? valueRows : 10);
+	public void searchSitePetRows(SearchList<SitePet> searchList, Integer valueRows) {
+			searchList.setRows(valueRows != null ? valueRows : 10);
 	}
 
-	public void searchSitePetStart(String uri, String apiMethod, SearchList<SitePet> searchList, Integer valueStart) {
+	public void searchSitePetStart(SearchList<SitePet> searchList, Integer valueStart) {
 		searchList.setStart(valueStart);
 	}
 
-	public void searchSitePetVar(String uri, String apiMethod, SearchList<SitePet> searchList, String var, String value) {
+	public void searchSitePetVar(SearchList<SitePet> searchList, String var, String value) {
 		searchList.getSiteRequest_().getRequestVars().put(var, value);
 	}
 
-	public void searchSitePetUri(String uri, String apiMethod, SearchList<SitePet> searchList) {
+	public void searchSitePetUri(SearchList<SitePet> searchList) {
 	}
 
 	public Future<ServiceResponse> varsSitePet(SiteRequestEnUS siteRequest) {
@@ -1714,7 +1822,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		return promise.future();
 	}
 
-	public Future<SearchList<SitePet>> searchSitePetList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+	public Future<SearchList<SitePet>> searchSitePetList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify) {
 		Promise<SearchList<SitePet>> promise = Promise.promise();
 		try {
 			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -1786,7 +1894,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 											entityVar = mQ.group(1).trim();
 											valueIndexed = mQ.group(2).trim();
 											varIndexed = SitePet.varIndexedSitePet(entityVar);
-											String entityQ = searchSitePetFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											String entityQ = searchSitePetFq(searchList, entityVar, valueIndexed, varIndexed);
 											mQ.appendReplacement(sb, entityQ);
 											foundQ = mQ.find();
 										}
@@ -1803,7 +1911,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 											entityVar = mFq.group(1).trim();
 											valueIndexed = mFq.group(2).trim();
 											varIndexed = SitePet.varIndexedSitePet(entityVar);
-											String entityFq = searchSitePetFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											String entityFq = searchSitePetFq(searchList, entityVar, valueIndexed, varIndexed);
 											mFq.appendReplacement(sb, entityFq);
 											foundFq = mFq.find();
 										}
@@ -1815,15 +1923,15 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
 									valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
 									varIndexed = SitePet.varIndexedSitePet(entityVar);
-									searchSitePetSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									searchSitePetSort(searchList, entityVar, valueIndexed, varIndexed);
 									break;
 								case "start":
 									valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-									searchSitePetStart(uri, apiMethod, searchList, valueStart);
+									searchSitePetStart(searchList, valueStart);
 									break;
 								case "rows":
 									valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-									searchSitePetRows(uri, apiMethod, searchList, valueRows);
+									searchSitePetRows(searchList, valueRows);
 									break;
 								case "facet":
 									searchList.add("facet", ((Boolean)paramObject).toString());
@@ -1861,7 +1969,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 								case "var":
 									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-									searchSitePetVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+									searchSitePetVar(searchList, entityVar, valueIndexed);
 									break;
 								case "cursorMark":
 									valueCursorMark = (String)paramObject;
@@ -1869,7 +1977,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 									break;
 							}
 						}
-						searchSitePetUri(uri, apiMethod, searchList);
+						searchSitePetUri(searchList);
 					}
 				} catch(Exception e) {
 					ExceptionUtils.rethrow(e);
@@ -1878,7 +1986,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
 				searchList.addSort("created_indexedstored_date", ORDER.desc);
 			}
-			searchSitePet2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+			searchSitePet2(siteRequest, populate, store, modify, searchList);
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				promise.complete(searchList);
 			}).onFailure(ex -> {
@@ -1891,7 +1999,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 		}
 		return promise.future();
 	}
-	public void searchSitePet2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SitePet> searchList) {
+	public void searchSitePet2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<SitePet> searchList) {
 	}
 
 	public Future<Void> defineSitePet(SitePet o) {
@@ -1937,7 +2045,34 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 
 	public Future<Void> attributeSitePet(SitePet o) {
 		Promise<Void> promise = Promise.promise();
-			promise.complete();
+		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
+			Long pk = o.getPk();
+			sqlConnection.preparedQuery("SELECT pk2, 'enrollmentKeys' from SitePetenrollmentKeys_SiteEnrollmentpetKeys where pk1=$1")
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk)
+					).onSuccess(result -> {
+				try {
+					if(result != null) {
+						for(Row definition : result.value()) {
+							o.attributeForClass(definition.getString(1), definition.getLong(0));
+						}
+					}
+					promise.complete();
+				} catch(Exception ex) {
+					LOG.error(String.format("attributeSitePet failed. "), ex);
+					promise.fail(ex);
+				}
+			}).onFailure(ex -> {
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("attributeSitePet failed. "), ex2);
+				promise.fail(ex2);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("attributeSitePet failed. "), ex);
+			promise.fail(ex);
+		}
 		return promise.future();
 	}
 
@@ -1987,6 +2122,41 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
+
+					if("SiteEnrollment".equals(classSimpleName2) && pk2 != null) {
+						SearchList<SiteEnrollment> searchList2 = new SearchList<SiteEnrollment>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(SiteEnrollment.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						futures.add(Future.future(promise2 -> {
+							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+								SiteEnrollment o2 = searchList2.getList().stream().findFirst().orElse(null);
+								if(o2 != null) {
+									JsonObject params = new JsonObject();
+									params.put("body", new JsonObject());
+									params.put("cookie", new JsonObject());
+									params.put("path", new JsonObject());
+									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
+									JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+									JsonObject json = new JsonObject().put("context", context);
+									eventBus.request("nico-site-enUS-SiteEnrollment", json, new DeliveryOptions().addHeader("action", "patchSiteEnrollmentFuture")).onSuccess(c -> {
+						JsonObject responseMessage = (JsonObject)c.body();
+										Integer statusCode = responseMessage.getInteger("statusCode");
+										if(statusCode.equals(200))
+											promise2.complete();
+										else
+											promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}
+							}).onFailure(ex -> {
+								promise2.fail(ex);
+							});
+						}));
+					}
 				}
 
 				CompositeFuture.all(futures).onSuccess(b -> {

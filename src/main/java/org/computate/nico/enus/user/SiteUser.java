@@ -37,7 +37,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * 
  * RoleUser: true
  * Role.enUS: SiteAdmin
- */ 
+ */   
 public class SiteUser extends SiteUserGen<BaseModel> {
 
 	/**

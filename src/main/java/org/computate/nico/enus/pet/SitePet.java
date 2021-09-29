@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet;                
+package org.computate.nico.enus.pet;                 
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/                 
+ **/                  
 public class SitePet extends SitePetGen<BaseModel> {
 	
 
@@ -168,7 +168,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 2
 	 * Multiline: true
 	 * DisplayName.enUS: What would get your pet in trouble?
-	 */          
+	 */    
 	protected void _petTrouble(Wrap<String> w) {
 	}
 
@@ -193,13 +193,14 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 2
 	 * Multiline: true
 	 * DisplayName.enUS: How many updates? (If any.)
-	 */                 
+	 */ 
 	protected void _petAmount(Wrap<String> w) {
 	}
 	
 	@Override
 	protected void _objectTitle(Wrap<String> c) {
-		c.o(petName);
+		if(petName != null)
+			c.o(petName);
 	}
 }
  	

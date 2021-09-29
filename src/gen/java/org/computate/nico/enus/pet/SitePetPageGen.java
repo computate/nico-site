@@ -48,16 +48,9 @@ public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSitePetPage = false;
-
 	public Future<Void> promiseDeepSitePetPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSitePetPage) {
-			alreadyInitializedSitePetPage = true;
-			return promiseDeepSitePetPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSitePetPage();
 	}
 
 	public Future<Void> promiseDeepSitePetPage() {

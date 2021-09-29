@@ -55,8 +55,6 @@ public abstract class AllWritersGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
-	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -72,19 +70,17 @@ public abstract class AllWritersGen<DEV> extends Object {
 
 	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
 		this.siteRequest_ = siteRequest_;
-		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected AllWriters siteRequest_Init() {
-		if(!siteRequest_Wrap.alreadyInitialized) {
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
-			if(siteRequest_ == null)
-				setSiteRequest_(siteRequest_Wrap.o);
-			siteRequest_Wrap.o(null);
+			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.alreadyInitialized(true);
+		siteRequest_Wrap.o(null);
 		return (AllWriters)this;
 	}
 
@@ -99,8 +95,6 @@ public abstract class AllWritersGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<AllWriter> writers = new ArrayList<AllWriter>();
-	@JsonIgnore
-	public Wrap<List<AllWriter>> writersWrap = new Wrap<List<AllWriter>>().var("writers").o(writers);
 
 	/**	<br/> The entity writers
 	 *  It is constructed before being initialized with the constructor by default List<AllWriter>(). 
@@ -116,7 +110,6 @@ public abstract class AllWritersGen<DEV> extends Object {
 
 	public void setWriters(List<AllWriter> writers) {
 		this.writers = writers;
-		this.writersWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWriters(SiteRequestEnUS siteRequest_, String o) {
 		return null;
@@ -133,10 +126,7 @@ public abstract class AllWritersGen<DEV> extends Object {
 		return (AllWriters)this;
 	}
 	protected AllWriters writersInit() {
-		if(!writersWrap.alreadyInitialized) {
-			_writers(writers);
-		}
-		writersWrap.alreadyInitialized(true);
+		_writers(writers);
 		return (AllWriters)this;
 	}
 
@@ -144,14 +134,9 @@ public abstract class AllWritersGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedAllWriters = false;
-
 	public AllWriters initDeepAllWriters(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedAllWriters) {
-			alreadyInitializedAllWriters = true;
-			initDeepAllWriters();
-		}
+		initDeepAllWriters();
 		return (AllWriters)this;
 	}
 

@@ -77,9 +77,26 @@ CREATE TABLE SitePet(
 	, sendpdates boolean
 	, petAmount text
 	);
+CREATE TABLE SiteEnrollment(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, sessionId text
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
+	pk bigserial primary key
+	, pk1 bigint references SitePet(pk)
+	, pk2 bigint references SiteEnrollment(pk)
+	);
 
 DROP TABLE SiteUser CASCADE;
 DROP TABLE SitePet CASCADE;
+DROP TABLE SiteEnrollment CASCADE;
+DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 */
 
 	protected static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
@@ -159,13 +176,8 @@ DROP TABLE SitePet CASCADE;
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedMainVerticle = false;
-
 	public MainVerticle initDeepMainVerticle(SiteRequestEnUS siteRequest_) {
-		if(!alreadyInitializedMainVerticle) {
-			alreadyInitializedMainVerticle = true;
-			initDeepMainVerticle();
-		}
+		initDeepMainVerticle();
 		return (MainVerticle)this;
 	}
 

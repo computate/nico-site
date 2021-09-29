@@ -49,47 +49,74 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	protected static final Logger LOG = LoggerFactory.getLogger(SitePetGenPage.class);
 
-	//////////////////
-	// listSitePet_ //
-	//////////////////
+	////////////////////////
+	// searchListSitePet_ //
+	////////////////////////
 
-	/**	 The entity listSitePet_
+	/**	 The entity searchListSitePet_
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SitePet> listSitePet_;
 	@JsonIgnore
-	public Wrap<SearchList<SitePet>> listSitePet_Wrap = new Wrap<SearchList<SitePet>>().var("listSitePet_").o(listSitePet_);
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<SitePet> searchListSitePet_;
 
-	/**	<br/> The entity listSitePet_
+	/**	<br/> The entity searchListSitePet_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSitePet_">Find the entity listSitePet_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchListSitePet_">Find the entity searchListSitePet_ in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _listSitePet_(Wrap<SearchList<SitePet>> w);
+	protected abstract void _searchListSitePet_(Wrap<SearchList<SitePet>> w);
 
-	public SearchList<SitePet> getListSitePet_() {
-		return listSitePet_;
+	public SearchList<SitePet> getSearchListSitePet_() {
+		return searchListSitePet_;
 	}
 
-	public void setListSitePet_(SearchList<SitePet> listSitePet_) {
-		this.listSitePet_ = listSitePet_;
-		this.listSitePet_Wrap.alreadyInitialized = true;
+	public void setSearchListSitePet_(SearchList<SitePet> searchListSitePet_) {
+		this.searchListSitePet_ = searchListSitePet_;
 	}
-	public static SearchList<SitePet> staticSetListSitePet_(SiteRequestEnUS siteRequest_, String o) {
+	public static SearchList<SitePet> staticSetSearchListSitePet_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SitePetGenPage listSitePet_Init() {
-		if(!listSitePet_Wrap.alreadyInitialized) {
-			_listSitePet_(listSitePet_Wrap);
-			if(listSitePet_ == null)
-				setListSitePet_(listSitePet_Wrap.o);
-			listSitePet_Wrap.o(null);
+	protected SitePetGenPage searchListSitePet_Init() {
+		Wrap<SearchList<SitePet>> searchListSitePet_Wrap = new Wrap<SearchList<SitePet>>().var("searchListSitePet_");
+		if(searchListSitePet_ == null) {
+			_searchListSitePet_(searchListSitePet_Wrap);
+			setSearchListSitePet_(searchListSitePet_Wrap.o);
 		}
-		listSitePet_Wrap.alreadyInitialized(true);
+		return (SitePetGenPage)this;
+	}
+
+	/////////////////
+	// listSitePet //
+	/////////////////
+
+	/**	 The entity listSitePet
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonArray(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected JsonArray listSitePet = new JsonArray();
+
+	/**	<br/> The entity listSitePet
+	 *  It is constructed before being initialized with the constructor by default JsonArray(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.pet.SitePetGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSitePet">Find the entity listSitePet in Solr</a>
+	 * <br/>
+	 * @param listSitePet is the entity already constructed. 
+	 **/
+	protected abstract void _listSitePet(JsonArray l);
+
+	public JsonArray getListSitePet() {
+		return listSitePet;
+	}
+
+	public void setListSitePet(JsonArray listSitePet) {
+		this.listSitePet = listSitePet;
+	}
+	public static JsonArray staticSetListSitePet(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SitePetGenPage listSitePetInit() {
+		_listSitePet(listSitePet);
 		return (SitePetGenPage)this;
 	}
 
@@ -104,8 +131,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer sitePetCount;
-	@JsonIgnore
-	public Wrap<Integer> sitePetCountWrap = new Wrap<Integer>().var("sitePetCount").o(sitePetCount);
 
 	/**	<br/> The entity sitePetCount
 	 *  is defined as null before being initialized. 
@@ -121,12 +146,10 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 
 	public void setSitePetCount(Integer sitePetCount) {
 		this.sitePetCount = sitePetCount;
-		this.sitePetCountWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setSitePetCount(String o) {
 		this.sitePetCount = SitePetGenPage.staticSetSitePetCount(siteRequest_, o);
-		this.sitePetCountWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetSitePetCount(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -134,13 +157,11 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		return null;
 	}
 	protected SitePetGenPage sitePetCountInit() {
-		if(!sitePetCountWrap.alreadyInitialized) {
+		Wrap<Integer> sitePetCountWrap = new Wrap<Integer>().var("sitePetCount");
+		if(sitePetCount == null) {
 			_sitePetCount(sitePetCountWrap);
-			if(sitePetCount == null)
-				setSitePetCount(sitePetCountWrap.o);
-			sitePetCountWrap.o(null);
+			setSitePetCount(sitePetCountWrap.o);
 		}
-		sitePetCountWrap.alreadyInitialized(true);
 		return (SitePetGenPage)this;
 	}
 
@@ -182,8 +203,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SitePet sitePet_;
-	@JsonIgnore
-	public Wrap<SitePet> sitePet_Wrap = new Wrap<SitePet>().var("sitePet_").o(sitePet_);
 
 	/**	<br/> The entity sitePet_
 	 *  is defined as null before being initialized. 
@@ -199,19 +218,16 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 
 	public void setSitePet_(SitePet sitePet_) {
 		this.sitePet_ = sitePet_;
-		this.sitePet_Wrap.alreadyInitialized = true;
 	}
 	public static SitePet staticSetSitePet_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected SitePetGenPage sitePet_Init() {
-		if(!sitePet_Wrap.alreadyInitialized) {
+		Wrap<SitePet> sitePet_Wrap = new Wrap<SitePet>().var("sitePet_");
+		if(sitePet_ == null) {
 			_sitePet_(sitePet_Wrap);
-			if(sitePet_ == null)
-				setSitePet_(sitePet_Wrap.o);
-			sitePet_Wrap.o(null);
+			setSitePet_(sitePet_Wrap.o);
 		}
-		sitePet_Wrap.alreadyInitialized(true);
 		return (SitePetGenPage)this;
 	}
 
@@ -226,8 +242,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
-	@JsonIgnore
-	public Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
 
 	/**	<br/> The entity pk
 	 *  is defined as null before being initialized. 
@@ -243,12 +257,10 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 
 	public void setPk(Long pk) {
 		this.pk = pk;
-		this.pkWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPk(String o) {
 		this.pk = SitePetGenPage.staticSetPk(siteRequest_, o);
-		this.pkWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -256,13 +268,11 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		return null;
 	}
 	protected SitePetGenPage pkInit() {
-		if(!pkWrap.alreadyInitialized) {
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
+		if(pk == null) {
 			_pk(pkWrap);
-			if(pk == null)
-				setPk(pkWrap.o);
-			pkWrap.o(null);
+			setPk(pkWrap.o);
 		}
-		pkWrap.alreadyInitialized(true);
 		return (SitePetGenPage)this;
 	}
 
@@ -298,16 +308,9 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSitePetGenPage = false;
-
 	public Future<Void> promiseDeepSitePetGenPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSitePetGenPage) {
-			alreadyInitializedSitePetGenPage = true;
-			return promiseDeepSitePetGenPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSitePetGenPage();
 	}
 
 	public Future<Void> promiseDeepSitePetGenPage() {
@@ -330,7 +333,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
-				listSitePet_Init();
+				searchListSitePet_Init();
+				listSitePetInit();
 				sitePetCountInit();
 				sitePet_Init();
 				pkInit();
@@ -387,8 +391,10 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	public Object obtainSitePetGenPage(String var) {
 		SitePetGenPage oSitePetGenPage = (SitePetGenPage)this;
 		switch(var) {
-			case "listSitePet_":
-				return oSitePetGenPage.listSitePet_;
+			case "searchListSitePet_":
+				return oSitePetGenPage.searchListSitePet_;
+			case "listSitePet":
+				return oSitePetGenPage.listSitePet;
 			case "sitePetCount":
 				return oSitePetGenPage.sitePetCount;
 			case "sitePet_":
@@ -591,7 +597,8 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		return sb.toString();
 	}
 
-	public static final String VAR_listSitePet_ = "listSitePet_";
+	public static final String VAR_searchListSitePet_ = "searchListSitePet_";
+	public static final String VAR_listSitePet = "listSitePet";
 	public static final String VAR_sitePetCount = "sitePetCount";
 	public static final String VAR_sitePet_ = "sitePet_";
 	public static final String VAR_pk = "pk";

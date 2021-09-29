@@ -1,6 +1,5 @@
 package org.computate.nico.enus.page; 
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +25,10 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 	protected void _serviceRequest(Wrap<ServiceRequest> w) {
 		w.o(siteRequest_.getServiceRequest());
+	}
+
+	protected void _staticBaseUrl(Wrap<String> w) {
+		w.o(siteRequest_.getConfig().getString(ConfigKeys.STATIC_BASE_URL));
 	}
 
 	protected void _pageUri(Wrap<String> w) {

@@ -48,14 +48,9 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedAppOpenApi3 = false;
-
 	public AppOpenApi3 initDeepAppOpenApi3(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedAppOpenApi3) {
-			alreadyInitializedAppOpenApi3 = true;
-			initDeepAppOpenApi3();
-		}
+		initDeepAppOpenApi3();
 		return (AppOpenApi3)this;
 	}
 

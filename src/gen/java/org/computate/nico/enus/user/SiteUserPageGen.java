@@ -48,16 +48,9 @@ public abstract class SiteUserPageGen<DEV> extends SiteUserGenPage {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSiteUserPage = false;
-
 	public Future<Void> promiseDeepSiteUserPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSiteUserPage) {
-			alreadyInitializedSiteUserPage = true;
-			return promiseDeepSiteUserPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSiteUserPage();
 	}
 
 	public Future<Void> promiseDeepSiteUserPage() {

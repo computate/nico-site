@@ -63,8 +63,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
-	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -80,19 +78,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
 		this.siteRequest_ = siteRequest_;
-		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter siteRequest_Init() {
-		if(!siteRequest_Wrap.alreadyInitialized) {
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
-			if(siteRequest_ == null)
-				setSiteRequest_(siteRequest_Wrap.o);
-			siteRequest_Wrap.o(null);
+			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.alreadyInitialized(true);
+		siteRequest_Wrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -106,8 +102,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument classSolrDocument;
-	@JsonIgnore
-	public Wrap<SolrDocument> classSolrDocumentWrap = new Wrap<SolrDocument>().var("classSolrDocument").o(classSolrDocument);
 
 	/**	<br/> The entity classSolrDocument
 	 *  is defined as null before being initialized. 
@@ -123,19 +117,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassSolrDocument(SolrDocument classSolrDocument) {
 		this.classSolrDocument = classSolrDocument;
-		this.classSolrDocumentWrap.alreadyInitialized = true;
 	}
 	public static SolrDocument staticSetClassSolrDocument(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter classSolrDocumentInit() {
-		if(!classSolrDocumentWrap.alreadyInitialized) {
+		Wrap<SolrDocument> classSolrDocumentWrap = new Wrap<SolrDocument>().var("classSolrDocument").o(classSolrDocument);
+		if(classSolrDocument == null) {
 			_classSolrDocument(classSolrDocumentWrap);
-			if(classSolrDocument == null)
-				setClassSolrDocument(classSolrDocumentWrap.o);
-			classSolrDocumentWrap.o(null);
+			setClassSolrDocument(classSolrDocumentWrap.o);
 		}
-		classSolrDocumentWrap.alreadyInitialized(true);
+		classSolrDocumentWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -150,8 +142,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer contextRows;
-	@JsonIgnore
-	public Wrap<Integer> contextRowsWrap = new Wrap<Integer>().var("contextRows").o(contextRows);
 
 	/**	<br/> The entity contextRows
 	 *  is defined as null before being initialized. 
@@ -167,12 +157,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setContextRows(Integer contextRows) {
 		this.contextRows = contextRows;
-		this.contextRowsWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setContextRows(String o) {
 		this.contextRows = ApiWriter.staticSetContextRows(siteRequest_, o);
-		this.contextRowsWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetContextRows(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -180,13 +168,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter contextRowsInit() {
-		if(!contextRowsWrap.alreadyInitialized) {
+		Wrap<Integer> contextRowsWrap = new Wrap<Integer>().var("contextRows").o(contextRows);
+		if(contextRows == null) {
 			_contextRows(contextRowsWrap);
-			if(contextRows == null)
-				setContextRows(contextRowsWrap.o);
-			contextRowsWrap.o(null);
+			setContextRows(contextRowsWrap.o);
 		}
-		contextRowsWrap.alreadyInitialized(true);
+		contextRowsWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -228,8 +215,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMethod;
-	@JsonIgnore
-	public Wrap<String> classApiMethodWrap = new Wrap<String>().var("classApiMethod").o(classApiMethod);
 
 	/**	<br/> The entity classApiMethod
 	 *  is defined as null before being initialized. 
@@ -244,19 +229,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiMethod(String o) {
 		this.classApiMethod = ApiWriter.staticSetClassApiMethod(siteRequest_, o);
-		this.classApiMethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiMethod(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiMethodInit() {
-		if(!classApiMethodWrap.alreadyInitialized) {
+		Wrap<String> classApiMethodWrap = new Wrap<String>().var("classApiMethod").o(classApiMethod);
+		if(classApiMethod == null) {
 			_classApiMethod(classApiMethodWrap);
-			if(classApiMethod == null)
-				setClassApiMethod(classApiMethodWrap.o);
-			classApiMethodWrap.o(null);
+			setClassApiMethod(classApiMethodWrap.o);
 		}
-		classApiMethodWrap.alreadyInitialized(true);
+		classApiMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -298,8 +281,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiVersion;
-	@JsonIgnore
-	public Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion").o(openApiVersion);
 
 	/**	<br/> The entity openApiVersion
 	 *  is defined as null before being initialized. 
@@ -314,19 +295,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setOpenApiVersion(String o) {
 		this.openApiVersion = ApiWriter.staticSetOpenApiVersion(siteRequest_, o);
-		this.openApiVersionWrap.alreadyInitialized = true;
 	}
 	public static String staticSetOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter openApiVersionInit() {
-		if(!openApiVersionWrap.alreadyInitialized) {
+		Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion").o(openApiVersion);
+		if(openApiVersion == null) {
 			_openApiVersion(openApiVersionWrap);
-			if(openApiVersion == null)
-				setOpenApiVersion(openApiVersionWrap.o);
-			openApiVersionWrap.o(null);
+			setOpenApiVersion(openApiVersionWrap.o);
 		}
-		openApiVersionWrap.alreadyInitialized(true);
+		openApiVersionWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -368,8 +347,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AppSwagger2 appSwagger2;
-	@JsonIgnore
-	public Wrap<AppSwagger2> appSwagger2Wrap = new Wrap<AppSwagger2>().var("appSwagger2").o(appSwagger2);
 
 	/**	<br/> The entity appSwagger2
 	 *  is defined as null before being initialized. 
@@ -385,21 +362,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setAppSwagger2(AppSwagger2 appSwagger2) {
 		this.appSwagger2 = appSwagger2;
-		this.appSwagger2Wrap.alreadyInitialized = true;
 	}
 	public static AppSwagger2 staticSetAppSwagger2(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter appSwagger2Init() {
-		if(!appSwagger2Wrap.alreadyInitialized) {
+		Wrap<AppSwagger2> appSwagger2Wrap = new Wrap<AppSwagger2>().var("appSwagger2").o(appSwagger2);
+		if(appSwagger2 == null) {
 			_appSwagger2(appSwagger2Wrap);
-			if(appSwagger2 == null)
-				setAppSwagger2(appSwagger2Wrap.o);
-			appSwagger2Wrap.o(null);
+			setAppSwagger2(appSwagger2Wrap.o);
 		}
+		appSwagger2Wrap.o(null);
 		if(appSwagger2 != null)
 			appSwagger2.initDeepForClass(siteRequest_);
-		appSwagger2Wrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -414,8 +389,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classUris;
-	@JsonIgnore
-	public Wrap<List<String>> classUrisWrap = new Wrap<List<String>>().var("classUris").o(classUris);
 
 	/**	<br/> The entity classUris
 	 *  is defined as null before being initialized. 
@@ -431,7 +404,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassUris(List<String> classUris) {
 		this.classUris = classUris;
-		this.classUrisWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassUris(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -456,13 +428,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classUrisInit() {
-		if(!classUrisWrap.alreadyInitialized) {
+		Wrap<List<String>> classUrisWrap = new Wrap<List<String>>().var("classUris").o(classUris);
+		if(classUris == null) {
 			_classUris(classUrisWrap);
-			if(classUris == null)
-				setClassUris(classUrisWrap.o);
-			classUrisWrap.o(null);
+			setClassUris(classUrisWrap.o);
 		}
-		classUrisWrap.alreadyInitialized(true);
+		classUrisWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -509,8 +480,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer openApiVersionNumber;
-	@JsonIgnore
-	public Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber").o(openApiVersionNumber);
 
 	/**	<br/> The entity openApiVersionNumber
 	 *  is defined as null before being initialized. 
@@ -526,12 +495,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setOpenApiVersionNumber(Integer openApiVersionNumber) {
 		this.openApiVersionNumber = openApiVersionNumber;
-		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setOpenApiVersionNumber(String o) {
 		this.openApiVersionNumber = ApiWriter.staticSetOpenApiVersionNumber(siteRequest_, o);
-		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetOpenApiVersionNumber(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -539,13 +506,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter openApiVersionNumberInit() {
-		if(!openApiVersionNumberWrap.alreadyInitialized) {
+		Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber").o(openApiVersionNumber);
+		if(openApiVersionNumber == null) {
 			_openApiVersionNumber(openApiVersionNumberWrap);
-			if(openApiVersionNumber == null)
-				setOpenApiVersionNumber(openApiVersionNumberWrap.o);
-			openApiVersionNumberWrap.o(null);
+			setOpenApiVersionNumber(openApiVersionNumberWrap.o);
 		}
-		openApiVersionNumberWrap.alreadyInitialized(true);
+		openApiVersionNumberWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -588,8 +554,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsSchema;
-	@JsonIgnore
-	public Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema").o(tabsSchema);
 
 	/**	<br/> The entity tabsSchema
 	 *  is defined as null before being initialized. 
@@ -605,12 +569,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setTabsSchema(Integer tabsSchema) {
 		this.tabsSchema = tabsSchema;
-		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setTabsSchema(String o) {
 		this.tabsSchema = ApiWriter.staticSetTabsSchema(siteRequest_, o);
-		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetTabsSchema(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -618,13 +580,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter tabsSchemaInit() {
-		if(!tabsSchemaWrap.alreadyInitialized) {
+		Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema").o(tabsSchema);
+		if(tabsSchema == null) {
 			_tabsSchema(tabsSchemaWrap);
-			if(tabsSchema == null)
-				setTabsSchema(tabsSchemaWrap.o);
-			tabsSchemaWrap.o(null);
+			setTabsSchema(tabsSchemaWrap.o);
 		}
-		tabsSchemaWrap.alreadyInitialized(true);
+		tabsSchemaWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -667,8 +628,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsResponses;
-	@JsonIgnore
-	public Wrap<Integer> tabsResponsesWrap = new Wrap<Integer>().var("tabsResponses").o(tabsResponses);
 
 	/**	<br/> The entity tabsResponses
 	 *  is defined as null before being initialized. 
@@ -684,12 +643,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setTabsResponses(Integer tabsResponses) {
 		this.tabsResponses = tabsResponses;
-		this.tabsResponsesWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setTabsResponses(String o) {
 		this.tabsResponses = ApiWriter.staticSetTabsResponses(siteRequest_, o);
-		this.tabsResponsesWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetTabsResponses(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -697,13 +654,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter tabsResponsesInit() {
-		if(!tabsResponsesWrap.alreadyInitialized) {
+		Wrap<Integer> tabsResponsesWrap = new Wrap<Integer>().var("tabsResponses").o(tabsResponses);
+		if(tabsResponses == null) {
 			_tabsResponses(tabsResponsesWrap);
-			if(tabsResponses == null)
-				setTabsResponses(tabsResponsesWrap.o);
-			tabsResponsesWrap.o(null);
+			setTabsResponses(tabsResponsesWrap.o);
 		}
-		tabsResponsesWrap.alreadyInitialized(true);
+		tabsResponsesWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -745,8 +701,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wPaths;
-	@JsonIgnore
-	public Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths").o(wPaths);
 
 	/**	<br/> The entity wPaths
 	 *  is defined as null before being initialized. 
@@ -762,21 +716,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWPaths(AllWriter wPaths) {
 		this.wPaths = wPaths;
-		this.wPathsWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWPaths(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wPathsInit() {
-		if(!wPathsWrap.alreadyInitialized) {
+		Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths").o(wPaths);
+		if(wPaths == null) {
 			_wPaths(wPathsWrap);
-			if(wPaths == null)
-				setWPaths(wPathsWrap.o);
-			wPathsWrap.o(null);
+			setWPaths(wPathsWrap.o);
 		}
+		wPathsWrap.o(null);
 		if(wPaths != null)
 			wPaths.initDeepForClass(siteRequest_);
-		wPathsWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -790,8 +742,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBodies;
-	@JsonIgnore
-	public Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies").o(wRequestBodies);
 
 	/**	<br/> The entity wRequestBodies
 	 *  is defined as null before being initialized. 
@@ -807,21 +757,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWRequestBodies(AllWriter wRequestBodies) {
 		this.wRequestBodies = wRequestBodies;
-		this.wRequestBodiesWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWRequestBodies(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wRequestBodiesInit() {
-		if(!wRequestBodiesWrap.alreadyInitialized) {
+		Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies").o(wRequestBodies);
+		if(wRequestBodies == null) {
 			_wRequestBodies(wRequestBodiesWrap);
-			if(wRequestBodies == null)
-				setWRequestBodies(wRequestBodiesWrap.o);
-			wRequestBodiesWrap.o(null);
+			setWRequestBodies(wRequestBodiesWrap.o);
 		}
+		wRequestBodiesWrap.o(null);
 		if(wRequestBodies != null)
 			wRequestBodies.initDeepForClass(siteRequest_);
-		wRequestBodiesWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -835,8 +783,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wSchemas;
-	@JsonIgnore
-	public Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas").o(wSchemas);
 
 	/**	<br/> The entity wSchemas
 	 *  is defined as null before being initialized. 
@@ -852,21 +798,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWSchemas(AllWriter wSchemas) {
 		this.wSchemas = wSchemas;
-		this.wSchemasWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWSchemas(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wSchemasInit() {
-		if(!wSchemasWrap.alreadyInitialized) {
+		Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas").o(wSchemas);
+		if(wSchemas == null) {
 			_wSchemas(wSchemasWrap);
-			if(wSchemas == null)
-				setWSchemas(wSchemasWrap.o);
-			wSchemasWrap.o(null);
+			setWSchemas(wSchemasWrap.o);
 		}
+		wSchemasWrap.o(null);
 		if(wSchemas != null)
 			wSchemas.initDeepForClass(siteRequest_);
-		wSchemasWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -880,8 +824,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
-	@JsonIgnore
-	public Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config").o(config);
 
 	/**	<br/> The entity config
 	 *  is defined as null before being initialized. 
@@ -897,19 +839,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setConfig(JsonObject config) {
 		this.config = config;
-		this.configWrap.alreadyInitialized = true;
 	}
 	public static JsonObject staticSetConfig(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter configInit() {
-		if(!configWrap.alreadyInitialized) {
+		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config").o(config);
+		if(config == null) {
 			_config(configWrap);
-			if(config == null)
-				setConfig(configWrap.o);
-			configWrap.o(null);
+			setConfig(configWrap.o);
 		}
-		configWrap.alreadyInitialized(true);
+		configWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -923,8 +863,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrClient solrClientComputate;
-	@JsonIgnore
-	public Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate").o(solrClientComputate);
 
 	/**	<br/> The entity solrClientComputate
 	 *  is defined as null before being initialized. 
@@ -940,19 +878,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setSolrClientComputate(SolrClient solrClientComputate) {
 		this.solrClientComputate = solrClientComputate;
-		this.solrClientComputateWrap.alreadyInitialized = true;
 	}
 	public static SolrClient staticSetSolrClientComputate(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter solrClientComputateInit() {
-		if(!solrClientComputateWrap.alreadyInitialized) {
+		Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate").o(solrClientComputate);
+		if(solrClientComputate == null) {
 			_solrClientComputate(solrClientComputateWrap);
-			if(solrClientComputate == null)
-				setSolrClientComputate(solrClientComputateWrap.o);
-			solrClientComputateWrap.o(null);
+			setSolrClientComputate(solrClientComputateWrap.o);
 		}
-		solrClientComputateWrap.alreadyInitialized(true);
+		solrClientComputateWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -966,8 +902,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestHeaders;
-	@JsonIgnore
-	public Wrap<AllWriter> wRequestHeadersWrap = new Wrap<AllWriter>().var("wRequestHeaders").o(wRequestHeaders);
 
 	/**	<br/> The entity wRequestHeaders
 	 *  is defined as null before being initialized. 
@@ -983,21 +917,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWRequestHeaders(AllWriter wRequestHeaders) {
 		this.wRequestHeaders = wRequestHeaders;
-		this.wRequestHeadersWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWRequestHeaders(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wRequestHeadersInit() {
-		if(!wRequestHeadersWrap.alreadyInitialized) {
+		Wrap<AllWriter> wRequestHeadersWrap = new Wrap<AllWriter>().var("wRequestHeaders").o(wRequestHeaders);
+		if(wRequestHeaders == null) {
 			_wRequestHeaders(wRequestHeadersWrap);
-			if(wRequestHeaders == null)
-				setWRequestHeaders(wRequestHeadersWrap.o);
-			wRequestHeadersWrap.o(null);
+			setWRequestHeaders(wRequestHeadersWrap.o);
 		}
+		wRequestHeadersWrap.o(null);
 		if(wRequestHeaders != null)
 			wRequestHeaders.initDeepForClass(siteRequest_);
-		wRequestHeadersWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1011,8 +943,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestDescription;
-	@JsonIgnore
-	public Wrap<AllWriter> wRequestDescriptionWrap = new Wrap<AllWriter>().var("wRequestDescription").o(wRequestDescription);
 
 	/**	<br/> The entity wRequestDescription
 	 *  is defined as null before being initialized. 
@@ -1028,21 +958,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWRequestDescription(AllWriter wRequestDescription) {
 		this.wRequestDescription = wRequestDescription;
-		this.wRequestDescriptionWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWRequestDescription(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wRequestDescriptionInit() {
-		if(!wRequestDescriptionWrap.alreadyInitialized) {
+		Wrap<AllWriter> wRequestDescriptionWrap = new Wrap<AllWriter>().var("wRequestDescription").o(wRequestDescription);
+		if(wRequestDescription == null) {
 			_wRequestDescription(wRequestDescriptionWrap);
-			if(wRequestDescription == null)
-				setWRequestDescription(wRequestDescriptionWrap.o);
-			wRequestDescriptionWrap.o(null);
+			setWRequestDescription(wRequestDescriptionWrap.o);
 		}
+		wRequestDescriptionWrap.o(null);
 		if(wRequestDescription != null)
 			wRequestDescription.initDeepForClass(siteRequest_);
-		wRequestDescriptionWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1056,8 +984,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseDescription;
-	@JsonIgnore
-	public Wrap<AllWriter> wResponseDescriptionWrap = new Wrap<AllWriter>().var("wResponseDescription").o(wResponseDescription);
 
 	/**	<br/> The entity wResponseDescription
 	 *  is defined as null before being initialized. 
@@ -1073,21 +999,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWResponseDescription(AllWriter wResponseDescription) {
 		this.wResponseDescription = wResponseDescription;
-		this.wResponseDescriptionWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWResponseDescription(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wResponseDescriptionInit() {
-		if(!wResponseDescriptionWrap.alreadyInitialized) {
+		Wrap<AllWriter> wResponseDescriptionWrap = new Wrap<AllWriter>().var("wResponseDescription").o(wResponseDescription);
+		if(wResponseDescription == null) {
 			_wResponseDescription(wResponseDescriptionWrap);
-			if(wResponseDescription == null)
-				setWResponseDescription(wResponseDescriptionWrap.o);
-			wResponseDescriptionWrap.o(null);
+			setWResponseDescription(wResponseDescriptionWrap.o);
 		}
+		wResponseDescriptionWrap.o(null);
 		if(wResponseDescription != null)
 			wResponseDescription.initDeepForClass(siteRequest_);
-		wResponseDescriptionWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1101,8 +1025,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBody;
-	@JsonIgnore
-	public Wrap<AllWriter> wRequestBodyWrap = new Wrap<AllWriter>().var("wRequestBody").o(wRequestBody);
 
 	/**	<br/> The entity wRequestBody
 	 *  is defined as null before being initialized. 
@@ -1118,21 +1040,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWRequestBody(AllWriter wRequestBody) {
 		this.wRequestBody = wRequestBody;
-		this.wRequestBodyWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWRequestBody(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wRequestBodyInit() {
-		if(!wRequestBodyWrap.alreadyInitialized) {
+		Wrap<AllWriter> wRequestBodyWrap = new Wrap<AllWriter>().var("wRequestBody").o(wRequestBody);
+		if(wRequestBody == null) {
 			_wRequestBody(wRequestBodyWrap);
-			if(wRequestBody == null)
-				setWRequestBody(wRequestBodyWrap.o);
-			wRequestBodyWrap.o(null);
+			setWRequestBody(wRequestBodyWrap.o);
 		}
+		wRequestBodyWrap.o(null);
 		if(wRequestBody != null)
 			wRequestBody.initDeepForClass(siteRequest_);
-		wRequestBodyWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1146,8 +1066,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseBody;
-	@JsonIgnore
-	public Wrap<AllWriter> wResponseBodyWrap = new Wrap<AllWriter>().var("wResponseBody").o(wResponseBody);
 
 	/**	<br/> The entity wResponseBody
 	 *  is defined as null before being initialized. 
@@ -1163,21 +1081,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWResponseBody(AllWriter wResponseBody) {
 		this.wResponseBody = wResponseBody;
-		this.wResponseBodyWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWResponseBody(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wResponseBodyInit() {
-		if(!wResponseBodyWrap.alreadyInitialized) {
+		Wrap<AllWriter> wResponseBodyWrap = new Wrap<AllWriter>().var("wResponseBody").o(wResponseBody);
+		if(wResponseBody == null) {
 			_wResponseBody(wResponseBodyWrap);
-			if(wResponseBody == null)
-				setWResponseBody(wResponseBodyWrap.o);
-			wResponseBodyWrap.o(null);
+			setWResponseBody(wResponseBodyWrap.o);
 		}
+		wResponseBodyWrap.o(null);
 		if(wResponseBody != null)
 			wResponseBody.initDeepForClass(siteRequest_);
-		wResponseBodyWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1191,8 +1107,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestSchema;
-	@JsonIgnore
-	public Wrap<AllWriter> wRequestSchemaWrap = new Wrap<AllWriter>().var("wRequestSchema").o(wRequestSchema);
 
 	/**	<br/> The entity wRequestSchema
 	 *  is defined as null before being initialized. 
@@ -1208,21 +1122,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWRequestSchema(AllWriter wRequestSchema) {
 		this.wRequestSchema = wRequestSchema;
-		this.wRequestSchemaWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWRequestSchema(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wRequestSchemaInit() {
-		if(!wRequestSchemaWrap.alreadyInitialized) {
+		Wrap<AllWriter> wRequestSchemaWrap = new Wrap<AllWriter>().var("wRequestSchema").o(wRequestSchema);
+		if(wRequestSchema == null) {
 			_wRequestSchema(wRequestSchemaWrap);
-			if(wRequestSchema == null)
-				setWRequestSchema(wRequestSchemaWrap.o);
-			wRequestSchemaWrap.o(null);
+			setWRequestSchema(wRequestSchemaWrap.o);
 		}
+		wRequestSchemaWrap.o(null);
 		if(wRequestSchema != null)
 			wRequestSchema.initDeepForClass(siteRequest_);
-		wRequestSchemaWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1236,8 +1148,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseSchema;
-	@JsonIgnore
-	public Wrap<AllWriter> wResponseSchemaWrap = new Wrap<AllWriter>().var("wResponseSchema").o(wResponseSchema);
 
 	/**	<br/> The entity wResponseSchema
 	 *  is defined as null before being initialized. 
@@ -1253,21 +1163,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWResponseSchema(AllWriter wResponseSchema) {
 		this.wResponseSchema = wResponseSchema;
-		this.wResponseSchemaWrap.alreadyInitialized = true;
 	}
 	public static AllWriter staticSetWResponseSchema(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter wResponseSchemaInit() {
-		if(!wResponseSchemaWrap.alreadyInitialized) {
+		Wrap<AllWriter> wResponseSchemaWrap = new Wrap<AllWriter>().var("wResponseSchema").o(wResponseSchema);
+		if(wResponseSchema == null) {
 			_wResponseSchema(wResponseSchemaWrap);
-			if(wResponseSchema == null)
-				setWResponseSchema(wResponseSchemaWrap.o);
-			wResponseSchemaWrap.o(null);
+			setWResponseSchema(wResponseSchemaWrap.o);
 		}
+		wResponseSchemaWrap.o(null);
 		if(wResponseSchema != null)
 			wResponseSchema.initDeepForClass(siteRequest_);
-		wResponseSchemaWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1281,8 +1189,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriters writers;
-	@JsonIgnore
-	public Wrap<AllWriters> writersWrap = new Wrap<AllWriters>().var("writers").o(writers);
 
 	/**	<br/> The entity writers
 	 *  is defined as null before being initialized. 
@@ -1298,21 +1204,19 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setWriters(AllWriters writers) {
 		this.writers = writers;
-		this.writersWrap.alreadyInitialized = true;
 	}
 	public static AllWriters staticSetWriters(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter writersInit() {
-		if(!writersWrap.alreadyInitialized) {
+		Wrap<AllWriters> writersWrap = new Wrap<AllWriters>().var("writers").o(writers);
+		if(writers == null) {
 			_writers(writersWrap);
-			if(writers == null)
-				setWriters(writersWrap.o);
-			writersWrap.o(null);
+			setWriters(writersWrap.o);
 		}
+		writersWrap.o(null);
 		if(writers != null)
 			writers.initDeepForClass(siteRequest_);
-		writersWrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}
 
@@ -1326,8 +1230,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiTag;
-	@JsonIgnore
-	public Wrap<String> classApiTagWrap = new Wrap<String>().var("classApiTag").o(classApiTag);
 
 	/**	<br/> The entity classApiTag
 	 *  is defined as null before being initialized. 
@@ -1342,19 +1244,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiTag(String o) {
 		this.classApiTag = ApiWriter.staticSetClassApiTag(siteRequest_, o);
-		this.classApiTagWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiTag(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiTagInit() {
-		if(!classApiTagWrap.alreadyInitialized) {
+		Wrap<String> classApiTagWrap = new Wrap<String>().var("classApiTag").o(classApiTag);
+		if(classApiTag == null) {
 			_classApiTag(classApiTagWrap);
-			if(classApiTag == null)
-				setClassApiTag(classApiTagWrap.o);
-			classApiTagWrap.o(null);
+			setClassApiTag(classApiTagWrap.o);
 		}
-		classApiTagWrap.alreadyInitialized(true);
+		classApiTagWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1396,8 +1296,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classExtendsBase;
-	@JsonIgnore
-	public Wrap<Boolean> classExtendsBaseWrap = new Wrap<Boolean>().var("classExtendsBase").o(classExtendsBase);
 
 	/**	<br/> The entity classExtendsBase
 	 *  is defined as null before being initialized. 
@@ -1413,24 +1311,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassExtendsBase(Boolean classExtendsBase) {
 		this.classExtendsBase = classExtendsBase;
-		this.classExtendsBaseWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassExtendsBase(String o) {
 		this.classExtendsBase = ApiWriter.staticSetClassExtendsBase(siteRequest_, o);
-		this.classExtendsBaseWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassExtendsBase(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classExtendsBaseInit() {
-		if(!classExtendsBaseWrap.alreadyInitialized) {
+		Wrap<Boolean> classExtendsBaseWrap = new Wrap<Boolean>().var("classExtendsBase").o(classExtendsBase);
+		if(classExtendsBase == null) {
 			_classExtendsBase(classExtendsBaseWrap);
-			if(classExtendsBase == null)
-				setClassExtendsBase(classExtendsBaseWrap.o);
-			classExtendsBaseWrap.o(null);
+			setClassExtendsBase(classExtendsBaseWrap.o);
 		}
-		classExtendsBaseWrap.alreadyInitialized(true);
+		classExtendsBaseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1472,8 +1367,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classIsBase;
-	@JsonIgnore
-	public Wrap<Boolean> classIsBaseWrap = new Wrap<Boolean>().var("classIsBase").o(classIsBase);
 
 	/**	<br/> The entity classIsBase
 	 *  is defined as null before being initialized. 
@@ -1489,24 +1382,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassIsBase(Boolean classIsBase) {
 		this.classIsBase = classIsBase;
-		this.classIsBaseWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassIsBase(String o) {
 		this.classIsBase = ApiWriter.staticSetClassIsBase(siteRequest_, o);
-		this.classIsBaseWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassIsBase(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classIsBaseInit() {
-		if(!classIsBaseWrap.alreadyInitialized) {
+		Wrap<Boolean> classIsBaseWrap = new Wrap<Boolean>().var("classIsBase").o(classIsBase);
+		if(classIsBase == null) {
 			_classIsBase(classIsBaseWrap);
-			if(classIsBase == null)
-				setClassIsBase(classIsBaseWrap.o);
-			classIsBaseWrap.o(null);
+			setClassIsBase(classIsBaseWrap.o);
 		}
-		classIsBaseWrap.alreadyInitialized(true);
+		classIsBaseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1548,8 +1438,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
-	@JsonIgnore
-	public Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName").o(classSimpleName);
 
 	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
@@ -1564,19 +1452,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassSimpleName(String o) {
 		this.classSimpleName = ApiWriter.staticSetClassSimpleName(siteRequest_, o);
-		this.classSimpleNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classSimpleNameInit() {
-		if(!classSimpleNameWrap.alreadyInitialized) {
+		Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName").o(classSimpleName);
+		if(classSimpleName == null) {
 			_classSimpleName(classSimpleNameWrap);
-			if(classSimpleName == null)
-				setClassSimpleName(classSimpleNameWrap.o);
-			classSimpleNameWrap.o(null);
+			setClassSimpleName(classSimpleNameWrap.o);
 		}
-		classSimpleNameWrap.alreadyInitialized(true);
+		classSimpleNameWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1618,8 +1504,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String appName;
-	@JsonIgnore
-	public Wrap<String> appNameWrap = new Wrap<String>().var("appName").o(appName);
 
 	/**	<br/> The entity appName
 	 *  is defined as null before being initialized. 
@@ -1634,19 +1518,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setAppName(String o) {
 		this.appName = ApiWriter.staticSetAppName(siteRequest_, o);
-		this.appNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetAppName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter appNameInit() {
-		if(!appNameWrap.alreadyInitialized) {
+		Wrap<String> appNameWrap = new Wrap<String>().var("appName").o(appName);
+		if(appName == null) {
 			_appName(appNameWrap);
-			if(appName == null)
-				setAppName(appNameWrap.o);
-			appNameWrap.o(null);
+			setAppName(appNameWrap.o);
 		}
-		appNameWrap.alreadyInitialized(true);
+		appNameWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1688,8 +1570,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classAbsolutePath;
-	@JsonIgnore
-	public Wrap<String> classAbsolutePathWrap = new Wrap<String>().var("classAbsolutePath").o(classAbsolutePath);
 
 	/**	<br/> The entity classAbsolutePath
 	 *  is defined as null before being initialized. 
@@ -1704,19 +1584,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassAbsolutePath(String o) {
 		this.classAbsolutePath = ApiWriter.staticSetClassAbsolutePath(siteRequest_, o);
-		this.classAbsolutePathWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassAbsolutePath(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classAbsolutePathInit() {
-		if(!classAbsolutePathWrap.alreadyInitialized) {
+		Wrap<String> classAbsolutePathWrap = new Wrap<String>().var("classAbsolutePath").o(classAbsolutePath);
+		if(classAbsolutePath == null) {
 			_classAbsolutePath(classAbsolutePathWrap);
-			if(classAbsolutePath == null)
-				setClassAbsolutePath(classAbsolutePathWrap.o);
-			classAbsolutePathWrap.o(null);
+			setClassAbsolutePath(classAbsolutePathWrap.o);
 		}
-		classAbsolutePathWrap.alreadyInitialized(true);
+		classAbsolutePathWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1758,8 +1636,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiUriMethod;
-	@JsonIgnore
-	public Wrap<String> classApiUriMethodWrap = new Wrap<String>().var("classApiUriMethod").o(classApiUriMethod);
 
 	/**	<br/> The entity classApiUriMethod
 	 *  is defined as null before being initialized. 
@@ -1774,19 +1650,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiUriMethod(String o) {
 		this.classApiUriMethod = ApiWriter.staticSetClassApiUriMethod(siteRequest_, o);
-		this.classApiUriMethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiUriMethod(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiUriMethodInit() {
-		if(!classApiUriMethodWrap.alreadyInitialized) {
+		Wrap<String> classApiUriMethodWrap = new Wrap<String>().var("classApiUriMethod").o(classApiUriMethod);
+		if(classApiUriMethod == null) {
 			_classApiUriMethod(classApiUriMethodWrap);
-			if(classApiUriMethod == null)
-				setClassApiUriMethod(classApiUriMethodWrap.o);
-			classApiUriMethodWrap.o(null);
+			setClassApiUriMethod(classApiUriMethodWrap.o);
 		}
-		classApiUriMethodWrap.alreadyInitialized(true);
+		classApiUriMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1828,8 +1702,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleUserMethod;
-	@JsonIgnore
-	public Wrap<Boolean> classRoleUserMethodWrap = new Wrap<Boolean>().var("classRoleUserMethod").o(classRoleUserMethod);
 
 	/**	<br/> The entity classRoleUserMethod
 	 *  is defined as null before being initialized. 
@@ -1845,24 +1717,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRoleUserMethod(Boolean classRoleUserMethod) {
 		this.classRoleUserMethod = classRoleUserMethod;
-		this.classRoleUserMethodWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassRoleUserMethod(String o) {
 		this.classRoleUserMethod = ApiWriter.staticSetClassRoleUserMethod(siteRequest_, o);
-		this.classRoleUserMethodWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassRoleUserMethod(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleUserMethodInit() {
-		if(!classRoleUserMethodWrap.alreadyInitialized) {
+		Wrap<Boolean> classRoleUserMethodWrap = new Wrap<Boolean>().var("classRoleUserMethod").o(classRoleUserMethod);
+		if(classRoleUserMethod == null) {
 			_classRoleUserMethod(classRoleUserMethodWrap);
-			if(classRoleUserMethod == null)
-				setClassRoleUserMethod(classRoleUserMethodWrap.o);
-			classRoleUserMethodWrap.o(null);
+			setClassRoleUserMethod(classRoleUserMethodWrap.o);
 		}
-		classRoleUserMethodWrap.alreadyInitialized(true);
+		classRoleUserMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1904,8 +1773,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMethodMethod;
-	@JsonIgnore
-	public Wrap<String> classApiMethodMethodWrap = new Wrap<String>().var("classApiMethodMethod").o(classApiMethodMethod);
 
 	/**	<br/> The entity classApiMethodMethod
 	 *  is defined as null before being initialized. 
@@ -1920,19 +1787,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiMethodMethod(String o) {
 		this.classApiMethodMethod = ApiWriter.staticSetClassApiMethodMethod(siteRequest_, o);
-		this.classApiMethodMethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiMethodMethod(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiMethodMethodInit() {
-		if(!classApiMethodMethodWrap.alreadyInitialized) {
+		Wrap<String> classApiMethodMethodWrap = new Wrap<String>().var("classApiMethodMethod").o(classApiMethodMethod);
+		if(classApiMethodMethod == null) {
 			_classApiMethodMethod(classApiMethodMethodWrap);
-			if(classApiMethodMethod == null)
-				setClassApiMethodMethod(classApiMethodMethodWrap.o);
-			classApiMethodMethodWrap.o(null);
+			setClassApiMethodMethod(classApiMethodMethodWrap.o);
 		}
-		classApiMethodMethodWrap.alreadyInitialized(true);
+		classApiMethodMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1974,8 +1839,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMediaType200Method;
-	@JsonIgnore
-	public Wrap<String> classApiMediaType200MethodWrap = new Wrap<String>().var("classApiMediaType200Method").o(classApiMediaType200Method);
 
 	/**	<br/> The entity classApiMediaType200Method
 	 *  is defined as null before being initialized. 
@@ -1990,19 +1853,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiMediaType200Method(String o) {
 		this.classApiMediaType200Method = ApiWriter.staticSetClassApiMediaType200Method(siteRequest_, o);
-		this.classApiMediaType200MethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiMediaType200Method(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiMediaType200MethodInit() {
-		if(!classApiMediaType200MethodWrap.alreadyInitialized) {
+		Wrap<String> classApiMediaType200MethodWrap = new Wrap<String>().var("classApiMediaType200Method").o(classApiMediaType200Method);
+		if(classApiMediaType200Method == null) {
 			_classApiMediaType200Method(classApiMediaType200MethodWrap);
-			if(classApiMediaType200Method == null)
-				setClassApiMediaType200Method(classApiMediaType200MethodWrap.o);
-			classApiMediaType200MethodWrap.o(null);
+			setClassApiMediaType200Method(classApiMediaType200MethodWrap.o);
 		}
-		classApiMediaType200MethodWrap.alreadyInitialized(true);
+		classApiMediaType200MethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2044,8 +1905,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethod;
-	@JsonIgnore
-	public Wrap<String> classApiOperationIdMethodWrap = new Wrap<String>().var("classApiOperationIdMethod").o(classApiOperationIdMethod);
 
 	/**	<br/> The entity classApiOperationIdMethod
 	 *  is defined as null before being initialized. 
@@ -2060,19 +1919,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiOperationIdMethod(String o) {
 		this.classApiOperationIdMethod = ApiWriter.staticSetClassApiOperationIdMethod(siteRequest_, o);
-		this.classApiOperationIdMethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiOperationIdMethod(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiOperationIdMethodInit() {
-		if(!classApiOperationIdMethodWrap.alreadyInitialized) {
+		Wrap<String> classApiOperationIdMethodWrap = new Wrap<String>().var("classApiOperationIdMethod").o(classApiOperationIdMethod);
+		if(classApiOperationIdMethod == null) {
 			_classApiOperationIdMethod(classApiOperationIdMethodWrap);
-			if(classApiOperationIdMethod == null)
-				setClassApiOperationIdMethod(classApiOperationIdMethodWrap.o);
-			classApiOperationIdMethodWrap.o(null);
+			setClassApiOperationIdMethod(classApiOperationIdMethodWrap.o);
 		}
-		classApiOperationIdMethodWrap.alreadyInitialized(true);
+		classApiOperationIdMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2114,8 +1971,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethodRequest;
-	@JsonIgnore
-	public Wrap<String> classApiOperationIdMethodRequestWrap = new Wrap<String>().var("classApiOperationIdMethodRequest").o(classApiOperationIdMethodRequest);
 
 	/**	<br/> The entity classApiOperationIdMethodRequest
 	 *  is defined as null before being initialized. 
@@ -2130,19 +1985,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiOperationIdMethodRequest(String o) {
 		this.classApiOperationIdMethodRequest = ApiWriter.staticSetClassApiOperationIdMethodRequest(siteRequest_, o);
-		this.classApiOperationIdMethodRequestWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiOperationIdMethodRequest(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiOperationIdMethodRequestInit() {
-		if(!classApiOperationIdMethodRequestWrap.alreadyInitialized) {
+		Wrap<String> classApiOperationIdMethodRequestWrap = new Wrap<String>().var("classApiOperationIdMethodRequest").o(classApiOperationIdMethodRequest);
+		if(classApiOperationIdMethodRequest == null) {
 			_classApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap);
-			if(classApiOperationIdMethodRequest == null)
-				setClassApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap.o);
-			classApiOperationIdMethodRequestWrap.o(null);
+			setClassApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap.o);
 		}
-		classApiOperationIdMethodRequestWrap.alreadyInitialized(true);
+		classApiOperationIdMethodRequestWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2184,8 +2037,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethodResponse;
-	@JsonIgnore
-	public Wrap<String> classApiOperationIdMethodResponseWrap = new Wrap<String>().var("classApiOperationIdMethodResponse").o(classApiOperationIdMethodResponse);
 
 	/**	<br/> The entity classApiOperationIdMethodResponse
 	 *  is defined as null before being initialized. 
@@ -2200,19 +2051,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassApiOperationIdMethodResponse(String o) {
 		this.classApiOperationIdMethodResponse = ApiWriter.staticSetClassApiOperationIdMethodResponse(siteRequest_, o);
-		this.classApiOperationIdMethodResponseWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassApiOperationIdMethodResponse(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classApiOperationIdMethodResponseInit() {
-		if(!classApiOperationIdMethodResponseWrap.alreadyInitialized) {
+		Wrap<String> classApiOperationIdMethodResponseWrap = new Wrap<String>().var("classApiOperationIdMethodResponse").o(classApiOperationIdMethodResponse);
+		if(classApiOperationIdMethodResponse == null) {
 			_classApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap);
-			if(classApiOperationIdMethodResponse == null)
-				setClassApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap.o);
-			classApiOperationIdMethodResponseWrap.o(null);
+			setClassApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap.o);
 		}
-		classApiOperationIdMethodResponseWrap.alreadyInitialized(true);
+		classApiOperationIdMethodResponseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2254,8 +2103,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSuperApiOperationIdMethodRequest;
-	@JsonIgnore
-	public Wrap<String> classSuperApiOperationIdMethodRequestWrap = new Wrap<String>().var("classSuperApiOperationIdMethodRequest").o(classSuperApiOperationIdMethodRequest);
 
 	/**	<br/> The entity classSuperApiOperationIdMethodRequest
 	 *  is defined as null before being initialized. 
@@ -2270,19 +2117,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassSuperApiOperationIdMethodRequest(String o) {
 		this.classSuperApiOperationIdMethodRequest = ApiWriter.staticSetClassSuperApiOperationIdMethodRequest(siteRequest_, o);
-		this.classSuperApiOperationIdMethodRequestWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassSuperApiOperationIdMethodRequest(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classSuperApiOperationIdMethodRequestInit() {
-		if(!classSuperApiOperationIdMethodRequestWrap.alreadyInitialized) {
+		Wrap<String> classSuperApiOperationIdMethodRequestWrap = new Wrap<String>().var("classSuperApiOperationIdMethodRequest").o(classSuperApiOperationIdMethodRequest);
+		if(classSuperApiOperationIdMethodRequest == null) {
 			_classSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap);
-			if(classSuperApiOperationIdMethodRequest == null)
-				setClassSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap.o);
-			classSuperApiOperationIdMethodRequestWrap.o(null);
+			setClassSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap.o);
 		}
-		classSuperApiOperationIdMethodRequestWrap.alreadyInitialized(true);
+		classSuperApiOperationIdMethodRequestWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2324,8 +2169,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSuperApiOperationIdMethodResponse;
-	@JsonIgnore
-	public Wrap<String> classSuperApiOperationIdMethodResponseWrap = new Wrap<String>().var("classSuperApiOperationIdMethodResponse").o(classSuperApiOperationIdMethodResponse);
 
 	/**	<br/> The entity classSuperApiOperationIdMethodResponse
 	 *  is defined as null before being initialized. 
@@ -2340,19 +2183,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassSuperApiOperationIdMethodResponse(String o) {
 		this.classSuperApiOperationIdMethodResponse = ApiWriter.staticSetClassSuperApiOperationIdMethodResponse(siteRequest_, o);
-		this.classSuperApiOperationIdMethodResponseWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassSuperApiOperationIdMethodResponse(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classSuperApiOperationIdMethodResponseInit() {
-		if(!classSuperApiOperationIdMethodResponseWrap.alreadyInitialized) {
+		Wrap<String> classSuperApiOperationIdMethodResponseWrap = new Wrap<String>().var("classSuperApiOperationIdMethodResponse").o(classSuperApiOperationIdMethodResponse);
+		if(classSuperApiOperationIdMethodResponse == null) {
 			_classSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap);
-			if(classSuperApiOperationIdMethodResponse == null)
-				setClassSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap.o);
-			classSuperApiOperationIdMethodResponseWrap.o(null);
+			setClassSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap.o);
 		}
-		classSuperApiOperationIdMethodResponseWrap.alreadyInitialized(true);
+		classSuperApiOperationIdMethodResponseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2394,8 +2235,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classPageCanonicalNameMethod;
-	@JsonIgnore
-	public Wrap<String> classPageCanonicalNameMethodWrap = new Wrap<String>().var("classPageCanonicalNameMethod").o(classPageCanonicalNameMethod);
 
 	/**	<br/> The entity classPageCanonicalNameMethod
 	 *  is defined as null before being initialized. 
@@ -2410,19 +2249,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setClassPageCanonicalNameMethod(String o) {
 		this.classPageCanonicalNameMethod = ApiWriter.staticSetClassPageCanonicalNameMethod(siteRequest_, o);
-		this.classPageCanonicalNameMethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassPageCanonicalNameMethod(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter classPageCanonicalNameMethodInit() {
-		if(!classPageCanonicalNameMethodWrap.alreadyInitialized) {
+		Wrap<String> classPageCanonicalNameMethodWrap = new Wrap<String>().var("classPageCanonicalNameMethod").o(classPageCanonicalNameMethod);
+		if(classPageCanonicalNameMethod == null) {
 			_classPageCanonicalNameMethod(classPageCanonicalNameMethodWrap);
-			if(classPageCanonicalNameMethod == null)
-				setClassPageCanonicalNameMethod(classPageCanonicalNameMethodWrap.o);
-			classPageCanonicalNameMethodWrap.o(null);
+			setClassPageCanonicalNameMethod(classPageCanonicalNameMethodWrap.o);
 		}
-		classPageCanonicalNameMethodWrap.alreadyInitialized(true);
+		classPageCanonicalNameMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2464,8 +2301,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classKeywordsFound;
-	@JsonIgnore
-	public Wrap<Boolean> classKeywordsFoundWrap = new Wrap<Boolean>().var("classKeywordsFound").o(classKeywordsFound);
 
 	/**	<br/> The entity classKeywordsFound
 	 *  is defined as null before being initialized. 
@@ -2481,24 +2316,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassKeywordsFound(Boolean classKeywordsFound) {
 		this.classKeywordsFound = classKeywordsFound;
-		this.classKeywordsFoundWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassKeywordsFound(String o) {
 		this.classKeywordsFound = ApiWriter.staticSetClassKeywordsFound(siteRequest_, o);
-		this.classKeywordsFoundWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassKeywordsFound(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classKeywordsFoundInit() {
-		if(!classKeywordsFoundWrap.alreadyInitialized) {
+		Wrap<Boolean> classKeywordsFoundWrap = new Wrap<Boolean>().var("classKeywordsFound").o(classKeywordsFound);
+		if(classKeywordsFound == null) {
 			_classKeywordsFound(classKeywordsFoundWrap);
-			if(classKeywordsFound == null)
-				setClassKeywordsFound(classKeywordsFoundWrap.o);
-			classKeywordsFoundWrap.o(null);
+			setClassKeywordsFound(classKeywordsFoundWrap.o);
 		}
-		classKeywordsFoundWrap.alreadyInitialized(true);
+		classKeywordsFoundWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2541,8 +2373,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classKeywords;
-	@JsonIgnore
-	public Wrap<List<String>> classKeywordsWrap = new Wrap<List<String>>().var("classKeywords").o(classKeywords);
 
 	/**	<br/> The entity classKeywords
 	 *  is defined as null before being initialized. 
@@ -2558,7 +2388,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassKeywords(List<String> classKeywords) {
 		this.classKeywords = classKeywords;
-		this.classKeywordsWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassKeywords(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -2583,13 +2412,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classKeywordsInit() {
-		if(!classKeywordsWrap.alreadyInitialized) {
+		Wrap<List<String>> classKeywordsWrap = new Wrap<List<String>>().var("classKeywords").o(classKeywords);
+		if(classKeywords == null) {
 			_classKeywords(classKeywordsWrap);
-			if(classKeywords == null)
-				setClassKeywords(classKeywordsWrap.o);
-			classKeywordsWrap.o(null);
+			setClassKeywords(classKeywordsWrap.o);
 		}
-		classKeywordsWrap.alreadyInitialized(true);
+		classKeywordsWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2635,8 +2463,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classPublicRead;
-	@JsonIgnore
-	public Wrap<Boolean> classPublicReadWrap = new Wrap<Boolean>().var("classPublicRead").o(classPublicRead);
 
 	/**	<br/> The entity classPublicRead
 	 *  is defined as null before being initialized. 
@@ -2652,24 +2478,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassPublicRead(Boolean classPublicRead) {
 		this.classPublicRead = classPublicRead;
-		this.classPublicReadWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassPublicRead(String o) {
 		this.classPublicRead = ApiWriter.staticSetClassPublicRead(siteRequest_, o);
-		this.classPublicReadWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassPublicRead(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classPublicReadInit() {
-		if(!classPublicReadWrap.alreadyInitialized) {
+		Wrap<Boolean> classPublicReadWrap = new Wrap<Boolean>().var("classPublicRead").o(classPublicRead);
+		if(classPublicRead == null) {
 			_classPublicRead(classPublicReadWrap);
-			if(classPublicRead == null)
-				setClassPublicRead(classPublicReadWrap.o);
-			classPublicReadWrap.o(null);
+			setClassPublicRead(classPublicReadWrap.o);
 		}
-		classPublicReadWrap.alreadyInitialized(true);
+		classPublicReadWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2711,8 +2534,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleSession;
-	@JsonIgnore
-	public Wrap<Boolean> classRoleSessionWrap = new Wrap<Boolean>().var("classRoleSession").o(classRoleSession);
 
 	/**	<br/> The entity classRoleSession
 	 *  is defined as null before being initialized. 
@@ -2728,24 +2549,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRoleSession(Boolean classRoleSession) {
 		this.classRoleSession = classRoleSession;
-		this.classRoleSessionWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassRoleSession(String o) {
 		this.classRoleSession = ApiWriter.staticSetClassRoleSession(siteRequest_, o);
-		this.classRoleSessionWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassRoleSession(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleSessionInit() {
-		if(!classRoleSessionWrap.alreadyInitialized) {
+		Wrap<Boolean> classRoleSessionWrap = new Wrap<Boolean>().var("classRoleSession").o(classRoleSession);
+		if(classRoleSession == null) {
 			_classRoleSession(classRoleSessionWrap);
-			if(classRoleSession == null)
-				setClassRoleSession(classRoleSessionWrap.o);
-			classRoleSessionWrap.o(null);
+			setClassRoleSession(classRoleSessionWrap.o);
 		}
-		classRoleSessionWrap.alreadyInitialized(true);
+		classRoleSessionWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2787,8 +2605,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleUtilisateur;
-	@JsonIgnore
-	public Wrap<Boolean> classRoleUtilisateurWrap = new Wrap<Boolean>().var("classRoleUtilisateur").o(classRoleUtilisateur);
 
 	/**	<br/> The entity classRoleUtilisateur
 	 *  is defined as null before being initialized. 
@@ -2804,24 +2620,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRoleUtilisateur(Boolean classRoleUtilisateur) {
 		this.classRoleUtilisateur = classRoleUtilisateur;
-		this.classRoleUtilisateurWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassRoleUtilisateur(String o) {
 		this.classRoleUtilisateur = ApiWriter.staticSetClassRoleUtilisateur(siteRequest_, o);
-		this.classRoleUtilisateurWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassRoleUtilisateur(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleUtilisateurInit() {
-		if(!classRoleUtilisateurWrap.alreadyInitialized) {
+		Wrap<Boolean> classRoleUtilisateurWrap = new Wrap<Boolean>().var("classRoleUtilisateur").o(classRoleUtilisateur);
+		if(classRoleUtilisateur == null) {
 			_classRoleUtilisateur(classRoleUtilisateurWrap);
-			if(classRoleUtilisateur == null)
-				setClassRoleUtilisateur(classRoleUtilisateurWrap.o);
-			classRoleUtilisateurWrap.o(null);
+			setClassRoleUtilisateur(classRoleUtilisateurWrap.o);
 		}
-		classRoleUtilisateurWrap.alreadyInitialized(true);
+		classRoleUtilisateurWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2863,8 +2676,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleAll;
-	@JsonIgnore
-	public Wrap<Boolean> classRoleAllWrap = new Wrap<Boolean>().var("classRoleAll").o(classRoleAll);
 
 	/**	<br/> The entity classRoleAll
 	 *  is defined as null before being initialized. 
@@ -2880,24 +2691,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRoleAll(Boolean classRoleAll) {
 		this.classRoleAll = classRoleAll;
-		this.classRoleAllWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassRoleAll(String o) {
 		this.classRoleAll = ApiWriter.staticSetClassRoleAll(siteRequest_, o);
-		this.classRoleAllWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassRoleAll(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleAllInit() {
-		if(!classRoleAllWrap.alreadyInitialized) {
+		Wrap<Boolean> classRoleAllWrap = new Wrap<Boolean>().var("classRoleAll").o(classRoleAll);
+		if(classRoleAll == null) {
 			_classRoleAll(classRoleAllWrap);
-			if(classRoleAll == null)
-				setClassRoleAll(classRoleAllWrap.o);
-			classRoleAllWrap.o(null);
+			setClassRoleAll(classRoleAllWrap.o);
 		}
-		classRoleAllWrap.alreadyInitialized(true);
+		classRoleAllWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2939,8 +2747,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRolesFound;
-	@JsonIgnore
-	public Wrap<Boolean> classRolesFoundWrap = new Wrap<Boolean>().var("classRolesFound").o(classRolesFound);
 
 	/**	<br/> The entity classRolesFound
 	 *  is defined as null before being initialized. 
@@ -2956,24 +2762,21 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRolesFound(Boolean classRolesFound) {
 		this.classRolesFound = classRolesFound;
-		this.classRolesFoundWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setClassRolesFound(String o) {
 		this.classRolesFound = ApiWriter.staticSetClassRolesFound(siteRequest_, o);
-		this.classRolesFoundWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetClassRolesFound(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRolesFoundInit() {
-		if(!classRolesFoundWrap.alreadyInitialized) {
+		Wrap<Boolean> classRolesFoundWrap = new Wrap<Boolean>().var("classRolesFound").o(classRolesFound);
+		if(classRolesFound == null) {
 			_classRolesFound(classRolesFoundWrap);
-			if(classRolesFound == null)
-				setClassRolesFound(classRolesFoundWrap.o);
-			classRolesFoundWrap.o(null);
+			setClassRolesFound(classRolesFoundWrap.o);
 		}
-		classRolesFoundWrap.alreadyInitialized(true);
+		classRolesFoundWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3016,8 +2819,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classRoles;
-	@JsonIgnore
-	public Wrap<List<String>> classRolesWrap = new Wrap<List<String>>().var("classRoles").o(classRoles);
 
 	/**	<br/> The entity classRoles
 	 *  is defined as null before being initialized. 
@@ -3033,7 +2834,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRoles(List<String> classRoles) {
 		this.classRoles = classRoles;
-		this.classRolesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassRoles(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -3058,13 +2858,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classRolesInit() {
-		if(!classRolesWrap.alreadyInitialized) {
+		Wrap<List<String>> classRolesWrap = new Wrap<List<String>>().var("classRoles").o(classRoles);
+		if(classRoles == null) {
 			_classRoles(classRolesWrap);
-			if(classRoles == null)
-				setClassRoles(classRolesWrap.o);
-			classRolesWrap.o(null);
+			setClassRoles(classRolesWrap.o);
 		}
-		classRolesWrap.alreadyInitialized(true);
+		classRolesWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3111,8 +2910,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classRolesLanguage;
-	@JsonIgnore
-	public Wrap<List<String>> classRolesLanguageWrap = new Wrap<List<String>>().var("classRolesLanguage").o(classRolesLanguage);
 
 	/**	<br/> The entity classRolesLanguage
 	 *  is defined as null before being initialized. 
@@ -3128,7 +2925,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setClassRolesLanguage(List<String> classRolesLanguage) {
 		this.classRolesLanguage = classRolesLanguage;
-		this.classRolesLanguageWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassRolesLanguage(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -3153,13 +2949,12 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classRolesLanguageInit() {
-		if(!classRolesLanguageWrap.alreadyInitialized) {
+		Wrap<List<String>> classRolesLanguageWrap = new Wrap<List<String>>().var("classRolesLanguage").o(classRolesLanguage);
+		if(classRolesLanguage == null) {
 			_classRolesLanguage(classRolesLanguageWrap);
-			if(classRolesLanguage == null)
-				setClassRolesLanguage(classRolesLanguageWrap.o);
-			classRolesLanguageWrap.o(null);
+			setClassRolesLanguage(classRolesLanguageWrap.o);
 		}
-		classRolesLanguageWrap.alreadyInitialized(true);
+		classRolesLanguageWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3205,8 +3000,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String languageName;
-	@JsonIgnore
-	public Wrap<String> languageNameWrap = new Wrap<String>().var("languageName").o(languageName);
 
 	/**	<br/> The entity languageName
 	 *  is defined as null before being initialized. 
@@ -3221,19 +3014,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 	public void setLanguageName(String o) {
 		this.languageName = ApiWriter.staticSetLanguageName(siteRequest_, o);
-		this.languageNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetLanguageName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiWriter languageNameInit() {
-		if(!languageNameWrap.alreadyInitialized) {
+		Wrap<String> languageNameWrap = new Wrap<String>().var("languageName").o(languageName);
+		if(languageName == null) {
 			_languageName(languageNameWrap);
-			if(languageName == null)
-				setLanguageName(languageNameWrap.o);
-			languageNameWrap.o(null);
+			setLanguageName(languageNameWrap.o);
 		}
-		languageNameWrap.alreadyInitialized(true);
+		languageNameWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3275,8 +3066,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument entitySolrDocument;
-	@JsonIgnore
-	public Wrap<SolrDocument> entitySolrDocumentWrap = new Wrap<SolrDocument>().var("entitySolrDocument").o(entitySolrDocument);
 
 	/**	<br/> The entity entitySolrDocument
 	 *  is defined as null before being initialized. 
@@ -3292,19 +3081,17 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public void setEntitySolrDocument(SolrDocument entitySolrDocument) {
 		this.entitySolrDocument = entitySolrDocument;
-		this.entitySolrDocumentWrap.alreadyInitialized = true;
 	}
 	public static SolrDocument staticSetEntitySolrDocument(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiWriter entitySolrDocumentInit() {
-		if(!entitySolrDocumentWrap.alreadyInitialized) {
+		Wrap<SolrDocument> entitySolrDocumentWrap = new Wrap<SolrDocument>().var("entitySolrDocument").o(entitySolrDocument);
+		if(entitySolrDocument == null) {
 			_entitySolrDocument(entitySolrDocumentWrap);
-			if(entitySolrDocument == null)
-				setEntitySolrDocument(entitySolrDocumentWrap.o);
-			entitySolrDocumentWrap.o(null);
+			setEntitySolrDocument(entitySolrDocumentWrap.o);
 		}
-		entitySolrDocumentWrap.alreadyInitialized(true);
+		entitySolrDocumentWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3312,14 +3099,9 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedApiWriter = false;
-
 	public ApiWriter initDeepApiWriter(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedApiWriter) {
-			alreadyInitializedApiWriter = true;
-			initDeepApiWriter();
-		}
+		initDeepApiWriter();
 		return (ApiWriter)this;
 	}
 

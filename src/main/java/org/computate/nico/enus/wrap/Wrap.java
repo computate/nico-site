@@ -1,7 +1,6 @@
 package org.computate.nico.enus.wrap;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Keyword: classSimpleNameWrap
@@ -19,13 +18,6 @@ public class Wrap<DEV> implements Serializable {
 
 	public Wrap<DEV> o(DEV o) {
 		this.o = o;
-		return this;
-	}
-
-	public Boolean alreadyInitialized = false;
-
-	public Wrap<DEV> alreadyInitialized(Boolean o) {
-		alreadyInitialized = o;
 		return this;
 	}
 }

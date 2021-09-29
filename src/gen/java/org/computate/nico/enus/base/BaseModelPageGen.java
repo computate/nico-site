@@ -48,16 +48,9 @@ public abstract class BaseModelPageGen<DEV> extends BaseModelGenPage {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedBaseModelPage = false;
-
 	public Future<Void> promiseDeepBaseModelPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedBaseModelPage) {
-			alreadyInitializedBaseModelPage = true;
-			return promiseDeepBaseModelPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepBaseModelPage();
 	}
 
 	public Future<Void> promiseDeepBaseModelPage() {

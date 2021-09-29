@@ -14,6 +14,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
+import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,47 +48,75 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 	protected static final Logger LOG = LoggerFactory.getLogger(BaseModelGenPage.class);
 
-	////////////////////
-	// listBaseModel_ //
-	////////////////////
+	//////////////////////////
+	// searchListBaseModel_ //
+	//////////////////////////
 
-	/**	 The entity listBaseModel_
+	/**	 The entity searchListBaseModel_
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<BaseModel> listBaseModel_;
 	@JsonIgnore
-	public Wrap<SearchList<BaseModel>> listBaseModel_Wrap = new Wrap<SearchList<BaseModel>>().var("listBaseModel_").o(listBaseModel_);
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<BaseModel> searchListBaseModel_;
 
-	/**	<br/> The entity listBaseModel_
+	/**	<br/> The entity searchListBaseModel_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModelGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listBaseModel_">Find the entity listBaseModel_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModelGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchListBaseModel_">Find the entity searchListBaseModel_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _listBaseModel_(Wrap<SearchList<BaseModel>> c);
+	protected abstract void _searchListBaseModel_(Wrap<SearchList<BaseModel>> w);
 
-	public SearchList<BaseModel> getListBaseModel_() {
-		return listBaseModel_;
+	public SearchList<BaseModel> getSearchListBaseModel_() {
+		return searchListBaseModel_;
 	}
 
-	public void setListBaseModel_(SearchList<BaseModel> listBaseModel_) {
-		this.listBaseModel_ = listBaseModel_;
-		this.listBaseModel_Wrap.alreadyInitialized = true;
+	public void setSearchListBaseModel_(SearchList<BaseModel> searchListBaseModel_) {
+		this.searchListBaseModel_ = searchListBaseModel_;
 	}
-	public static SearchList<BaseModel> staticSetListBaseModel_(SiteRequestEnUS siteRequest_, String o) {
+	public static SearchList<BaseModel> staticSetSearchListBaseModel_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected BaseModelGenPage listBaseModel_Init() {
-		if(!listBaseModel_Wrap.alreadyInitialized) {
-			_listBaseModel_(listBaseModel_Wrap);
-			if(listBaseModel_ == null)
-				setListBaseModel_(listBaseModel_Wrap.o);
-			listBaseModel_Wrap.o(null);
+	protected BaseModelGenPage searchListBaseModel_Init() {
+		Wrap<SearchList<BaseModel>> searchListBaseModel_Wrap = new Wrap<SearchList<BaseModel>>().var("searchListBaseModel_");
+		if(searchListBaseModel_ == null) {
+			_searchListBaseModel_(searchListBaseModel_Wrap);
+			setSearchListBaseModel_(searchListBaseModel_Wrap.o);
 		}
-		listBaseModel_Wrap.alreadyInitialized(true);
+		return (BaseModelGenPage)this;
+	}
+
+	///////////////////
+	// listBaseModel //
+	///////////////////
+
+	/**	 The entity listBaseModel
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonArray(). 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected JsonArray listBaseModel = new JsonArray();
+
+	/**	<br/> The entity listBaseModel
+	 *  It is constructed before being initialized with the constructor by default JsonArray(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModelGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listBaseModel">Find the entity listBaseModel in Solr</a>
+	 * <br/>
+	 * @param listBaseModel is the entity already constructed. 
+	 **/
+	protected abstract void _listBaseModel(JsonArray l);
+
+	public JsonArray getListBaseModel() {
+		return listBaseModel;
+	}
+
+	public void setListBaseModel(JsonArray listBaseModel) {
+		this.listBaseModel = listBaseModel;
+	}
+	public static JsonArray staticSetListBaseModel(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected BaseModelGenPage listBaseModelInit() {
+		_listBaseModel(listBaseModel);
 		return (BaseModelGenPage)this;
 	}
 
@@ -102,8 +131,6 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer baseModelCount;
-	@JsonIgnore
-	public Wrap<Integer> baseModelCountWrap = new Wrap<Integer>().var("baseModelCount").o(baseModelCount);
 
 	/**	<br/> The entity baseModelCount
 	 *  is defined as null before being initialized. 
@@ -119,12 +146,10 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 
 	public void setBaseModelCount(Integer baseModelCount) {
 		this.baseModelCount = baseModelCount;
-		this.baseModelCountWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setBaseModelCount(String o) {
 		this.baseModelCount = BaseModelGenPage.staticSetBaseModelCount(siteRequest_, o);
-		this.baseModelCountWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetBaseModelCount(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -132,13 +157,11 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		return null;
 	}
 	protected BaseModelGenPage baseModelCountInit() {
-		if(!baseModelCountWrap.alreadyInitialized) {
+		Wrap<Integer> baseModelCountWrap = new Wrap<Integer>().var("baseModelCount");
+		if(baseModelCount == null) {
 			_baseModelCount(baseModelCountWrap);
-			if(baseModelCount == null)
-				setBaseModelCount(baseModelCountWrap.o);
-			baseModelCountWrap.o(null);
+			setBaseModelCount(baseModelCountWrap.o);
 		}
-		baseModelCountWrap.alreadyInitialized(true);
 		return (BaseModelGenPage)this;
 	}
 
@@ -180,16 +203,14 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected BaseModel baseModel_;
-	@JsonIgnore
-	public Wrap<BaseModel> baseModel_Wrap = new Wrap<BaseModel>().var("baseModel_").o(baseModel_);
 
 	/**	<br/> The entity baseModel_
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModelGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:baseModel_">Find the entity baseModel_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _baseModel_(Wrap<BaseModel> c);
+	protected abstract void _baseModel_(Wrap<BaseModel> w);
 
 	public BaseModel getBaseModel_() {
 		return baseModel_;
@@ -197,36 +218,99 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 
 	public void setBaseModel_(BaseModel baseModel_) {
 		this.baseModel_ = baseModel_;
-		this.baseModel_Wrap.alreadyInitialized = true;
 	}
 	public static BaseModel staticSetBaseModel_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected BaseModelGenPage baseModel_Init() {
-		if(!baseModel_Wrap.alreadyInitialized) {
+		Wrap<BaseModel> baseModel_Wrap = new Wrap<BaseModel>().var("baseModel_");
+		if(baseModel_ == null) {
 			_baseModel_(baseModel_Wrap);
-			if(baseModel_ == null)
-				setBaseModel_(baseModel_Wrap.o);
-			baseModel_Wrap.o(null);
+			setBaseModel_(baseModel_Wrap.o);
 		}
-		baseModel_Wrap.alreadyInitialized(true);
 		return (BaseModelGenPage)this;
+	}
+
+	////////
+	// pk //
+	////////
+
+	/**	 The entity pk
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long pk;
+
+	/**	<br/> The entity pk
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModelGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _pk(Wrap<Long> w);
+
+	public Long getPk() {
+		return pk;
+	}
+
+	public void setPk(Long pk) {
+		this.pk = pk;
+	}
+	@JsonIgnore
+	public void setPk(String o) {
+		this.pk = BaseModelGenPage.staticSetPk(siteRequest_, o);
+	}
+	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected BaseModelGenPage pkInit() {
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
+		if(pk == null) {
+			_pk(pkWrap);
+			setPk(pkWrap.o);
+		}
+		return (BaseModelGenPage)this;
+	}
+
+	public static Long staticSolrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
+		return BaseModelGenPage.staticSolrStrPk(siteRequest_, BaseModelGenPage.staticSolrPk(siteRequest_, BaseModelGenPage.staticSetPk(siteRequest_, o)));
+	}
+
+	public Long solrPk() {
+		return BaseModelGenPage.staticSolrPk(siteRequest_, pk);
+	}
+
+	public String strPk() {
+		return pk == null ? "" : pk.toString();
+	}
+
+	public Long sqlPk() {
+		return pk;
+	}
+
+	public String jsonPk() {
+		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedBaseModelGenPage = false;
-
 	public Future<Void> promiseDeepBaseModelGenPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedBaseModelGenPage) {
-			alreadyInitializedBaseModelGenPage = true;
-			return promiseDeepBaseModelGenPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepBaseModelGenPage();
 	}
 
 	public Future<Void> promiseDeepBaseModelGenPage() {
@@ -249,9 +333,11 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
-				listBaseModel_Init();
+				searchListBaseModel_Init();
+				listBaseModelInit();
 				baseModelCountInit();
 				baseModel_Init();
+				pkInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -305,12 +391,16 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 	public Object obtainBaseModelGenPage(String var) {
 		BaseModelGenPage oBaseModelGenPage = (BaseModelGenPage)this;
 		switch(var) {
-			case "listBaseModel_":
-				return oBaseModelGenPage.listBaseModel_;
+			case "searchListBaseModel_":
+				return oBaseModelGenPage.searchListBaseModel_;
+			case "listBaseModel":
+				return oBaseModelGenPage.listBaseModel;
 			case "baseModelCount":
 				return oBaseModelGenPage.baseModelCount;
 			case "baseModel_":
 				return oBaseModelGenPage.baseModel_;
+			case "pk":
+				return oBaseModelGenPage.pk;
 			default:
 				return super.obtainPageLayout(var);
 		}
@@ -352,6 +442,8 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "baseModelCount":
 			return BaseModelGenPage.staticSetBaseModelCount(siteRequest_, o);
+		case "pk":
+			return BaseModelGenPage.staticSetPk(siteRequest_, o);
 			default:
 				return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -368,6 +460,8 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "baseModelCount":
 			return BaseModelGenPage.staticSolrBaseModelCount(siteRequest_, (Integer)o);
+		case "pk":
+			return BaseModelGenPage.staticSolrPk(siteRequest_, (Long)o);
 			default:
 				return PageLayout.staticSolrPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -384,6 +478,8 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "baseModelCount":
 			return BaseModelGenPage.staticSolrStrBaseModelCount(siteRequest_, (Integer)o);
+		case "pk":
+			return BaseModelGenPage.staticSolrStrPk(siteRequest_, (Long)o);
 			default:
 				return PageLayout.staticSolrStrPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -400,6 +496,8 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "baseModelCount":
 			return BaseModelGenPage.staticSolrFqBaseModelCount(siteRequest_, o);
+		case "pk":
+			return BaseModelGenPage.staticSolrFqPk(siteRequest_, o);
 			default:
 				return PageLayout.staticSolrFqPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -499,7 +597,9 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 		return sb.toString();
 	}
 
-	public static final String VAR_listBaseModel_ = "listBaseModel_";
+	public static final String VAR_searchListBaseModel_ = "searchListBaseModel_";
+	public static final String VAR_listBaseModel = "listBaseModel";
 	public static final String VAR_baseModelCount = "baseModelCount";
 	public static final String VAR_baseModel_ = "baseModel_";
+	public static final String VAR_pk = "pk";
 }

@@ -14,6 +14,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.apache.commons.collections.CollectionUtils;
+import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -48,47 +49,74 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteUserGenPage.class);
 
-	///////////////////
-	// listSiteUser_ //
-	///////////////////
+	/////////////////////////
+	// searchListSiteUser_ //
+	/////////////////////////
 
-	/**	 The entity listSiteUser_
+	/**	 The entity searchListSiteUser_
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteUser> listSiteUser_;
 	@JsonIgnore
-	public Wrap<SearchList<SiteUser>> listSiteUser_Wrap = new Wrap<SearchList<SiteUser>>().var("listSiteUser_").o(listSiteUser_);
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<SiteUser> searchListSiteUser_;
 
-	/**	<br/> The entity listSiteUser_
+	/**	<br/> The entity searchListSiteUser_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteUser_">Find the entity listSiteUser_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchListSiteUser_">Find the entity searchListSiteUser_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _listSiteUser_(Wrap<SearchList<SiteUser>> c);
+	protected abstract void _searchListSiteUser_(Wrap<SearchList<SiteUser>> w);
 
-	public SearchList<SiteUser> getListSiteUser_() {
-		return listSiteUser_;
+	public SearchList<SiteUser> getSearchListSiteUser_() {
+		return searchListSiteUser_;
 	}
 
-	public void setListSiteUser_(SearchList<SiteUser> listSiteUser_) {
-		this.listSiteUser_ = listSiteUser_;
-		this.listSiteUser_Wrap.alreadyInitialized = true;
+	public void setSearchListSiteUser_(SearchList<SiteUser> searchListSiteUser_) {
+		this.searchListSiteUser_ = searchListSiteUser_;
 	}
-	public static SearchList<SiteUser> staticSetListSiteUser_(SiteRequestEnUS siteRequest_, String o) {
+	public static SearchList<SiteUser> staticSetSearchListSiteUser_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteUserGenPage listSiteUser_Init() {
-		if(!listSiteUser_Wrap.alreadyInitialized) {
-			_listSiteUser_(listSiteUser_Wrap);
-			if(listSiteUser_ == null)
-				setListSiteUser_(listSiteUser_Wrap.o);
-			listSiteUser_Wrap.o(null);
+	protected SiteUserGenPage searchListSiteUser_Init() {
+		Wrap<SearchList<SiteUser>> searchListSiteUser_Wrap = new Wrap<SearchList<SiteUser>>().var("searchListSiteUser_");
+		if(searchListSiteUser_ == null) {
+			_searchListSiteUser_(searchListSiteUser_Wrap);
+			setSearchListSiteUser_(searchListSiteUser_Wrap.o);
 		}
-		listSiteUser_Wrap.alreadyInitialized(true);
+		return (SiteUserGenPage)this;
+	}
+
+	//////////////////
+	// listSiteUser //
+	//////////////////
+
+	/**	 The entity listSiteUser
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonArray(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected JsonArray listSiteUser = new JsonArray();
+
+	/**	<br/> The entity listSiteUser
+	 *  It is constructed before being initialized with the constructor by default JsonArray(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteUser">Find the entity listSiteUser in Solr</a>
+	 * <br/>
+	 * @param listSiteUser is the entity already constructed. 
+	 **/
+	protected abstract void _listSiteUser(JsonArray l);
+
+	public JsonArray getListSiteUser() {
+		return listSiteUser;
+	}
+
+	public void setListSiteUser(JsonArray listSiteUser) {
+		this.listSiteUser = listSiteUser;
+	}
+	public static JsonArray staticSetListSiteUser(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SiteUserGenPage listSiteUserInit() {
+		_listSiteUser(listSiteUser);
 		return (SiteUserGenPage)this;
 	}
 
@@ -103,8 +131,6 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer siteUserCount;
-	@JsonIgnore
-	public Wrap<Integer> siteUserCountWrap = new Wrap<Integer>().var("siteUserCount").o(siteUserCount);
 
 	/**	<br/> The entity siteUserCount
 	 *  is defined as null before being initialized. 
@@ -120,12 +146,10 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 
 	public void setSiteUserCount(Integer siteUserCount) {
 		this.siteUserCount = siteUserCount;
-		this.siteUserCountWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setSiteUserCount(String o) {
 		this.siteUserCount = SiteUserGenPage.staticSetSiteUserCount(siteRequest_, o);
-		this.siteUserCountWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetSiteUserCount(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -133,13 +157,11 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		return null;
 	}
 	protected SiteUserGenPage siteUserCountInit() {
-		if(!siteUserCountWrap.alreadyInitialized) {
+		Wrap<Integer> siteUserCountWrap = new Wrap<Integer>().var("siteUserCount");
+		if(siteUserCount == null) {
 			_siteUserCount(siteUserCountWrap);
-			if(siteUserCount == null)
-				setSiteUserCount(siteUserCountWrap.o);
-			siteUserCountWrap.o(null);
+			setSiteUserCount(siteUserCountWrap.o);
 		}
-		siteUserCountWrap.alreadyInitialized(true);
 		return (SiteUserGenPage)this;
 	}
 
@@ -181,16 +203,14 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteUser siteUser_;
-	@JsonIgnore
-	public Wrap<SiteUser> siteUser_Wrap = new Wrap<SiteUser>().var("siteUser_").o(siteUser_);
 
 	/**	<br/> The entity siteUser_
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteUser_">Find the entity siteUser_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _siteUser_(Wrap<SiteUser> c);
+	protected abstract void _siteUser_(Wrap<SiteUser> w);
 
 	public SiteUser getSiteUser_() {
 		return siteUser_;
@@ -198,36 +218,99 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 
 	public void setSiteUser_(SiteUser siteUser_) {
 		this.siteUser_ = siteUser_;
-		this.siteUser_Wrap.alreadyInitialized = true;
 	}
 	public static SiteUser staticSetSiteUser_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected SiteUserGenPage siteUser_Init() {
-		if(!siteUser_Wrap.alreadyInitialized) {
+		Wrap<SiteUser> siteUser_Wrap = new Wrap<SiteUser>().var("siteUser_");
+		if(siteUser_ == null) {
 			_siteUser_(siteUser_Wrap);
-			if(siteUser_ == null)
-				setSiteUser_(siteUser_Wrap.o);
-			siteUser_Wrap.o(null);
+			setSiteUser_(siteUser_Wrap.o);
 		}
-		siteUser_Wrap.alreadyInitialized(true);
 		return (SiteUserGenPage)this;
+	}
+
+	////////
+	// pk //
+	////////
+
+	/**	 The entity pk
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long pk;
+
+	/**	<br/> The entity pk
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUserGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _pk(Wrap<Long> w);
+
+	public Long getPk() {
+		return pk;
+	}
+
+	public void setPk(Long pk) {
+		this.pk = pk;
+	}
+	@JsonIgnore
+	public void setPk(String o) {
+		this.pk = SiteUserGenPage.staticSetPk(siteRequest_, o);
+	}
+	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteUserGenPage pkInit() {
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
+		if(pk == null) {
+			_pk(pkWrap);
+			setPk(pkWrap.o);
+		}
+		return (SiteUserGenPage)this;
+	}
+
+	public static Long staticSolrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPk(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUserGenPage.staticSolrStrPk(siteRequest_, SiteUserGenPage.staticSolrPk(siteRequest_, SiteUserGenPage.staticSetPk(siteRequest_, o)));
+	}
+
+	public Long solrPk() {
+		return SiteUserGenPage.staticSolrPk(siteRequest_, pk);
+	}
+
+	public String strPk() {
+		return pk == null ? "" : pk.toString();
+	}
+
+	public Long sqlPk() {
+		return pk;
+	}
+
+	public String jsonPk() {
+		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSiteUserGenPage = false;
-
 	public Future<Void> promiseDeepSiteUserGenPage(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSiteUserGenPage) {
-			alreadyInitializedSiteUserGenPage = true;
-			return promiseDeepSiteUserGenPage();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSiteUserGenPage();
 	}
 
 	public Future<Void> promiseDeepSiteUserGenPage() {
@@ -250,9 +333,11 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
-				listSiteUser_Init();
+				searchListSiteUser_Init();
+				listSiteUserInit();
 				siteUserCountInit();
 				siteUser_Init();
+				pkInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -306,12 +391,16 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	public Object obtainSiteUserGenPage(String var) {
 		SiteUserGenPage oSiteUserGenPage = (SiteUserGenPage)this;
 		switch(var) {
-			case "listSiteUser_":
-				return oSiteUserGenPage.listSiteUser_;
+			case "searchListSiteUser_":
+				return oSiteUserGenPage.searchListSiteUser_;
+			case "listSiteUser":
+				return oSiteUserGenPage.listSiteUser;
 			case "siteUserCount":
 				return oSiteUserGenPage.siteUserCount;
 			case "siteUser_":
 				return oSiteUserGenPage.siteUser_;
+			case "pk":
+				return oSiteUserGenPage.pk;
 			default:
 				return super.obtainPageLayout(var);
 		}
@@ -353,6 +442,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "siteUserCount":
 			return SiteUserGenPage.staticSetSiteUserCount(siteRequest_, o);
+		case "pk":
+			return SiteUserGenPage.staticSetPk(siteRequest_, o);
 			default:
 				return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -369,6 +460,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "siteUserCount":
 			return SiteUserGenPage.staticSolrSiteUserCount(siteRequest_, (Integer)o);
+		case "pk":
+			return SiteUserGenPage.staticSolrPk(siteRequest_, (Long)o);
 			default:
 				return PageLayout.staticSolrPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -385,6 +478,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "siteUserCount":
 			return SiteUserGenPage.staticSolrStrSiteUserCount(siteRequest_, (Integer)o);
+		case "pk":
+			return SiteUserGenPage.staticSolrStrPk(siteRequest_, (Long)o);
 			default:
 				return PageLayout.staticSolrStrPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -401,6 +496,8 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		switch(entityVar) {
 		case "siteUserCount":
 			return SiteUserGenPage.staticSolrFqSiteUserCount(siteRequest_, o);
+		case "pk":
+			return SiteUserGenPage.staticSolrFqPk(siteRequest_, o);
 			default:
 				return PageLayout.staticSolrFqPageLayout(entityVar,  siteRequest_, o);
 		}
@@ -500,7 +597,9 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		return sb.toString();
 	}
 
-	public static final String VAR_listSiteUser_ = "listSiteUser_";
+	public static final String VAR_searchListSiteUser_ = "searchListSiteUser_";
+	public static final String VAR_listSiteUser = "listSiteUser";
 	public static final String VAR_siteUserCount = "siteUserCount";
 	public static final String VAR_siteUser_ = "siteUser_";
+	public static final String VAR_pk = "pk";
 }

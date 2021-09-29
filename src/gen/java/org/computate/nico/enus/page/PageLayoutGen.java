@@ -61,8 +61,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
-	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -78,19 +76,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
 		this.siteRequest_ = siteRequest_;
-		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected PageLayout siteRequest_Init() {
-		if(!siteRequest_Wrap.alreadyInitialized) {
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
-			if(siteRequest_ == null)
-				setSiteRequest_(siteRequest_Wrap.o);
-			siteRequest_Wrap.o(null);
+			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.alreadyInitialized(true);
+		siteRequest_Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -104,8 +100,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected ServiceRequest serviceRequest;
-	@JsonIgnore
-	public Wrap<ServiceRequest> serviceRequestWrap = new Wrap<ServiceRequest>().var("serviceRequest").o(serviceRequest);
 
 	/**	<br/> The entity serviceRequest
 	 *  is defined as null before being initialized. 
@@ -121,20 +115,84 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setServiceRequest(ServiceRequest serviceRequest) {
 		this.serviceRequest = serviceRequest;
-		this.serviceRequestWrap.alreadyInitialized = true;
 	}
 	public static ServiceRequest staticSetServiceRequest(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected PageLayout serviceRequestInit() {
-		if(!serviceRequestWrap.alreadyInitialized) {
+		Wrap<ServiceRequest> serviceRequestWrap = new Wrap<ServiceRequest>().var("serviceRequest").o(serviceRequest);
+		if(serviceRequest == null) {
 			_serviceRequest(serviceRequestWrap);
-			if(serviceRequest == null)
-				setServiceRequest(serviceRequestWrap.o);
-			serviceRequestWrap.o(null);
+			setServiceRequest(serviceRequestWrap.o);
 		}
-		serviceRequestWrap.alreadyInitialized(true);
+		serviceRequestWrap.o(null);
 		return (PageLayout)this;
+	}
+
+	///////////////////
+	// staticBaseUrl //
+	///////////////////
+
+	/**	 The entity staticBaseUrl
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String staticBaseUrl;
+
+	/**	<br/> The entity staticBaseUrl
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:staticBaseUrl">Find the entity staticBaseUrl in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _staticBaseUrl(Wrap<String> w);
+
+	public String getStaticBaseUrl() {
+		return staticBaseUrl;
+	}
+	public void setStaticBaseUrl(String o) {
+		this.staticBaseUrl = PageLayout.staticSetStaticBaseUrl(siteRequest_, o);
+	}
+	public static String staticSetStaticBaseUrl(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected PageLayout staticBaseUrlInit() {
+		Wrap<String> staticBaseUrlWrap = new Wrap<String>().var("staticBaseUrl").o(staticBaseUrl);
+		if(staticBaseUrl == null) {
+			_staticBaseUrl(staticBaseUrlWrap);
+			setStaticBaseUrl(staticBaseUrlWrap.o);
+		}
+		staticBaseUrlWrap.o(null);
+		return (PageLayout)this;
+	}
+
+	public static String staticSolrStaticBaseUrl(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrStaticBaseUrl(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStaticBaseUrl(SiteRequestEnUS siteRequest_, String o) {
+		return PageLayout.staticSolrStrStaticBaseUrl(siteRequest_, PageLayout.staticSolrStaticBaseUrl(siteRequest_, PageLayout.staticSetStaticBaseUrl(siteRequest_, o)));
+	}
+
+	public String solrStaticBaseUrl() {
+		return PageLayout.staticSolrStaticBaseUrl(siteRequest_, staticBaseUrl);
+	}
+
+	public String strStaticBaseUrl() {
+		return staticBaseUrl == null ? "" : staticBaseUrl;
+	}
+
+	public String sqlStaticBaseUrl() {
+		return staticBaseUrl;
+	}
+
+	public String jsonStaticBaseUrl() {
+		return staticBaseUrl == null ? "" : staticBaseUrl;
 	}
 
 	/////////////
@@ -147,8 +205,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUri;
-	@JsonIgnore
-	public Wrap<String> pageUriWrap = new Wrap<String>().var("pageUri").o(pageUri);
 
 	/**	<br/> The entity pageUri
 	 *  is defined as null before being initialized. 
@@ -163,19 +219,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageUri(String o) {
 		this.pageUri = PageLayout.staticSetPageUri(siteRequest_, o);
-		this.pageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUri(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageUriInit() {
-		if(!pageUriWrap.alreadyInitialized) {
+		Wrap<String> pageUriWrap = new Wrap<String>().var("pageUri").o(pageUri);
+		if(pageUri == null) {
 			_pageUri(pageUriWrap);
-			if(pageUri == null)
-				setPageUri(pageUriWrap.o);
-			pageUriWrap.o(null);
+			setPageUri(pageUriWrap.o);
 		}
-		pageUriWrap.alreadyInitialized(true);
+		pageUriWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -217,8 +271,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageMethod;
-	@JsonIgnore
-	public Wrap<String> pageMethodWrap = new Wrap<String>().var("pageMethod").o(pageMethod);
 
 	/**	<br/> The entity pageMethod
 	 *  is defined as null before being initialized. 
@@ -233,19 +285,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageMethod(String o) {
 		this.pageMethod = PageLayout.staticSetPageMethod(siteRequest_, o);
-		this.pageMethodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageMethod(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageMethodInit() {
-		if(!pageMethodWrap.alreadyInitialized) {
+		Wrap<String> pageMethodWrap = new Wrap<String>().var("pageMethod").o(pageMethod);
+		if(pageMethod == null) {
 			_pageMethod(pageMethodWrap);
-			if(pageMethod == null)
-				setPageMethod(pageMethodWrap.o);
-			pageMethodWrap.o(null);
+			setPageMethod(pageMethodWrap.o);
 		}
-		pageMethodWrap.alreadyInitialized(true);
+		pageMethodWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -288,8 +338,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long long0;
-	@JsonIgnore
-	public Wrap<Long> long0Wrap = new Wrap<Long>().var("long0").o(long0);
 
 	/**	<br/> The entity long0
 	 *  is defined as null before being initialized. 
@@ -305,12 +353,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setLong0(Long long0) {
 		this.long0 = long0;
-		this.long0Wrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setLong0(String o) {
 		this.long0 = PageLayout.staticSetLong0(siteRequest_, o);
-		this.long0Wrap.alreadyInitialized = true;
 	}
 	public static Long staticSetLong0(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -318,13 +364,12 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout long0Init() {
-		if(!long0Wrap.alreadyInitialized) {
+		Wrap<Long> long0Wrap = new Wrap<Long>().var("long0").o(long0);
+		if(long0 == null) {
 			_long0(long0Wrap);
-			if(long0 == null)
-				setLong0(long0Wrap.o);
-			long0Wrap.o(null);
+			setLong0(long0Wrap.o);
 		}
-		long0Wrap.alreadyInitialized(true);
+		long0Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -367,8 +412,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long long1;
-	@JsonIgnore
-	public Wrap<Long> long1Wrap = new Wrap<Long>().var("long1").o(long1);
 
 	/**	<br/> The entity long1
 	 *  is defined as null before being initialized. 
@@ -384,12 +427,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setLong1(Long long1) {
 		this.long1 = long1;
-		this.long1Wrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setLong1(String o) {
 		this.long1 = PageLayout.staticSetLong1(siteRequest_, o);
-		this.long1Wrap.alreadyInitialized = true;
 	}
 	public static Long staticSetLong1(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -397,13 +438,12 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout long1Init() {
-		if(!long1Wrap.alreadyInitialized) {
+		Wrap<Long> long1Wrap = new Wrap<Long>().var("long1").o(long1);
+		if(long1 == null) {
 			_long1(long1Wrap);
-			if(long1 == null)
-				setLong1(long1Wrap.o);
-			long1Wrap.o(null);
+			setLong1(long1Wrap.o);
 		}
-		long1Wrap.alreadyInitialized(true);
+		long1Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -446,8 +486,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer int0;
-	@JsonIgnore
-	public Wrap<Integer> int0Wrap = new Wrap<Integer>().var("int0").o(int0);
 
 	/**	<br/> The entity int0
 	 *  is defined as null before being initialized. 
@@ -463,12 +501,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setInt0(Integer int0) {
 		this.int0 = int0;
-		this.int0Wrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setInt0(String o) {
 		this.int0 = PageLayout.staticSetInt0(siteRequest_, o);
-		this.int0Wrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetInt0(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -476,13 +512,12 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout int0Init() {
-		if(!int0Wrap.alreadyInitialized) {
+		Wrap<Integer> int0Wrap = new Wrap<Integer>().var("int0").o(int0);
+		if(int0 == null) {
 			_int0(int0Wrap);
-			if(int0 == null)
-				setInt0(int0Wrap.o);
-			int0Wrap.o(null);
+			setInt0(int0Wrap.o);
 		}
-		int0Wrap.alreadyInitialized(true);
+		int0Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -525,8 +560,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer int1;
-	@JsonIgnore
-	public Wrap<Integer> int1Wrap = new Wrap<Integer>().var("int1").o(int1);
 
 	/**	<br/> The entity int1
 	 *  is defined as null before being initialized. 
@@ -542,12 +575,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setInt1(Integer int1) {
 		this.int1 = int1;
-		this.int1Wrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setInt1(String o) {
 		this.int1 = PageLayout.staticSetInt1(siteRequest_, o);
-		this.int1Wrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetInt1(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -555,13 +586,12 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout int1Init() {
-		if(!int1Wrap.alreadyInitialized) {
+		Wrap<Integer> int1Wrap = new Wrap<Integer>().var("int1").o(int1);
+		if(int1 == null) {
 			_int1(int1Wrap);
-			if(int1 == null)
-				setInt1(int1Wrap.o);
-			int1Wrap.o(null);
+			setInt1(int1Wrap.o);
 		}
-		int1Wrap.alreadyInitialized(true);
+		int1Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -603,8 +633,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Void promiseBefore;
-	@JsonIgnore
-	public Wrap<Void> promiseBeforeWrap = new Wrap<Void>().var("promiseBefore").o(promiseBefore);
 
 	/**	<br/> The entity promiseBefore
 	 *  is defined as null before being initialized. 
@@ -620,26 +648,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setPromiseBefore(Void promiseBefore) {
 		this.promiseBefore = promiseBefore;
-		this.promiseBeforeWrap.alreadyInitialized = true;
 	}
 	public static Void staticSetPromiseBefore(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected Future<Void> promiseBeforePromise() {
 		Promise<Void> promise = Promise.promise();
-		if(!promiseBeforeWrap.alreadyInitialized) {
-			Promise<Void> promise2 = Promise.promise();
-			_promiseBefore(promise2);
-			promise2.future().onSuccess(o -> {
-				setPromiseBefore(o);
-				promiseBeforeWrap.alreadyInitialized(true);
-				promise.complete(o);
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
+		Promise<Void> promise2 = Promise.promise();
+		_promiseBefore(promise2);
+		promise2.future().onSuccess(o -> {
+			setPromiseBefore(o);
+			promise.complete(o);
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
 		return promise.future();
 	}
 
@@ -653,8 +675,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH1;
-	@JsonIgnore
-	public Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1").o(pageH1);
 
 	/**	<br/> The entity pageH1
 	 *  is defined as null before being initialized. 
@@ -669,19 +689,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageH1(String o) {
 		this.pageH1 = PageLayout.staticSetPageH1(siteRequest_, o);
-		this.pageH1Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageH1Init() {
-		if(!pageH1Wrap.alreadyInitialized) {
+		Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1").o(pageH1);
+		if(pageH1 == null) {
 			_pageH1(pageH1Wrap);
-			if(pageH1 == null)
-				setPageH1(pageH1Wrap.o);
-			pageH1Wrap.o(null);
+			setPageH1(pageH1Wrap.o);
 		}
-		pageH1Wrap.alreadyInitialized(true);
+		pageH1Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -723,8 +741,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH2;
-	@JsonIgnore
-	public Wrap<String> pageH2Wrap = new Wrap<String>().var("pageH2").o(pageH2);
 
 	/**	<br/> The entity pageH2
 	 *  is defined as null before being initialized. 
@@ -739,19 +755,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageH2(String o) {
 		this.pageH2 = PageLayout.staticSetPageH2(siteRequest_, o);
-		this.pageH2Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH2(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageH2Init() {
-		if(!pageH2Wrap.alreadyInitialized) {
+		Wrap<String> pageH2Wrap = new Wrap<String>().var("pageH2").o(pageH2);
+		if(pageH2 == null) {
 			_pageH2(pageH2Wrap);
-			if(pageH2 == null)
-				setPageH2(pageH2Wrap.o);
-			pageH2Wrap.o(null);
+			setPageH2(pageH2Wrap.o);
 		}
-		pageH2Wrap.alreadyInitialized(true);
+		pageH2Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -793,8 +807,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH3;
-	@JsonIgnore
-	public Wrap<String> pageH3Wrap = new Wrap<String>().var("pageH3").o(pageH3);
 
 	/**	<br/> The entity pageH3
 	 *  is defined as null before being initialized. 
@@ -809,19 +821,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageH3(String o) {
 		this.pageH3 = PageLayout.staticSetPageH3(siteRequest_, o);
-		this.pageH3Wrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageH3(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageH3Init() {
-		if(!pageH3Wrap.alreadyInitialized) {
+		Wrap<String> pageH3Wrap = new Wrap<String>().var("pageH3").o(pageH3);
+		if(pageH3 == null) {
 			_pageH3(pageH3Wrap);
-			if(pageH3 == null)
-				setPageH3(pageH3Wrap.o);
-			pageH3Wrap.o(null);
+			setPageH3(pageH3Wrap.o);
 		}
-		pageH3Wrap.alreadyInitialized(true);
+		pageH3Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -863,8 +873,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageTitle;
-	@JsonIgnore
-	public Wrap<String> pageTitleWrap = new Wrap<String>().var("pageTitle").o(pageTitle);
 
 	/**	<br/> The entity pageTitle
 	 *  is defined as null before being initialized. 
@@ -879,19 +887,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageTitle(String o) {
 		this.pageTitle = PageLayout.staticSetPageTitle(siteRequest_, o);
-		this.pageTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageTitleInit() {
-		if(!pageTitleWrap.alreadyInitialized) {
+		Wrap<String> pageTitleWrap = new Wrap<String>().var("pageTitle").o(pageTitle);
+		if(pageTitle == null) {
 			_pageTitle(pageTitleWrap);
-			if(pageTitle == null)
-				setPageTitle(pageTitleWrap.o);
-			pageTitleWrap.o(null);
+			setPageTitle(pageTitleWrap.o);
 		}
-		pageTitleWrap.alreadyInitialized(true);
+		pageTitleWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -934,8 +940,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> roles = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> rolesWrap = new Wrap<List<String>>().var("roles").o(roles);
 
 	/**	<br/> The entity roles
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -951,7 +955,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
-		this.rolesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetRoles(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -976,10 +979,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		}
 	}
 	protected PageLayout rolesInit() {
-		if(!rolesWrap.alreadyInitialized) {
-			_roles(roles);
-		}
-		rolesWrap.alreadyInitialized(true);
+		_roles(roles);
 		return (PageLayout)this;
 	}
 
@@ -1026,8 +1026,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> rolesRequired = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> rolesRequiredWrap = new Wrap<List<String>>().var("rolesRequired").o(rolesRequired);
 
 	/**	<br/> The entity rolesRequired
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -1043,7 +1041,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setRolesRequired(List<String> rolesRequired) {
 		this.rolesRequired = rolesRequired;
-		this.rolesRequiredWrap.alreadyInitialized = true;
 	}
 	public static String staticSetRolesRequired(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -1068,10 +1065,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		}
 	}
 	protected PageLayout rolesRequiredInit() {
-		if(!rolesRequiredWrap.alreadyInitialized) {
-			_rolesRequired(rolesRequired);
-		}
-		rolesRequiredWrap.alreadyInitialized(true);
+		_rolesRequired(rolesRequired);
 		return (PageLayout)this;
 	}
 
@@ -1118,8 +1112,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> authRolesAdmin = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> authRolesAdminWrap = new Wrap<List<String>>().var("authRolesAdmin").o(authRolesAdmin);
 
 	/**	<br/> The entity authRolesAdmin
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -1135,7 +1127,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setAuthRolesAdmin(List<String> authRolesAdmin) {
 		this.authRolesAdmin = authRolesAdmin;
-		this.authRolesAdminWrap.alreadyInitialized = true;
 	}
 	public static String staticSetAuthRolesAdmin(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -1160,10 +1151,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		}
 	}
 	protected PageLayout authRolesAdminInit() {
-		if(!authRolesAdminWrap.alreadyInitialized) {
-			_authRolesAdmin(authRolesAdmin);
-		}
-		authRolesAdminWrap.alreadyInitialized(true);
+		_authRolesAdmin(authRolesAdmin);
 		return (PageLayout)this;
 	}
 
@@ -1209,8 +1197,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject pagination = new JsonObject();
-	@JsonIgnore
-	public Wrap<JsonObject> paginationWrap = new Wrap<JsonObject>().var("pagination").o(pagination);
 
 	/**	<br/> The entity pagination
 	 *  It is constructed before being initialized with the constructor by default JsonObject(). 
@@ -1226,16 +1212,12 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setPagination(JsonObject pagination) {
 		this.pagination = pagination;
-		this.paginationWrap.alreadyInitialized = true;
 	}
 	public static JsonObject staticSetPagination(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected PageLayout paginationInit() {
-		if(!paginationWrap.alreadyInitialized) {
-			_pagination(pagination);
-		}
-		paginationWrap.alreadyInitialized(true);
+		_pagination(pagination);
 		return (PageLayout)this;
 	}
 
@@ -1249,8 +1231,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject query = new JsonObject();
-	@JsonIgnore
-	public Wrap<JsonObject> queryWrap = new Wrap<JsonObject>().var("query").o(query);
 
 	/**	<br/> The entity query
 	 *  It is constructed before being initialized with the constructor by default JsonObject(). 
@@ -1266,16 +1246,12 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setQuery(JsonObject query) {
 		this.query = query;
-		this.queryWrap.alreadyInitialized = true;
 	}
 	public static JsonObject staticSetQuery(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected PageLayout queryInit() {
-		if(!queryWrap.alreadyInitialized) {
-			_query(query);
-		}
-		queryWrap.alreadyInitialized(true);
+		_query(query);
 		return (PageLayout)this;
 	}
 
@@ -1289,8 +1265,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected Void promiseAfter;
-	@JsonIgnore
-	public Wrap<Void> promiseAfterWrap = new Wrap<Void>().var("promiseAfter").o(promiseAfter);
 
 	/**	<br/> The entity promiseAfter
 	 *  is defined as null before being initialized. 
@@ -1306,26 +1280,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public void setPromiseAfter(Void promiseAfter) {
 		this.promiseAfter = promiseAfter;
-		this.promiseAfterWrap.alreadyInitialized = true;
 	}
 	public static Void staticSetPromiseAfter(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected Future<Void> promiseAfterPromise() {
 		Promise<Void> promise = Promise.promise();
-		if(!promiseAfterWrap.alreadyInitialized) {
-			Promise<Void> promise2 = Promise.promise();
-			_promiseAfter(promise2);
-			promise2.future().onSuccess(o -> {
-				setPromiseAfter(o);
-				promiseAfterWrap.alreadyInitialized(true);
-				promise.complete(o);
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
+		Promise<Void> promise2 = Promise.promise();
+		_promiseAfter(promise2);
+		promise2.future().onSuccess(o -> {
+			setPromiseAfter(o);
+			promise.complete(o);
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
 		return promise.future();
 	}
 
@@ -1339,8 +1307,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String pageImageUri;
-	@JsonIgnore
-	public Wrap<String> pageImageUriWrap = new Wrap<String>().var("pageImageUri").o(pageImageUri);
 
 	/**	<br/> The entity pageImageUri
 	 *  is defined as null before being initialized. 
@@ -1355,19 +1321,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setPageImageUri(String o) {
 		this.pageImageUri = PageLayout.staticSetPageImageUri(siteRequest_, o);
-		this.pageImageUriWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageImageUri(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout pageImageUriInit() {
-		if(!pageImageUriWrap.alreadyInitialized) {
+		Wrap<String> pageImageUriWrap = new Wrap<String>().var("pageImageUri").o(pageImageUri);
+		if(pageImageUri == null) {
 			_pageImageUri(pageImageUriWrap);
-			if(pageImageUri == null)
-				setPageImageUri(pageImageUriWrap.o);
-			pageImageUriWrap.o(null);
+			setPageImageUri(pageImageUriWrap.o);
 		}
-		pageImageUriWrap.alreadyInitialized(true);
+		pageImageUriWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1409,8 +1373,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String contextIconGroup;
-	@JsonIgnore
-	public Wrap<String> contextIconGroupWrap = new Wrap<String>().var("contextIconGroup").o(contextIconGroup);
 
 	/**	<br/> The entity contextIconGroup
 	 *  is defined as null before being initialized. 
@@ -1425,19 +1387,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setContextIconGroup(String o) {
 		this.contextIconGroup = PageLayout.staticSetContextIconGroup(siteRequest_, o);
-		this.contextIconGroupWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout contextIconGroupInit() {
-		if(!contextIconGroupWrap.alreadyInitialized) {
+		Wrap<String> contextIconGroupWrap = new Wrap<String>().var("contextIconGroup").o(contextIconGroup);
+		if(contextIconGroup == null) {
 			_contextIconGroup(contextIconGroupWrap);
-			if(contextIconGroup == null)
-				setContextIconGroup(contextIconGroupWrap.o);
-			contextIconGroupWrap.o(null);
+			setContextIconGroup(contextIconGroupWrap.o);
 		}
-		contextIconGroupWrap.alreadyInitialized(true);
+		contextIconGroupWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1479,8 +1439,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String contextIconName;
-	@JsonIgnore
-	public Wrap<String> contextIconNameWrap = new Wrap<String>().var("contextIconName").o(contextIconName);
 
 	/**	<br/> The entity contextIconName
 	 *  is defined as null before being initialized. 
@@ -1495,19 +1453,17 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public void setContextIconName(String o) {
 		this.contextIconName = PageLayout.staticSetContextIconName(siteRequest_, o);
-		this.contextIconNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetContextIconName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected PageLayout contextIconNameInit() {
-		if(!contextIconNameWrap.alreadyInitialized) {
+		Wrap<String> contextIconNameWrap = new Wrap<String>().var("contextIconName").o(contextIconName);
+		if(contextIconName == null) {
 			_contextIconName(contextIconNameWrap);
-			if(contextIconName == null)
-				setContextIconName(contextIconNameWrap.o);
-			contextIconNameWrap.o(null);
+			setContextIconName(contextIconNameWrap.o);
 		}
-		contextIconNameWrap.alreadyInitialized(true);
+		contextIconNameWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1543,16 +1499,9 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedPageLayout = false;
-
 	public Future<Void> promiseDeepPageLayout(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedPageLayout) {
-			alreadyInitializedPageLayout = true;
-			return promiseDeepPageLayout();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepPageLayout();
 	}
 
 	public Future<Void> promiseDeepPageLayout() {
@@ -1573,6 +1522,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			try {
 				siteRequest_Init();
 				serviceRequestInit();
+				staticBaseUrlInit();
 				pageUriInit();
 				pageMethodInit();
 				long0Init();
@@ -1679,6 +1629,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				return oPageLayout.siteRequest_;
 			case "serviceRequest":
 				return oPageLayout.serviceRequest;
+			case "staticBaseUrl":
+				return oPageLayout.staticBaseUrl;
 			case "pageUri":
 				return oPageLayout.pageUri;
 			case "pageMethod":
@@ -1758,6 +1710,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static Object staticSetPageLayout(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "staticBaseUrl":
+			return PageLayout.staticSetStaticBaseUrl(siteRequest_, o);
 		case "pageUri":
 			return PageLayout.staticSetPageUri(siteRequest_, o);
 		case "pageMethod":
@@ -1804,6 +1758,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static Object staticSolrPageLayout(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "staticBaseUrl":
+			return PageLayout.staticSolrStaticBaseUrl(siteRequest_, (String)o);
 		case "pageUri":
 			return PageLayout.staticSolrPageUri(siteRequest_, (String)o);
 		case "pageMethod":
@@ -1850,6 +1806,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static String staticSolrStrPageLayout(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "staticBaseUrl":
+			return PageLayout.staticSolrStrStaticBaseUrl(siteRequest_, (String)o);
 		case "pageUri":
 			return PageLayout.staticSolrStrPageUri(siteRequest_, (String)o);
 		case "pageMethod":
@@ -1896,6 +1854,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static String staticSolrFqPageLayout(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "staticBaseUrl":
+			return PageLayout.staticSolrFqStaticBaseUrl(siteRequest_, o);
 		case "pageUri":
 			return PageLayout.staticSolrFqPageUri(siteRequest_, o);
 		case "pageMethod":
@@ -2027,6 +1987,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static final String VAR_siteRequest_ = "siteRequest_";
 	public static final String VAR_serviceRequest = "serviceRequest";
+	public static final String VAR_staticBaseUrl = "staticBaseUrl";
 	public static final String VAR_pageUri = "pageUri";
 	public static final String VAR_pageMethod = "pageMethod";
 	public static final String VAR_long0 = "long0";

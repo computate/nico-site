@@ -48,18 +48,30 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 * Ignore: true
 	 **/
-	protected void _listBaseModel_(Wrap<SearchList<BaseModel>> c) {
+	protected void _searchListBaseModel_(Wrap<SearchList<BaseModel>> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 **/
+	protected void _listBaseModel(JsonArray l) {
+		Optional.ofNullable(searchListBaseModel_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
 	}
 
 	protected void _baseModelCount(Wrap<Integer> w) {
-		w.o(listBaseModel_ == null ? 0 : listBaseModel_.size());
+		w.o(searchListBaseModel_ == null ? 0 : searchListBaseModel_.size());
 	}
 
-	protected void _baseModel_(Wrap<BaseModel> c) {
+	protected void _baseModel_(Wrap<BaseModel> w) {
 		if(baseModelCount == 1)
-			c.o(listBaseModel_.get(0));
+			w.o(searchListBaseModel_.get(0));
+	}
+
+	protected void _pk(Wrap<Long> w) {
+		if(baseModelCount == 1)
+			w.o(baseModel_.getPk());
 	}
 
 	@Override
@@ -88,7 +100,7 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 			c.o(baseModel_.getObjectTitle());
 		else if(baseModel_ != null)
 			c.o("");
-		else if(listBaseModel_ == null || baseModelCount == 0)
+		else if(searchListBaseModel_ == null || baseModelCount == 0)
 			c.o("");
 	}
 
@@ -107,9 +119,9 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 	@Override
 	protected void _pagination(JsonObject pagination) {
 		JsonArray pages = new JsonArray();
-		Long start = listBaseModel_.getStart().longValue();
-		Long rows = listBaseModel_.getRows().longValue();
-		Long foundNum = listBaseModel_.getQueryResponse().getResults().getNumFound();
+		Long start = searchListBaseModel_.getStart().longValue();
+		Long rows = searchListBaseModel_.getRows().longValue();
+		Long foundNum = searchListBaseModel_.getQueryResponse().getResults().getNumFound();
 		Long startNum = start + 1L;
 		Long endNum = start + rows;
 		Long floorMod = Math.floorMod(foundNum, rows);
@@ -155,7 +167,7 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 		JsonObject params = serviceRequest.getParams();
 
 		JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
-		Long num = listBaseModel_.getQueryResponse().getResults().getNumFound();
+		Long num = searchListBaseModel_.getQueryResponse().getResults().getNumFound();
 		String q = "*:*";
 		String q1 = "objectText";
 		String q2 = "";
@@ -183,15 +195,15 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 		}
 		query.put("q", q);
 
-		Integer rows1 = Optional.ofNullable(listBaseModel_).map(l -> l.getRows()).orElse(10);
-		Integer start1 = Optional.ofNullable(listBaseModel_).map(l -> l.getStart()).orElse(1);
+		Integer rows1 = Optional.ofNullable(searchListBaseModel_).map(l -> l.getRows()).orElse(10);
+		Integer start1 = Optional.ofNullable(searchListBaseModel_).map(l -> l.getStart()).orElse(1);
 		Integer start2 = start1 - rows1;
 		Integer start3 = start1 + rows1;
 		Integer rows2 = rows1 / 2;
 		Integer rows3 = rows1 * 2;
 		start2 = start2 < 0 ? 0 : start2;
 		JsonArray fqs = new JsonArray();
-		for(String fq : Optional.ofNullable(listBaseModel_).map(l -> l.getFilterQueries()).orElse(new String[0])) {
+		for(String fq : Optional.ofNullable(searchListBaseModel_).map(l -> l.getFilterQueries()).orElse(new String[0])) {
 			if(!StringUtils.contains(fq, "(")) {
 				String fq1 = StringUtils.substringBefore(fq, "_");
 				String fq2 = StringUtils.substringAfter(fq, ":");
@@ -202,7 +214,7 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 		query.put("fq", fqs);
 
 		JsonArray sorts = new JsonArray();
-		for(SortClause sort : Optional.ofNullable(listBaseModel_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
+		for(SortClause sort : Optional.ofNullable(searchListBaseModel_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
 			sorts.add(new JsonObject().put("var", StringUtils.substringBefore(sort.getItem(), "_")).put("order", sort.getOrder().name()));
 		}
 		query.put("sort", sorts);

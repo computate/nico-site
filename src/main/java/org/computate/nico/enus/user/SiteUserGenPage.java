@@ -47,18 +47,30 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 * Ignore: true
 	 **/
-	protected void _listSiteUser_(Wrap<SearchList<SiteUser>> c) {
+	protected void _searchListSiteUser_(Wrap<SearchList<SiteUser>> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 **/
+	protected void _listSiteUser(JsonArray l) {
+		Optional.ofNullable(searchListSiteUser_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
 	}
 
 	protected void _siteUserCount(Wrap<Integer> w) {
-		w.o(listSiteUser_ == null ? 0 : listSiteUser_.size());
+		w.o(searchListSiteUser_ == null ? 0 : searchListSiteUser_.size());
 	}
 
-	protected void _siteUser_(Wrap<SiteUser> c) {
+	protected void _siteUser_(Wrap<SiteUser> w) {
 		if(siteUserCount == 1)
-			c.o(listSiteUser_.get(0));
+			w.o(searchListSiteUser_.get(0));
+	}
+
+	protected void _pk(Wrap<Long> w) {
+		if(siteUserCount == 1)
+			w.o(siteUser_.getPk());
 	}
 
 	@Override
@@ -87,7 +99,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			c.o(siteUser_.getObjectTitle());
 		else if(siteUser_ != null)
 			c.o("site users");
-		else if(listSiteUser_ == null || siteUserCount == 0)
+		else if(searchListSiteUser_ == null || siteUserCount == 0)
 			c.o("no site user found");
 		else
 			c.o("site users");
@@ -113,9 +125,9 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	@Override
 	protected void _pagination(JsonObject pagination) {
 		JsonArray pages = new JsonArray();
-		Long start = listSiteUser_.getStart().longValue();
-		Long rows = listSiteUser_.getRows().longValue();
-		Long foundNum = listSiteUser_.getQueryResponse().getResults().getNumFound();
+		Long start = searchListSiteUser_.getStart().longValue();
+		Long rows = searchListSiteUser_.getRows().longValue();
+		Long foundNum = searchListSiteUser_.getQueryResponse().getResults().getNumFound();
 		Long startNum = start + 1L;
 		Long endNum = start + rows;
 		Long floorMod = Math.floorMod(foundNum, rows);
@@ -161,7 +173,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		JsonObject params = serviceRequest.getParams();
 
 		JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
-		Long num = listSiteUser_.getQueryResponse().getResults().getNumFound();
+		Long num = searchListSiteUser_.getQueryResponse().getResults().getNumFound();
 		String q = "*:*";
 		String q1 = "objectText";
 		String q2 = "";
@@ -189,15 +201,15 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		}
 		query.put("q", q);
 
-		Integer rows1 = Optional.ofNullable(listSiteUser_).map(l -> l.getRows()).orElse(10);
-		Integer start1 = Optional.ofNullable(listSiteUser_).map(l -> l.getStart()).orElse(1);
+		Integer rows1 = Optional.ofNullable(searchListSiteUser_).map(l -> l.getRows()).orElse(10);
+		Integer start1 = Optional.ofNullable(searchListSiteUser_).map(l -> l.getStart()).orElse(1);
 		Integer start2 = start1 - rows1;
 		Integer start3 = start1 + rows1;
 		Integer rows2 = rows1 / 2;
 		Integer rows3 = rows1 * 2;
 		start2 = start2 < 0 ? 0 : start2;
 		JsonArray fqs = new JsonArray();
-		for(String fq : Optional.ofNullable(listSiteUser_).map(l -> l.getFilterQueries()).orElse(new String[0])) {
+		for(String fq : Optional.ofNullable(searchListSiteUser_).map(l -> l.getFilterQueries()).orElse(new String[0])) {
 			if(!StringUtils.contains(fq, "(")) {
 				String fq1 = StringUtils.substringBefore(fq, "_");
 				String fq2 = StringUtils.substringAfter(fq, ":");
@@ -208,7 +220,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		query.put("fq", fqs);
 
 		JsonArray sorts = new JsonArray();
-		for(SortClause sort : Optional.ofNullable(listSiteUser_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
+		for(SortClause sort : Optional.ofNullable(searchListSiteUser_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
 			sorts.add(new JsonObject().put("var", StringUtils.substringBefore(sort.getItem(), "_")).put("order", sort.getOrder().name()));
 		}
 		query.put("sort", sorts);

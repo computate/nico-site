@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,8 @@ import io.vertx.core.json.JsonObject;
 
 /** 
  * Keyword: classSimpleNameSearchList
- */
-public class SearchList<DEV> extends SearchListGen<DEV> {
+ */ 
+public class SearchList<DEV> extends SearchListGen<DEV> implements Iterable<DEV> {
 
 	/**
 	 * {@inheritDoc}
@@ -106,6 +107,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 					Map<String, Object> map = json.getMap();
 					QueryResponse r = generateSolrQueryResponse(map);
 					setQueryResponse(r);
+					Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().var("solrDocumentList").o(solrDocumentList);
 					_solrDocumentList(solrDocumentListWrap);
 					setSolrDocumentList(solrDocumentListWrap.o);
 					list.clear();
@@ -138,6 +140,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 				Map<String, Object> map = json.getMap();
 				QueryResponse r = generateSolrQueryResponse(map);
 				setQueryResponse(r);
+				Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().var("solrDocumentList").o(solrDocumentList);
 				_solrDocumentList(solrDocumentListWrap);
 				setSolrDocumentList(solrDocumentListWrap.o);
 				list.clear();
@@ -162,7 +165,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 	protected void _queryResponse(Promise<QueryResponse> promise) {        
 		try {
 			if(this.c != null)
-				solrQuery.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
+				solrQuery.addFilterQuery("classCanonicalName_indexedstored_string:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
 			if(solrQuery.getQuery() != null) {
 				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
@@ -402,7 +405,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			for(SolrDocument solrDocument : solrDocumentList) {
 				try {
 					if(solrDocument != null) {
-						String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
+						String classCanonicalName = (String)solrDocument.get("classCanonicalName_indexedstored_string");
 						DEV o = (DEV)Class.forName(classCanonicalName).newInstance();
 						MethodUtils.invokeMethod(o, "setSiteRequest_", siteRequest_);
 						if(populate)
@@ -1014,5 +1017,10 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		if(numFound != null)
 			sb.append("numFound: ").append(numFound).append("\n");
 		return sb.toString();
+	}
+
+	@Override
+	public Iterator<DEV> iterator() {
+		return list.iterator();
 	}
 }

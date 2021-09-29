@@ -121,7 +121,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSiteUserList(siteRequest, false, true, false, "/api/user", "Search").onSuccess(listSiteUser -> {
+					searchSiteUserList(siteRequest, false, true, false).onSuccess(listSiteUser -> {
 						response200SearchSiteUser(listSiteUser).onSuccess(response -> {
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("searchSiteUser succeeded. "));
@@ -315,7 +315,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
+					searchSiteUserList(siteRequest, false, true, true).onSuccess(listSiteUser -> {
 						try {
 							List<String> roles2 = Arrays.asList("SiteAdmin");
 							if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
@@ -426,7 +426,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			try {
 				siteRequest.setJsonObject(body);
 				serviceRequest.getParams().getJsonObject("query").put("rows", 1);
-				searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
+				searchSiteUserList(siteRequest, false, true, true).onSuccess(listSiteUser -> {
 					try {
 						SiteUser o = listSiteUser.first();
 						if(o != null && listSiteUser.getQueryResponse().getResults().getNumFound() == 1) {
@@ -618,7 +618,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							).onSuccess(b -> {
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
-						RuntimeException ex2 = new RuntimeException("value SiteUser.userFullName failed", ex);
+						RuntimeException ex2 = new RuntimeException("value SiteUser failed", ex);
 						LOG.error(String.format("attributeSiteUser failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
@@ -683,7 +683,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					JsonObject query = new JsonObject();
-					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(true);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
 					if(softCommit)
 						query.put("softCommit", softCommit);
@@ -944,7 +944,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							).onSuccess(b -> {
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
-						RuntimeException ex2 = new RuntimeException("value SiteUser.userFullName failed", ex);
+						RuntimeException ex2 = new RuntimeException("value SiteUser failed", ex);
 						LOG.error(String.format("attributeSiteUser failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
@@ -996,7 +996,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
 				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
-					searchSiteUserList(siteRequest, false, true, false, "/user", "SearchPage").onSuccess(listSiteUser -> {
+					searchSiteUserList(siteRequest, false, true, false).onSuccess(listSiteUser -> {
 						response200SearchPageSiteUser(listSiteUser).onSuccess(response -> {
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("searchpageSiteUser succeeded. "));
@@ -1044,7 +1044,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 			if(listSiteUser.size() == 1)
 				siteRequest.setRequestPk(listSiteUser.get(0).getPk());
-			page.setListSiteUser_(listSiteUser);
+			page.setSearchListSiteUser_(listSiteUser);
 			page.setSiteRequest_(siteRequest);
 			page.promiseDeepSiteUserPage(siteRequest).onSuccess(a -> {
 				JsonObject json = JsonObject.mapFrom(page);
@@ -1100,13 +1100,13 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		return promise.future();
 	}
 
-	public void searchSiteUserQ(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteUserQ(SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		searchList.setQuery(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : ClientUtils.escapeQueryChars(valueIndexed)));
 		if(!"*".equals(entityVar)) {
 		}
 	}
 
-	public String searchSiteUserFq(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String searchSiteUserFq(SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -1121,25 +1121,25 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		}
 	}
 
-	public void searchSiteUserSort(String uri, String apiMethod, SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteUserSort(SearchList<SiteUser> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		searchList.addSort(varIndexed, ORDER.valueOf(valueIndexed));
 	}
 
-	public void searchSiteUserRows(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueRows) {
-			searchList.setRows(apiMethod != null ? valueRows : 10);
+	public void searchSiteUserRows(SearchList<SiteUser> searchList, Integer valueRows) {
+			searchList.setRows(valueRows != null ? valueRows : 10);
 	}
 
-	public void searchSiteUserStart(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueStart) {
+	public void searchSiteUserStart(SearchList<SiteUser> searchList, Integer valueStart) {
 		searchList.setStart(valueStart);
 	}
 
-	public void searchSiteUserVar(String uri, String apiMethod, SearchList<SiteUser> searchList, String var, String value) {
+	public void searchSiteUserVar(SearchList<SiteUser> searchList, String var, String value) {
 		searchList.getSiteRequest_().getRequestVars().put(var, value);
 	}
 
-	public void searchSiteUserUri(String uri, String apiMethod, SearchList<SiteUser> searchList) {
+	public void searchSiteUserUri(SearchList<SiteUser> searchList) {
 	}
 
 	public Future<ServiceResponse> varsSiteUser(SiteRequestEnUS siteRequest) {
@@ -1172,7 +1172,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		return promise.future();
 	}
 
-	public Future<SearchList<SiteUser>> searchSiteUserList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+	public Future<SearchList<SiteUser>> searchSiteUserList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify) {
 		Promise<SearchList<SiteUser>> promise = Promise.promise();
 		try {
 			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -1244,7 +1244,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 											entityVar = mQ.group(1).trim();
 											valueIndexed = mQ.group(2).trim();
 											varIndexed = SiteUser.varIndexedSiteUser(entityVar);
-											String entityQ = searchSiteUserFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											String entityQ = searchSiteUserFq(searchList, entityVar, valueIndexed, varIndexed);
 											mQ.appendReplacement(sb, entityQ);
 											foundQ = mQ.find();
 										}
@@ -1261,7 +1261,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 											entityVar = mFq.group(1).trim();
 											valueIndexed = mFq.group(2).trim();
 											varIndexed = SiteUser.varIndexedSiteUser(entityVar);
-											String entityFq = searchSiteUserFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											String entityFq = searchSiteUserFq(searchList, entityVar, valueIndexed, varIndexed);
 											mFq.appendReplacement(sb, entityFq);
 											foundFq = mFq.find();
 										}
@@ -1273,15 +1273,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
 									valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
 									varIndexed = SiteUser.varIndexedSiteUser(entityVar);
-									searchSiteUserSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									searchSiteUserSort(searchList, entityVar, valueIndexed, varIndexed);
 									break;
 								case "start":
 									valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-									searchSiteUserStart(uri, apiMethod, searchList, valueStart);
+									searchSiteUserStart(searchList, valueStart);
 									break;
 								case "rows":
 									valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-									searchSiteUserRows(uri, apiMethod, searchList, valueRows);
+									searchSiteUserRows(searchList, valueRows);
 									break;
 								case "facet":
 									searchList.add("facet", ((Boolean)paramObject).toString());
@@ -1319,7 +1319,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								case "var":
 									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-									searchSiteUserVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+									searchSiteUserVar(searchList, entityVar, valueIndexed);
 									break;
 								case "cursorMark":
 									valueCursorMark = (String)paramObject;
@@ -1327,7 +1327,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									break;
 							}
 						}
-						searchSiteUserUri(uri, apiMethod, searchList);
+						searchSiteUserUri(searchList);
 					}
 				} catch(Exception e) {
 					ExceptionUtils.rethrow(e);
@@ -1336,7 +1336,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
 				searchList.addSort("created_indexedstored_date", ORDER.desc);
 			}
-			searchSiteUser2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+			searchSiteUser2(siteRequest, populate, store, modify, searchList);
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				promise.complete(searchList);
 			}).onFailure(ex -> {
@@ -1349,7 +1349,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		}
 		return promise.future();
 	}
-	public void searchSiteUser2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteUser> searchList) {
+	public void searchSiteUser2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<SiteUser> searchList) {
 	}
 
 	public Future<Void> defineSiteUser(SiteUser o) {

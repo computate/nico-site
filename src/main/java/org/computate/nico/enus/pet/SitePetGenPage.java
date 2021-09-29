@@ -50,18 +50,25 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 * Ignore: true
 	 **/
-	protected void _listSitePet_(Wrap<SearchList<SitePet>> w) {
+	protected void _searchListSitePet_(Wrap<SearchList<SitePet>> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 **/
+	protected void _listSitePet(JsonArray l) {
+		Optional.ofNullable(searchListSitePet_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
 	}
 
 	protected void _sitePetCount(Wrap<Integer> w) {
-		w.o(listSitePet_ == null ? 0 : listSitePet_.size());
+		w.o(searchListSitePet_ == null ? 0 : searchListSitePet_.size());
 	}
 
 	protected void _sitePet_(Wrap<SitePet> w) {
 		if(sitePetCount == 1)
-			w.o(listSitePet_.get(0));
+			w.o(searchListSitePet_.get(0));
 	}
 
 	protected void _pk(Wrap<Long> w) {
@@ -95,7 +102,7 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 			c.o(sitePet_.getObjectTitle());
 		else if(sitePet_ != null)
 			c.o("pets");
-		else if(listSitePet_ == null || sitePetCount == 0)
+		else if(searchListSitePet_ == null || sitePetCount == 0)
 			c.o("no pet found");
 		else
 			c.o("pets");
@@ -121,9 +128,9 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 	@Override
 	protected void _pagination(JsonObject pagination) {
 		JsonArray pages = new JsonArray();
-		Long start = listSitePet_.getStart().longValue();
-		Long rows = listSitePet_.getRows().longValue();
-		Long foundNum = listSitePet_.getQueryResponse().getResults().getNumFound();
+		Long start = searchListSitePet_.getStart().longValue();
+		Long rows = searchListSitePet_.getRows().longValue();
+		Long foundNum = searchListSitePet_.getQueryResponse().getResults().getNumFound();
 		Long startNum = start + 1L;
 		Long endNum = start + rows;
 		Long floorMod = Math.floorMod(foundNum, rows);
@@ -169,7 +176,7 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 		JsonObject params = serviceRequest.getParams();
 
 		JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
-		Long num = listSitePet_.getQueryResponse().getResults().getNumFound();
+		Long num = searchListSitePet_.getQueryResponse().getResults().getNumFound();
 		String q = "*:*";
 		String q1 = "objectText";
 		String q2 = "";
@@ -197,15 +204,15 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 		}
 		query.put("q", q);
 
-		Integer rows1 = Optional.ofNullable(listSitePet_).map(l -> l.getRows()).orElse(10);
-		Integer start1 = Optional.ofNullable(listSitePet_).map(l -> l.getStart()).orElse(1);
+		Integer rows1 = Optional.ofNullable(searchListSitePet_).map(l -> l.getRows()).orElse(10);
+		Integer start1 = Optional.ofNullable(searchListSitePet_).map(l -> l.getStart()).orElse(1);
 		Integer start2 = start1 - rows1;
 		Integer start3 = start1 + rows1;
 		Integer rows2 = rows1 / 2;
 		Integer rows3 = rows1 * 2;
 		start2 = start2 < 0 ? 0 : start2;
 		JsonArray fqs = new JsonArray();
-		for(String fq : Optional.ofNullable(listSitePet_).map(l -> l.getFilterQueries()).orElse(new String[0])) {
+		for(String fq : Optional.ofNullable(searchListSitePet_).map(l -> l.getFilterQueries()).orElse(new String[0])) {
 			if(!StringUtils.contains(fq, "(")) {
 				String fq1 = StringUtils.substringBefore(fq, "_");
 				String fq2 = StringUtils.substringAfter(fq, ":");
@@ -216,7 +223,7 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 		query.put("fq", fqs);
 
 		JsonArray sorts = new JsonArray();
-		for(SortClause sort : Optional.ofNullable(listSitePet_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
+		for(SortClause sort : Optional.ofNullable(searchListSitePet_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
 			sorts.add(new JsonObject().put("var", StringUtils.substringBefore(sort.getItem(), "_")).put("order", sort.getOrder().name()));
 		}
 		query.put("sort", sorts);

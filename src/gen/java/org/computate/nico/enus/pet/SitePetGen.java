@@ -97,8 +97,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long petKey;
-	@JsonIgnore
-	public Wrap<Long> petKeyWrap = new Wrap<Long>().var("petKey").o(petKey);
 
 	/**	<br/> The entity petKey
 	 *  is defined as null before being initialized. 
@@ -114,12 +112,10 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void setPetKey(Long petKey) {
 		this.petKey = petKey;
-		this.petKeyWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPetKey(String o) {
 		this.petKey = SitePet.staticSetPetKey(siteRequest_, o);
-		this.petKeyWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPetKey(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -127,13 +123,11 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return null;
 	}
 	protected SitePet petKeyInit() {
-		if(!petKeyWrap.alreadyInitialized) {
+		Wrap<Long> petKeyWrap = new Wrap<Long>().var("petKey");
+		if(petKey == null) {
 			_petKey(petKeyWrap);
-			if(petKey == null)
-				setPetKey(petKeyWrap.o);
-			petKeyWrap.o(null);
+			setPetKey(petKeyWrap.o);
 		}
-		petKeyWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -183,8 +177,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SiteEnrollment> enrollmentSearch;
-	@JsonIgnore
-	public Wrap<SearchList<SiteEnrollment>> enrollmentSearchWrap = new Wrap<SearchList<SiteEnrollment>>().var("enrollmentSearch").o(enrollmentSearch);
 
 	/**	<br/> The entity enrollmentSearch
 	 *  is defined as null before being initialized. 
@@ -200,35 +192,28 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void setEnrollmentSearch(SearchList<SiteEnrollment> enrollmentSearch) {
 		this.enrollmentSearch = enrollmentSearch;
-		this.enrollmentSearchWrap.alreadyInitialized = true;
 	}
 	public static SearchList<SiteEnrollment> staticSetEnrollmentSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected Future<SearchList<SiteEnrollment>> enrollmentSearchPromise() {
 		Promise<SearchList<SiteEnrollment>> promise = Promise.promise();
-		if(!enrollmentSearchWrap.alreadyInitialized) {
-			Promise<SearchList<SiteEnrollment>> promise2 = Promise.promise();
-			_enrollmentSearch(promise2);
-			promise2.future().onSuccess(o -> {
-				if(o != null && enrollmentSearch == null) {
-					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
-						setEnrollmentSearch(o);
-						enrollmentSearchWrap.alreadyInitialized(true);
-						promise.complete(o);
-					}).onFailure(ex -> {
-						promise.fail(ex);
-					});
-				} else {
-					enrollmentSearchWrap.alreadyInitialized(true);
+		Promise<SearchList<SiteEnrollment>> promise2 = Promise.promise();
+		_enrollmentSearch(promise2);
+		promise2.future().onSuccess(o -> {
+			if(o != null && enrollmentSearch == null) {
+				o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+					setEnrollmentSearch(o);
 					promise.complete(o);
-				}
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			} else {
+				promise.complete(o);
+			}
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
 		return promise.future();
 	}
 
@@ -244,8 +229,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> userKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().var("userKeys").o(userKeys);
 
 	/**	<br/> The entity userKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -261,14 +244,12 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void setUserKeys(List<Long> userKeys) {
 		this.userKeys = userKeys;
-		this.userKeysWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setUserKeys(String o) {
 		Long l = SitePet.staticSetUserKeys(siteRequest_, o);
 		if(l != null)
 			addUserKeys(l);
-		this.userKeysWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetUserKeys(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -302,10 +283,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return (SitePet)this;
 	}
 	protected SitePet userKeysInit() {
-		if(!userKeysWrap.alreadyInitialized) {
-			_userKeys(userKeys);
-		}
-		userKeysWrap.alreadyInitialized(true);
+		_userKeys(userKeys);
 		return (SitePet)this;
 	}
 
@@ -361,8 +339,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> enrollmentKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> enrollmentKeysWrap = new Wrap<List<Long>>().var("enrollmentKeys").o(enrollmentKeys);
 
 	/**	<br/> The entity enrollmentKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -378,14 +354,12 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void setEnrollmentKeys(List<Long> enrollmentKeys) {
 		this.enrollmentKeys = enrollmentKeys;
-		this.enrollmentKeysWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setEnrollmentKeys(String o) {
 		Long l = SitePet.staticSetEnrollmentKeys(siteRequest_, o);
 		if(l != null)
 			addEnrollmentKeys(l);
-		this.enrollmentKeysWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -419,10 +393,7 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return (SitePet)this;
 	}
 	protected SitePet enrollmentKeysInit() {
-		if(!enrollmentKeysWrap.alreadyInitialized) {
-			_enrollmentKeys(enrollmentKeys);
-		}
-		enrollmentKeysWrap.alreadyInitialized(true);
+		_enrollmentKeys(enrollmentKeys);
 		return (SitePet)this;
 	}
 
@@ -476,8 +447,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petName;
-	@JsonIgnore
-	public Wrap<String> petNameWrap = new Wrap<String>().var("petName").o(petName);
 
 	/**	<br/> The entity petName
 	 *  is defined as null before being initialized. 
@@ -492,19 +461,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void setPetName(String o) {
 		this.petName = SitePet.staticSetPetName(siteRequest_, o);
-		this.petNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPetName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SitePet petNameInit() {
-		if(!petNameWrap.alreadyInitialized) {
+		Wrap<String> petNameWrap = new Wrap<String>().var("petName");
+		if(petName == null) {
 			_petName(petNameWrap);
-			if(petName == null)
-				setPetName(petNameWrap.o);
-			petNameWrap.o(null);
+			setPetName(petNameWrap.o);
 		}
-		petNameWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -554,8 +520,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petFoodAmount;
-	@JsonIgnore
-	public Wrap<String> petFoodAmountWrap = new Wrap<String>().var("petFoodAmount").o(petFoodAmount);
 
 	/**	<br/> The entity petFoodAmount
 	 *  is defined as null before being initialized. 
@@ -570,19 +534,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void setPetFoodAmount(String o) {
 		this.petFoodAmount = SitePet.staticSetPetFoodAmount(siteRequest_, o);
-		this.petFoodAmountWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPetFoodAmount(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SitePet petFoodAmountInit() {
-		if(!petFoodAmountWrap.alreadyInitialized) {
+		Wrap<String> petFoodAmountWrap = new Wrap<String>().var("petFoodAmount");
+		if(petFoodAmount == null) {
 			_petFoodAmount(petFoodAmountWrap);
-			if(petFoodAmount == null)
-				setPetFoodAmount(petFoodAmountWrap.o);
-			petFoodAmountWrap.o(null);
+			setPetFoodAmount(petFoodAmountWrap.o);
 		}
-		petFoodAmountWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -632,8 +593,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petFood;
-	@JsonIgnore
-	public Wrap<String> petFoodWrap = new Wrap<String>().var("petFood").o(petFood);
 
 	/**	<br/> The entity petFood
 	 *  is defined as null before being initialized. 
@@ -648,19 +607,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void setPetFood(String o) {
 		this.petFood = SitePet.staticSetPetFood(siteRequest_, o);
-		this.petFoodWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPetFood(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SitePet petFoodInit() {
-		if(!petFoodWrap.alreadyInitialized) {
+		Wrap<String> petFoodWrap = new Wrap<String>().var("petFood");
+		if(petFood == null) {
 			_petFood(petFoodWrap);
-			if(petFood == null)
-				setPetFood(petFoodWrap.o);
-			petFoodWrap.o(null);
+			setPetFood(petFoodWrap.o);
 		}
-		petFoodWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -710,8 +666,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean petSick;
-	@JsonIgnore
-	public Wrap<Boolean> petSickWrap = new Wrap<Boolean>().var("petSick").o(petSick);
 
 	/**	<br/> The entity petSick
 	 *  is defined as null before being initialized. 
@@ -727,24 +681,20 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void setPetSick(Boolean petSick) {
 		this.petSick = petSick;
-		this.petSickWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPetSick(String o) {
 		this.petSick = SitePet.staticSetPetSick(siteRequest_, o);
-		this.petSickWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetPetSick(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected SitePet petSickInit() {
-		if(!petSickWrap.alreadyInitialized) {
+		Wrap<Boolean> petSickWrap = new Wrap<Boolean>().var("petSick");
+		if(petSick == null) {
 			_petSick(petSickWrap);
-			if(petSick == null)
-				setPetSick(petSickWrap.o);
-			petSickWrap.o(null);
+			setPetSick(petSickWrap.o);
 		}
-		petSickWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -794,8 +744,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petMedNote;
-	@JsonIgnore
-	public Wrap<String> petMedNoteWrap = new Wrap<String>().var("petMedNote").o(petMedNote);
 
 	/**	<br/> The entity petMedNote
 	 *  is defined as null before being initialized. 
@@ -810,19 +758,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void setPetMedNote(String o) {
 		this.petMedNote = SitePet.staticSetPetMedNote(siteRequest_, o);
-		this.petMedNoteWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPetMedNote(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SitePet petMedNoteInit() {
-		if(!petMedNoteWrap.alreadyInitialized) {
+		Wrap<String> petMedNoteWrap = new Wrap<String>().var("petMedNote");
+		if(petMedNote == null) {
 			_petMedNote(petMedNoteWrap);
-			if(petMedNote == null)
-				setPetMedNote(petMedNoteWrap.o);
-			petMedNoteWrap.o(null);
+			setPetMedNote(petMedNoteWrap.o);
 		}
-		petMedNoteWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -872,8 +817,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petTrouble;
-	@JsonIgnore
-	public Wrap<String> petTroubleWrap = new Wrap<String>().var("petTrouble").o(petTrouble);
 
 	/**	<br/> The entity petTrouble
 	 *  is defined as null before being initialized. 
@@ -888,19 +831,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void setPetTrouble(String o) {
 		this.petTrouble = SitePet.staticSetPetTrouble(siteRequest_, o);
-		this.petTroubleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPetTrouble(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SitePet petTroubleInit() {
-		if(!petTroubleWrap.alreadyInitialized) {
+		Wrap<String> petTroubleWrap = new Wrap<String>().var("petTrouble");
+		if(petTrouble == null) {
 			_petTrouble(petTroubleWrap);
-			if(petTrouble == null)
-				setPetTrouble(petTroubleWrap.o);
-			petTroubleWrap.o(null);
+			setPetTrouble(petTroubleWrap.o);
 		}
-		petTroubleWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -950,8 +890,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean sendpdates;
-	@JsonIgnore
-	public Wrap<Boolean> sendpdatesWrap = new Wrap<Boolean>().var("sendpdates").o(sendpdates);
 
 	/**	<br/> The entity sendpdates
 	 *  is defined as null before being initialized. 
@@ -967,24 +905,20 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public void setSendpdates(Boolean sendpdates) {
 		this.sendpdates = sendpdates;
-		this.sendpdatesWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setSendpdates(String o) {
 		this.sendpdates = SitePet.staticSetSendpdates(siteRequest_, o);
-		this.sendpdatesWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetSendpdates(SiteRequestEnUS siteRequest_, String o) {
 		return Boolean.parseBoolean(o);
 	}
 	protected SitePet sendpdatesInit() {
-		if(!sendpdatesWrap.alreadyInitialized) {
+		Wrap<Boolean> sendpdatesWrap = new Wrap<Boolean>().var("sendpdates");
+		if(sendpdates == null) {
 			_sendpdates(sendpdatesWrap);
-			if(sendpdates == null)
-				setSendpdates(sendpdatesWrap.o);
-			sendpdatesWrap.o(null);
+			setSendpdates(sendpdatesWrap.o);
 		}
-		sendpdatesWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -1034,8 +968,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String petAmount;
-	@JsonIgnore
-	public Wrap<String> petAmountWrap = new Wrap<String>().var("petAmount").o(petAmount);
 
 	/**	<br/> The entity petAmount
 	 *  is defined as null before being initialized. 
@@ -1050,19 +982,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 	public void setPetAmount(String o) {
 		this.petAmount = SitePet.staticSetPetAmount(siteRequest_, o);
-		this.petAmountWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPetAmount(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected SitePet petAmountInit() {
-		if(!petAmountWrap.alreadyInitialized) {
+		Wrap<String> petAmountWrap = new Wrap<String>().var("petAmount");
+		if(petAmount == null) {
 			_petAmount(petAmountWrap);
-			if(petAmount == null)
-				setPetAmount(petAmountWrap.o);
-			petAmountWrap.o(null);
+			setPetAmount(petAmountWrap.o);
 		}
-		petAmountWrap.alreadyInitialized(true);
 		return (SitePet)this;
 	}
 
@@ -1106,16 +1035,9 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedSitePet = false;
-
 	public Future<Void> promiseDeepSitePet(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedSitePet) {
-			alreadyInitializedSitePet = true;
-			return promiseDeepSitePet();
-		} else {
-			return Future.succeededFuture();
-		}
+		return promiseDeepSitePet();
 	}
 
 	public Future<Void> promiseDeepSitePet() {
@@ -1269,6 +1191,11 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	public Object attributeSitePet(String var, Object val) {
 		SitePet oSitePet = (SitePet)this;
 		switch(var) {
+			case "enrollmentKeys":
+				oSitePet.addEnrollmentKeys((Long)val);
+				if(!saves.contains("enrollmentKeys"))
+					saves.add("enrollmentKeys");
+				return val;
 			default:
 				return super.attributeBaseModel(var, val);
 		}
@@ -1570,11 +1497,9 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					oSitePet.userKeys.addAll(userKeys);
 			}
 
-			if(saves.contains("enrollmentKeys")) {
-				List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
-				if(enrollmentKeys != null)
-					oSitePet.enrollmentKeys.addAll(enrollmentKeys);
-			}
+			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
+			if(enrollmentKeys != null)
+				oSitePet.enrollmentKeys.addAll(enrollmentKeys);
 
 			if(saves.contains("petName")) {
 				String petName = (String)solrDocument.get("petName_indexedstored_string");

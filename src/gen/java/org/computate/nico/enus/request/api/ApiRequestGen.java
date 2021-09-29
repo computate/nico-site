@@ -68,8 +68,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
-	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -85,19 +83,17 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setSiteRequest_(SiteRequestEnUS siteRequest_) {
 		this.siteRequest_ = siteRequest_;
-		this.siteRequest_Wrap.alreadyInitialized = true;
 	}
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiRequest siteRequest_Init() {
-		if(!siteRequest_Wrap.alreadyInitialized) {
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
-			if(siteRequest_ == null)
-				setSiteRequest_(siteRequest_Wrap.o);
-			siteRequest_Wrap.o(null);
+			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.alreadyInitialized(true);
+		siteRequest_Wrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -114,8 +110,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSV'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
-	@JsonIgnore
-	public Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created").o(created);
 
 	/**	<br/> The entity created
 	 *  is defined as null before being initialized. 
@@ -131,18 +125,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setCreated(ZonedDateTime created) {
 		this.created = created;
-		this.createdWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setCreated(Instant o) {
 		this.created = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
-		this.createdWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setCreated(String o) {
 		this.created = ApiRequest.staticSetCreated(siteRequest_, o);
-		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
 		if(StringUtils.endsWith(o, "Z"))
@@ -153,16 +144,14 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonIgnore
 	public void setCreated(Date o) {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
-		this.createdWrap.alreadyInitialized = true;
 	}
 	protected ApiRequest createdInit() {
-		if(!createdWrap.alreadyInitialized) {
+		Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created").o(created);
+		if(created == null) {
 			_created(createdWrap);
-			if(created == null)
-				setCreated(createdWrap.o);
-			createdWrap.o(null);
+			setCreated(createdWrap.o);
 		}
-		createdWrap.alreadyInitialized(true);
+		createdWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -205,8 +194,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer rows;
-	@JsonIgnore
-	public Wrap<Integer> rowsWrap = new Wrap<Integer>().var("rows").o(rows);
 
 	/**	<br/> The entity rows
 	 *  is defined as null before being initialized. 
@@ -222,12 +209,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setRows(Integer rows) {
 		this.rows = rows;
-		this.rowsWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setRows(String o) {
 		this.rows = ApiRequest.staticSetRows(siteRequest_, o);
-		this.rowsWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetRows(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -235,13 +220,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest rowsInit() {
-		if(!rowsWrap.alreadyInitialized) {
+		Wrap<Integer> rowsWrap = new Wrap<Integer>().var("rows").o(rows);
+		if(rows == null) {
 			_rows(rowsWrap);
-			if(rows == null)
-				setRows(rowsWrap.o);
-			rowsWrap.o(null);
+			setRows(rowsWrap.o);
 		}
-		rowsWrap.alreadyInitialized(true);
+		rowsWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -284,8 +268,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long numFound;
-	@JsonIgnore
-	public Wrap<Long> numFoundWrap = new Wrap<Long>().var("numFound").o(numFound);
 
 	/**	<br/> The entity numFound
 	 *  is defined as null before being initialized. 
@@ -301,12 +283,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setNumFound(Long numFound) {
 		this.numFound = numFound;
-		this.numFoundWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setNumFound(String o) {
 		this.numFound = ApiRequest.staticSetNumFound(siteRequest_, o);
-		this.numFoundWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetNumFound(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -314,13 +294,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest numFoundInit() {
-		if(!numFoundWrap.alreadyInitialized) {
+		Wrap<Long> numFoundWrap = new Wrap<Long>().var("numFound").o(numFound);
+		if(numFound == null) {
 			_numFound(numFoundWrap);
-			if(numFound == null)
-				setNumFound(numFoundWrap.o);
-			numFoundWrap.o(null);
+			setNumFound(numFoundWrap.o);
 		}
-		numFoundWrap.alreadyInitialized(true);
+		numFoundWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -363,8 +342,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long numPATCH;
-	@JsonIgnore
-	public Wrap<Long> numPATCHWrap = new Wrap<Long>().var("numPATCH").o(numPATCH);
 
 	/**	<br/> The entity numPATCH
 	 *  is defined as null before being initialized. 
@@ -380,12 +357,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setNumPATCH(Long numPATCH) {
 		this.numPATCH = numPATCH;
-		this.numPATCHWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setNumPATCH(String o) {
 		this.numPATCH = ApiRequest.staticSetNumPATCH(siteRequest_, o);
-		this.numPATCHWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetNumPATCH(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -393,13 +368,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest numPATCHInit() {
-		if(!numPATCHWrap.alreadyInitialized) {
+		Wrap<Long> numPATCHWrap = new Wrap<Long>().var("numPATCH").o(numPATCH);
+		if(numPATCH == null) {
 			_numPATCH(numPATCHWrap);
-			if(numPATCH == null)
-				setNumPATCH(numPATCHWrap.o);
-			numPATCHWrap.o(null);
+			setNumPATCH(numPATCHWrap.o);
 		}
-		numPATCHWrap.alreadyInitialized(true);
+		numPATCHWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -441,8 +415,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String uuid;
-	@JsonIgnore
-	public Wrap<String> uuidWrap = new Wrap<String>().var("uuid").o(uuid);
 
 	/**	<br/> The entity uuid
 	 *  is defined as null before being initialized. 
@@ -457,19 +429,17 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	}
 	public void setUuid(String o) {
 		this.uuid = ApiRequest.staticSetUuid(siteRequest_, o);
-		this.uuidWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUuid(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiRequest uuidInit() {
-		if(!uuidWrap.alreadyInitialized) {
+		Wrap<String> uuidWrap = new Wrap<String>().var("uuid").o(uuid);
+		if(uuid == null) {
 			_uuid(uuidWrap);
-			if(uuid == null)
-				setUuid(uuidWrap.o);
-			uuidWrap.o(null);
+			setUuid(uuidWrap.o);
 		}
-		uuidWrap.alreadyInitialized(true);
+		uuidWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -511,8 +481,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
-	@JsonIgnore
-	public Wrap<String> idWrap = new Wrap<String>().var("id").o(id);
 
 	/**	<br/> The entity id
 	 *  is defined as null before being initialized. 
@@ -527,19 +495,17 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	}
 	public void setId(String o) {
 		this.id = ApiRequest.staticSetId(siteRequest_, o);
-		this.idWrap.alreadyInitialized = true;
 	}
 	public static String staticSetId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiRequest idInit() {
-		if(!idWrap.alreadyInitialized) {
+		Wrap<String> idWrap = new Wrap<String>().var("id").o(id);
+		if(id == null) {
 			_id(idWrap);
-			if(id == null)
-				setId(idWrap.o);
-			idWrap.o(null);
+			setId(idWrap.o);
 		}
-		idWrap.alreadyInitialized(true);
+		idWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -582,8 +548,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
-	@JsonIgnore
-	public Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
 
 	/**	<br/> The entity pk
 	 *  is defined as null before being initialized. 
@@ -599,12 +563,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setPk(Long pk) {
 		this.pk = pk;
-		this.pkWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPk(String o) {
 		this.pk = ApiRequest.staticSetPk(siteRequest_, o);
-		this.pkWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -612,13 +574,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest pkInit() {
-		if(!pkWrap.alreadyInitialized) {
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
+		if(pk == null) {
 			_pk(pkWrap);
-			if(pk == null)
-				setPk(pkWrap.o);
-			pkWrap.o(null);
+			setPk(pkWrap.o);
 		}
-		pkWrap.alreadyInitialized(true);
+		pkWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -660,8 +621,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Object original;
-	@JsonIgnore
-	public Wrap<Object> originalWrap = new Wrap<Object>().var("original").o(original);
 
 	/**	<br/> The entity original
 	 *  is defined as null before being initialized. 
@@ -677,19 +636,17 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setOriginal(Object original) {
 		this.original = original;
-		this.originalWrap.alreadyInitialized = true;
 	}
 	public static Object staticSetOriginal(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected ApiRequest originalInit() {
-		if(!originalWrap.alreadyInitialized) {
+		Wrap<Object> originalWrap = new Wrap<Object>().var("original").o(original);
+		if(original == null) {
 			_original(originalWrap);
-			if(original == null)
-				setOriginal(originalWrap.o);
-			originalWrap.o(null);
+			setOriginal(originalWrap.o);
 		}
-		originalWrap.alreadyInitialized(true);
+		originalWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -705,8 +662,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> pks = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> pksWrap = new Wrap<List<Long>>().var("pks").o(pks);
 
 	/**	<br/> The entity pks
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -722,14 +677,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setPks(List<Long> pks) {
 		this.pks = pks;
-		this.pksWrap.alreadyInitialized = true;
 	}
 	@JsonIgnore
 	public void setPks(String o) {
 		Long l = ApiRequest.staticSetPks(siteRequest_, o);
 		if(l != null)
 			addPks(l);
-		this.pksWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPks(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
@@ -763,10 +716,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return (ApiRequest)this;
 	}
 	protected ApiRequest pksInit() {
-		if(!pksWrap.alreadyInitialized) {
-			_pks(pks);
-		}
-		pksWrap.alreadyInitialized(true);
+		_pks(pks);
 		return (ApiRequest)this;
 	}
 
@@ -813,8 +763,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classes = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> classesWrap = new Wrap<List<String>>().var("classes").o(classes);
 
 	/**	<br/> The entity classes
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -830,7 +778,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setClasses(List<String> classes) {
 		this.classes = classes;
-		this.classesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClasses(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -855,10 +802,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		}
 	}
 	protected ApiRequest classesInit() {
-		if(!classesWrap.alreadyInitialized) {
-			_classes(classes);
-		}
-		classesWrap.alreadyInitialized(true);
+		_classes(classes);
 		return (ApiRequest)this;
 	}
 
@@ -905,8 +849,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> vars = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> varsWrap = new Wrap<List<String>>().var("vars").o(vars);
 
 	/**	<br/> The entity vars
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -922,7 +864,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public void setVars(List<String> vars) {
 		this.vars = vars;
-		this.varsWrap.alreadyInitialized = true;
 	}
 	public static String staticSetVars(SiteRequestEnUS siteRequest_, String o) {
 		return o;
@@ -947,10 +888,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		}
 	}
 	protected ApiRequest varsInit() {
-		if(!varsWrap.alreadyInitialized) {
-			_vars(vars);
-		}
-		varsWrap.alreadyInitialized(true);
+		_vars(vars);
 		return (ApiRequest)this;
 	}
 
@@ -996,8 +934,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String timeRemaining;
-	@JsonIgnore
-	public Wrap<String> timeRemainingWrap = new Wrap<String>().var("timeRemaining").o(timeRemaining);
 
 	/**	<br/> The entity timeRemaining
 	 *  is defined as null before being initialized. 
@@ -1012,19 +948,17 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	}
 	public void setTimeRemaining(String o) {
 		this.timeRemaining = ApiRequest.staticSetTimeRemaining(siteRequest_, o);
-		this.timeRemainingWrap.alreadyInitialized = true;
 	}
 	public static String staticSetTimeRemaining(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 	protected ApiRequest timeRemainingInit() {
-		if(!timeRemainingWrap.alreadyInitialized) {
+		Wrap<String> timeRemainingWrap = new Wrap<String>().var("timeRemaining").o(timeRemaining);
+		if(timeRemaining == null) {
 			_timeRemaining(timeRemainingWrap);
-			if(timeRemaining == null)
-				setTimeRemaining(timeRemainingWrap.o);
-			timeRemainingWrap.o(null);
+			setTimeRemaining(timeRemainingWrap.o);
 		}
-		timeRemainingWrap.alreadyInitialized(true);
+		timeRemainingWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -1060,14 +994,9 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedApiRequest = false;
-
 	public ApiRequest initDeepApiRequest(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedApiRequest) {
-			alreadyInitializedApiRequest = true;
-			initDeepApiRequest();
-		}
+		initDeepApiRequest();
 		return (ApiRequest)this;
 	}
 
