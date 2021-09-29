@@ -365,6 +365,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 			OAuth2Options oauth2ClientOptions = new OAuth2Options();
 			oauth2ClientOptions.setSite(config().getString(ConfigKeys.AUTH_URL) + "/realms/" + config().getString(ConfigKeys.AUTH_REALM));
+			oauth2ClientOptions.setSite(config().getString(ConfigKeys.AUTH_URL) + "/realms/" + config().getString(ConfigKeys.AUTH_REALM));
 			oauth2ClientOptions.setTenant(config().getString(ConfigKeys.AUTH_REALM));
 			oauth2ClientOptions.setClientID(config().getString(ConfigKeys.AUTH_RESOURCE));
 			oauth2ClientOptions.setClientSecret(config().getString(ConfigKeys.AUTH_SECRET));

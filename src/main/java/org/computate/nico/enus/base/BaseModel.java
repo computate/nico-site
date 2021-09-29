@@ -19,7 +19,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * SuperPage: PageLayout
  * 
  * Keyword: classSimpleNameCluster
- */      
+ */                      
 public class BaseModel extends BaseModelGen<Object> {
 
 	/**
@@ -258,7 +258,7 @@ public class BaseModel extends BaseModelGen<Object> {
 	/**
 	 * {@inheritDoc}
 	 * Text: true
-	 */ 
+	 */       
 	protected void _objectText(Wrap<String> c) { 
 		StringBuilder b = new StringBuilder();
 		if(pk != null)

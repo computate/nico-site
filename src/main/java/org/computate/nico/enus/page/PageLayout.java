@@ -39,6 +39,10 @@ public class PageLayout extends PageLayoutGen<Object> {
 		w.o(serviceRequest.getExtra().getString("method"));
 	}
 
+	protected void _params(Wrap<JsonObject> w) {
+		w.o(serviceRequest.getParams());
+	}
+
 	protected void _long0(Wrap<Long> w) {
 		w.o(0L);
 	}

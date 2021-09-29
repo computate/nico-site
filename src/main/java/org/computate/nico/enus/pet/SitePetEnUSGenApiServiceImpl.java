@@ -650,14 +650,14 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 						num++;
 						bParams.add(o2.sqlPetTrouble());
 						break;
-					case SitePet.VAR_sendpdates:
-						o2.setSendpdates(jsonObject.getBoolean(entityVar));
+					case SitePet.VAR_sendUpdates:
+						o2.setSendUpdates(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append(SitePet.VAR_sendpdates + "=$" + num);
+						bSql.append(SitePet.VAR_sendUpdates + "=$" + num);
 						num++;
-						bParams.add(o2.sqlSendpdates());
+						bParams.add(o2.sqlSendUpdates());
 						break;
 					case SitePet.VAR_petAmount:
 						o2.setPetAmount(jsonObject.getString(entityVar));
@@ -1116,13 +1116,13 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 							num++;
 							bParams.add(o2.sqlPetTrouble());
 						break;
-					case "setSendpdates":
-							o2.setSendpdates(jsonObject.getBoolean(entityVar));
+					case "setSendUpdates":
+							o2.setSendUpdates(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append(SitePet.VAR_sendpdates + "=$" + num);
+							bSql.append(SitePet.VAR_sendUpdates + "=$" + num);
 							num++;
-							bParams.add(o2.sqlSendpdates());
+							bParams.add(o2.sqlSendUpdates());
 						break;
 					case "setPetAmount":
 							o2.setPetAmount(jsonObject.getString(entityVar));
@@ -1716,7 +1716,7 @@ public class SitePetEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
 	public static final String VAR_petSick = "petSick";
 	public static final String VAR_petMedNote = "petMedNote";
 	public static final String VAR_petTrouble = "petTrouble";
-	public static final String VAR_sendpdates = "sendpdates";
+	public static final String VAR_sendUpdates = "sendUpdates";
 	public static final String VAR_petAmount = "petAmount";
 
 	// General //

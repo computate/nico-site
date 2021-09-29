@@ -83,12 +83,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -122,12 +121,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter classSolrDocumentInit() {
-		Wrap<SolrDocument> classSolrDocumentWrap = new Wrap<SolrDocument>().var("classSolrDocument").o(classSolrDocument);
+		Wrap<SolrDocument> classSolrDocumentWrap = new Wrap<SolrDocument>().var("classSolrDocument");
 		if(classSolrDocument == null) {
 			_classSolrDocument(classSolrDocumentWrap);
 			setClassSolrDocument(classSolrDocumentWrap.o);
 		}
-		classSolrDocumentWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -168,12 +166,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter contextRowsInit() {
-		Wrap<Integer> contextRowsWrap = new Wrap<Integer>().var("contextRows").o(contextRows);
+		Wrap<Integer> contextRowsWrap = new Wrap<Integer>().var("contextRows");
 		if(contextRows == null) {
 			_contextRows(contextRowsWrap);
 			setContextRows(contextRowsWrap.o);
 		}
-		contextRowsWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -234,12 +231,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiMethodInit() {
-		Wrap<String> classApiMethodWrap = new Wrap<String>().var("classApiMethod").o(classApiMethod);
+		Wrap<String> classApiMethodWrap = new Wrap<String>().var("classApiMethod");
 		if(classApiMethod == null) {
 			_classApiMethod(classApiMethodWrap);
 			setClassApiMethod(classApiMethodWrap.o);
 		}
-		classApiMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -300,12 +296,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter openApiVersionInit() {
-		Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion").o(openApiVersion);
+		Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion");
 		if(openApiVersion == null) {
 			_openApiVersion(openApiVersionWrap);
 			setOpenApiVersion(openApiVersionWrap.o);
 		}
-		openApiVersionWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -367,12 +362,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter appSwagger2Init() {
-		Wrap<AppSwagger2> appSwagger2Wrap = new Wrap<AppSwagger2>().var("appSwagger2").o(appSwagger2);
+		Wrap<AppSwagger2> appSwagger2Wrap = new Wrap<AppSwagger2>().var("appSwagger2");
 		if(appSwagger2 == null) {
 			_appSwagger2(appSwagger2Wrap);
 			setAppSwagger2(appSwagger2Wrap.o);
 		}
-		appSwagger2Wrap.o(null);
 		if(appSwagger2 != null)
 			appSwagger2.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -428,12 +422,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classUrisInit() {
-		Wrap<List<String>> classUrisWrap = new Wrap<List<String>>().var("classUris").o(classUris);
+		Wrap<List<String>> classUrisWrap = new Wrap<List<String>>().var("classUris");
 		if(classUris == null) {
 			_classUris(classUrisWrap);
 			setClassUris(classUrisWrap.o);
 		}
-		classUrisWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -506,12 +499,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter openApiVersionNumberInit() {
-		Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber").o(openApiVersionNumber);
+		Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber");
 		if(openApiVersionNumber == null) {
 			_openApiVersionNumber(openApiVersionNumberWrap);
 			setOpenApiVersionNumber(openApiVersionNumberWrap.o);
 		}
-		openApiVersionNumberWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -580,12 +572,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter tabsSchemaInit() {
-		Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema").o(tabsSchema);
+		Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema");
 		if(tabsSchema == null) {
 			_tabsSchema(tabsSchemaWrap);
 			setTabsSchema(tabsSchemaWrap.o);
 		}
-		tabsSchemaWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -654,12 +645,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter tabsResponsesInit() {
-		Wrap<Integer> tabsResponsesWrap = new Wrap<Integer>().var("tabsResponses").o(tabsResponses);
+		Wrap<Integer> tabsResponsesWrap = new Wrap<Integer>().var("tabsResponses");
 		if(tabsResponses == null) {
 			_tabsResponses(tabsResponsesWrap);
 			setTabsResponses(tabsResponsesWrap.o);
 		}
-		tabsResponsesWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -721,12 +711,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wPathsInit() {
-		Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths").o(wPaths);
+		Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths");
 		if(wPaths == null) {
 			_wPaths(wPathsWrap);
 			setWPaths(wPathsWrap.o);
 		}
-		wPathsWrap.o(null);
 		if(wPaths != null)
 			wPaths.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -762,12 +751,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wRequestBodiesInit() {
-		Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies").o(wRequestBodies);
+		Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies");
 		if(wRequestBodies == null) {
 			_wRequestBodies(wRequestBodiesWrap);
 			setWRequestBodies(wRequestBodiesWrap.o);
 		}
-		wRequestBodiesWrap.o(null);
 		if(wRequestBodies != null)
 			wRequestBodies.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -803,12 +791,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wSchemasInit() {
-		Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas").o(wSchemas);
+		Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas");
 		if(wSchemas == null) {
 			_wSchemas(wSchemasWrap);
 			setWSchemas(wSchemasWrap.o);
 		}
-		wSchemasWrap.o(null);
 		if(wSchemas != null)
 			wSchemas.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -821,7 +808,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
 
@@ -844,12 +830,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter configInit() {
-		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config").o(config);
+		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config");
 		if(config == null) {
 			_config(configWrap);
 			setConfig(configWrap.o);
 		}
-		configWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -883,12 +868,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter solrClientComputateInit() {
-		Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate").o(solrClientComputate);
+		Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate");
 		if(solrClientComputate == null) {
 			_solrClientComputate(solrClientComputateWrap);
 			setSolrClientComputate(solrClientComputateWrap.o);
 		}
-		solrClientComputateWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -922,12 +906,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wRequestHeadersInit() {
-		Wrap<AllWriter> wRequestHeadersWrap = new Wrap<AllWriter>().var("wRequestHeaders").o(wRequestHeaders);
+		Wrap<AllWriter> wRequestHeadersWrap = new Wrap<AllWriter>().var("wRequestHeaders");
 		if(wRequestHeaders == null) {
 			_wRequestHeaders(wRequestHeadersWrap);
 			setWRequestHeaders(wRequestHeadersWrap.o);
 		}
-		wRequestHeadersWrap.o(null);
 		if(wRequestHeaders != null)
 			wRequestHeaders.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -963,12 +946,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wRequestDescriptionInit() {
-		Wrap<AllWriter> wRequestDescriptionWrap = new Wrap<AllWriter>().var("wRequestDescription").o(wRequestDescription);
+		Wrap<AllWriter> wRequestDescriptionWrap = new Wrap<AllWriter>().var("wRequestDescription");
 		if(wRequestDescription == null) {
 			_wRequestDescription(wRequestDescriptionWrap);
 			setWRequestDescription(wRequestDescriptionWrap.o);
 		}
-		wRequestDescriptionWrap.o(null);
 		if(wRequestDescription != null)
 			wRequestDescription.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1004,12 +986,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wResponseDescriptionInit() {
-		Wrap<AllWriter> wResponseDescriptionWrap = new Wrap<AllWriter>().var("wResponseDescription").o(wResponseDescription);
+		Wrap<AllWriter> wResponseDescriptionWrap = new Wrap<AllWriter>().var("wResponseDescription");
 		if(wResponseDescription == null) {
 			_wResponseDescription(wResponseDescriptionWrap);
 			setWResponseDescription(wResponseDescriptionWrap.o);
 		}
-		wResponseDescriptionWrap.o(null);
 		if(wResponseDescription != null)
 			wResponseDescription.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1045,12 +1026,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wRequestBodyInit() {
-		Wrap<AllWriter> wRequestBodyWrap = new Wrap<AllWriter>().var("wRequestBody").o(wRequestBody);
+		Wrap<AllWriter> wRequestBodyWrap = new Wrap<AllWriter>().var("wRequestBody");
 		if(wRequestBody == null) {
 			_wRequestBody(wRequestBodyWrap);
 			setWRequestBody(wRequestBodyWrap.o);
 		}
-		wRequestBodyWrap.o(null);
 		if(wRequestBody != null)
 			wRequestBody.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1086,12 +1066,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wResponseBodyInit() {
-		Wrap<AllWriter> wResponseBodyWrap = new Wrap<AllWriter>().var("wResponseBody").o(wResponseBody);
+		Wrap<AllWriter> wResponseBodyWrap = new Wrap<AllWriter>().var("wResponseBody");
 		if(wResponseBody == null) {
 			_wResponseBody(wResponseBodyWrap);
 			setWResponseBody(wResponseBodyWrap.o);
 		}
-		wResponseBodyWrap.o(null);
 		if(wResponseBody != null)
 			wResponseBody.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1127,12 +1106,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wRequestSchemaInit() {
-		Wrap<AllWriter> wRequestSchemaWrap = new Wrap<AllWriter>().var("wRequestSchema").o(wRequestSchema);
+		Wrap<AllWriter> wRequestSchemaWrap = new Wrap<AllWriter>().var("wRequestSchema");
 		if(wRequestSchema == null) {
 			_wRequestSchema(wRequestSchemaWrap);
 			setWRequestSchema(wRequestSchemaWrap.o);
 		}
-		wRequestSchemaWrap.o(null);
 		if(wRequestSchema != null)
 			wRequestSchema.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1168,12 +1146,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter wResponseSchemaInit() {
-		Wrap<AllWriter> wResponseSchemaWrap = new Wrap<AllWriter>().var("wResponseSchema").o(wResponseSchema);
+		Wrap<AllWriter> wResponseSchemaWrap = new Wrap<AllWriter>().var("wResponseSchema");
 		if(wResponseSchema == null) {
 			_wResponseSchema(wResponseSchemaWrap);
 			setWResponseSchema(wResponseSchemaWrap.o);
 		}
-		wResponseSchemaWrap.o(null);
 		if(wResponseSchema != null)
 			wResponseSchema.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1209,12 +1186,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter writersInit() {
-		Wrap<AllWriters> writersWrap = new Wrap<AllWriters>().var("writers").o(writers);
+		Wrap<AllWriters> writersWrap = new Wrap<AllWriters>().var("writers");
 		if(writers == null) {
 			_writers(writersWrap);
 			setWriters(writersWrap.o);
 		}
-		writersWrap.o(null);
 		if(writers != null)
 			writers.initDeepForClass(siteRequest_);
 		return (ApiWriter)this;
@@ -1249,12 +1225,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiTagInit() {
-		Wrap<String> classApiTagWrap = new Wrap<String>().var("classApiTag").o(classApiTag);
+		Wrap<String> classApiTagWrap = new Wrap<String>().var("classApiTag");
 		if(classApiTag == null) {
 			_classApiTag(classApiTagWrap);
 			setClassApiTag(classApiTagWrap.o);
 		}
-		classApiTagWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1320,12 +1295,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classExtendsBaseInit() {
-		Wrap<Boolean> classExtendsBaseWrap = new Wrap<Boolean>().var("classExtendsBase").o(classExtendsBase);
+		Wrap<Boolean> classExtendsBaseWrap = new Wrap<Boolean>().var("classExtendsBase");
 		if(classExtendsBase == null) {
 			_classExtendsBase(classExtendsBaseWrap);
 			setClassExtendsBase(classExtendsBaseWrap.o);
 		}
-		classExtendsBaseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1391,12 +1365,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classIsBaseInit() {
-		Wrap<Boolean> classIsBaseWrap = new Wrap<Boolean>().var("classIsBase").o(classIsBase);
+		Wrap<Boolean> classIsBaseWrap = new Wrap<Boolean>().var("classIsBase");
 		if(classIsBase == null) {
 			_classIsBase(classIsBaseWrap);
 			setClassIsBase(classIsBaseWrap.o);
 		}
-		classIsBaseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1457,12 +1430,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classSimpleNameInit() {
-		Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName").o(classSimpleName);
+		Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName");
 		if(classSimpleName == null) {
 			_classSimpleName(classSimpleNameWrap);
 			setClassSimpleName(classSimpleNameWrap.o);
 		}
-		classSimpleNameWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1523,12 +1495,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter appNameInit() {
-		Wrap<String> appNameWrap = new Wrap<String>().var("appName").o(appName);
+		Wrap<String> appNameWrap = new Wrap<String>().var("appName");
 		if(appName == null) {
 			_appName(appNameWrap);
 			setAppName(appNameWrap.o);
 		}
-		appNameWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1589,12 +1560,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classAbsolutePathInit() {
-		Wrap<String> classAbsolutePathWrap = new Wrap<String>().var("classAbsolutePath").o(classAbsolutePath);
+		Wrap<String> classAbsolutePathWrap = new Wrap<String>().var("classAbsolutePath");
 		if(classAbsolutePath == null) {
 			_classAbsolutePath(classAbsolutePathWrap);
 			setClassAbsolutePath(classAbsolutePathWrap.o);
 		}
-		classAbsolutePathWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1655,12 +1625,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiUriMethodInit() {
-		Wrap<String> classApiUriMethodWrap = new Wrap<String>().var("classApiUriMethod").o(classApiUriMethod);
+		Wrap<String> classApiUriMethodWrap = new Wrap<String>().var("classApiUriMethod");
 		if(classApiUriMethod == null) {
 			_classApiUriMethod(classApiUriMethodWrap);
 			setClassApiUriMethod(classApiUriMethodWrap.o);
 		}
-		classApiUriMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1726,12 +1695,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleUserMethodInit() {
-		Wrap<Boolean> classRoleUserMethodWrap = new Wrap<Boolean>().var("classRoleUserMethod").o(classRoleUserMethod);
+		Wrap<Boolean> classRoleUserMethodWrap = new Wrap<Boolean>().var("classRoleUserMethod");
 		if(classRoleUserMethod == null) {
 			_classRoleUserMethod(classRoleUserMethodWrap);
 			setClassRoleUserMethod(classRoleUserMethodWrap.o);
 		}
-		classRoleUserMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1792,12 +1760,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiMethodMethodInit() {
-		Wrap<String> classApiMethodMethodWrap = new Wrap<String>().var("classApiMethodMethod").o(classApiMethodMethod);
+		Wrap<String> classApiMethodMethodWrap = new Wrap<String>().var("classApiMethodMethod");
 		if(classApiMethodMethod == null) {
 			_classApiMethodMethod(classApiMethodMethodWrap);
 			setClassApiMethodMethod(classApiMethodMethodWrap.o);
 		}
-		classApiMethodMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1858,12 +1825,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiMediaType200MethodInit() {
-		Wrap<String> classApiMediaType200MethodWrap = new Wrap<String>().var("classApiMediaType200Method").o(classApiMediaType200Method);
+		Wrap<String> classApiMediaType200MethodWrap = new Wrap<String>().var("classApiMediaType200Method");
 		if(classApiMediaType200Method == null) {
 			_classApiMediaType200Method(classApiMediaType200MethodWrap);
 			setClassApiMediaType200Method(classApiMediaType200MethodWrap.o);
 		}
-		classApiMediaType200MethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1924,12 +1890,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiOperationIdMethodInit() {
-		Wrap<String> classApiOperationIdMethodWrap = new Wrap<String>().var("classApiOperationIdMethod").o(classApiOperationIdMethod);
+		Wrap<String> classApiOperationIdMethodWrap = new Wrap<String>().var("classApiOperationIdMethod");
 		if(classApiOperationIdMethod == null) {
 			_classApiOperationIdMethod(classApiOperationIdMethodWrap);
 			setClassApiOperationIdMethod(classApiOperationIdMethodWrap.o);
 		}
-		classApiOperationIdMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -1990,12 +1955,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiOperationIdMethodRequestInit() {
-		Wrap<String> classApiOperationIdMethodRequestWrap = new Wrap<String>().var("classApiOperationIdMethodRequest").o(classApiOperationIdMethodRequest);
+		Wrap<String> classApiOperationIdMethodRequestWrap = new Wrap<String>().var("classApiOperationIdMethodRequest");
 		if(classApiOperationIdMethodRequest == null) {
 			_classApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap);
 			setClassApiOperationIdMethodRequest(classApiOperationIdMethodRequestWrap.o);
 		}
-		classApiOperationIdMethodRequestWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2056,12 +2020,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classApiOperationIdMethodResponseInit() {
-		Wrap<String> classApiOperationIdMethodResponseWrap = new Wrap<String>().var("classApiOperationIdMethodResponse").o(classApiOperationIdMethodResponse);
+		Wrap<String> classApiOperationIdMethodResponseWrap = new Wrap<String>().var("classApiOperationIdMethodResponse");
 		if(classApiOperationIdMethodResponse == null) {
 			_classApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap);
 			setClassApiOperationIdMethodResponse(classApiOperationIdMethodResponseWrap.o);
 		}
-		classApiOperationIdMethodResponseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2122,12 +2085,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classSuperApiOperationIdMethodRequestInit() {
-		Wrap<String> classSuperApiOperationIdMethodRequestWrap = new Wrap<String>().var("classSuperApiOperationIdMethodRequest").o(classSuperApiOperationIdMethodRequest);
+		Wrap<String> classSuperApiOperationIdMethodRequestWrap = new Wrap<String>().var("classSuperApiOperationIdMethodRequest");
 		if(classSuperApiOperationIdMethodRequest == null) {
 			_classSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap);
 			setClassSuperApiOperationIdMethodRequest(classSuperApiOperationIdMethodRequestWrap.o);
 		}
-		classSuperApiOperationIdMethodRequestWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2188,12 +2150,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classSuperApiOperationIdMethodResponseInit() {
-		Wrap<String> classSuperApiOperationIdMethodResponseWrap = new Wrap<String>().var("classSuperApiOperationIdMethodResponse").o(classSuperApiOperationIdMethodResponse);
+		Wrap<String> classSuperApiOperationIdMethodResponseWrap = new Wrap<String>().var("classSuperApiOperationIdMethodResponse");
 		if(classSuperApiOperationIdMethodResponse == null) {
 			_classSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap);
 			setClassSuperApiOperationIdMethodResponse(classSuperApiOperationIdMethodResponseWrap.o);
 		}
-		classSuperApiOperationIdMethodResponseWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2254,12 +2215,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter classPageCanonicalNameMethodInit() {
-		Wrap<String> classPageCanonicalNameMethodWrap = new Wrap<String>().var("classPageCanonicalNameMethod").o(classPageCanonicalNameMethod);
+		Wrap<String> classPageCanonicalNameMethodWrap = new Wrap<String>().var("classPageCanonicalNameMethod");
 		if(classPageCanonicalNameMethod == null) {
 			_classPageCanonicalNameMethod(classPageCanonicalNameMethodWrap);
 			setClassPageCanonicalNameMethod(classPageCanonicalNameMethodWrap.o);
 		}
-		classPageCanonicalNameMethodWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2325,12 +2285,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classKeywordsFoundInit() {
-		Wrap<Boolean> classKeywordsFoundWrap = new Wrap<Boolean>().var("classKeywordsFound").o(classKeywordsFound);
+		Wrap<Boolean> classKeywordsFoundWrap = new Wrap<Boolean>().var("classKeywordsFound");
 		if(classKeywordsFound == null) {
 			_classKeywordsFound(classKeywordsFoundWrap);
 			setClassKeywordsFound(classKeywordsFoundWrap.o);
 		}
-		classKeywordsFoundWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2412,12 +2371,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classKeywordsInit() {
-		Wrap<List<String>> classKeywordsWrap = new Wrap<List<String>>().var("classKeywords").o(classKeywords);
+		Wrap<List<String>> classKeywordsWrap = new Wrap<List<String>>().var("classKeywords");
 		if(classKeywords == null) {
 			_classKeywords(classKeywordsWrap);
 			setClassKeywords(classKeywordsWrap.o);
 		}
-		classKeywordsWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2487,12 +2445,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classPublicReadInit() {
-		Wrap<Boolean> classPublicReadWrap = new Wrap<Boolean>().var("classPublicRead").o(classPublicRead);
+		Wrap<Boolean> classPublicReadWrap = new Wrap<Boolean>().var("classPublicRead");
 		if(classPublicRead == null) {
 			_classPublicRead(classPublicReadWrap);
 			setClassPublicRead(classPublicReadWrap.o);
 		}
-		classPublicReadWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2558,12 +2515,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleSessionInit() {
-		Wrap<Boolean> classRoleSessionWrap = new Wrap<Boolean>().var("classRoleSession").o(classRoleSession);
+		Wrap<Boolean> classRoleSessionWrap = new Wrap<Boolean>().var("classRoleSession");
 		if(classRoleSession == null) {
 			_classRoleSession(classRoleSessionWrap);
 			setClassRoleSession(classRoleSessionWrap.o);
 		}
-		classRoleSessionWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2629,12 +2585,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleUtilisateurInit() {
-		Wrap<Boolean> classRoleUtilisateurWrap = new Wrap<Boolean>().var("classRoleUtilisateur").o(classRoleUtilisateur);
+		Wrap<Boolean> classRoleUtilisateurWrap = new Wrap<Boolean>().var("classRoleUtilisateur");
 		if(classRoleUtilisateur == null) {
 			_classRoleUtilisateur(classRoleUtilisateurWrap);
 			setClassRoleUtilisateur(classRoleUtilisateurWrap.o);
 		}
-		classRoleUtilisateurWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2700,12 +2655,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRoleAllInit() {
-		Wrap<Boolean> classRoleAllWrap = new Wrap<Boolean>().var("classRoleAll").o(classRoleAll);
+		Wrap<Boolean> classRoleAllWrap = new Wrap<Boolean>().var("classRoleAll");
 		if(classRoleAll == null) {
 			_classRoleAll(classRoleAllWrap);
 			setClassRoleAll(classRoleAllWrap.o);
 		}
-		classRoleAllWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2771,12 +2725,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected ApiWriter classRolesFoundInit() {
-		Wrap<Boolean> classRolesFoundWrap = new Wrap<Boolean>().var("classRolesFound").o(classRolesFound);
+		Wrap<Boolean> classRolesFoundWrap = new Wrap<Boolean>().var("classRolesFound");
 		if(classRolesFound == null) {
 			_classRolesFound(classRolesFoundWrap);
 			setClassRolesFound(classRolesFoundWrap.o);
 		}
-		classRolesFoundWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2858,12 +2811,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classRolesInit() {
-		Wrap<List<String>> classRolesWrap = new Wrap<List<String>>().var("classRoles").o(classRoles);
+		Wrap<List<String>> classRolesWrap = new Wrap<List<String>>().var("classRoles");
 		if(classRoles == null) {
 			_classRoles(classRolesWrap);
 			setClassRoles(classRolesWrap.o);
 		}
-		classRolesWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -2949,12 +2901,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		}
 	}
 	protected ApiWriter classRolesLanguageInit() {
-		Wrap<List<String>> classRolesLanguageWrap = new Wrap<List<String>>().var("classRolesLanguage").o(classRolesLanguage);
+		Wrap<List<String>> classRolesLanguageWrap = new Wrap<List<String>>().var("classRolesLanguage");
 		if(classRolesLanguage == null) {
 			_classRolesLanguage(classRolesLanguageWrap);
 			setClassRolesLanguage(classRolesLanguageWrap.o);
 		}
-		classRolesLanguageWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3019,12 +2970,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiWriter languageNameInit() {
-		Wrap<String> languageNameWrap = new Wrap<String>().var("languageName").o(languageName);
+		Wrap<String> languageNameWrap = new Wrap<String>().var("languageName");
 		if(languageName == null) {
 			_languageName(languageNameWrap);
 			setLanguageName(languageNameWrap.o);
 		}
-		languageNameWrap.o(null);
 		return (ApiWriter)this;
 	}
 
@@ -3086,12 +3036,11 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiWriter entitySolrDocumentInit() {
-		Wrap<SolrDocument> entitySolrDocumentWrap = new Wrap<SolrDocument>().var("entitySolrDocument").o(entitySolrDocument);
+		Wrap<SolrDocument> entitySolrDocumentWrap = new Wrap<SolrDocument>().var("entitySolrDocument");
 		if(entitySolrDocument == null) {
 			_entitySolrDocument(entitySolrDocumentWrap);
 			setEntitySolrDocument(entitySolrDocumentWrap.o);
 		}
-		entitySolrDocumentWrap.o(null);
 		return (ApiWriter)this;
 	}
 

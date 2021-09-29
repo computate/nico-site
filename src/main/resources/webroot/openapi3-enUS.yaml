@@ -156,6 +156,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -310,6 +328,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -449,6 +485,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -582,6 +636,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -722,6 +794,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -862,6 +952,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -1032,6 +1140,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -1171,6 +1297,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -1304,6 +1448,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -1458,6 +1620,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -1597,6 +1777,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -1604,146 +1802,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchSitePetResponse'
-  /api/pet/copy:
-    put:
-      operationId: putcopySitePet
-      x-vertx-event-bus: nico-site-enUS-SitePet
-      description: >+
-      summary: >+
-      tags:
-        - Pet
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopySitePetRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopySitePetResponse'
   /api/pet/import:
     put:
       operationId: putimportSitePet
@@ -1870,6 +1928,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -1884,146 +1960,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportSitePetResponse'
-  /api/pet/merge:
-    put:
-      operationId: putmergeSitePet
-      x-vertx-event-bus: nico-site-enUS-SitePet
-      description: >+
-      summary: >+
-      tags:
-        - Pet
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeSitePetRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeSitePetResponse'
   /api/pet/{id}:
     get:
       operationId: getSitePet
@@ -2180,6 +2116,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -2319,6 +2273,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -2455,6 +2427,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -2590,6 +2580,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       requestBody:
         description: >+
         required: true
@@ -2757,6 +2765,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -2899,6 +2925,24 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: softCommit
+          description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: commitWithin
+          description: 'The commit within setting allows forcing document commits to happen in a defined time period. '
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: >+
@@ -3015,16 +3059,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchSitePetResponse'
-    PUTCopySitePetRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopySitePetRequest'
-    PUTCopySitePetResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopySitePetResponse'
     PUTImportSitePetRequest:
       content:
         application/json:
@@ -3035,16 +3069,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportSitePetResponse'
-    PUTMergeSitePetRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSitePetRequest'
-    PUTMergeSitePetResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSitePetResponse'
     GETSitePetResponse:
       content:
         application/json; charset=utf-8:
@@ -3365,7 +3389,7 @@ components:
                 type: string
               petTrouble:
                 type: string
-              update:
+              sendUpdates:
                 type: boolean
               petAmount:
                 type: string
@@ -3395,7 +3419,7 @@ components:
               type: string
             petTrouble:
               type: string
-            update:
+            sendUpdates:
               type: boolean
             petAmount:
               type: string
@@ -3425,7 +3449,7 @@ components:
               type: string
             petTrouble:
               type: string
-            update:
+            sendUpdates:
               type: boolean
             petAmount:
               type: string
@@ -3516,12 +3540,12 @@ components:
               type: string
             removeAllPetTrouble:
               type: string
-            setUpdate:
+            setSendUpdates:
               type: boolean
               nullable: true
-            removeUpdate:
+            removeSendUpdates:
               type: boolean
-            removeAllUpdate:
+            removeAllSendUpdates:
               type: boolean
             setPetAmount:
               type: string
@@ -3617,12 +3641,12 @@ components:
               type: string
             removeAllPetTrouble:
               type: string
-            setUpdate:
+            setSendUpdates:
               type: boolean
               nullable: true
-            removeUpdate:
+            removeSendUpdates:
               type: boolean
-            removeAllUpdate:
+            removeAllSendUpdates:
               type: boolean
             setPetAmount:
               type: string
@@ -3659,70 +3683,10 @@ components:
                 type: string
               petTrouble:
                 type: string
-              update:
+              sendUpdates:
                 type: boolean
               petAmount:
                 type: string
-    PUTCopySitePetRequest:
-      allOf:
-        - type: object
-          properties:
-            petKey:
-              type: string
-            userKeys:
-              type: array
-              items:
-                type: string
-            enrollmentKeys:
-              type: array
-              items:
-                type: string
-            petName:
-              type: string
-            petFoodAmount:
-              type: string
-            petFood:
-              type: string
-            petSick:
-              type: boolean
-            petMedNote:
-              type: string
-            petTrouble:
-              type: string
-            update:
-              type: boolean
-            petAmount:
-              type: string
-    PUTCopySitePetResponse:
-      allOf:
-        - type: object
-          properties:
-            petKey:
-              type: string
-            userKeys:
-              type: array
-              items:
-                type: string
-            enrollmentKeys:
-              type: array
-              items:
-                type: string
-            petName:
-              type: string
-            petFoodAmount:
-              type: string
-            petFood:
-              type: string
-            petSick:
-              type: boolean
-            petMedNote:
-              type: string
-            petTrouble:
-              type: string
-            update:
-              type: boolean
-            petAmount:
-              type: string
     PUTImportSitePetRequest:
       allOf:
         - type: object
@@ -3749,7 +3713,7 @@ components:
               type: string
             petTrouble:
               type: string
-            update:
+            sendUpdates:
               type: boolean
             petAmount:
               type: string
@@ -3779,67 +3743,7 @@ components:
               type: string
             petTrouble:
               type: string
-            update:
-              type: boolean
-            petAmount:
-              type: string
-    PUTMergeSitePetRequest:
-      allOf:
-        - type: object
-          properties:
-            petKey:
-              type: string
-            userKeys:
-              type: array
-              items:
-                type: string
-            enrollmentKeys:
-              type: array
-              items:
-                type: string
-            petName:
-              type: string
-            petFoodAmount:
-              type: string
-            petFood:
-              type: string
-            petSick:
-              type: boolean
-            petMedNote:
-              type: string
-            petTrouble:
-              type: string
-            update:
-              type: boolean
-            petAmount:
-              type: string
-    PUTMergeSitePetResponse:
-      allOf:
-        - type: object
-          properties:
-            petKey:
-              type: string
-            userKeys:
-              type: array
-              items:
-                type: string
-            enrollmentKeys:
-              type: array
-              items:
-                type: string
-            petName:
-              type: string
-            petFoodAmount:
-              type: string
-            petFood:
-              type: string
-            petSick:
-              type: boolean
-            petMedNote:
-              type: string
-            petTrouble:
-              type: string
-            update:
+            sendUpdates:
               type: boolean
             petAmount:
               type: string
@@ -3869,7 +3773,7 @@ components:
               type: string
             petTrouble:
               type: string
-            update:
+            sendUpdates:
               type: boolean
             petAmount:
               type: string
@@ -3882,14 +3786,10 @@ components:
           items:
             type: object
             properties:
-              userKey:
-                type: string
               userKeys:
                 type: array
                 items:
                   type: string
-              userId:
-                type: string
               userName:
                 type: string
               userEmail:
@@ -3904,13 +3804,6 @@ components:
       allOf:
         - type: object
           properties:
-            setUserKey:
-              type: string
-              nullable: true
-            removeUserKey:
-              type: string
-            removeAllUserKey:
-              type: string
             setUserKeys:
               type: array
               nullable: true
@@ -3928,13 +3821,6 @@ components:
               type: array
               items:
                 type: string
-            setUserId:
-              type: string
-              nullable: true
-            removeUserId:
-              type: string
-            removeAllUserId:
-              type: string
             setUserName:
               type: string
               nullable: true
@@ -3974,13 +3860,6 @@ components:
       allOf:
         - type: object
           properties:
-            setUserKey:
-              type: string
-              nullable: true
-            removeUserKey:
-              type: string
-            removeAllUserKey:
-              type: string
             setUserKeys:
               type: array
               nullable: true
@@ -3998,13 +3877,6 @@ components:
               type: array
               items:
                 type: string
-            setUserId:
-              type: string
-              nullable: true
-            removeUserId:
-              type: string
-            removeAllUserId:
-              type: string
             setUserName:
               type: string
               nullable: true
@@ -4044,14 +3916,10 @@ components:
       allOf:
         - type: object
           properties:
-            userKey:
-              type: string
             userKeys:
               type: array
               items:
                 type: string
-            userId:
-              type: string
             userName:
               type: string
             userEmail:
@@ -4066,14 +3934,10 @@ components:
       allOf:
         - type: object
           properties:
-            userKey:
-              type: string
             userKeys:
               type: array
               items:
                 type: string
-            userId:
-              type: string
             userName:
               type: string
             userEmail:

@@ -82,7 +82,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlRow: 8
 	 * HtmlCell: 1
 	 * DisplayName.enUS: users
-	 */                   
+	 */                    
 	protected void _userKeys(List<Long> c) {}
 
 	/**  
@@ -181,7 +181,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlCell: 1
 	 * DisplayName.enUS: Do you want updates, if you do how many?
 	 */               
-	protected void _sendpdates(Wrap<Boolean> w) {
+	protected void _sendUpdates(Wrap<Boolean> w) {
 	}
 
 	/**

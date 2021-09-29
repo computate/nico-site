@@ -81,12 +81,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -120,12 +119,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout serviceRequestInit() {
-		Wrap<ServiceRequest> serviceRequestWrap = new Wrap<ServiceRequest>().var("serviceRequest").o(serviceRequest);
+		Wrap<ServiceRequest> serviceRequestWrap = new Wrap<ServiceRequest>().var("serviceRequest");
 		if(serviceRequest == null) {
 			_serviceRequest(serviceRequestWrap);
 			setServiceRequest(serviceRequestWrap.o);
 		}
-		serviceRequestWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -158,12 +156,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout staticBaseUrlInit() {
-		Wrap<String> staticBaseUrlWrap = new Wrap<String>().var("staticBaseUrl").o(staticBaseUrl);
+		Wrap<String> staticBaseUrlWrap = new Wrap<String>().var("staticBaseUrl");
 		if(staticBaseUrl == null) {
 			_staticBaseUrl(staticBaseUrlWrap);
 			setStaticBaseUrl(staticBaseUrlWrap.o);
 		}
-		staticBaseUrlWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -224,12 +221,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageUriInit() {
-		Wrap<String> pageUriWrap = new Wrap<String>().var("pageUri").o(pageUri);
+		Wrap<String> pageUriWrap = new Wrap<String>().var("pageUri");
 		if(pageUri == null) {
 			_pageUri(pageUriWrap);
 			setPageUri(pageUriWrap.o);
 		}
-		pageUriWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -290,12 +286,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageMethodInit() {
-		Wrap<String> pageMethodWrap = new Wrap<String>().var("pageMethod").o(pageMethod);
+		Wrap<String> pageMethodWrap = new Wrap<String>().var("pageMethod");
 		if(pageMethod == null) {
 			_pageMethod(pageMethodWrap);
 			setPageMethod(pageMethodWrap.o);
 		}
-		pageMethodWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -325,6 +320,43 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageMethod() {
 		return pageMethod == null ? "" : pageMethod;
+	}
+
+	////////////
+	// params //
+	////////////
+
+	/**	 The entity params
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected JsonObject params;
+
+	/**	<br/> The entity params
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:params">Find the entity params in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _params(Wrap<JsonObject> w);
+
+	public JsonObject getParams() {
+		return params;
+	}
+
+	public void setParams(JsonObject params) {
+		this.params = params;
+	}
+	public static JsonObject staticSetParams(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected PageLayout paramsInit() {
+		Wrap<JsonObject> paramsWrap = new Wrap<JsonObject>().var("params");
+		if(params == null) {
+			_params(paramsWrap);
+			setParams(paramsWrap.o);
+		}
+		return (PageLayout)this;
 	}
 
 	///////////
@@ -364,12 +396,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout long0Init() {
-		Wrap<Long> long0Wrap = new Wrap<Long>().var("long0").o(long0);
+		Wrap<Long> long0Wrap = new Wrap<Long>().var("long0");
 		if(long0 == null) {
 			_long0(long0Wrap);
 			setLong0(long0Wrap.o);
 		}
-		long0Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -438,12 +469,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout long1Init() {
-		Wrap<Long> long1Wrap = new Wrap<Long>().var("long1").o(long1);
+		Wrap<Long> long1Wrap = new Wrap<Long>().var("long1");
 		if(long1 == null) {
 			_long1(long1Wrap);
 			setLong1(long1Wrap.o);
 		}
-		long1Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -512,12 +542,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout int0Init() {
-		Wrap<Integer> int0Wrap = new Wrap<Integer>().var("int0").o(int0);
+		Wrap<Integer> int0Wrap = new Wrap<Integer>().var("int0");
 		if(int0 == null) {
 			_int0(int0Wrap);
 			setInt0(int0Wrap.o);
 		}
-		int0Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -586,12 +615,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return null;
 	}
 	protected PageLayout int1Init() {
-		Wrap<Integer> int1Wrap = new Wrap<Integer>().var("int1").o(int1);
+		Wrap<Integer> int1Wrap = new Wrap<Integer>().var("int1");
 		if(int1 == null) {
 			_int1(int1Wrap);
 			setInt1(int1Wrap.o);
 		}
-		int1Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -694,12 +722,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageH1Init() {
-		Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1").o(pageH1);
+		Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1");
 		if(pageH1 == null) {
 			_pageH1(pageH1Wrap);
 			setPageH1(pageH1Wrap.o);
 		}
-		pageH1Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -760,12 +787,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageH2Init() {
-		Wrap<String> pageH2Wrap = new Wrap<String>().var("pageH2").o(pageH2);
+		Wrap<String> pageH2Wrap = new Wrap<String>().var("pageH2");
 		if(pageH2 == null) {
 			_pageH2(pageH2Wrap);
 			setPageH2(pageH2Wrap.o);
 		}
-		pageH2Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -826,12 +852,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageH3Init() {
-		Wrap<String> pageH3Wrap = new Wrap<String>().var("pageH3").o(pageH3);
+		Wrap<String> pageH3Wrap = new Wrap<String>().var("pageH3");
 		if(pageH3 == null) {
 			_pageH3(pageH3Wrap);
 			setPageH3(pageH3Wrap.o);
 		}
-		pageH3Wrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -892,12 +917,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageTitleInit() {
-		Wrap<String> pageTitleWrap = new Wrap<String>().var("pageTitle").o(pageTitle);
+		Wrap<String> pageTitleWrap = new Wrap<String>().var("pageTitle");
 		if(pageTitle == null) {
 			_pageTitle(pageTitleWrap);
 			setPageTitle(pageTitleWrap.o);
 		}
-		pageTitleWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1194,7 +1218,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	/**	 The entity pagination
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonObject(). 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject pagination = new JsonObject();
 
@@ -1228,7 +1251,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	/**	 The entity query
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonObject(). 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject query = new JsonObject();
 
@@ -1326,12 +1348,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout pageImageUriInit() {
-		Wrap<String> pageImageUriWrap = new Wrap<String>().var("pageImageUri").o(pageImageUri);
+		Wrap<String> pageImageUriWrap = new Wrap<String>().var("pageImageUri");
 		if(pageImageUri == null) {
 			_pageImageUri(pageImageUriWrap);
 			setPageImageUri(pageImageUriWrap.o);
 		}
-		pageImageUriWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1392,12 +1413,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout contextIconGroupInit() {
-		Wrap<String> contextIconGroupWrap = new Wrap<String>().var("contextIconGroup").o(contextIconGroup);
+		Wrap<String> contextIconGroupWrap = new Wrap<String>().var("contextIconGroup");
 		if(contextIconGroup == null) {
 			_contextIconGroup(contextIconGroupWrap);
 			setContextIconGroup(contextIconGroupWrap.o);
 		}
-		contextIconGroupWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1458,12 +1478,11 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o;
 	}
 	protected PageLayout contextIconNameInit() {
-		Wrap<String> contextIconNameWrap = new Wrap<String>().var("contextIconName").o(contextIconName);
+		Wrap<String> contextIconNameWrap = new Wrap<String>().var("contextIconName");
 		if(contextIconName == null) {
 			_contextIconName(contextIconNameWrap);
 			setContextIconName(contextIconNameWrap.o);
 		}
-		contextIconNameWrap.o(null);
 		return (PageLayout)this;
 	}
 
@@ -1525,6 +1544,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				staticBaseUrlInit();
 				pageUriInit();
 				pageMethodInit();
+				paramsInit();
 				long0Init();
 				long1Init();
 				int0Init();
@@ -1635,6 +1655,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				return oPageLayout.pageUri;
 			case "pageMethod":
 				return oPageLayout.pageMethod;
+			case "params":
+				return oPageLayout.params;
 			case "long0":
 				return oPageLayout.long0;
 			case "long1":
@@ -1990,6 +2012,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	public static final String VAR_staticBaseUrl = "staticBaseUrl";
 	public static final String VAR_pageUri = "pageUri";
 	public static final String VAR_pageMethod = "pageMethod";
+	public static final String VAR_params = "params";
 	public static final String VAR_long0 = "long0";
 	public static final String VAR_long1 = "long1";
 	public static final String VAR_int0 = "int0";

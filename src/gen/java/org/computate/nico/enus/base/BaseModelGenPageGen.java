@@ -93,7 +93,6 @@ public abstract class BaseModelGenPageGen<DEV> extends PageLayout {
 	/**	 The entity listBaseModel
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonArray(). 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonArray listBaseModel = new JsonArray();
 
