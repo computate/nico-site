@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
 import java.lang.Long;
 import java.util.Map;
-import org.computate.nico.enus.user.SiteUser;
 import io.vertx.core.json.JsonObject;
 import org.computate.nico.enus.base.BaseModel;
 import java.math.RoundingMode;
@@ -122,12 +121,11 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return null;
 	}
 	protected SiteEnrollment enrollmentKeyInit() {
-		Wrap<Long> enrollmentKeyWrap = new Wrap<Long>().var("enrollmentKey").o(enrollmentKey);
+		Wrap<Long> enrollmentKeyWrap = new Wrap<Long>().var("enrollmentKey");
 		if(enrollmentKey == null) {
 			_enrollmentKey(enrollmentKeyWrap);
 			setEnrollmentKey(enrollmentKeyWrap.o);
 		}
-		enrollmentKeyWrap.o(null);
 		return (SiteEnrollment)this;
 	}
 
@@ -141,30 +139,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 
 	public static String staticSolrFqEnrollmentKey(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollment.staticSolrStrEnrollmentKey(siteRequest_, SiteEnrollment.staticSolrEnrollmentKey(siteRequest_, SiteEnrollment.staticSetEnrollmentKey(siteRequest_, o)));
-	}
-
-	public Long solrEnrollmentKey() {
-		return SiteEnrollment.staticSolrEnrollmentKey(siteRequest_, enrollmentKey);
-	}
-
-	public String strEnrollmentKey() {
-		return enrollmentKey == null ? "" : enrollmentKey.toString();
-	}
-
-	public Long sqlEnrollmentKey() {
-		return enrollmentKey;
-	}
-
-	public String jsonEnrollmentKey() {
-		return enrollmentKey == null ? "" : enrollmentKey.toString();
-	}
-
-	public String htmTooltipEnrollmentKey() {
-		return null;
-	}
-
-	public String htmEnrollmentKey() {
-		return enrollmentKey == null ? "" : StringEscapeUtils.escapeHtml4(strEnrollmentKey());
 	}
 
 	//////////////
@@ -249,34 +223,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return SiteEnrollment.staticSolrStrUserKeys(siteRequest_, SiteEnrollment.staticSolrUserKeys(siteRequest_, SiteEnrollment.staticSetUserKeys(siteRequest_, o)));
 	}
 
-	public List<Long> solrUserKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : userKeys) {
-			l.add(SiteEnrollment.staticSolrUserKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strUserKeys() {
-		return userKeys == null ? "" : userKeys.toString();
-	}
-
-	public List<Long> sqlUserKeys() {
-		return userKeys;
-	}
-
-	public String jsonUserKeys() {
-		return userKeys == null ? "" : userKeys.toString();
-	}
-
-	public String htmTooltipUserKeys() {
-		return null;
-	}
-
-	public String htmUserKeys() {
-		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
-	}
-
 	/////////////
 	// petKeys //
 	/////////////
@@ -359,34 +305,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return SiteEnrollment.staticSolrStrPetKeys(siteRequest_, SiteEnrollment.staticSolrPetKeys(siteRequest_, SiteEnrollment.staticSetPetKeys(siteRequest_, o)));
 	}
 
-	public List<Long> solrPetKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : petKeys) {
-			l.add(SiteEnrollment.staticSolrPetKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strPetKeys() {
-		return petKeys == null ? "" : petKeys.toString();
-	}
-
-	public List<Long> sqlPetKeys() {
-		return petKeys;
-	}
-
-	public String jsonPetKeys() {
-		return petKeys == null ? "" : petKeys.toString();
-	}
-
-	public String htmTooltipPetKeys() {
-		return null;
-	}
-
-	public String htmPetKeys() {
-		return petKeys == null ? "" : StringEscapeUtils.escapeHtml4(strPetKeys());
-	}
-
 	///////////////
 	// petSearch //
 	///////////////
@@ -467,12 +385,11 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 		return null;
 	}
 	protected SiteEnrollment pet_Init() {
-		Wrap<SitePet> pet_Wrap = new Wrap<SitePet>().var("pet_").o(pet_);
+		Wrap<SitePet> pet_Wrap = new Wrap<SitePet>().var("pet_");
 		if(pet_ == null) {
 			_pet_(pet_Wrap);
 			setPet_(pet_Wrap.o);
 		}
-		pet_Wrap.o(null);
 		return (SiteEnrollment)this;
 	}
 
@@ -596,32 +513,27 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSiteEnrollment(v, val);
+				o = relateSiteEnrollment(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSiteEnrollment(String var, Object val) {
+	public Object relateSiteEnrollment(String var, Object val) {
 		SiteEnrollment oSiteEnrollment = (SiteEnrollment)this;
 		switch(var) {
-			case "petKeys":
-				oSiteEnrollment.addPetKeys((Long)val);
-				if(!saves.contains("petKeys"))
-					saves.add("petKeys");
-				return val;
 			default:
-				return super.attributeBaseModel(var, val);
+				return super.relateBaseModel(var, val);
 		}
 	}
 
@@ -709,28 +621,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSiteEnrollment(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSiteEnrollment(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.defineBaseModel(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -777,9 +667,11 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 					oSiteEnrollment.userKeys.addAll(userKeys);
 			}
 
-			List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_indexedstored_longs");
-			if(petKeys != null)
-				oSiteEnrollment.petKeys.addAll(petKeys);
+			if(saves.contains("petKeys")) {
+				List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_indexedstored_longs");
+				if(petKeys != null)
+					oSiteEnrollment.petKeys.addAll(petKeys);
+			}
 		}
 
 		super.populateBaseModel(solrDocument);
@@ -868,30 +760,6 @@ public abstract class SiteEnrollmentGen<DEV> extends BaseModel {
 				apiRequest.addVars("petKeys");
 			super.apiRequestBaseModel();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), enrollmentKey, userKeys, petKeys);
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SiteEnrollment))
-			return false;
-		SiteEnrollment that = (SiteEnrollment)o;
-		return super.equals(o)
-				&& Objects.equals( enrollmentKey, that.enrollmentKey )
-				&& Objects.equals( userKeys, that.userKeys )
-				&& Objects.equals( petKeys, that.petKeys );
 	}
 
 	//////////////

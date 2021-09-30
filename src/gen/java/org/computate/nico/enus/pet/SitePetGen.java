@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
 import java.lang.Long;
 import java.util.Map;
-import org.computate.nico.enus.user.SiteUser;
 import io.vertx.core.json.JsonObject;
 import org.computate.nico.enus.base.BaseModel;
 import java.math.RoundingMode;
@@ -143,30 +142,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetKey(siteRequest_, SitePet.staticSolrPetKey(siteRequest_, SitePet.staticSetPetKey(siteRequest_, o)));
 	}
 
-	public Long solrPetKey() {
-		return SitePet.staticSolrPetKey(siteRequest_, petKey);
-	}
-
-	public String strPetKey() {
-		return petKey == null ? "" : petKey.toString();
-	}
-
-	public Long sqlPetKey() {
-		return petKey;
-	}
-
-	public String jsonPetKey() {
-		return petKey == null ? "" : petKey.toString();
-	}
-
-	public String htmTooltipPetKey() {
-		return null;
-	}
-
-	public String htmPetKey() {
-		return petKey == null ? "" : StringEscapeUtils.escapeHtml4(strPetKey());
-	}
-
 	//////////////////////
 	// enrollmentSearch //
 	//////////////////////
@@ -299,34 +274,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrUserKeys(siteRequest_, SitePet.staticSolrUserKeys(siteRequest_, SitePet.staticSetUserKeys(siteRequest_, o)));
 	}
 
-	public List<Long> solrUserKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : userKeys) {
-			l.add(SitePet.staticSolrUserKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strUserKeys() {
-		return userKeys == null ? "" : userKeys.toString();
-	}
-
-	public List<Long> sqlUserKeys() {
-		return userKeys;
-	}
-
-	public String jsonUserKeys() {
-		return userKeys == null ? "" : userKeys.toString();
-	}
-
-	public String htmTooltipUserKeys() {
-		return null;
-	}
-
-	public String htmUserKeys() {
-		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
-	}
-
 	////////////////////
 	// enrollmentKeys //
 	////////////////////
@@ -409,34 +356,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrEnrollmentKeys(siteRequest_, SitePet.staticSolrEnrollmentKeys(siteRequest_, SitePet.staticSetEnrollmentKeys(siteRequest_, o)));
 	}
 
-	public List<Long> solrEnrollmentKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : enrollmentKeys) {
-			l.add(SitePet.staticSolrEnrollmentKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strEnrollmentKeys() {
-		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
-	}
-
-	public List<Long> sqlEnrollmentKeys() {
-		return enrollmentKeys;
-	}
-
-	public String jsonEnrollmentKeys() {
-		return enrollmentKeys == null ? "" : enrollmentKeys.toString();
-	}
-
-	public String htmTooltipEnrollmentKeys() {
-		return null;
-	}
-
-	public String htmEnrollmentKeys() {
-		return enrollmentKeys == null ? "" : StringEscapeUtils.escapeHtml4(strEnrollmentKeys());
-	}
-
 	/////////////
 	// petName //
 	/////////////
@@ -486,28 +405,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetName(siteRequest_, SitePet.staticSolrPetName(siteRequest_, SitePet.staticSetPetName(siteRequest_, o)));
 	}
 
-	public String solrPetName() {
-		return SitePet.staticSolrPetName(siteRequest_, petName);
-	}
-
-	public String strPetName() {
-		return petName == null ? "" : petName;
-	}
-
 	public String sqlPetName() {
 		return petName;
-	}
-
-	public String jsonPetName() {
-		return petName == null ? "" : petName;
-	}
-
-	public String htmTooltipPetName() {
-		return null;
-	}
-
-	public String htmPetName() {
-		return petName == null ? "" : StringEscapeUtils.escapeHtml4(strPetName());
 	}
 
 	///////////////////
@@ -559,28 +458,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetFoodAmount(siteRequest_, SitePet.staticSolrPetFoodAmount(siteRequest_, SitePet.staticSetPetFoodAmount(siteRequest_, o)));
 	}
 
-	public String solrPetFoodAmount() {
-		return SitePet.staticSolrPetFoodAmount(siteRequest_, petFoodAmount);
-	}
-
-	public String strPetFoodAmount() {
-		return petFoodAmount == null ? "" : petFoodAmount;
-	}
-
 	public String sqlPetFoodAmount() {
 		return petFoodAmount;
-	}
-
-	public String jsonPetFoodAmount() {
-		return petFoodAmount == null ? "" : petFoodAmount;
-	}
-
-	public String htmTooltipPetFoodAmount() {
-		return null;
-	}
-
-	public String htmPetFoodAmount() {
-		return petFoodAmount == null ? "" : StringEscapeUtils.escapeHtml4(strPetFoodAmount());
 	}
 
 	/////////////
@@ -632,28 +511,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetFood(siteRequest_, SitePet.staticSolrPetFood(siteRequest_, SitePet.staticSetPetFood(siteRequest_, o)));
 	}
 
-	public String solrPetFood() {
-		return SitePet.staticSolrPetFood(siteRequest_, petFood);
-	}
-
-	public String strPetFood() {
-		return petFood == null ? "" : petFood;
-	}
-
 	public String sqlPetFood() {
 		return petFood;
-	}
-
-	public String jsonPetFood() {
-		return petFood == null ? "" : petFood;
-	}
-
-	public String htmTooltipPetFood() {
-		return null;
-	}
-
-	public String htmPetFood() {
-		return petFood == null ? "" : StringEscapeUtils.escapeHtml4(strPetFood());
 	}
 
 	/////////////
@@ -710,28 +569,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetSick(siteRequest_, SitePet.staticSolrPetSick(siteRequest_, SitePet.staticSetPetSick(siteRequest_, o)));
 	}
 
-	public Boolean solrPetSick() {
-		return SitePet.staticSolrPetSick(siteRequest_, petSick);
-	}
-
-	public String strPetSick() {
-		return petSick == null ? "" : petSick.toString();
-	}
-
 	public Boolean sqlPetSick() {
 		return petSick;
-	}
-
-	public String jsonPetSick() {
-		return petSick == null ? "" : petSick.toString();
-	}
-
-	public String htmTooltipPetSick() {
-		return null;
-	}
-
-	public String htmPetSick() {
-		return petSick == null ? "" : StringEscapeUtils.escapeHtml4(strPetSick());
 	}
 
 	////////////////
@@ -783,28 +622,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetMedNote(siteRequest_, SitePet.staticSolrPetMedNote(siteRequest_, SitePet.staticSetPetMedNote(siteRequest_, o)));
 	}
 
-	public String solrPetMedNote() {
-		return SitePet.staticSolrPetMedNote(siteRequest_, petMedNote);
-	}
-
-	public String strPetMedNote() {
-		return petMedNote == null ? "" : petMedNote;
-	}
-
 	public String sqlPetMedNote() {
 		return petMedNote;
-	}
-
-	public String jsonPetMedNote() {
-		return petMedNote == null ? "" : petMedNote;
-	}
-
-	public String htmTooltipPetMedNote() {
-		return null;
-	}
-
-	public String htmPetMedNote() {
-		return petMedNote == null ? "" : StringEscapeUtils.escapeHtml4(strPetMedNote());
 	}
 
 	////////////////
@@ -856,28 +675,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetTrouble(siteRequest_, SitePet.staticSolrPetTrouble(siteRequest_, SitePet.staticSetPetTrouble(siteRequest_, o)));
 	}
 
-	public String solrPetTrouble() {
-		return SitePet.staticSolrPetTrouble(siteRequest_, petTrouble);
-	}
-
-	public String strPetTrouble() {
-		return petTrouble == null ? "" : petTrouble;
-	}
-
 	public String sqlPetTrouble() {
 		return petTrouble;
-	}
-
-	public String jsonPetTrouble() {
-		return petTrouble == null ? "" : petTrouble;
-	}
-
-	public String htmTooltipPetTrouble() {
-		return null;
-	}
-
-	public String htmPetTrouble() {
-		return petTrouble == null ? "" : StringEscapeUtils.escapeHtml4(strPetTrouble());
 	}
 
 	/////////////////
@@ -934,28 +733,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrSendUpdates(siteRequest_, SitePet.staticSolrSendUpdates(siteRequest_, SitePet.staticSetSendUpdates(siteRequest_, o)));
 	}
 
-	public Boolean solrSendUpdates() {
-		return SitePet.staticSolrSendUpdates(siteRequest_, sendUpdates);
-	}
-
-	public String strSendUpdates() {
-		return sendUpdates == null ? "" : sendUpdates.toString();
-	}
-
 	public Boolean sqlSendUpdates() {
 		return sendUpdates;
-	}
-
-	public String jsonSendUpdates() {
-		return sendUpdates == null ? "" : sendUpdates.toString();
-	}
-
-	public String htmTooltipSendUpdates() {
-		return null;
-	}
-
-	public String htmSendUpdates() {
-		return sendUpdates == null ? "" : StringEscapeUtils.escapeHtml4(strSendUpdates());
 	}
 
 	///////////////
@@ -1007,28 +786,8 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrPetAmount(siteRequest_, SitePet.staticSolrPetAmount(siteRequest_, SitePet.staticSetPetAmount(siteRequest_, o)));
 	}
 
-	public String solrPetAmount() {
-		return SitePet.staticSolrPetAmount(siteRequest_, petAmount);
-	}
-
-	public String strPetAmount() {
-		return petAmount == null ? "" : petAmount;
-	}
-
 	public String sqlPetAmount() {
 		return petAmount;
-	}
-
-	public String jsonPetAmount() {
-		return petAmount == null ? "" : petAmount;
-	}
-
-	public String htmTooltipPetAmount() {
-		return null;
-	}
-
-	public String htmPetAmount() {
-		return petAmount == null ? "" : StringEscapeUtils.escapeHtml4(strPetAmount());
 	}
 
 	//////////////
@@ -1172,32 +931,27 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSitePet(v, val);
+				o = relateSitePet(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSitePet(String var, Object val) {
+	public Object relateSitePet(String var, Object val) {
 		SitePet oSitePet = (SitePet)this;
 		switch(var) {
-			case "enrollmentKeys":
-				oSitePet.addEnrollmentKeys((Long)val);
-				if(!saves.contains("enrollmentKeys"))
-					saves.add("enrollmentKeys");
-				return val;
 			default:
-				return super.attributeBaseModel(var, val);
+				return super.relateBaseModel(var, val);
 		}
 	}
 
@@ -1349,68 +1103,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSitePet(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSitePet(String var, String val) {
-		switch(var.toLowerCase()) {
-			case "petname":
-				if(val != null)
-					setPetName(val);
-				saves.add("petName");
-				return val;
-			case "petfoodamount":
-				if(val != null)
-					setPetFoodAmount(val);
-				saves.add("petFoodAmount");
-				return val;
-			case "petfood":
-				if(val != null)
-					setPetFood(val);
-				saves.add("petFood");
-				return val;
-			case "petsick":
-				if(val != null)
-					setPetSick(val);
-				saves.add("petSick");
-				return val;
-			case "petmednote":
-				if(val != null)
-					setPetMedNote(val);
-				saves.add("petMedNote");
-				return val;
-			case "pettrouble":
-				if(val != null)
-					setPetTrouble(val);
-				saves.add("petTrouble");
-				return val;
-			case "sendupdates":
-				if(val != null)
-					setSendUpdates(val);
-				saves.add("sendUpdates");
-				return val;
-			case "petamount":
-				if(val != null)
-					setPetAmount(val);
-				saves.add("petAmount");
-				return val;
-			default:
-				return super.defineBaseModel(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -1497,9 +1189,11 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					oSitePet.userKeys.addAll(userKeys);
 			}
 
-			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
-			if(enrollmentKeys != null)
-				oSitePet.enrollmentKeys.addAll(enrollmentKeys);
+			if(saves.contains("enrollmentKeys")) {
+				List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
+				if(enrollmentKeys != null)
+					oSitePet.enrollmentKeys.addAll(enrollmentKeys);
+			}
 
 			if(saves.contains("petName")) {
 				String petName = (String)solrDocument.get("petName_indexedstored_string");
@@ -1700,38 +1394,6 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 				apiRequest.addVars("petAmount");
 			super.apiRequestBaseModel();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), petKey, userKeys, enrollmentKeys, petName, petFoodAmount, petFood, petSick, petMedNote, petTrouble, sendUpdates, petAmount);
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SitePet))
-			return false;
-		SitePet that = (SitePet)o;
-		return super.equals(o)
-				&& Objects.equals( petKey, that.petKey )
-				&& Objects.equals( userKeys, that.userKeys )
-				&& Objects.equals( enrollmentKeys, that.enrollmentKeys )
-				&& Objects.equals( petName, that.petName )
-				&& Objects.equals( petFoodAmount, that.petFoodAmount )
-				&& Objects.equals( petFood, that.petFood )
-				&& Objects.equals( petSick, that.petSick )
-				&& Objects.equals( petMedNote, that.petMedNote )
-				&& Objects.equals( petTrouble, that.petTrouble )
-				&& Objects.equals( sendUpdates, that.sendUpdates )
-				&& Objects.equals( petAmount, that.petAmount );
 	}
 
 	//////////////

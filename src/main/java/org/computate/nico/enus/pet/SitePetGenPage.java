@@ -82,18 +82,8 @@ public class SitePetGenPage extends SitePetGenPageGen<BaseModelPage> {
 	}
 
 	@Override
-	protected void _pageH1(Wrap<String> c) {
-			c.o("pets");
-	}
-
-	@Override
-	protected void _pageH2(Wrap<String> c) {
-		c.o("");
-	}
-
-	@Override
-	protected void _pageH3(Wrap<String> c) {
-		c.o("");
+	protected void _classSimpleName(Wrap<String> w) {
+		w.o("SitePet");
 	}
 
 	@Override

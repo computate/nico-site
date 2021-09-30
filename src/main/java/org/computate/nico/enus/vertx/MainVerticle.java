@@ -1,4 +1,4 @@
-package org.computate.nico.enus.vertx;      
+package org.computate.nico.enus.vertx;        
 
 import java.net.URLDecoder;
 import java.text.Normalizer;
@@ -668,6 +668,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			handlebars.registerHelpers(ConditionalHelpers.class);
 			handlebars.registerHelpers(StringHelpers.class);
 			handlebars.registerHelpers(AuthHelpers.class);
+			handlebars.registerHelpers(DateHelpers.class);
 
 			router.get("/enrollment-form").handler(a -> {
 				a.reroute("/template/enrollment-form");

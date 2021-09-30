@@ -396,6 +396,11 @@ public class ConfigKeys {
 	public static final String SITE_ZONE = "SITE_ZONE";
 
 	/**
+	 * The default locale of the site. 
+	 **/
+	public static final String SITE_LOCALE = "SITE_LOCALE";
+
+	/**
 	 * 
 	 **/
 	public static final String TIMER_DB_SOLR_SYNC_IN_SECONDS = "TIMER_DB_SOLR_SYNC_IN_SECONDS";

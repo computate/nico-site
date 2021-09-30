@@ -186,22 +186,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrContextRows(siteRequest_, ApiWriter.staticSolrContextRows(siteRequest_, ApiWriter.staticSetContextRows(siteRequest_, o)));
 	}
 
-	public Integer solrContextRows() {
-		return ApiWriter.staticSolrContextRows(siteRequest_, contextRows);
-	}
-
-	public String strContextRows() {
-		return contextRows == null ? "" : contextRows.toString();
-	}
-
-	public Integer sqlContextRows() {
-		return contextRows;
-	}
-
-	public String jsonContextRows() {
-		return contextRows == null ? "" : contextRows.toString();
-	}
-
 	////////////////////
 	// classApiMethod //
 	////////////////////
@@ -251,22 +235,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassApiMethod(siteRequest_, ApiWriter.staticSolrClassApiMethod(siteRequest_, ApiWriter.staticSetClassApiMethod(siteRequest_, o)));
 	}
 
-	public String solrClassApiMethod() {
-		return ApiWriter.staticSolrClassApiMethod(siteRequest_, classApiMethod);
-	}
-
-	public String strClassApiMethod() {
-		return classApiMethod == null ? "" : classApiMethod;
-	}
-
-	public String sqlClassApiMethod() {
-		return classApiMethod;
-	}
-
-	public String jsonClassApiMethod() {
-		return classApiMethod == null ? "" : classApiMethod;
-	}
-
 	////////////////////
 	// openApiVersion //
 	////////////////////
@@ -314,22 +282,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrOpenApiVersion(siteRequest_, ApiWriter.staticSolrOpenApiVersion(siteRequest_, ApiWriter.staticSetOpenApiVersion(siteRequest_, o)));
-	}
-
-	public String solrOpenApiVersion() {
-		return ApiWriter.staticSolrOpenApiVersion(siteRequest_, openApiVersion);
-	}
-
-	public String strOpenApiVersion() {
-		return openApiVersion == null ? "" : openApiVersion;
-	}
-
-	public String sqlOpenApiVersion() {
-		return openApiVersion;
-	}
-
-	public String jsonOpenApiVersion() {
-		return openApiVersion == null ? "" : openApiVersion;
 	}
 
 	/////////////////
@@ -442,26 +394,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassUris(siteRequest_, ApiWriter.staticSolrClassUris(siteRequest_, ApiWriter.staticSetClassUris(siteRequest_, o)));
 	}
 
-	public List<String> solrClassUris() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classUris) {
-			l.add(ApiWriter.staticSolrClassUris(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassUris() {
-		return classUris == null ? "" : classUris.toString();
-	}
-
-	public List<String> sqlClassUris() {
-		return classUris;
-	}
-
-	public String jsonClassUris() {
-		return classUris == null ? "" : classUris.toString();
-	}
-
 	//////////////////////////
 	// openApiVersionNumber //
 	//////////////////////////
@@ -517,22 +449,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqOpenApiVersionNumber(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrOpenApiVersionNumber(siteRequest_, ApiWriter.staticSolrOpenApiVersionNumber(siteRequest_, ApiWriter.staticSetOpenApiVersionNumber(siteRequest_, o)));
-	}
-
-	public Integer solrOpenApiVersionNumber() {
-		return ApiWriter.staticSolrOpenApiVersionNumber(siteRequest_, openApiVersionNumber);
-	}
-
-	public String strOpenApiVersionNumber() {
-		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
-	}
-
-	public Integer sqlOpenApiVersionNumber() {
-		return openApiVersionNumber;
-	}
-
-	public String jsonOpenApiVersionNumber() {
-		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
 
 	////////////////
@@ -592,22 +508,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrTabsSchema(siteRequest_, ApiWriter.staticSolrTabsSchema(siteRequest_, ApiWriter.staticSetTabsSchema(siteRequest_, o)));
 	}
 
-	public Integer solrTabsSchema() {
-		return ApiWriter.staticSolrTabsSchema(siteRequest_, tabsSchema);
-	}
-
-	public String strTabsSchema() {
-		return tabsSchema == null ? "" : tabsSchema.toString();
-	}
-
-	public Integer sqlTabsSchema() {
-		return tabsSchema;
-	}
-
-	public String jsonTabsSchema() {
-		return tabsSchema == null ? "" : tabsSchema.toString();
-	}
-
 	///////////////////
 	// tabsResponses //
 	///////////////////
@@ -663,22 +563,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqTabsResponses(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrTabsResponses(siteRequest_, ApiWriter.staticSolrTabsResponses(siteRequest_, ApiWriter.staticSetTabsResponses(siteRequest_, o)));
-	}
-
-	public Integer solrTabsResponses() {
-		return ApiWriter.staticSolrTabsResponses(siteRequest_, tabsResponses);
-	}
-
-	public String strTabsResponses() {
-		return tabsResponses == null ? "" : tabsResponses.toString();
-	}
-
-	public Integer sqlTabsResponses() {
-		return tabsResponses;
-	}
-
-	public String jsonTabsResponses() {
-		return tabsResponses == null ? "" : tabsResponses.toString();
 	}
 
 	////////////
@@ -1245,22 +1129,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassApiTag(siteRequest_, ApiWriter.staticSolrClassApiTag(siteRequest_, ApiWriter.staticSetClassApiTag(siteRequest_, o)));
 	}
 
-	public String solrClassApiTag() {
-		return ApiWriter.staticSolrClassApiTag(siteRequest_, classApiTag);
-	}
-
-	public String strClassApiTag() {
-		return classApiTag == null ? "" : classApiTag;
-	}
-
-	public String sqlClassApiTag() {
-		return classApiTag;
-	}
-
-	public String jsonClassApiTag() {
-		return classApiTag == null ? "" : classApiTag;
-	}
-
 	//////////////////////
 	// classExtendsBase //
 	//////////////////////
@@ -1313,22 +1181,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassExtendsBase(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassExtendsBase(siteRequest_, ApiWriter.staticSolrClassExtendsBase(siteRequest_, ApiWriter.staticSetClassExtendsBase(siteRequest_, o)));
-	}
-
-	public Boolean solrClassExtendsBase() {
-		return ApiWriter.staticSolrClassExtendsBase(siteRequest_, classExtendsBase);
-	}
-
-	public String strClassExtendsBase() {
-		return classExtendsBase == null ? "" : classExtendsBase.toString();
-	}
-
-	public Boolean sqlClassExtendsBase() {
-		return classExtendsBase;
-	}
-
-	public String jsonClassExtendsBase() {
-		return classExtendsBase == null ? "" : classExtendsBase.toString();
 	}
 
 	/////////////////
@@ -1385,22 +1237,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassIsBase(siteRequest_, ApiWriter.staticSolrClassIsBase(siteRequest_, ApiWriter.staticSetClassIsBase(siteRequest_, o)));
 	}
 
-	public Boolean solrClassIsBase() {
-		return ApiWriter.staticSolrClassIsBase(siteRequest_, classIsBase);
-	}
-
-	public String strClassIsBase() {
-		return classIsBase == null ? "" : classIsBase.toString();
-	}
-
-	public Boolean sqlClassIsBase() {
-		return classIsBase;
-	}
-
-	public String jsonClassIsBase() {
-		return classIsBase == null ? "" : classIsBase.toString();
-	}
-
 	/////////////////////
 	// classSimpleName //
 	/////////////////////
@@ -1448,22 +1284,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassSimpleName(siteRequest_, ApiWriter.staticSolrClassSimpleName(siteRequest_, ApiWriter.staticSetClassSimpleName(siteRequest_, o)));
-	}
-
-	public String solrClassSimpleName() {
-		return ApiWriter.staticSolrClassSimpleName(siteRequest_, classSimpleName);
-	}
-
-	public String strClassSimpleName() {
-		return classSimpleName == null ? "" : classSimpleName;
-	}
-
-	public String sqlClassSimpleName() {
-		return classSimpleName;
-	}
-
-	public String jsonClassSimpleName() {
-		return classSimpleName == null ? "" : classSimpleName;
 	}
 
 	/////////////
@@ -1515,22 +1335,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrAppName(siteRequest_, ApiWriter.staticSolrAppName(siteRequest_, ApiWriter.staticSetAppName(siteRequest_, o)));
 	}
 
-	public String solrAppName() {
-		return ApiWriter.staticSolrAppName(siteRequest_, appName);
-	}
-
-	public String strAppName() {
-		return appName == null ? "" : appName;
-	}
-
-	public String sqlAppName() {
-		return appName;
-	}
-
-	public String jsonAppName() {
-		return appName == null ? "" : appName;
-	}
-
 	///////////////////////
 	// classAbsolutePath //
 	///////////////////////
@@ -1580,22 +1384,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassAbsolutePath(siteRequest_, ApiWriter.staticSolrClassAbsolutePath(siteRequest_, ApiWriter.staticSetClassAbsolutePath(siteRequest_, o)));
 	}
 
-	public String solrClassAbsolutePath() {
-		return ApiWriter.staticSolrClassAbsolutePath(siteRequest_, classAbsolutePath);
-	}
-
-	public String strClassAbsolutePath() {
-		return classAbsolutePath == null ? "" : classAbsolutePath;
-	}
-
-	public String sqlClassAbsolutePath() {
-		return classAbsolutePath;
-	}
-
-	public String jsonClassAbsolutePath() {
-		return classAbsolutePath == null ? "" : classAbsolutePath;
-	}
-
 	///////////////////////
 	// classApiUriMethod //
 	///////////////////////
@@ -1643,22 +1431,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassApiUriMethod(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassApiUriMethod(siteRequest_, ApiWriter.staticSolrClassApiUriMethod(siteRequest_, ApiWriter.staticSetClassApiUriMethod(siteRequest_, o)));
-	}
-
-	public String solrClassApiUriMethod() {
-		return ApiWriter.staticSolrClassApiUriMethod(siteRequest_, classApiUriMethod);
-	}
-
-	public String strClassApiUriMethod() {
-		return classApiUriMethod == null ? "" : classApiUriMethod;
-	}
-
-	public String sqlClassApiUriMethod() {
-		return classApiUriMethod;
-	}
-
-	public String jsonClassApiUriMethod() {
-		return classApiUriMethod == null ? "" : classApiUriMethod;
 	}
 
 	/////////////////////////
@@ -1715,22 +1487,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassRoleUserMethod(siteRequest_, ApiWriter.staticSolrClassRoleUserMethod(siteRequest_, ApiWriter.staticSetClassRoleUserMethod(siteRequest_, o)));
 	}
 
-	public Boolean solrClassRoleUserMethod() {
-		return ApiWriter.staticSolrClassRoleUserMethod(siteRequest_, classRoleUserMethod);
-	}
-
-	public String strClassRoleUserMethod() {
-		return classRoleUserMethod == null ? "" : classRoleUserMethod.toString();
-	}
-
-	public Boolean sqlClassRoleUserMethod() {
-		return classRoleUserMethod;
-	}
-
-	public String jsonClassRoleUserMethod() {
-		return classRoleUserMethod == null ? "" : classRoleUserMethod.toString();
-	}
-
 	//////////////////////////
 	// classApiMethodMethod //
 	//////////////////////////
@@ -1778,22 +1534,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassApiMethodMethod(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassApiMethodMethod(siteRequest_, ApiWriter.staticSolrClassApiMethodMethod(siteRequest_, ApiWriter.staticSetClassApiMethodMethod(siteRequest_, o)));
-	}
-
-	public String solrClassApiMethodMethod() {
-		return ApiWriter.staticSolrClassApiMethodMethod(siteRequest_, classApiMethodMethod);
-	}
-
-	public String strClassApiMethodMethod() {
-		return classApiMethodMethod == null ? "" : classApiMethodMethod;
-	}
-
-	public String sqlClassApiMethodMethod() {
-		return classApiMethodMethod;
-	}
-
-	public String jsonClassApiMethodMethod() {
-		return classApiMethodMethod == null ? "" : classApiMethodMethod;
 	}
 
 	////////////////////////////////
@@ -1845,22 +1585,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassApiMediaType200Method(siteRequest_, ApiWriter.staticSolrClassApiMediaType200Method(siteRequest_, ApiWriter.staticSetClassApiMediaType200Method(siteRequest_, o)));
 	}
 
-	public String solrClassApiMediaType200Method() {
-		return ApiWriter.staticSolrClassApiMediaType200Method(siteRequest_, classApiMediaType200Method);
-	}
-
-	public String strClassApiMediaType200Method() {
-		return classApiMediaType200Method == null ? "" : classApiMediaType200Method;
-	}
-
-	public String sqlClassApiMediaType200Method() {
-		return classApiMediaType200Method;
-	}
-
-	public String jsonClassApiMediaType200Method() {
-		return classApiMediaType200Method == null ? "" : classApiMediaType200Method;
-	}
-
 	///////////////////////////////
 	// classApiOperationIdMethod //
 	///////////////////////////////
@@ -1908,22 +1632,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassApiOperationIdMethod(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassApiOperationIdMethod(siteRequest_, ApiWriter.staticSolrClassApiOperationIdMethod(siteRequest_, ApiWriter.staticSetClassApiOperationIdMethod(siteRequest_, o)));
-	}
-
-	public String solrClassApiOperationIdMethod() {
-		return ApiWriter.staticSolrClassApiOperationIdMethod(siteRequest_, classApiOperationIdMethod);
-	}
-
-	public String strClassApiOperationIdMethod() {
-		return classApiOperationIdMethod == null ? "" : classApiOperationIdMethod;
-	}
-
-	public String sqlClassApiOperationIdMethod() {
-		return classApiOperationIdMethod;
-	}
-
-	public String jsonClassApiOperationIdMethod() {
-		return classApiOperationIdMethod == null ? "" : classApiOperationIdMethod;
 	}
 
 	//////////////////////////////////////
@@ -1975,22 +1683,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassApiOperationIdMethodRequest(siteRequest_, ApiWriter.staticSolrClassApiOperationIdMethodRequest(siteRequest_, ApiWriter.staticSetClassApiOperationIdMethodRequest(siteRequest_, o)));
 	}
 
-	public String solrClassApiOperationIdMethodRequest() {
-		return ApiWriter.staticSolrClassApiOperationIdMethodRequest(siteRequest_, classApiOperationIdMethodRequest);
-	}
-
-	public String strClassApiOperationIdMethodRequest() {
-		return classApiOperationIdMethodRequest == null ? "" : classApiOperationIdMethodRequest;
-	}
-
-	public String sqlClassApiOperationIdMethodRequest() {
-		return classApiOperationIdMethodRequest;
-	}
-
-	public String jsonClassApiOperationIdMethodRequest() {
-		return classApiOperationIdMethodRequest == null ? "" : classApiOperationIdMethodRequest;
-	}
-
 	///////////////////////////////////////
 	// classApiOperationIdMethodResponse //
 	///////////////////////////////////////
@@ -2038,22 +1730,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassApiOperationIdMethodResponse(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassApiOperationIdMethodResponse(siteRequest_, ApiWriter.staticSolrClassApiOperationIdMethodResponse(siteRequest_, ApiWriter.staticSetClassApiOperationIdMethodResponse(siteRequest_, o)));
-	}
-
-	public String solrClassApiOperationIdMethodResponse() {
-		return ApiWriter.staticSolrClassApiOperationIdMethodResponse(siteRequest_, classApiOperationIdMethodResponse);
-	}
-
-	public String strClassApiOperationIdMethodResponse() {
-		return classApiOperationIdMethodResponse == null ? "" : classApiOperationIdMethodResponse;
-	}
-
-	public String sqlClassApiOperationIdMethodResponse() {
-		return classApiOperationIdMethodResponse;
-	}
-
-	public String jsonClassApiOperationIdMethodResponse() {
-		return classApiOperationIdMethodResponse == null ? "" : classApiOperationIdMethodResponse;
 	}
 
 	///////////////////////////////////////////
@@ -2105,22 +1781,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassSuperApiOperationIdMethodRequest(siteRequest_, ApiWriter.staticSolrClassSuperApiOperationIdMethodRequest(siteRequest_, ApiWriter.staticSetClassSuperApiOperationIdMethodRequest(siteRequest_, o)));
 	}
 
-	public String solrClassSuperApiOperationIdMethodRequest() {
-		return ApiWriter.staticSolrClassSuperApiOperationIdMethodRequest(siteRequest_, classSuperApiOperationIdMethodRequest);
-	}
-
-	public String strClassSuperApiOperationIdMethodRequest() {
-		return classSuperApiOperationIdMethodRequest == null ? "" : classSuperApiOperationIdMethodRequest;
-	}
-
-	public String sqlClassSuperApiOperationIdMethodRequest() {
-		return classSuperApiOperationIdMethodRequest;
-	}
-
-	public String jsonClassSuperApiOperationIdMethodRequest() {
-		return classSuperApiOperationIdMethodRequest == null ? "" : classSuperApiOperationIdMethodRequest;
-	}
-
 	////////////////////////////////////////////
 	// classSuperApiOperationIdMethodResponse //
 	////////////////////////////////////////////
@@ -2170,22 +1830,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassSuperApiOperationIdMethodResponse(siteRequest_, ApiWriter.staticSolrClassSuperApiOperationIdMethodResponse(siteRequest_, ApiWriter.staticSetClassSuperApiOperationIdMethodResponse(siteRequest_, o)));
 	}
 
-	public String solrClassSuperApiOperationIdMethodResponse() {
-		return ApiWriter.staticSolrClassSuperApiOperationIdMethodResponse(siteRequest_, classSuperApiOperationIdMethodResponse);
-	}
-
-	public String strClassSuperApiOperationIdMethodResponse() {
-		return classSuperApiOperationIdMethodResponse == null ? "" : classSuperApiOperationIdMethodResponse;
-	}
-
-	public String sqlClassSuperApiOperationIdMethodResponse() {
-		return classSuperApiOperationIdMethodResponse;
-	}
-
-	public String jsonClassSuperApiOperationIdMethodResponse() {
-		return classSuperApiOperationIdMethodResponse == null ? "" : classSuperApiOperationIdMethodResponse;
-	}
-
 	//////////////////////////////////
 	// classPageCanonicalNameMethod //
 	//////////////////////////////////
@@ -2233,22 +1877,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassPageCanonicalNameMethod(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassPageCanonicalNameMethod(siteRequest_, ApiWriter.staticSolrClassPageCanonicalNameMethod(siteRequest_, ApiWriter.staticSetClassPageCanonicalNameMethod(siteRequest_, o)));
-	}
-
-	public String solrClassPageCanonicalNameMethod() {
-		return ApiWriter.staticSolrClassPageCanonicalNameMethod(siteRequest_, classPageCanonicalNameMethod);
-	}
-
-	public String strClassPageCanonicalNameMethod() {
-		return classPageCanonicalNameMethod == null ? "" : classPageCanonicalNameMethod;
-	}
-
-	public String sqlClassPageCanonicalNameMethod() {
-		return classPageCanonicalNameMethod;
-	}
-
-	public String jsonClassPageCanonicalNameMethod() {
-		return classPageCanonicalNameMethod == null ? "" : classPageCanonicalNameMethod;
 	}
 
 	////////////////////////
@@ -2303,22 +1931,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassKeywordsFound(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassKeywordsFound(siteRequest_, ApiWriter.staticSolrClassKeywordsFound(siteRequest_, ApiWriter.staticSetClassKeywordsFound(siteRequest_, o)));
-	}
-
-	public Boolean solrClassKeywordsFound() {
-		return ApiWriter.staticSolrClassKeywordsFound(siteRequest_, classKeywordsFound);
-	}
-
-	public String strClassKeywordsFound() {
-		return classKeywordsFound == null ? "" : classKeywordsFound.toString();
-	}
-
-	public Boolean sqlClassKeywordsFound() {
-		return classKeywordsFound;
-	}
-
-	public String jsonClassKeywordsFound() {
-		return classKeywordsFound == null ? "" : classKeywordsFound.toString();
 	}
 
 	///////////////////
@@ -2391,26 +2003,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassKeywords(siteRequest_, ApiWriter.staticSolrClassKeywords(siteRequest_, ApiWriter.staticSetClassKeywords(siteRequest_, o)));
 	}
 
-	public List<String> solrClassKeywords() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classKeywords) {
-			l.add(ApiWriter.staticSolrClassKeywords(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassKeywords() {
-		return classKeywords == null ? "" : classKeywords.toString();
-	}
-
-	public List<String> sqlClassKeywords() {
-		return classKeywords;
-	}
-
-	public String jsonClassKeywords() {
-		return classKeywords == null ? "" : classKeywords.toString();
-	}
-
 	/////////////////////
 	// classPublicRead //
 	/////////////////////
@@ -2463,22 +2055,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassPublicRead(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassPublicRead(siteRequest_, ApiWriter.staticSolrClassPublicRead(siteRequest_, ApiWriter.staticSetClassPublicRead(siteRequest_, o)));
-	}
-
-	public Boolean solrClassPublicRead() {
-		return ApiWriter.staticSolrClassPublicRead(siteRequest_, classPublicRead);
-	}
-
-	public String strClassPublicRead() {
-		return classPublicRead == null ? "" : classPublicRead.toString();
-	}
-
-	public Boolean sqlClassPublicRead() {
-		return classPublicRead;
-	}
-
-	public String jsonClassPublicRead() {
-		return classPublicRead == null ? "" : classPublicRead.toString();
 	}
 
 	//////////////////////
@@ -2535,22 +2111,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassRoleSession(siteRequest_, ApiWriter.staticSolrClassRoleSession(siteRequest_, ApiWriter.staticSetClassRoleSession(siteRequest_, o)));
 	}
 
-	public Boolean solrClassRoleSession() {
-		return ApiWriter.staticSolrClassRoleSession(siteRequest_, classRoleSession);
-	}
-
-	public String strClassRoleSession() {
-		return classRoleSession == null ? "" : classRoleSession.toString();
-	}
-
-	public Boolean sqlClassRoleSession() {
-		return classRoleSession;
-	}
-
-	public String jsonClassRoleSession() {
-		return classRoleSession == null ? "" : classRoleSession.toString();
-	}
-
 	//////////////////////////
 	// classRoleUtilisateur //
 	//////////////////////////
@@ -2603,22 +2163,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassRoleUtilisateur(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassRoleUtilisateur(siteRequest_, ApiWriter.staticSolrClassRoleUtilisateur(siteRequest_, ApiWriter.staticSetClassRoleUtilisateur(siteRequest_, o)));
-	}
-
-	public Boolean solrClassRoleUtilisateur() {
-		return ApiWriter.staticSolrClassRoleUtilisateur(siteRequest_, classRoleUtilisateur);
-	}
-
-	public String strClassRoleUtilisateur() {
-		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
-	}
-
-	public Boolean sqlClassRoleUtilisateur() {
-		return classRoleUtilisateur;
-	}
-
-	public String jsonClassRoleUtilisateur() {
-		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
 	}
 
 	//////////////////
@@ -2675,22 +2219,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassRoleAll(siteRequest_, ApiWriter.staticSolrClassRoleAll(siteRequest_, ApiWriter.staticSetClassRoleAll(siteRequest_, o)));
 	}
 
-	public Boolean solrClassRoleAll() {
-		return ApiWriter.staticSolrClassRoleAll(siteRequest_, classRoleAll);
-	}
-
-	public String strClassRoleAll() {
-		return classRoleAll == null ? "" : classRoleAll.toString();
-	}
-
-	public Boolean sqlClassRoleAll() {
-		return classRoleAll;
-	}
-
-	public String jsonClassRoleAll() {
-		return classRoleAll == null ? "" : classRoleAll.toString();
-	}
-
 	/////////////////////
 	// classRolesFound //
 	/////////////////////
@@ -2743,22 +2271,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqClassRolesFound(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrClassRolesFound(siteRequest_, ApiWriter.staticSolrClassRolesFound(siteRequest_, ApiWriter.staticSetClassRolesFound(siteRequest_, o)));
-	}
-
-	public Boolean solrClassRolesFound() {
-		return ApiWriter.staticSolrClassRolesFound(siteRequest_, classRolesFound);
-	}
-
-	public String strClassRolesFound() {
-		return classRolesFound == null ? "" : classRolesFound.toString();
-	}
-
-	public Boolean sqlClassRolesFound() {
-		return classRolesFound;
-	}
-
-	public String jsonClassRolesFound() {
-		return classRolesFound == null ? "" : classRolesFound.toString();
 	}
 
 	////////////////
@@ -2831,26 +2343,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassRoles(siteRequest_, ApiWriter.staticSolrClassRoles(siteRequest_, ApiWriter.staticSetClassRoles(siteRequest_, o)));
 	}
 
-	public List<String> solrClassRoles() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classRoles) {
-			l.add(ApiWriter.staticSolrClassRoles(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassRoles() {
-		return classRoles == null ? "" : classRoles.toString();
-	}
-
-	public List<String> sqlClassRoles() {
-		return classRoles;
-	}
-
-	public String jsonClassRoles() {
-		return classRoles == null ? "" : classRoles.toString();
-	}
-
 	////////////////////////
 	// classRolesLanguage //
 	////////////////////////
@@ -2921,26 +2413,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassRolesLanguage(siteRequest_, ApiWriter.staticSolrClassRolesLanguage(siteRequest_, ApiWriter.staticSetClassRolesLanguage(siteRequest_, o)));
 	}
 
-	public List<String> solrClassRolesLanguage() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classRolesLanguage) {
-			l.add(ApiWriter.staticSolrClassRolesLanguage(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassRolesLanguage() {
-		return classRolesLanguage == null ? "" : classRolesLanguage.toString();
-	}
-
-	public List<String> sqlClassRolesLanguage() {
-		return classRolesLanguage;
-	}
-
-	public String jsonClassRolesLanguage() {
-		return classRolesLanguage == null ? "" : classRolesLanguage.toString();
-	}
-
 	//////////////////
 	// languageName //
 	//////////////////
@@ -2988,22 +2460,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqLanguageName(SiteRequestEnUS siteRequest_, String o) {
 		return ApiWriter.staticSolrStrLanguageName(siteRequest_, ApiWriter.staticSolrLanguageName(siteRequest_, ApiWriter.staticSetLanguageName(siteRequest_, o)));
-	}
-
-	public String solrLanguageName() {
-		return ApiWriter.staticSolrLanguageName(siteRequest_, languageName);
-	}
-
-	public String strLanguageName() {
-		return languageName == null ? "" : languageName;
-	}
-
-	public String sqlLanguageName() {
-		return languageName;
-	}
-
-	public String jsonLanguageName() {
-		return languageName == null ? "" : languageName;
 	}
 
 	////////////////////////
@@ -3280,23 +2736,23 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeApiWriter(v, val);
+				o = relateApiWriter(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeApiWriter(String var, Object val) {
+	public Object relateApiWriter(String var, Object val) {
 		ApiWriter oApiWriter = (ApiWriter)this;
 		switch(var) {
 			default:
@@ -3628,28 +3084,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineApiWriter(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineApiWriter(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -3682,27 +3116,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		if(o != null && o instanceof ApiWriter) {
 			ApiWriter original = (ApiWriter)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof ApiWriter))
-			return false;
-		ApiWriter that = (ApiWriter)o;
-		return true;
 	}
 
 	//////////////

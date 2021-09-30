@@ -80,12 +80,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected AllWriter siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -118,12 +117,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return o;
 	}
 	protected AllWriter tabStrInit() {
-		Wrap<String> tabStrWrap = new Wrap<String>().var("tabStr").o(tabStr);
+		Wrap<String> tabStrWrap = new Wrap<String>().var("tabStr");
 		if(tabStr == null) {
 			_tabStr(tabStrWrap);
 			setTabStr(tabStrWrap.o);
 		}
-		tabStrWrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -137,22 +135,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqTabStr(SiteRequestEnUS siteRequest_, String o) {
 		return AllWriter.staticSolrStrTabStr(siteRequest_, AllWriter.staticSolrTabStr(siteRequest_, AllWriter.staticSetTabStr(siteRequest_, o)));
-	}
-
-	public String solrTabStr() {
-		return AllWriter.staticSolrTabStr(siteRequest_, tabStr);
-	}
-
-	public String strTabStr() {
-		return tabStr == null ? "" : tabStr;
-	}
-
-	public String sqlTabStr() {
-		return tabStr;
-	}
-
-	public String jsonTabStr() {
-		return tabStr == null ? "" : tabStr;
 	}
 
 	//////////
@@ -185,12 +167,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected AllWriter fileInit() {
-		Wrap<File> fileWrap = new Wrap<File>().var("file").o(file);
+		Wrap<File> fileWrap = new Wrap<File>().var("file");
 		if(file == null) {
 			_file(fileWrap);
 			setFile(fileWrap.o);
 		}
-		fileWrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -224,12 +205,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected AllWriter stringWriterInit() {
-		Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().var("stringWriter").o(stringWriter);
+		Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().var("stringWriter");
 		if(stringWriter == null) {
 			_stringWriter(stringWriterWrap);
 			setStringWriter(stringWriterWrap.o);
 		}
-		stringWriterWrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -263,12 +243,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected AllWriter bufferInit() {
-		Wrap<Buffer> bufferWrap = new Wrap<Buffer>().var("buffer").o(buffer);
+		Wrap<Buffer> bufferWrap = new Wrap<Buffer>().var("buffer");
 		if(buffer == null) {
 			_buffer(bufferWrap);
 			setBuffer(bufferWrap.o);
 		}
-		bufferWrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -302,12 +281,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return null;
 	}
 	protected AllWriter printWriterInit() {
-		Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().var("printWriter").o(printWriter);
+		Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().var("printWriter");
 		if(printWriter == null) {
 			_printWriter(printWriterWrap);
 			setPrintWriter(printWriterWrap.o);
 		}
-		printWriterWrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -345,12 +323,11 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected AllWriter emptyInit() {
-		Wrap<Boolean> emptyWrap = new Wrap<Boolean>().var("empty").o(empty);
+		Wrap<Boolean> emptyWrap = new Wrap<Boolean>().var("empty");
 		if(empty == null) {
 			_empty(emptyWrap);
 			setEmpty(emptyWrap.o);
 		}
-		emptyWrap.o(null);
 		return (AllWriter)this;
 	}
 
@@ -364,22 +341,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 
 	public static String staticSolrFqEmpty(SiteRequestEnUS siteRequest_, String o) {
 		return AllWriter.staticSolrStrEmpty(siteRequest_, AllWriter.staticSolrEmpty(siteRequest_, AllWriter.staticSetEmpty(siteRequest_, o)));
-	}
-
-	public Boolean solrEmpty() {
-		return AllWriter.staticSolrEmpty(siteRequest_, empty);
-	}
-
-	public String strEmpty() {
-		return empty == null ? "" : empty.toString();
-	}
-
-	public Boolean sqlEmpty() {
-		return empty;
-	}
-
-	public String jsonEmpty() {
-		return empty == null ? "" : empty.toString();
 	}
 
 	//////////////
@@ -465,23 +426,23 @@ public abstract class AllWriterGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeAllWriter(v, val);
+				o = relateAllWriter(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeAllWriter(String var, Object val) {
+	public Object relateAllWriter(String var, Object val) {
 		AllWriter oAllWriter = (AllWriter)this;
 		switch(var) {
 			default:
@@ -565,28 +526,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineAllWriter(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineAllWriter(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -619,27 +558,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 		if(o != null && o instanceof AllWriter) {
 			AllWriter original = (AllWriter)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof AllWriter))
-			return false;
-		AllWriter that = (AllWriter)o;
-		return true;
 	}
 
 	//////////////

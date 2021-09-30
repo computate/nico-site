@@ -56,7 +56,7 @@ public class SiteEnrollmentGenPage extends SiteEnrollmentGenPageGen<PageLayout> 
 	 * {@inheritDoc}
 	 **/
 	protected void _listSiteEnrollment(JsonArray l) {
-		searchListSiteEnrollment_.getList().stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
+		Optional.ofNullable(searchListSiteEnrollment_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
 	}
 
 	protected void _siteEnrollmentCount(Wrap<Integer> w) {
@@ -79,18 +79,8 @@ public class SiteEnrollmentGenPage extends SiteEnrollmentGenPageGen<PageLayout> 
 	}
 
 	@Override
-	protected void _pageH1(Wrap<String> c) {
-			c.o("enrollments");
-	}
-
-	@Override
-	protected void _pageH2(Wrap<String> c) {
-		c.o("");
-	}
-
-	@Override
-	protected void _pageH3(Wrap<String> c) {
-		c.o("");
+	protected void _classSimpleName(Wrap<String> w) {
+		w.o("SiteEnrollment");
 	}
 
 	@Override

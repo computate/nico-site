@@ -77,12 +77,11 @@ public abstract class SearchResultGen<DEV> extends Object {
 		return null;
 	}
 	protected SearchResult siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (SearchResult)this;
 	}
 
@@ -116,12 +115,11 @@ public abstract class SearchResultGen<DEV> extends Object {
 		return null;
 	}
 	protected SearchResult solrDocumentInit() {
-		Wrap<SolrDocument> solrDocumentWrap = new Wrap<SolrDocument>().var("solrDocument").o(solrDocument);
+		Wrap<SolrDocument> solrDocumentWrap = new Wrap<SolrDocument>().var("solrDocument");
 		if(solrDocument == null) {
 			_solrDocument(solrDocumentWrap);
 			setSolrDocument(solrDocumentWrap.o);
 		}
-		solrDocumentWrap.o(null);
 		return (SearchResult)this;
 	}
 
@@ -162,12 +160,11 @@ public abstract class SearchResultGen<DEV> extends Object {
 		return null;
 	}
 	protected SearchResult resultIndexInit() {
-		Wrap<Long> resultIndexWrap = new Wrap<Long>().var("resultIndex").o(resultIndex);
+		Wrap<Long> resultIndexWrap = new Wrap<Long>().var("resultIndex");
 		if(resultIndex == null) {
 			_resultIndex(resultIndexWrap);
 			setResultIndex(resultIndexWrap.o);
 		}
-		resultIndexWrap.o(null);
 		return (SearchResult)this;
 	}
 
@@ -181,22 +178,6 @@ public abstract class SearchResultGen<DEV> extends Object {
 
 	public static String staticSolrFqResultIndex(SiteRequestEnUS siteRequest_, String o) {
 		return SearchResult.staticSolrStrResultIndex(siteRequest_, SearchResult.staticSolrResultIndex(siteRequest_, SearchResult.staticSetResultIndex(siteRequest_, o)));
-	}
-
-	public Long solrResultIndex() {
-		return SearchResult.staticSolrResultIndex(siteRequest_, resultIndex);
-	}
-
-	public String strResultIndex() {
-		return resultIndex == null ? "" : resultIndex.toString();
-	}
-
-	public Long sqlResultIndex() {
-		return resultIndex;
-	}
-
-	public String jsonResultIndex() {
-		return resultIndex == null ? "" : resultIndex.toString();
 	}
 
 	//////////////
@@ -270,23 +251,23 @@ public abstract class SearchResultGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSearchResult(v, val);
+				o = relateSearchResult(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSearchResult(String var, Object val) {
+	public Object relateSearchResult(String var, Object val) {
 		SearchResult oSearchResult = (SearchResult)this;
 		switch(var) {
 			default:
@@ -362,28 +343,6 @@ public abstract class SearchResultGen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSearchResult(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSearchResult(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -416,27 +375,6 @@ public abstract class SearchResultGen<DEV> extends Object {
 		if(o != null && o instanceof SearchResult) {
 			SearchResult original = (SearchResult)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SearchResult))
-			return false;
-		SearchResult that = (SearchResult)o;
-		return true;
 	}
 
 	//////////////

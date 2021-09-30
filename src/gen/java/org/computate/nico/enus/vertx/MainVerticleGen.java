@@ -58,6 +58,9 @@ CREATE TABLE SiteUser(
 	, userFirstName text
 	, userLastName text
 	, userFullName text
+	, userReceiveEmails boolean
+	, seeArchived boolean
+	, seeDeleted boolean
 	);
 CREATE TABLE SiteEnrollment(
 	pk bigserial primary key
@@ -87,16 +90,10 @@ CREATE TABLE SitePet(
 	, sendUpdates boolean
 	, petAmount text
 	);
-CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
-	pk bigserial primary key
-	, pk1 bigint references SitePet(pk)
-	, pk2 bigint references SiteEnrollment(pk)
-	);
 
 DROP TABLE SiteUser CASCADE;
 DROP TABLE SiteEnrollment CASCADE;
 DROP TABLE SitePet CASCADE;
-DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 */
 
 	protected static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
@@ -222,23 +219,23 @@ DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeMainVerticle(v, val);
+				o = relateMainVerticle(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeMainVerticle(String var, Object val) {
+	public Object relateMainVerticle(String var, Object val) {
 		MainVerticle oMainVerticle = (MainVerticle)this;
 		switch(var) {
 			default:
@@ -306,28 +303,6 @@ DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineMainVerticle(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineMainVerticle(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -348,27 +323,6 @@ DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 			default:
 				return null;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof MainVerticle))
-			return false;
-		MainVerticle that = (MainVerticle)o;
-		return true;
 	}
 
 	//////////////

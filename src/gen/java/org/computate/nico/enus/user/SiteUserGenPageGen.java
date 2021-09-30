@@ -177,22 +177,6 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 		return SiteUserGenPage.staticSolrStrSiteUserCount(siteRequest_, SiteUserGenPage.staticSolrSiteUserCount(siteRequest_, SiteUserGenPage.staticSetSiteUserCount(siteRequest_, o)));
 	}
 
-	public Integer solrSiteUserCount() {
-		return SiteUserGenPage.staticSolrSiteUserCount(siteRequest_, siteUserCount);
-	}
-
-	public String strSiteUserCount() {
-		return siteUserCount == null ? "" : siteUserCount.toString();
-	}
-
-	public Integer sqlSiteUserCount() {
-		return siteUserCount;
-	}
-
-	public String jsonSiteUserCount() {
-		return siteUserCount == null ? "" : siteUserCount.toString();
-	}
-
 	///////////////
 	// siteUser_ //
 	///////////////
@@ -286,22 +270,6 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 
 	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
 		return SiteUserGenPage.staticSolrStrPk(siteRequest_, SiteUserGenPage.staticSolrPk(siteRequest_, SiteUserGenPage.staticSetPk(siteRequest_, o)));
-	}
-
-	public Long solrPk() {
-		return SiteUserGenPage.staticSolrPk(siteRequest_, pk);
-	}
-
-	public String strPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public Long sqlPk() {
-		return pk;
-	}
-
-	public String jsonPk() {
-		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
@@ -407,27 +375,27 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSiteUserGenPage(v, val);
+				o = relateSiteUserGenPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSiteUserGenPage(String var, Object val) {
+	public Object relateSiteUserGenPage(String var, Object val) {
 		SiteUserGenPage oSiteUserGenPage = (SiteUserGenPage)this;
 		switch(var) {
 			default:
-				return super.attributePageLayout(var, val);
+				return super.relatePageLayout(var, val);
 		}
 	}
 
@@ -507,28 +475,6 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSiteUserGenPage(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSiteUserGenPage(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.definePageLayout(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -562,27 +508,6 @@ public abstract class SiteUserGenPageGen<DEV> extends PageLayout {
 			SiteUserGenPage original = (SiteUserGenPage)o;
 			super.apiRequestPageLayout();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SiteUserGenPage))
-			return false;
-		SiteUserGenPage that = (SiteUserGenPage)o;
-		return super.equals(o);
 	}
 
 	//////////////

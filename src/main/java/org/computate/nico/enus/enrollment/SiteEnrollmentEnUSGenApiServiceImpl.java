@@ -1,9 +1,5 @@
 package org.computate.nico.enus.enrollment;
 
-import org.computate.nico.enus.user.SiteUserEnUSApiServiceImpl;
-import org.computate.nico.enus.user.SiteUser;
-import org.computate.nico.enus.pet.SitePetEnUSApiServiceImpl;
-import org.computate.nico.enus.pet.SitePet;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.request.api.ApiRequest;
@@ -277,7 +273,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 									}
 								} else {
 									o2.defineForClass(f, bodyVal);
-									o2.attributeForClass(f, bodyVal);
+									o2.relateForClass(f, bodyVal);
 									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
@@ -510,7 +506,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 									}
 								} else {
 									o2.defineForClass(f, bodyVal);
-									o2.attributeForClass(f, bodyVal);
+									o2.relateForClass(f, bodyVal);
 									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
@@ -700,7 +696,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 				createSiteEnrollment(siteRequest).onSuccess(siteEnrollment -> {
 					sqlPUTCopySiteEnrollment(siteEnrollment, jsonObject).onSuccess(b -> {
 						defineSiteEnrollment(siteEnrollment).onSuccess(c -> {
-							attributeSiteEnrollment(siteEnrollment).onSuccess(d -> {
+							relateSiteEnrollment(siteEnrollment).onSuccess(d -> {
 								indexSiteEnrollment(siteEnrollment).onSuccess(e -> {
 									promise1.complete(siteEnrollment);
 								}).onFailure(ex -> {
@@ -803,27 +799,6 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 						num++;
 						bParams.add(o2.sqlDeleted());
 						break;
-					case SiteEnrollment.VAR_petKeys:
-						{
-							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-								futures.add(Future.future(a -> {
-									sqlConnection.preparedQuery("INSERT INTO SitePetEnrollmentKeys_SiteEnrollmentPetKeys(pk1, pk2) values($1, $2)")
-											.execute(Tuple.of(l, pk)
-											).onSuccess(b -> {
-										a.handle(Future.succeededFuture());
-									}).onFailure(ex -> {
-										RuntimeException ex2 = new RuntimeException("value SiteEnrollment.petKeys failed", ex);
-										LOG.error(String.format("attributeSiteEnrollment failed. "), ex2);
-										a.handle(Future.failedFuture(ex2));
-									});
-								}));
-								if(!pks.contains(l)) {
-									pks.add(l);
-									classes.add("SitePet");
-								}
-							}
-						}
-						break;
 					}
 				}
 			}
@@ -838,7 +813,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
 						RuntimeException ex2 = new RuntimeException("value SiteEnrollment failed", ex);
-						LOG.error(String.format("attributeSiteEnrollment failed. "), ex2);
+						LOG.error(String.format("relateSiteEnrollment failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
 				}));
@@ -976,7 +951,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 				createSiteEnrollment(siteRequest).onSuccess(siteEnrollment -> {
 					sqlPOSTSiteEnrollment(siteEnrollment, inheritPk).onSuccess(b -> {
 						defineSiteEnrollment(siteEnrollment).onSuccess(c -> {
-							attributeSiteEnrollment(siteEnrollment).onSuccess(d -> {
+							relateSiteEnrollment(siteEnrollment).onSuccess(d -> {
 								indexSiteEnrollment(siteEnrollment).onSuccess(e -> {
 									promise1.complete(siteEnrollment);
 								}).onFailure(ex -> {
@@ -1097,25 +1072,6 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 						num++;
 						bParams.add(o2.sqlDeleted());
 						break;
-					case SiteEnrollment.VAR_petKeys:
-						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
-									if(!pks.contains(pk2)) {
-										pks.add(pk2);
-										classes.add("SitePet");
-									}
-									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk2, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
 					}
 				}
 			}
@@ -1130,7 +1086,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
 						RuntimeException ex2 = new RuntimeException("value SiteEnrollment failed", ex);
-						LOG.error(String.format("attributeSiteEnrollment failed. "), ex2);
+						LOG.error(String.format("relateSiteEnrollment failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
 				}));
@@ -1343,7 +1299,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 				siteRequest.setSqlConnection(sqlConnection);
 				sqlPATCHSiteEnrollment(o, inheritPk).onSuccess(siteEnrollment -> {
 					defineSiteEnrollment(siteEnrollment).onSuccess(c -> {
-						attributeSiteEnrollment(siteEnrollment).onSuccess(d -> {
+						relateSiteEnrollment(siteEnrollment).onSuccess(d -> {
 							indexSiteEnrollment(siteEnrollment).onSuccess(e -> {
 								promise1.complete(siteEnrollment);
 							}).onFailure(ex -> {
@@ -1429,93 +1385,6 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 							num++;
 							bParams.add(o2.sqlDeleted());
 						break;
-					case "setPetKeys":
-						JsonArray setPetKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-						setPetKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
-									if(!pks.contains(pk2)) {
-										pks.add(pk2);
-										classes.add("SitePet");
-									}
-									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						Optional.ofNullable(o.getPetKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setPetKeysValues.contains(oVal.toString())).forEach(pk2 -> {
-							if(!pks.contains(pk2)) {
-								pks.add(pk2);
-								classes.add("SitePet");
-							}
-							futures2.add(Future.future(promise2 -> {
-								sql(siteRequest).deleteFrom(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).where(pk2, pk).onSuccess(a -> {
-									promise2.complete();
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
-					case "addAllPetKeys":
-						JsonArray addAllPetKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-						addAllPetKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
-									if(!pks.contains(pk2)) {
-										pks.add(pk2);
-										classes.add("SitePet");
-									}
-									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
-					case "addPetKeys":
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SitePet.class, val, inheritPk).onSuccess(pk2 -> {
-									if(!pks.contains(pk2)) {
-										pks.add(pk2);
-										classes.add("SitePet");
-									}
-									sql(siteRequest).insertInto(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).values(pk, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
-					case "removePetKeys":
-						Optional.ofNullable(jsonObject.getString(entityVar)).map(val -> Long.parseLong(val)).ifPresent(pk2 -> {
-							if(!pks.contains(pk2)) {
-								pks.add(pk2);
-								classes.add("SitePet");
-							}
-							futures2.add(Future.future(promise2 -> {
-								sql(siteRequest).deleteFrom(SitePet.class, SitePet.VAR_enrollmentKeys, SiteEnrollment.class, SiteEnrollment.VAR_petKeys).where(pk2, pk).onSuccess(a -> {
-									promise2.complete();
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
 				}
 			}
 			bSql.append(" WHERE pk=$" + num);
@@ -1529,7 +1398,7 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
 						RuntimeException ex2 = new RuntimeException("value SiteEnrollment failed", ex);
-						LOG.error(String.format("attributeSiteEnrollment failed. "), ex2);
+						LOG.error(String.format("relateSiteEnrollment failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
 				}));
@@ -2420,36 +2289,9 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 		return promise.future();
 	}
 
-	public Future<Void> attributeSiteEnrollment(SiteEnrollment o) {
+	public Future<Void> relateSiteEnrollment(SiteEnrollment o) {
 		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Long pk = o.getPk();
-			sqlConnection.preparedQuery("SELECT pk1, 'petKeys' from SitePetenrollmentKeys_SiteEnrollmentpetKeys where pk2=$1")
-					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk)
-					).onSuccess(result -> {
-				try {
-					if(result != null) {
-						for(Row definition : result.value()) {
-							o.attributeForClass(definition.getString(1), definition.getLong(0));
-						}
-					}
-					promise.complete();
-				} catch(Exception ex) {
-					LOG.error(String.format("attributeSiteEnrollment failed. "), ex);
-					promise.fail(ex);
-				}
-			}).onFailure(ex -> {
-				RuntimeException ex2 = new RuntimeException(ex);
-				LOG.error(String.format("attributeSiteEnrollment failed. "), ex2);
-				promise.fail(ex2);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("attributeSiteEnrollment failed. "), ex);
-			promise.fail(ex);
-		}
+			promise.complete();
 		return promise.future();
 	}
 
@@ -2499,41 +2341,6 @@ public class SiteEnrollmentEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
-
-					if("SitePet".equals(classSimpleName2) && pk2 != null) {
-						SearchList<SitePet> searchList2 = new SearchList<SitePet>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(SitePet.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						futures.add(Future.future(promise2 -> {
-							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-								SitePet o2 = searchList2.getList().stream().findFirst().orElse(null);
-								if(o2 != null) {
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("path", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
-									JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
-									JsonObject json = new JsonObject().put("context", context);
-									eventBus.request("nico-site-enUS-SitePet", json, new DeliveryOptions().addHeader("action", "patchSitePetFuture")).onSuccess(c -> {
-						JsonObject responseMessage = (JsonObject)c.body();
-										Integer statusCode = responseMessage.getInteger("statusCode");
-										if(statusCode.equals(200))
-											promise2.complete();
-										else
-											promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}
-							}).onFailure(ex -> {
-								promise2.fail(ex);
-							});
-						}));
-					}
 				}
 
 				CompositeFuture.all(futures).onSuccess(b -> {

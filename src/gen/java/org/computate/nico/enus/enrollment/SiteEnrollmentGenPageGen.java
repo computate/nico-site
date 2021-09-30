@@ -79,12 +79,11 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		return null;
 	}
 	protected SiteEnrollmentGenPage searchListSiteEnrollment_Init() {
-		Wrap<SearchList<SiteEnrollment>> searchListSiteEnrollment_Wrap = new Wrap<SearchList<SiteEnrollment>>().var("searchListSiteEnrollment_").o(searchListSiteEnrollment_);
+		Wrap<SearchList<SiteEnrollment>> searchListSiteEnrollment_Wrap = new Wrap<SearchList<SiteEnrollment>>().var("searchListSiteEnrollment_");
 		if(searchListSiteEnrollment_ == null) {
 			_searchListSiteEnrollment_(searchListSiteEnrollment_Wrap);
 			setSearchListSiteEnrollment_(searchListSiteEnrollment_Wrap.o);
 		}
-		searchListSiteEnrollment_Wrap.o(null);
 		return (SiteEnrollmentGenPage)this;
 	}
 
@@ -95,7 +94,6 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 	/**	 The entity listSiteEnrollment
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut JsonArray(). 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonArray listSiteEnrollment = new JsonArray();
 
@@ -159,12 +157,11 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		return null;
 	}
 	protected SiteEnrollmentGenPage siteEnrollmentCountInit() {
-		Wrap<Integer> siteEnrollmentCountWrap = new Wrap<Integer>().var("siteEnrollmentCount").o(siteEnrollmentCount);
+		Wrap<Integer> siteEnrollmentCountWrap = new Wrap<Integer>().var("siteEnrollmentCount");
 		if(siteEnrollmentCount == null) {
 			_siteEnrollmentCount(siteEnrollmentCountWrap);
 			setSiteEnrollmentCount(siteEnrollmentCountWrap.o);
 		}
-		siteEnrollmentCountWrap.o(null);
 		return (SiteEnrollmentGenPage)this;
 	}
 
@@ -178,22 +175,6 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 
 	public static String staticSolrFqSiteEnrollmentCount(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrSiteEnrollmentCount(siteRequest_, SiteEnrollmentGenPage.staticSolrSiteEnrollmentCount(siteRequest_, SiteEnrollmentGenPage.staticSetSiteEnrollmentCount(siteRequest_, o)));
-	}
-
-	public Integer solrSiteEnrollmentCount() {
-		return SiteEnrollmentGenPage.staticSolrSiteEnrollmentCount(siteRequest_, siteEnrollmentCount);
-	}
-
-	public String strSiteEnrollmentCount() {
-		return siteEnrollmentCount == null ? "" : siteEnrollmentCount.toString();
-	}
-
-	public Integer sqlSiteEnrollmentCount() {
-		return siteEnrollmentCount;
-	}
-
-	public String jsonSiteEnrollmentCount() {
-		return siteEnrollmentCount == null ? "" : siteEnrollmentCount.toString();
 	}
 
 	/////////////////////
@@ -226,12 +207,11 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		return null;
 	}
 	protected SiteEnrollmentGenPage siteEnrollment_Init() {
-		Wrap<SiteEnrollment> siteEnrollment_Wrap = new Wrap<SiteEnrollment>().var("siteEnrollment_").o(siteEnrollment_);
+		Wrap<SiteEnrollment> siteEnrollment_Wrap = new Wrap<SiteEnrollment>().var("siteEnrollment_");
 		if(siteEnrollment_ == null) {
 			_siteEnrollment_(siteEnrollment_Wrap);
 			setSiteEnrollment_(siteEnrollment_Wrap.o);
 		}
-		siteEnrollment_Wrap.o(null);
 		return (SiteEnrollmentGenPage)this;
 	}
 
@@ -272,12 +252,11 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		return null;
 	}
 	protected SiteEnrollmentGenPage pkInit() {
-		Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
 		if(pk == null) {
 			_pk(pkWrap);
 			setPk(pkWrap.o);
 		}
-		pkWrap.o(null);
 		return (SiteEnrollmentGenPage)this;
 	}
 
@@ -291,22 +270,6 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 
 	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
 		return SiteEnrollmentGenPage.staticSolrStrPk(siteRequest_, SiteEnrollmentGenPage.staticSolrPk(siteRequest_, SiteEnrollmentGenPage.staticSetPk(siteRequest_, o)));
-	}
-
-	public Long solrPk() {
-		return SiteEnrollmentGenPage.staticSolrPk(siteRequest_, pk);
-	}
-
-	public String strPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public Long sqlPk() {
-		return pk;
-	}
-
-	public String jsonPk() {
-		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
@@ -412,27 +375,27 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSiteEnrollmentGenPage(v, val);
+				o = relateSiteEnrollmentGenPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSiteEnrollmentGenPage(String var, Object val) {
+	public Object relateSiteEnrollmentGenPage(String var, Object val) {
 		SiteEnrollmentGenPage oSiteEnrollmentGenPage = (SiteEnrollmentGenPage)this;
 		switch(var) {
 			default:
-				return super.attributePageLayout(var, val);
+				return super.relatePageLayout(var, val);
 		}
 	}
 
@@ -512,28 +475,6 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSiteEnrollmentGenPage(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSiteEnrollmentGenPage(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.definePageLayout(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -567,27 +508,6 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 			SiteEnrollmentGenPage original = (SiteEnrollmentGenPage)o;
 			super.apiRequestPageLayout();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SiteEnrollmentGenPage))
-			return false;
-		SiteEnrollmentGenPage that = (SiteEnrollmentGenPage)o;
-		return super.equals(o);
 	}
 
 	//////////////

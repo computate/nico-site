@@ -1,9 +1,13 @@
 package org.computate.nico.enus.page; 
 
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.wrap.Wrap;
@@ -25,6 +29,14 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 	protected void _serviceRequest(Wrap<ServiceRequest> w) {
 		w.o(siteRequest_.getServiceRequest());
+	}
+
+	protected void _requestZoneId(Wrap<String> w) {
+		w.o(Optional.ofNullable(siteRequest_.getRequestVars().get(VAR_requestZoneId)).orElse(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)));
+	}
+
+	protected void _requestLocaleId(Wrap<String> w) {
+		w.o(Optional.ofNullable(siteRequest_.getRequestHeaders().get("Accept-Language")).map(acceptLanguage -> StringUtils.substringBefore(acceptLanguage, ",")).orElse(siteRequest_.getConfig().getString(ConfigKeys.SITE_LOCALE)));
 	}
 
 	protected void _staticBaseUrl(Wrap<String> w) {
@@ -66,13 +78,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 		promise.complete();
 	}
 
-	protected void _pageH1(Wrap<String> c) {
-	}
-
-	protected void _pageH2(Wrap<String> c) {
-	}
-
-	protected void _pageH3(Wrap<String> c) {
+	protected void _classSimpleName(Wrap<String> c) {
 	}
 
 	protected void _pageTitle(Wrap<String> c) {

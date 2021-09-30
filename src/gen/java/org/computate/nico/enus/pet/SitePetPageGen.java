@@ -132,27 +132,27 @@ public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSitePetPage(v, val);
+				o = relateSitePetPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSitePetPage(String var, Object val) {
+	public Object relateSitePetPage(String var, Object val) {
 		SitePetPage oSitePetPage = (SitePetPage)this;
 		switch(var) {
 			default:
-				return super.attributeSitePetGenPage(var, val);
+				return super.relateSitePetGenPage(var, val);
 		}
 	}
 
@@ -216,28 +216,6 @@ public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSitePetPage(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSitePetPage(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.defineSitePetGenPage(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -271,27 +249,6 @@ public abstract class SitePetPageGen<DEV> extends SitePetGenPage {
 			SitePetPage original = (SitePetPage)o;
 			super.apiRequestSitePetGenPage();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SitePetPage))
-			return false;
-		SitePetPage that = (SitePetPage)o;
-		return super.equals(o);
 	}
 
 	//////////////

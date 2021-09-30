@@ -75,12 +75,11 @@ public abstract class AllWritersGen<DEV> extends Object {
 		return null;
 	}
 	protected AllWriters siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (AllWriters)this;
 	}
 
@@ -198,23 +197,23 @@ public abstract class AllWritersGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeAllWriters(v, val);
+				o = relateAllWriters(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeAllWriters(String var, Object val) {
+	public Object relateAllWriters(String var, Object val) {
 		AllWriters oAllWriters = (AllWriters)this;
 		switch(var) {
 			default:
@@ -282,28 +281,6 @@ public abstract class AllWritersGen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineAllWriters(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineAllWriters(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -336,27 +313,6 @@ public abstract class AllWritersGen<DEV> extends Object {
 		if(o != null && o instanceof AllWriters) {
 			AllWriters original = (AllWriters)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof AllWriters))
-			return false;
-		AllWriters that = (AllWriters)o;
-		return true;
 	}
 
 	//////////////

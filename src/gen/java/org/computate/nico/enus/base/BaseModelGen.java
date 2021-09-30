@@ -161,30 +161,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrPk(siteRequest_, BaseModel.staticSolrPk(siteRequest_, BaseModel.staticSetPk(siteRequest_, o)));
 	}
 
-	public Long solrPk() {
-		return BaseModel.staticSolrPk(siteRequest_, pk);
-	}
-
-	public String strPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public Long sqlPk() {
-		return pk;
-	}
-
-	public String jsonPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public String htmTooltipPk() {
-		return null;
-	}
-
-	public String htmPk() {
-		return pk == null ? "" : StringEscapeUtils.escapeHtml4(strPk());
-	}
-
 	///////////////
 	// inheritPk //
 	///////////////
@@ -234,28 +210,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrInheritPk(siteRequest_, BaseModel.staticSolrInheritPk(siteRequest_, BaseModel.staticSetInheritPk(siteRequest_, o)));
 	}
 
-	public String solrInheritPk() {
-		return BaseModel.staticSolrInheritPk(siteRequest_, inheritPk);
-	}
-
-	public String strInheritPk() {
-		return inheritPk == null ? "" : inheritPk;
-	}
-
 	public String sqlInheritPk() {
 		return inheritPk;
-	}
-
-	public String jsonInheritPk() {
-		return inheritPk == null ? "" : inheritPk;
-	}
-
-	public String htmTooltipInheritPk() {
-		return null;
-	}
-
-	public String htmInheritPk() {
-		return inheritPk == null ? "" : StringEscapeUtils.escapeHtml4(strInheritPk());
 	}
 
 	////////
@@ -305,30 +261,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqId(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrId(siteRequest_, BaseModel.staticSolrId(siteRequest_, BaseModel.staticSetId(siteRequest_, o)));
-	}
-
-	public String solrId() {
-		return BaseModel.staticSolrId(siteRequest_, id);
-	}
-
-	public String strId() {
-		return id == null ? "" : id;
-	}
-
-	public String sqlId() {
-		return id;
-	}
-
-	public String jsonId() {
-		return id == null ? "" : id;
-	}
-
-	public String htmTooltipId() {
-		return null;
-	}
-
-	public String htmId() {
-		return id == null ? "" : StringEscapeUtils.escapeHtml4(strId());
 	}
 
 	/////////////
@@ -400,28 +332,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrCreated(siteRequest_, BaseModel.staticSolrCreated(siteRequest_, BaseModel.staticSetCreated(siteRequest_, o)));
 	}
 
-	public Date solrCreated() {
-		return BaseModel.staticSolrCreated(siteRequest_, created);
-	}
-
-	public String strCreated() {
-		return created == null ? "" : created.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
-	}
-
 	public OffsetDateTime sqlCreated() {
 		return created == null ? null : created.toOffsetDateTime();
-	}
-
-	public String jsonCreated() {
-		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
-	}
-
-	public String htmTooltipCreated() {
-		return null;
-	}
-
-	public String htmCreated() {
-		return created == null ? "" : StringEscapeUtils.escapeHtml4(strCreated());
 	}
 
 	//////////////
@@ -493,30 +405,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrModified(siteRequest_, BaseModel.staticSolrModified(siteRequest_, BaseModel.staticSetModified(siteRequest_, o)));
 	}
 
-	public Date solrModified() {
-		return BaseModel.staticSolrModified(siteRequest_, modified);
-	}
-
-	public String strModified() {
-		return modified == null ? "" : modified.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
-	}
-
-	public OffsetDateTime sqlModified() {
-		return modified == null ? null : modified.toOffsetDateTime();
-	}
-
-	public String jsonModified() {
-		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
-	}
-
-	public String htmTooltipModified() {
-		return null;
-	}
-
-	public String htmModified() {
-		return modified == null ? "" : StringEscapeUtils.escapeHtml4(strModified());
-	}
-
 	//////////////
 	// archived //
 	//////////////
@@ -571,28 +459,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrArchived(siteRequest_, BaseModel.staticSolrArchived(siteRequest_, BaseModel.staticSetArchived(siteRequest_, o)));
 	}
 
-	public Boolean solrArchived() {
-		return BaseModel.staticSolrArchived(siteRequest_, archived);
-	}
-
-	public String strArchived() {
-		return archived == null ? "" : archived.toString();
-	}
-
 	public Boolean sqlArchived() {
 		return archived;
-	}
-
-	public String jsonArchived() {
-		return archived == null ? "" : archived.toString();
-	}
-
-	public String htmTooltipArchived() {
-		return null;
-	}
-
-	public String htmArchived() {
-		return archived == null ? "" : StringEscapeUtils.escapeHtml4(strArchived());
 	}
 
 	/////////////
@@ -649,28 +517,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrDeleted(siteRequest_, BaseModel.staticSolrDeleted(siteRequest_, BaseModel.staticSetDeleted(siteRequest_, o)));
 	}
 
-	public Boolean solrDeleted() {
-		return BaseModel.staticSolrDeleted(siteRequest_, deleted);
-	}
-
-	public String strDeleted() {
-		return deleted == null ? "" : deleted.toString();
-	}
-
 	public Boolean sqlDeleted() {
 		return deleted;
-	}
-
-	public String jsonDeleted() {
-		return deleted == null ? "" : deleted.toString();
-	}
-
-	public String htmTooltipDeleted() {
-		return null;
-	}
-
-	public String htmDeleted() {
-		return deleted == null ? "" : StringEscapeUtils.escapeHtml4(strDeleted());
 	}
 
 	////////////////////////
@@ -722,30 +570,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrClassCanonicalName(siteRequest_, BaseModel.staticSolrClassCanonicalName(siteRequest_, BaseModel.staticSetClassCanonicalName(siteRequest_, o)));
 	}
 
-	public String solrClassCanonicalName() {
-		return BaseModel.staticSolrClassCanonicalName(siteRequest_, classCanonicalName);
-	}
-
-	public String strClassCanonicalName() {
-		return classCanonicalName == null ? "" : classCanonicalName;
-	}
-
-	public String sqlClassCanonicalName() {
-		return classCanonicalName;
-	}
-
-	public String jsonClassCanonicalName() {
-		return classCanonicalName == null ? "" : classCanonicalName;
-	}
-
-	public String htmTooltipClassCanonicalName() {
-		return null;
-	}
-
-	public String htmClassCanonicalName() {
-		return classCanonicalName == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalName());
-	}
-
 	/////////////////////
 	// classSimpleName //
 	/////////////////////
@@ -793,30 +617,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrClassSimpleName(siteRequest_, BaseModel.staticSolrClassSimpleName(siteRequest_, BaseModel.staticSetClassSimpleName(siteRequest_, o)));
-	}
-
-	public String solrClassSimpleName() {
-		return BaseModel.staticSolrClassSimpleName(siteRequest_, classSimpleName);
-	}
-
-	public String strClassSimpleName() {
-		return classSimpleName == null ? "" : classSimpleName;
-	}
-
-	public String sqlClassSimpleName() {
-		return classSimpleName;
-	}
-
-	public String jsonClassSimpleName() {
-		return classSimpleName == null ? "" : classSimpleName;
-	}
-
-	public String htmTooltipClassSimpleName() {
-		return null;
-	}
-
-	public String htmClassSimpleName() {
-		return classSimpleName == null ? "" : StringEscapeUtils.escapeHtml4(strClassSimpleName());
 	}
 
 	/////////////////////////
@@ -885,34 +685,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, BaseModel.staticSolrClassCanonicalNames(siteRequest_, BaseModel.staticSetClassCanonicalNames(siteRequest_, o)));
 	}
 
-	public List<String> solrClassCanonicalNames() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classCanonicalNames) {
-			l.add(BaseModel.staticSolrClassCanonicalNames(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
-	}
-
-	public List<String> sqlClassCanonicalNames() {
-		return classCanonicalNames;
-	}
-
-	public String jsonClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
-	}
-
-	public String htmTooltipClassCanonicalNames() {
-		return null;
-	}
-
-	public String htmClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalNames());
-	}
-
 	///////////////
 	// sessionId //
 	///////////////
@@ -962,28 +734,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrSessionId(siteRequest_, BaseModel.staticSolrSessionId(siteRequest_, BaseModel.staticSetSessionId(siteRequest_, o)));
 	}
 
-	public String solrSessionId() {
-		return BaseModel.staticSolrSessionId(siteRequest_, sessionId);
-	}
-
-	public String strSessionId() {
-		return sessionId == null ? "" : sessionId;
-	}
-
 	public String sqlSessionId() {
 		return sessionId;
-	}
-
-	public String jsonSessionId() {
-		return sessionId == null ? "" : sessionId;
-	}
-
-	public String htmTooltipSessionId() {
-		return null;
-	}
-
-	public String htmSessionId() {
-		return sessionId == null ? "" : StringEscapeUtils.escapeHtml4(strSessionId());
 	}
 
 	////////////
@@ -1035,28 +787,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrUserId(siteRequest_, BaseModel.staticSolrUserId(siteRequest_, BaseModel.staticSetUserId(siteRequest_, o)));
 	}
 
-	public String solrUserId() {
-		return BaseModel.staticSolrUserId(siteRequest_, userId);
-	}
-
-	public String strUserId() {
-		return userId == null ? "" : userId;
-	}
-
 	public String sqlUserId() {
 		return userId;
-	}
-
-	public String jsonUserId() {
-		return userId == null ? "" : userId;
-	}
-
-	public String htmTooltipUserId() {
-		return null;
-	}
-
-	public String htmUserId() {
-		return userId == null ? "" : StringEscapeUtils.escapeHtml4(strUserId());
 	}
 
 	/////////////
@@ -1116,28 +848,8 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrUserKey(siteRequest_, BaseModel.staticSolrUserKey(siteRequest_, BaseModel.staticSetUserKey(siteRequest_, o)));
 	}
 
-	public Long solrUserKey() {
-		return BaseModel.staticSolrUserKey(siteRequest_, userKey);
-	}
-
-	public String strUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
 	public Long sqlUserKey() {
 		return userKey;
-	}
-
-	public String jsonUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public String htmTooltipUserKey() {
-		return null;
-	}
-
-	public String htmUserKey() {
-		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
 	}
 
 	///////////
@@ -1206,34 +918,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrSaves(siteRequest_, BaseModel.staticSolrSaves(siteRequest_, BaseModel.staticSetSaves(siteRequest_, o)));
 	}
 
-	public List<String> solrSaves() {
-		List<String> l = new ArrayList<String>();
-		for(String o : saves) {
-			l.add(BaseModel.staticSolrSaves(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strSaves() {
-		return saves == null ? "" : saves.toString();
-	}
-
-	public List<String> sqlSaves() {
-		return saves;
-	}
-
-	public String jsonSaves() {
-		return saves == null ? "" : saves.toString();
-	}
-
-	public String htmTooltipSaves() {
-		return null;
-	}
-
-	public String htmSaves() {
-		return saves == null ? "" : StringEscapeUtils.escapeHtml4(strSaves());
-	}
-
 	/////////////////
 	// objectTitle //
 	/////////////////
@@ -1281,30 +965,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqObjectTitle(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectTitle(siteRequest_, BaseModel.staticSolrObjectTitle(siteRequest_, BaseModel.staticSetObjectTitle(siteRequest_, o)));
-	}
-
-	public String solrObjectTitle() {
-		return BaseModel.staticSolrObjectTitle(siteRequest_, objectTitle);
-	}
-
-	public String strObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String sqlObjectTitle() {
-		return objectTitle;
-	}
-
-	public String jsonObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String htmTooltipObjectTitle() {
-		return null;
-	}
-
-	public String htmObjectTitle() {
-		return objectTitle == null ? "" : StringEscapeUtils.escapeHtml4(strObjectTitle());
 	}
 
 	//////////////
@@ -1356,30 +1016,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrObjectId(siteRequest_, BaseModel.staticSolrObjectId(siteRequest_, BaseModel.staticSetObjectId(siteRequest_, o)));
 	}
 
-	public String solrObjectId() {
-		return BaseModel.staticSolrObjectId(siteRequest_, objectId);
-	}
-
-	public String strObjectId() {
-		return objectId == null ? "" : objectId;
-	}
-
-	public String sqlObjectId() {
-		return objectId;
-	}
-
-	public String jsonObjectId() {
-		return objectId == null ? "" : objectId;
-	}
-
-	public String htmTooltipObjectId() {
-		return null;
-	}
-
-	public String htmObjectId() {
-		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
-	}
-
 	///////////////////
 	// objectNameVar //
 	///////////////////
@@ -1427,30 +1063,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectNameVar(siteRequest_, BaseModel.staticSolrObjectNameVar(siteRequest_, BaseModel.staticSetObjectNameVar(siteRequest_, o)));
-	}
-
-	public String solrObjectNameVar() {
-		return BaseModel.staticSolrObjectNameVar(siteRequest_, objectNameVar);
-	}
-
-	public String strObjectNameVar() {
-		return objectNameVar == null ? "" : objectNameVar;
-	}
-
-	public String sqlObjectNameVar() {
-		return objectNameVar;
-	}
-
-	public String jsonObjectNameVar() {
-		return objectNameVar == null ? "" : objectNameVar;
-	}
-
-	public String htmTooltipObjectNameVar() {
-		return null;
-	}
-
-	public String htmObjectNameVar() {
-		return objectNameVar == null ? "" : StringEscapeUtils.escapeHtml4(strObjectNameVar());
 	}
 
 	///////////////////
@@ -1502,30 +1114,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrObjectSuggest(siteRequest_, BaseModel.staticSolrObjectSuggest(siteRequest_, BaseModel.staticSetObjectSuggest(siteRequest_, o)));
 	}
 
-	public String solrObjectSuggest() {
-		return BaseModel.staticSolrObjectSuggest(siteRequest_, objectSuggest);
-	}
-
-	public String strObjectSuggest() {
-		return objectSuggest == null ? "" : objectSuggest;
-	}
-
-	public String sqlObjectSuggest() {
-		return objectSuggest;
-	}
-
-	public String jsonObjectSuggest() {
-		return objectSuggest == null ? "" : objectSuggest;
-	}
-
-	public String htmTooltipObjectSuggest() {
-		return null;
-	}
-
-	public String htmObjectSuggest() {
-		return objectSuggest == null ? "" : StringEscapeUtils.escapeHtml4(strObjectSuggest());
-	}
-
 	////////////////
 	// objectText //
 	////////////////
@@ -1573,30 +1161,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqObjectText(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrObjectText(siteRequest_, BaseModel.staticSolrObjectText(siteRequest_, BaseModel.staticSetObjectText(siteRequest_, o)));
-	}
-
-	public String solrObjectText() {
-		return BaseModel.staticSolrObjectText(siteRequest_, objectText);
-	}
-
-	public String strObjectText() {
-		return objectText == null ? "" : objectText;
-	}
-
-	public String sqlObjectText() {
-		return objectText;
-	}
-
-	public String jsonObjectText() {
-		return objectText == null ? "" : objectText;
-	}
-
-	public String htmTooltipObjectText() {
-		return null;
-	}
-
-	public String htmObjectText() {
-		return objectText == null ? "" : StringEscapeUtils.escapeHtml4(strObjectText());
 	}
 
 	///////////////
@@ -1648,30 +1212,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrPageUrlId(siteRequest_, BaseModel.staticSolrPageUrlId(siteRequest_, BaseModel.staticSetPageUrlId(siteRequest_, o)));
 	}
 
-	public String solrPageUrlId() {
-		return BaseModel.staticSolrPageUrlId(siteRequest_, pageUrlId);
-	}
-
-	public String strPageUrlId() {
-		return pageUrlId == null ? "" : pageUrlId;
-	}
-
-	public String sqlPageUrlId() {
-		return pageUrlId;
-	}
-
-	public String jsonPageUrlId() {
-		return pageUrlId == null ? "" : pageUrlId;
-	}
-
-	public String htmTooltipPageUrlId() {
-		return null;
-	}
-
-	public String htmPageUrlId() {
-		return pageUrlId == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlId());
-	}
-
 	///////////////
 	// pageUrlPk //
 	///////////////
@@ -1719,30 +1259,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPageUrlPk(siteRequest_, BaseModel.staticSolrPageUrlPk(siteRequest_, BaseModel.staticSetPageUrlPk(siteRequest_, o)));
-	}
-
-	public String solrPageUrlPk() {
-		return BaseModel.staticSolrPageUrlPk(siteRequest_, pageUrlPk);
-	}
-
-	public String strPageUrlPk() {
-		return pageUrlPk == null ? "" : pageUrlPk;
-	}
-
-	public String sqlPageUrlPk() {
-		return pageUrlPk;
-	}
-
-	public String jsonPageUrlPk() {
-		return pageUrlPk == null ? "" : pageUrlPk;
-	}
-
-	public String htmTooltipPageUrlPk() {
-		return null;
-	}
-
-	public String htmPageUrlPk() {
-		return pageUrlPk == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlPk());
 	}
 
 	////////////////
@@ -1794,30 +1310,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return BaseModel.staticSolrStrPageUrlApi(siteRequest_, BaseModel.staticSolrPageUrlApi(siteRequest_, BaseModel.staticSetPageUrlApi(siteRequest_, o)));
 	}
 
-	public String solrPageUrlApi() {
-		return BaseModel.staticSolrPageUrlApi(siteRequest_, pageUrlApi);
-	}
-
-	public String strPageUrlApi() {
-		return pageUrlApi == null ? "" : pageUrlApi;
-	}
-
-	public String sqlPageUrlApi() {
-		return pageUrlApi;
-	}
-
-	public String jsonPageUrlApi() {
-		return pageUrlApi == null ? "" : pageUrlApi;
-	}
-
-	public String htmTooltipPageUrlApi() {
-		return null;
-	}
-
-	public String htmPageUrlApi() {
-		return pageUrlApi == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlApi());
-	}
-
 	////////////
 	// pageH1 //
 	////////////
@@ -1865,30 +1357,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 
 	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
 		return BaseModel.staticSolrStrPageH1(siteRequest_, BaseModel.staticSolrPageH1(siteRequest_, BaseModel.staticSetPageH1(siteRequest_, o)));
-	}
-
-	public String solrPageH1() {
-		return BaseModel.staticSolrPageH1(siteRequest_, pageH1);
-	}
-
-	public String strPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String sqlPageH1() {
-		return pageH1;
-	}
-
-	public String jsonPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String htmTooltipPageH1() {
-		return null;
-	}
-
-	public String htmPageH1() {
-		return pageH1 == null ? "" : StringEscapeUtils.escapeHtml4(strPageH1());
 	}
 
 	//////////////
@@ -2046,23 +1514,23 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeBaseModel(v, val);
+				o = relateBaseModel(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeBaseModel(String var, Object val) {
+	public Object relateBaseModel(String var, Object val) {
 		BaseModel oBaseModel = (BaseModel)this;
 		switch(var) {
 			default:
@@ -2313,63 +1781,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	/////////////
 	// define //
 	/////////////
-
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineBaseModel(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineBaseModel(String var, String val) {
-		switch(var.toLowerCase()) {
-			case "inheritpk":
-				if(val != null)
-					setInheritPk(val);
-				saves.add("inheritPk");
-				return val;
-			case "created":
-				if(val != null)
-					setCreated(val);
-				saves.add("created");
-				return val;
-			case "archived":
-				if(val != null)
-					setArchived(val);
-				saves.add("archived");
-				return val;
-			case "deleted":
-				if(val != null)
-					setDeleted(val);
-				saves.add("deleted");
-				return val;
-			case "sessionid":
-				if(val != null)
-					setSessionId(val);
-				saves.add("sessionId");
-				return val;
-			case "userid":
-				if(val != null)
-					setUserId(val);
-				saves.add("userId");
-				return val;
-			case "userkey":
-				if(val != null)
-					setUserKey(val);
-				saves.add("userKey");
-				return val;
-			default:
-				return null;
-		}
-	}
 
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
@@ -2667,46 +2078,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			if(!Objects.equals(pageUrlPk, original.getPageUrlPk()))
 				apiRequest.addVars("pageUrlPk");
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(pk, inheritPk, id, created, modified, archived, deleted, classCanonicalName, classSimpleName, classCanonicalNames, sessionId, userId, userKey, saves, objectTitle, objectId, objectSuggest, objectText, pageUrlId, pageUrlPk);
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof BaseModel))
-			return false;
-		BaseModel that = (BaseModel)o;
-		return Objects.equals( pk, that.pk )
-				&& Objects.equals( inheritPk, that.inheritPk )
-				&& Objects.equals( id, that.id )
-				&& Objects.equals( created, that.created )
-				&& Objects.equals( modified, that.modified )
-				&& Objects.equals( archived, that.archived )
-				&& Objects.equals( deleted, that.deleted )
-				&& Objects.equals( classCanonicalName, that.classCanonicalName )
-				&& Objects.equals( classSimpleName, that.classSimpleName )
-				&& Objects.equals( classCanonicalNames, that.classCanonicalNames )
-				&& Objects.equals( sessionId, that.sessionId )
-				&& Objects.equals( userId, that.userId )
-				&& Objects.equals( userKey, that.userKey )
-				&& Objects.equals( saves, that.saves )
-				&& Objects.equals( objectTitle, that.objectTitle )
-				&& Objects.equals( objectId, that.objectId )
-				&& Objects.equals( objectSuggest, that.objectSuggest )
-				&& Objects.equals( objectText, that.objectText )
-				&& Objects.equals( pageUrlId, that.pageUrlId )
-				&& Objects.equals( pageUrlPk, that.pageUrlPk );
 	}
 
 	//////////////

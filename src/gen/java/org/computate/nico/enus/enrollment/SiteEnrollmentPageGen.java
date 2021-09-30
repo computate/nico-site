@@ -132,27 +132,27 @@ public abstract class SiteEnrollmentPageGen<DEV> extends SiteEnrollmentGenPage {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSiteEnrollmentPage(v, val);
+				o = relateSiteEnrollmentPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSiteEnrollmentPage(String var, Object val) {
+	public Object relateSiteEnrollmentPage(String var, Object val) {
 		SiteEnrollmentPage oSiteEnrollmentPage = (SiteEnrollmentPage)this;
 		switch(var) {
 			default:
-				return super.attributeSiteEnrollmentGenPage(var, val);
+				return super.relateSiteEnrollmentGenPage(var, val);
 		}
 	}
 
@@ -216,28 +216,6 @@ public abstract class SiteEnrollmentPageGen<DEV> extends SiteEnrollmentGenPage {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSiteEnrollmentPage(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSiteEnrollmentPage(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.defineSiteEnrollmentGenPage(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -271,27 +249,6 @@ public abstract class SiteEnrollmentPageGen<DEV> extends SiteEnrollmentGenPage {
 			SiteEnrollmentPage original = (SiteEnrollmentPage)o;
 			super.apiRequestSiteEnrollmentGenPage();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SiteEnrollmentPage))
-			return false;
-		SiteEnrollmentPage that = (SiteEnrollmentPage)o;
-		return super.equals(o);
 	}
 
 	//////////////

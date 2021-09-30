@@ -81,12 +81,11 @@ public abstract class SearchListGen<DEV> {
 		return null;
 	}
 	protected SearchList cInit() {
-		Wrap<Class<?>> cWrap = new Wrap<Class<?>>().var("c").o(c);
+		Wrap<Class<?>> cWrap = new Wrap<Class<?>>().var("c");
 		if(c == null) {
 			_c(cWrap);
 			setC(cWrap.o);
 		}
-		cWrap.o(null);
 		return (SearchList)this;
 	}
 
@@ -120,12 +119,11 @@ public abstract class SearchListGen<DEV> {
 		return null;
 	}
 	protected SearchList siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (SearchList)this;
 	}
 
@@ -163,12 +161,11 @@ public abstract class SearchListGen<DEV> {
 		return Boolean.parseBoolean(o);
 	}
 	protected SearchList storeInit() {
-		Wrap<Boolean> storeWrap = new Wrap<Boolean>().var("store").o(store);
+		Wrap<Boolean> storeWrap = new Wrap<Boolean>().var("store");
 		if(store == null) {
 			_store(storeWrap);
 			setStore(storeWrap.o);
 		}
-		storeWrap.o(null);
 		return (SearchList)this;
 	}
 
@@ -182,22 +179,6 @@ public abstract class SearchListGen<DEV> {
 
 	public static String staticSolrFqStore(SiteRequestEnUS siteRequest_, String o) {
 		return SearchList.staticSolrStrStore(siteRequest_, SearchList.staticSolrStore(siteRequest_, SearchList.staticSetStore(siteRequest_, o)));
-	}
-
-	public Boolean solrStore() {
-		return SearchList.staticSolrStore(siteRequest_, store);
-	}
-
-	public String strStore() {
-		return store == null ? "" : store.toString();
-	}
-
-	public Boolean sqlStore() {
-		return store;
-	}
-
-	public String jsonStore() {
-		return store == null ? "" : store.toString();
 	}
 
 	//////////////
@@ -234,12 +215,11 @@ public abstract class SearchListGen<DEV> {
 		return Boolean.parseBoolean(o);
 	}
 	protected SearchList populateInit() {
-		Wrap<Boolean> populateWrap = new Wrap<Boolean>().var("populate").o(populate);
+		Wrap<Boolean> populateWrap = new Wrap<Boolean>().var("populate");
 		if(populate == null) {
 			_populate(populateWrap);
 			setPopulate(populateWrap.o);
 		}
-		populateWrap.o(null);
 		return (SearchList)this;
 	}
 
@@ -253,22 +233,6 @@ public abstract class SearchListGen<DEV> {
 
 	public static String staticSolrFqPopulate(SiteRequestEnUS siteRequest_, String o) {
 		return SearchList.staticSolrStrPopulate(siteRequest_, SearchList.staticSolrPopulate(siteRequest_, SearchList.staticSetPopulate(siteRequest_, o)));
-	}
-
-	public Boolean solrPopulate() {
-		return SearchList.staticSolrPopulate(siteRequest_, populate);
-	}
-
-	public String strPopulate() {
-		return populate == null ? "" : populate.toString();
-	}
-
-	public Boolean sqlPopulate() {
-		return populate;
-	}
-
-	public String jsonPopulate() {
-		return populate == null ? "" : populate.toString();
 	}
 
 	////////////
@@ -334,26 +298,6 @@ public abstract class SearchListGen<DEV> {
 
 	public static String staticSolrFqFields(SiteRequestEnUS siteRequest_, String o) {
 		return SearchList.staticSolrStrFields(siteRequest_, SearchList.staticSolrFields(siteRequest_, SearchList.staticSetFields(siteRequest_, o)));
-	}
-
-	public List<String> solrFields() {
-		List<String> l = new ArrayList<String>();
-		for(String o : fields) {
-			l.add(SearchList.staticSolrFields(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strFields() {
-		return fields == null ? "" : fields.toString();
-	}
-
-	public List<String> sqlFields() {
-		return fields;
-	}
-
-	public String jsonFields() {
-		return fields == null ? "" : fields.toString();
 	}
 
 	///////////////
@@ -462,12 +406,11 @@ public abstract class SearchListGen<DEV> {
 		return null;
 	}
 	protected SearchList solrDocumentListInit() {
-		Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().var("solrDocumentList").o(solrDocumentList);
+		Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().var("solrDocumentList");
 		if(solrDocumentList == null) {
 			_solrDocumentList(solrDocumentListWrap);
 			setSolrDocumentList(solrDocumentListWrap.o);
 		}
-		solrDocumentListWrap.o(null);
 		return (SearchList)this;
 	}
 
@@ -544,12 +487,11 @@ public abstract class SearchListGen<DEV> {
 		return null;
 	}
 	protected SearchList firstInit() {
-		Wrap<Object> firstWrap = new Wrap<Object>().var("first").o(first);
+		Wrap<Object> firstWrap = new Wrap<Object>().var("first");
 		if(first == null) {
 			_first(firstWrap);
 			setFirst(firstWrap.o);
 		}
-		firstWrap.o(null);
 		return (SearchList)this;
 	}
 
@@ -681,23 +623,23 @@ public abstract class SearchListGen<DEV> {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSearchList(v, val);
+				o = relateSearchList(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSearchList(String var, Object val) {
+	public Object relateSearchList(String var, Object val) {
 		SearchList oSearchList = (SearchList)this;
 		switch(var) {
 			default:
@@ -789,28 +731,6 @@ public abstract class SearchListGen<DEV> {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSearchList(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSearchList(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -843,27 +763,6 @@ public abstract class SearchListGen<DEV> {
 		if(o != null && o instanceof SearchList) {
 			SearchList original = (SearchList)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SearchList))
-			return false;
-		SearchList that = (SearchList)o;
-		return true;
 	}
 
 	//////////////

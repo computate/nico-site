@@ -1,53 +1,54 @@
 package org.computate.nico.enus.request;
 
-import org.computate.nico.enus.java.ZonedDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.vertx.ext.web.client.WebClient;
 import org.slf4j.LoggerFactory;
 import io.vertx.core.MultiMap;
-import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
+import java.lang.Long;
+import java.util.Map;
+import org.computate.nico.enus.user.SiteUser;
+import io.vertx.core.json.JsonObject;
+import org.computate.nico.enus.base.BaseModel;
+import java.math.RoundingMode;
+import java.math.MathContext;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import java.util.Objects;
+import java.util.List;
+import io.vertx.ext.auth.User;
+import org.apache.solr.client.solrj.SolrQuery;
+import java.util.Optional;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.computate.nico.enus.java.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.vertx.ext.web.client.WebClient;
+import java.util.HashMap;
 import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import io.vertx.sqlclient.SqlConnection;
 import org.apache.commons.collections.CollectionUtils;
-import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
-import io.vertx.core.json.JsonObject;
 import java.lang.String;
-import org.computate.nico.enus.base.BaseModel;
 import org.computate.nico.enus.wrap.Wrap;
-import java.math.RoundingMode;
 import org.computate.nico.enus.java.LocalDateSerializer;
 import org.slf4j.Logger;
-import java.math.MathContext;
 import io.vertx.core.Promise;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.computate.nico.enus.request.api.ApiRequest;
-import io.vertx.core.Future;
-import io.vertx.ext.web.api.service.ServiceRequest;
-import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
-import java.util.List;
-import io.vertx.ext.auth.User;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Object;
 import org.computate.nico.enus.config.ConfigKeys;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -63,7 +64,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
 
@@ -86,12 +86,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS configInit() {
-		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config").o(config);
+		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config");
 		if(config == null) {
 			_config(configWrap);
 			setConfig(configWrap.o);
 		}
-		configWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -125,12 +124,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -164,12 +162,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS webClientInit() {
-		Wrap<WebClient> webClientWrap = new Wrap<WebClient>().var("webClient").o(webClient);
+		Wrap<WebClient> webClientWrap = new Wrap<WebClient>().var("webClient");
 		if(webClient == null) {
 			_webClient(webClientWrap);
 			setWebClient(webClientWrap.o);
 		}
-		webClientWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -203,12 +200,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS apiRequest_Init() {
-		Wrap<ApiRequest> apiRequest_Wrap = new Wrap<ApiRequest>().var("apiRequest_").o(apiRequest_);
+		Wrap<ApiRequest> apiRequest_Wrap = new Wrap<ApiRequest>().var("apiRequest_");
 		if(apiRequest_ == null) {
 			_apiRequest_(apiRequest_Wrap);
 			setApiRequest_(apiRequest_Wrap.o);
 		}
-		apiRequest_Wrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -219,7 +215,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity jsonObject
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject jsonObject;
 
@@ -242,12 +237,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS jsonObjectInit() {
-		Wrap<JsonObject> jsonObjectWrap = new Wrap<JsonObject>().var("jsonObject").o(jsonObject);
+		Wrap<JsonObject> jsonObjectWrap = new Wrap<JsonObject>().var("jsonObject");
 		if(jsonObject == null) {
 			_jsonObject(jsonObjectWrap);
 			setJsonObject(jsonObjectWrap.o);
 		}
-		jsonObjectWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -281,12 +275,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS solrQueryInit() {
-		Wrap<SolrQuery> solrQueryWrap = new Wrap<SolrQuery>().var("solrQuery").o(solrQuery);
+		Wrap<SolrQuery> solrQueryWrap = new Wrap<SolrQuery>().var("solrQuery");
 		if(solrQuery == null) {
 			_solrQuery(solrQueryWrap);
 			setSolrQuery(solrQueryWrap.o);
 		}
-		solrQueryWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -320,12 +313,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS serviceRequestInit() {
-		Wrap<ServiceRequest> serviceRequestWrap = new Wrap<ServiceRequest>().var("serviceRequest").o(serviceRequest);
+		Wrap<ServiceRequest> serviceRequestWrap = new Wrap<ServiceRequest>().var("serviceRequest");
 		if(serviceRequest == null) {
 			_serviceRequest(serviceRequestWrap);
 			setServiceRequest(serviceRequestWrap.o);
 		}
-		serviceRequestWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -359,12 +351,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS userInit() {
-		Wrap<User> userWrap = new Wrap<User>().var("user").o(user);
+		Wrap<User> userWrap = new Wrap<User>().var("user");
 		if(user == null) {
 			_user(userWrap);
 			setUser(userWrap.o);
 		}
-		userWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -397,12 +388,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS userIdInit() {
-		Wrap<String> userIdWrap = new Wrap<String>().var("userId").o(userId);
+		Wrap<String> userIdWrap = new Wrap<String>().var("userId");
 		if(userId == null) {
 			_userId(userIdWrap);
 			setUserId(userIdWrap.o);
 		}
-		userIdWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -416,22 +406,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserId(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserId(siteRequest_, SiteRequestEnUS.staticSolrUserId(siteRequest_, SiteRequestEnUS.staticSetUserId(siteRequest_, o)));
-	}
-
-	public String solrUserId() {
-		return SiteRequestEnUS.staticSolrUserId(siteRequest_, userId);
-	}
-
-	public String strUserId() {
-		return userId == null ? "" : userId;
-	}
-
-	public String sqlUserId() {
-		return userId;
-	}
-
-	public String jsonUserId() {
-		return userId == null ? "" : userId;
 	}
 
 	/////////////
@@ -471,12 +445,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS userKeyInit() {
-		Wrap<Long> userKeyWrap = new Wrap<Long>().var("userKey").o(userKey);
+		Wrap<Long> userKeyWrap = new Wrap<Long>().var("userKey");
 		if(userKey == null) {
 			_userKey(userKeyWrap);
 			setUserKey(userKeyWrap.o);
 		}
-		userKeyWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -490,22 +463,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserKey(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserKey(siteRequest_, SiteRequestEnUS.staticSolrUserKey(siteRequest_, SiteRequestEnUS.staticSetUserKey(siteRequest_, o)));
-	}
-
-	public Long solrUserKey() {
-		return SiteRequestEnUS.staticSolrUserKey(siteRequest_, userKey);
-	}
-
-	public String strUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public Long sqlUserKey() {
-		return userKey;
-	}
-
-	public String jsonUserKey() {
-		return userKey == null ? "" : userKey.toString();
 	}
 
 	///////////////
@@ -537,12 +494,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS sessionIdInit() {
-		Wrap<String> sessionIdWrap = new Wrap<String>().var("sessionId").o(sessionId);
+		Wrap<String> sessionIdWrap = new Wrap<String>().var("sessionId");
 		if(sessionId == null) {
 			_sessionId(sessionIdWrap);
 			setSessionId(sessionIdWrap.o);
 		}
-		sessionIdWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -556,22 +512,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqSessionId(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrSessionId(siteRequest_, SiteRequestEnUS.staticSolrSessionId(siteRequest_, SiteRequestEnUS.staticSetSessionId(siteRequest_, o)));
-	}
-
-	public String solrSessionId() {
-		return SiteRequestEnUS.staticSolrSessionId(siteRequest_, sessionId);
-	}
-
-	public String strSessionId() {
-		return sessionId == null ? "" : sessionId;
-	}
-
-	public String sqlSessionId() {
-		return sessionId;
-	}
-
-	public String jsonSessionId() {
-		return sessionId == null ? "" : sessionId;
 	}
 
 	/////////////////////
@@ -603,12 +543,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS sessionIdBeforeInit() {
-		Wrap<String> sessionIdBeforeWrap = new Wrap<String>().var("sessionIdBefore").o(sessionIdBefore);
+		Wrap<String> sessionIdBeforeWrap = new Wrap<String>().var("sessionIdBefore");
 		if(sessionIdBefore == null) {
 			_sessionIdBefore(sessionIdBeforeWrap);
 			setSessionIdBefore(sessionIdBeforeWrap.o);
 		}
-		sessionIdBeforeWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -622,22 +561,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqSessionIdBefore(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrSessionIdBefore(siteRequest_, SiteRequestEnUS.staticSolrSessionIdBefore(siteRequest_, SiteRequestEnUS.staticSetSessionIdBefore(siteRequest_, o)));
-	}
-
-	public String solrSessionIdBefore() {
-		return SiteRequestEnUS.staticSolrSessionIdBefore(siteRequest_, sessionIdBefore);
-	}
-
-	public String strSessionIdBefore() {
-		return sessionIdBefore == null ? "" : sessionIdBefore;
-	}
-
-	public String sqlSessionIdBefore() {
-		return sessionIdBefore;
-	}
-
-	public String jsonSessionIdBefore() {
-		return sessionIdBefore == null ? "" : sessionIdBefore;
 	}
 
 	//////////////
@@ -669,12 +592,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS userNameInit() {
-		Wrap<String> userNameWrap = new Wrap<String>().var("userName").o(userName);
+		Wrap<String> userNameWrap = new Wrap<String>().var("userName");
 		if(userName == null) {
 			_userName(userNameWrap);
 			setUserName(userNameWrap.o);
 		}
-		userNameWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -688,22 +610,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserName(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserName(siteRequest_, SiteRequestEnUS.staticSolrUserName(siteRequest_, SiteRequestEnUS.staticSetUserName(siteRequest_, o)));
-	}
-
-	public String solrUserName() {
-		return SiteRequestEnUS.staticSolrUserName(siteRequest_, userName);
-	}
-
-	public String strUserName() {
-		return userName == null ? "" : userName;
-	}
-
-	public String sqlUserName() {
-		return userName;
-	}
-
-	public String jsonUserName() {
-		return userName == null ? "" : userName;
 	}
 
 	//////////////////
@@ -735,12 +641,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS userLastNameInit() {
-		Wrap<String> userLastNameWrap = new Wrap<String>().var("userLastName").o(userLastName);
+		Wrap<String> userLastNameWrap = new Wrap<String>().var("userLastName");
 		if(userLastName == null) {
 			_userLastName(userLastNameWrap);
 			setUserLastName(userLastNameWrap.o);
 		}
-		userLastNameWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -754,22 +659,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserLastName(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserLastName(siteRequest_, SiteRequestEnUS.staticSolrUserLastName(siteRequest_, SiteRequestEnUS.staticSetUserLastName(siteRequest_, o)));
-	}
-
-	public String solrUserLastName() {
-		return SiteRequestEnUS.staticSolrUserLastName(siteRequest_, userLastName);
-	}
-
-	public String strUserLastName() {
-		return userLastName == null ? "" : userLastName;
-	}
-
-	public String sqlUserLastName() {
-		return userLastName;
-	}
-
-	public String jsonUserLastName() {
-		return userLastName == null ? "" : userLastName;
 	}
 
 	///////////////////
@@ -801,12 +690,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS userFirstNameInit() {
-		Wrap<String> userFirstNameWrap = new Wrap<String>().var("userFirstName").o(userFirstName);
+		Wrap<String> userFirstNameWrap = new Wrap<String>().var("userFirstName");
 		if(userFirstName == null) {
 			_userFirstName(userFirstNameWrap);
 			setUserFirstName(userFirstNameWrap.o);
 		}
-		userFirstNameWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -820,22 +708,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserFirstName(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserFirstName(siteRequest_, SiteRequestEnUS.staticSolrUserFirstName(siteRequest_, SiteRequestEnUS.staticSetUserFirstName(siteRequest_, o)));
-	}
-
-	public String solrUserFirstName() {
-		return SiteRequestEnUS.staticSolrUserFirstName(siteRequest_, userFirstName);
-	}
-
-	public String strUserFirstName() {
-		return userFirstName == null ? "" : userFirstName;
-	}
-
-	public String sqlUserFirstName() {
-		return userFirstName;
-	}
-
-	public String jsonUserFirstName() {
-		return userFirstName == null ? "" : userFirstName;
 	}
 
 	//////////////////
@@ -867,12 +739,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS userFullNameInit() {
-		Wrap<String> userFullNameWrap = new Wrap<String>().var("userFullName").o(userFullName);
+		Wrap<String> userFullNameWrap = new Wrap<String>().var("userFullName");
 		if(userFullName == null) {
 			_userFullName(userFullNameWrap);
 			setUserFullName(userFullNameWrap.o);
 		}
-		userFullNameWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -886,22 +757,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserFullName(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserFullName(siteRequest_, SiteRequestEnUS.staticSolrUserFullName(siteRequest_, SiteRequestEnUS.staticSetUserFullName(siteRequest_, o)));
-	}
-
-	public String solrUserFullName() {
-		return SiteRequestEnUS.staticSolrUserFullName(siteRequest_, userFullName);
-	}
-
-	public String strUserFullName() {
-		return userFullName == null ? "" : userFullName;
-	}
-
-	public String sqlUserFullName() {
-		return userFullName;
-	}
-
-	public String jsonUserFullName() {
-		return userFullName == null ? "" : userFullName;
 	}
 
 	///////////////
@@ -933,12 +788,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS userEmailInit() {
-		Wrap<String> userEmailWrap = new Wrap<String>().var("userEmail").o(userEmail);
+		Wrap<String> userEmailWrap = new Wrap<String>().var("userEmail");
 		if(userEmail == null) {
 			_userEmail(userEmailWrap);
 			setUserEmail(userEmailWrap.o);
 		}
-		userEmailWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -952,22 +806,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqUserEmail(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrUserEmail(siteRequest_, SiteRequestEnUS.staticSolrUserEmail(siteRequest_, SiteRequestEnUS.staticSetUserEmail(siteRequest_, o)));
-	}
-
-	public String solrUserEmail() {
-		return SiteRequestEnUS.staticSolrUserEmail(siteRequest_, userEmail);
-	}
-
-	public String strUserEmail() {
-		return userEmail == null ? "" : userEmail;
-	}
-
-	public String sqlUserEmail() {
-		return userEmail;
-	}
-
-	public String jsonUserEmail() {
-		return userEmail == null ? "" : userEmail;
 	}
 
 	////////////////////
@@ -1036,26 +874,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return SiteRequestEnUS.staticSolrStrUserRealmRoles(siteRequest_, SiteRequestEnUS.staticSolrUserRealmRoles(siteRequest_, SiteRequestEnUS.staticSetUserRealmRoles(siteRequest_, o)));
 	}
 
-	public List<String> solrUserRealmRoles() {
-		List<String> l = new ArrayList<String>();
-		for(String o : userRealmRoles) {
-			l.add(SiteRequestEnUS.staticSolrUserRealmRoles(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strUserRealmRoles() {
-		return userRealmRoles == null ? "" : userRealmRoles.toString();
-	}
-
-	public List<String> sqlUserRealmRoles() {
-		return userRealmRoles;
-	}
-
-	public String jsonUserRealmRoles() {
-		return userRealmRoles == null ? "" : userRealmRoles.toString();
-	}
-
 	//////////////////
 	// userResource //
 	//////////////////
@@ -1063,7 +881,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userResource
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject userResource;
 
@@ -1086,12 +903,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS userResourceInit() {
-		Wrap<JsonObject> userResourceWrap = new Wrap<JsonObject>().var("userResource").o(userResource);
+		Wrap<JsonObject> userResourceWrap = new Wrap<JsonObject>().var("userResource");
 		if(userResource == null) {
 			_userResource(userResourceWrap);
 			setUserResource(userResourceWrap.o);
 		}
-		userResourceWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1161,24 +977,42 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return SiteRequestEnUS.staticSolrStrUserResourceRoles(siteRequest_, SiteRequestEnUS.staticSolrUserResourceRoles(siteRequest_, SiteRequestEnUS.staticSetUserResourceRoles(siteRequest_, o)));
 	}
 
-	public List<String> solrUserResourceRoles() {
-		List<String> l = new ArrayList<String>();
-		for(String o : userResourceRoles) {
-			l.add(SiteRequestEnUS.staticSolrUserResourceRoles(siteRequest_, o));
+	///////////////
+	// siteUser_ //
+	///////////////
+
+	/**	 The entity siteUser_
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected SiteUser siteUser_;
+
+	/**	<br/> The entity siteUser_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteUser_">Find the entity siteUser_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _siteUser_(Wrap<SiteUser> c);
+
+	public SiteUser getSiteUser_() {
+		return siteUser_;
+	}
+
+	public void setSiteUser_(SiteUser siteUser_) {
+		this.siteUser_ = siteUser_;
+	}
+	public static SiteUser staticSetSiteUser_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SiteRequestEnUS siteUser_Init() {
+		Wrap<SiteUser> siteUser_Wrap = new Wrap<SiteUser>().var("siteUser_");
+		if(siteUser_ == null) {
+			_siteUser_(siteUser_Wrap);
+			setSiteUser_(siteUser_Wrap.o);
 		}
-		return l;
-	}
-
-	public String strUserResourceRoles() {
-		return userResourceRoles == null ? "" : userResourceRoles.toString();
-	}
-
-	public List<String> sqlUserResourceRoles() {
-		return userResourceRoles;
-	}
-
-	public String jsonUserResourceRoles() {
-		return userResourceRoles == null ? "" : userResourceRoles.toString();
+		return (SiteRequestEnUS)this;
 	}
 
 	//////////////////
@@ -1211,12 +1045,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS solrDocumentInit() {
-		Wrap<SolrDocument> solrDocumentWrap = new Wrap<SolrDocument>().var("solrDocument").o(solrDocument);
+		Wrap<SolrDocument> solrDocumentWrap = new Wrap<SolrDocument>().var("solrDocument");
 		if(solrDocument == null) {
 			_solrDocument(solrDocumentWrap);
 			setSolrDocument(solrDocumentWrap.o);
 		}
-		solrDocumentWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1254,12 +1087,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return Boolean.parseBoolean(o);
 	}
 	protected SiteRequestEnUS pageAdminInit() {
-		Wrap<Boolean> pageAdminWrap = new Wrap<Boolean>().var("pageAdmin").o(pageAdmin);
+		Wrap<Boolean> pageAdminWrap = new Wrap<Boolean>().var("pageAdmin");
 		if(pageAdmin == null) {
 			_pageAdmin(pageAdminWrap);
 			setPageAdmin(pageAdminWrap.o);
 		}
-		pageAdminWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1273,22 +1105,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqPageAdmin(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrPageAdmin(siteRequest_, SiteRequestEnUS.staticSolrPageAdmin(siteRequest_, SiteRequestEnUS.staticSetPageAdmin(siteRequest_, o)));
-	}
-
-	public Boolean solrPageAdmin() {
-		return SiteRequestEnUS.staticSolrPageAdmin(siteRequest_, pageAdmin);
-	}
-
-	public String strPageAdmin() {
-		return pageAdmin == null ? "" : pageAdmin.toString();
-	}
-
-	public Boolean sqlPageAdmin() {
-		return pageAdmin;
-	}
-
-	public String jsonPageAdmin() {
-		return pageAdmin == null ? "" : pageAdmin.toString();
 	}
 
 	///////////////
@@ -1328,12 +1144,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS requestPkInit() {
-		Wrap<Long> requestPkWrap = new Wrap<Long>().var("requestPk").o(requestPk);
+		Wrap<Long> requestPkWrap = new Wrap<Long>().var("requestPk");
 		if(requestPk == null) {
 			_requestPk(requestPkWrap);
 			setRequestPk(requestPkWrap.o);
 		}
-		requestPkWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1347,22 +1162,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqRequestPk(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrRequestPk(siteRequest_, SiteRequestEnUS.staticSolrRequestPk(siteRequest_, SiteRequestEnUS.staticSetRequestPk(siteRequest_, o)));
-	}
-
-	public Long solrRequestPk() {
-		return SiteRequestEnUS.staticSolrRequestPk(siteRequest_, requestPk);
-	}
-
-	public String strRequestPk() {
-		return requestPk == null ? "" : requestPk.toString();
-	}
-
-	public Long sqlRequestPk() {
-		return requestPk;
-	}
-
-	public String jsonRequestPk() {
-		return requestPk == null ? "" : requestPk.toString();
 	}
 
 	////////////////
@@ -1394,12 +1193,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS requestUriInit() {
-		Wrap<String> requestUriWrap = new Wrap<String>().var("requestUri").o(requestUri);
+		Wrap<String> requestUriWrap = new Wrap<String>().var("requestUri");
 		if(requestUri == null) {
 			_requestUri(requestUriWrap);
 			setRequestUri(requestUriWrap.o);
 		}
-		requestUriWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1413,22 +1211,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqRequestUri(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrRequestUri(siteRequest_, SiteRequestEnUS.staticSolrRequestUri(siteRequest_, SiteRequestEnUS.staticSetRequestUri(siteRequest_, o)));
-	}
-
-	public String solrRequestUri() {
-		return SiteRequestEnUS.staticSolrRequestUri(siteRequest_, requestUri);
-	}
-
-	public String strRequestUri() {
-		return requestUri == null ? "" : requestUri;
-	}
-
-	public String sqlRequestUri() {
-		return requestUri;
-	}
-
-	public String jsonRequestUri() {
-		return requestUri == null ? "" : requestUri;
 	}
 
 	///////////////////
@@ -1460,12 +1242,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o;
 	}
 	protected SiteRequestEnUS requestMethodInit() {
-		Wrap<String> requestMethodWrap = new Wrap<String>().var("requestMethod").o(requestMethod);
+		Wrap<String> requestMethodWrap = new Wrap<String>().var("requestMethod");
 		if(requestMethod == null) {
 			_requestMethod(requestMethodWrap);
 			setRequestMethod(requestMethodWrap.o);
 		}
-		requestMethodWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1479,22 +1260,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public static String staticSolrFqRequestMethod(SiteRequestEnUS siteRequest_, String o) {
 		return SiteRequestEnUS.staticSolrStrRequestMethod(siteRequest_, SiteRequestEnUS.staticSolrRequestMethod(siteRequest_, SiteRequestEnUS.staticSetRequestMethod(siteRequest_, o)));
-	}
-
-	public String solrRequestMethod() {
-		return SiteRequestEnUS.staticSolrRequestMethod(siteRequest_, requestMethod);
-	}
-
-	public String strRequestMethod() {
-		return requestMethod == null ? "" : requestMethod;
-	}
-
-	public String sqlRequestMethod() {
-		return requestMethod;
-	}
-
-	public String jsonRequestMethod() {
-		return requestMethod == null ? "" : requestMethod;
 	}
 
 	///////////////////
@@ -1527,12 +1292,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS sqlConnectionInit() {
-		Wrap<SqlConnection> sqlConnectionWrap = new Wrap<SqlConnection>().var("sqlConnection").o(sqlConnection);
+		Wrap<SqlConnection> sqlConnectionWrap = new Wrap<SqlConnection>().var("sqlConnection");
 		if(sqlConnection == null) {
 			_sqlConnection(sqlConnectionWrap);
 			setSqlConnection(sqlConnectionWrap.o);
 		}
-		sqlConnectionWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1566,12 +1330,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return null;
 	}
 	protected SiteRequestEnUS requestHeadersInit() {
-		Wrap<MultiMap> requestHeadersWrap = new Wrap<MultiMap>().var("requestHeaders").o(requestHeaders);
+		Wrap<MultiMap> requestHeadersWrap = new Wrap<MultiMap>().var("requestHeaders");
 		if(requestHeaders == null) {
 			_requestHeaders(requestHeadersWrap);
 			setRequestHeaders(requestHeadersWrap.o);
 		}
-		requestHeadersWrap.o(null);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1644,6 +1407,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				userRealmRolesInit();
 				userResourceInit();
 				userResourceRolesInit();
+				siteUser_Init();
 				solrDocumentInit();
 				pageAdminInit();
 				requestPkInit();
@@ -1733,6 +1497,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.userResource;
 			case "userResourceRoles":
 				return oSiteRequestEnUS.userResourceRoles;
+			case "siteUser_":
+				return oSiteRequestEnUS.siteUser_;
 			case "solrDocument":
 				return oSiteRequestEnUS.solrDocument;
 			case "pageAdmin":
@@ -1755,23 +1521,23 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSiteRequestEnUS(v, val);
+				o = relateSiteRequestEnUS(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSiteRequestEnUS(String var, Object val) {
+	public Object relateSiteRequestEnUS(String var, Object val) {
 		SiteRequestEnUS oSiteRequestEnUS = (SiteRequestEnUS)this;
 		switch(var) {
 			default:
@@ -1959,28 +1725,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSiteRequestEnUS(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSiteRequestEnUS(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -2016,27 +1760,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	}
 
 	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SiteRequestEnUS))
-			return false;
-		SiteRequestEnUS that = (SiteRequestEnUS)o;
-		return true;
-	}
-
-	//////////////
 	// toString //
 	//////////////
 
@@ -2067,6 +1790,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	public static final String VAR_userRealmRoles = "userRealmRoles";
 	public static final String VAR_userResource = "userResource";
 	public static final String VAR_userResourceRoles = "userResourceRoles";
+	public static final String VAR_siteUser_ = "siteUser_";
 	public static final String VAR_solrDocument = "solrDocument";
 	public static final String VAR_pageAdmin = "pageAdmin";
 	public static final String VAR_requestPk = "requestPk";

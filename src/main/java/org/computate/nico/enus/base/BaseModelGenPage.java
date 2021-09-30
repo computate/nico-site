@@ -80,18 +80,8 @@ public class BaseModelGenPage extends BaseModelGenPageGen<PageLayout> {
 	}
 
 	@Override
-	protected void _pageH1(Wrap<String> c) {
-			c.o("");
-	}
-
-	@Override
-	protected void _pageH2(Wrap<String> c) {
-		c.o("");
-	}
-
-	@Override
-	protected void _pageH3(Wrap<String> c) {
-		c.o("");
+	protected void _classSimpleName(Wrap<String> w) {
+		w.o("BaseModel");
 	}
 
 	@Override

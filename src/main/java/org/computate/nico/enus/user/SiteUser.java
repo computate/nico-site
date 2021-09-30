@@ -37,7 +37,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * 
  * RoleUser: true
  * Role.enUS: SiteAdmin
- */    
+ */     
 public class SiteUser extends SiteUserGen<BaseModel> {
 
 	/**
@@ -92,5 +92,44 @@ public class SiteUser extends SiteUserGen<BaseModel> {
 	 * Define: true
 	 */
 	protected void _userFullName(Wrap<String> c) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 1
+	 * NomAffichage.enUS: receive email
+	 */
+	protected void _userReceiveEmails(Wrap<Boolean> c) {
+		c.o(false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 2
+	 * DisplayName.enUS: see archived
+	 */
+	protected void _seeArchived(Wrap<Boolean> c) {
+		c.o(false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 3
+	 * DisplayName.enUS: see deleted
+	 */
+	protected void _seeDeleted(Wrap<Boolean> c) {
+		c.o(false);
 	}
 }

@@ -132,27 +132,27 @@ public abstract class BaseModelPageGen<DEV> extends BaseModelGenPage {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeBaseModelPage(v, val);
+				o = relateBaseModelPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeBaseModelPage(String var, Object val) {
+	public Object relateBaseModelPage(String var, Object val) {
 		BaseModelPage oBaseModelPage = (BaseModelPage)this;
 		switch(var) {
 			default:
-				return super.attributeBaseModelGenPage(var, val);
+				return super.relateBaseModelGenPage(var, val);
 		}
 	}
 
@@ -216,28 +216,6 @@ public abstract class BaseModelPageGen<DEV> extends BaseModelGenPage {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineBaseModelPage(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineBaseModelPage(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.defineBaseModelGenPage(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -271,27 +249,6 @@ public abstract class BaseModelPageGen<DEV> extends BaseModelGenPage {
 			BaseModelPage original = (BaseModelPage)o;
 			super.apiRequestBaseModelGenPage();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof BaseModelPage))
-			return false;
-		BaseModelPage that = (BaseModelPage)o;
-		return super.equals(o);
 	}
 
 	//////////////

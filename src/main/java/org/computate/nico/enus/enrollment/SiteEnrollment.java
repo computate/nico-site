@@ -1,4 +1,4 @@
-package org.computate.nico.enus.enrollment;                   
+package org.computate.nico.enus.enrollment;                    
 
 import java.util.List;
 

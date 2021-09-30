@@ -480,7 +480,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setSqlConnection(sqlConnection);
 				sqlPATCHSiteUser(o, inheritPk).onSuccess(siteUser -> {
 					defineSiteUser(siteUser).onSuccess(c -> {
-						attributeSiteUser(siteUser).onSuccess(d -> {
+						relateSiteUser(siteUser).onSuccess(d -> {
 							indexSiteUser(siteUser).onSuccess(e -> {
 								promise1.complete(siteUser);
 							}).onFailure(ex -> {
@@ -606,6 +606,30 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							num++;
 							bParams.add(o2.sqlUserFullName());
 						break;
+					case "setUserReceiveEmails":
+							o2.setUserReceiveEmails(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_userReceiveEmails + "=$" + num);
+							num++;
+							bParams.add(o2.sqlUserReceiveEmails());
+						break;
+					case "setSeeArchived":
+							o2.setSeeArchived(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_seeArchived + "=$" + num);
+							num++;
+							bParams.add(o2.sqlSeeArchived());
+						break;
+					case "setSeeDeleted":
+							o2.setSeeDeleted(jsonObject.getBoolean(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_seeDeleted + "=$" + num);
+							num++;
+							bParams.add(o2.sqlSeeDeleted());
+						break;
 				}
 			}
 			bSql.append(" WHERE pk=$" + num);
@@ -619,7 +643,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
 						RuntimeException ex2 = new RuntimeException("value SiteUser failed", ex);
-						LOG.error(String.format("attributeSiteUser failed. "), ex2);
+						LOG.error(String.format("relateSiteUser failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
 				}));
@@ -765,7 +789,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				createSiteUser(siteRequest).onSuccess(siteUser -> {
 					sqlPOSTSiteUser(siteUser, inheritPk).onSuccess(b -> {
 						defineSiteUser(siteUser).onSuccess(c -> {
-							attributeSiteUser(siteUser).onSuccess(d -> {
+							relateSiteUser(siteUser).onSuccess(d -> {
 								indexSiteUser(siteUser).onSuccess(e -> {
 									promise1.complete(siteUser);
 								}).onFailure(ex -> {
@@ -931,6 +955,33 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						num++;
 						bParams.add(o2.sqlUserFullName());
 						break;
+					case SiteUser.VAR_userReceiveEmails:
+						o2.setUserReceiveEmails(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_userReceiveEmails + "=$" + num);
+						num++;
+						bParams.add(o2.sqlUserReceiveEmails());
+						break;
+					case SiteUser.VAR_seeArchived:
+						o2.setSeeArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_seeArchived + "=$" + num);
+						num++;
+						bParams.add(o2.sqlSeeArchived());
+						break;
+					case SiteUser.VAR_seeDeleted:
+						o2.setSeeDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_seeDeleted + "=$" + num);
+						num++;
+						bParams.add(o2.sqlSeeDeleted());
+						break;
 					}
 				}
 			}
@@ -945,7 +996,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						a.handle(Future.succeededFuture());
 					}).onFailure(ex -> {
 						RuntimeException ex2 = new RuntimeException("value SiteUser failed", ex);
-						LOG.error(String.format("attributeSiteUser failed. "), ex2);
+						LOG.error(String.format("relateSiteUser failed. "), ex2);
 						a.handle(Future.failedFuture(ex2));
 					});
 				}));
@@ -1068,6 +1119,9 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 	public static final String VAR_userFirstName = "userFirstName";
 	public static final String VAR_userLastName = "userLastName";
 	public static final String VAR_userFullName = "userFullName";
+	public static final String VAR_userReceiveEmails = "userReceiveEmails";
+	public static final String VAR_seeArchived = "seeArchived";
+	public static final String VAR_seeDeleted = "seeDeleted";
 
 	// General //
 
@@ -1393,7 +1447,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		return promise.future();
 	}
 
-	public Future<Void> attributeSiteUser(SiteUser o) {
+	public Future<Void> relateSiteUser(SiteUser o) {
 		Promise<Void> promise = Promise.promise();
 			promise.complete();
 		return promise.future();

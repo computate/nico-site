@@ -1,4 +1,4 @@
-package org.computate.nico.enus.base;             
+package org.computate.nico.enus.base;              
 
 import java.text.Normalizer;
 import java.time.ZoneId;
@@ -19,7 +19,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * SuperPage: PageLayout
  * 
  * Keyword: classSimpleNameCluster
- */                      
+ */               
 public class BaseModel extends BaseModelGen<Object> {
 
 	/**
@@ -81,7 +81,7 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * HtmlRow: 1
 	 * HtmlCell: 3
 	 * DisplayName.enUS: modified
-	 */ 
+	 */   
 	protected void _modified(Wrap<ZonedDateTime> w) {
 		w.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 	}

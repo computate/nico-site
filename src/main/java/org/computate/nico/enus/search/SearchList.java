@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -28,6 +29,7 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
+import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.wrap.Wrap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -166,6 +168,11 @@ public class SearchList<DEV> extends SearchListGen<DEV> implements Iterable<DEV>
 		try {
 			if(this.c != null)
 				solrQuery.addFilterQuery("classCanonicalName_indexedstored_string:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
+			SiteUser siteUser = siteRequest_.getSiteUser_();
+			if(siteUser == null || BooleanUtils.isNotTrue(siteUser.getSeeDeleted()))
+				solrQuery.addFilterQuery("deleted_indexedstored_boolean:false");
+			if(siteUser == null || BooleanUtils.isNotTrue(siteUser.getSeeArchived()))
+				solrQuery.addFilterQuery("archived_indexedstored_boolean:false");
 			if(solrQuery.getQuery() != null) {
 				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);

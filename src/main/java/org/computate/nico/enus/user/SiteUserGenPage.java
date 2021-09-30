@@ -3,6 +3,7 @@ package org.computate.nico.enus.user;
 import java.util.List;
 import java.lang.Long;
 import java.lang.String;
+import java.lang.Boolean;
 import org.computate.nico.enus.page.PageLayout;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
@@ -79,18 +80,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	}
 
 	@Override
-	protected void _pageH1(Wrap<String> c) {
-			c.o("site users");
-	}
-
-	@Override
-	protected void _pageH2(Wrap<String> c) {
-		c.o("");
-	}
-
-	@Override
-	protected void _pageH3(Wrap<String> c) {
-		c.o("");
+	protected void _classSimpleName(Wrap<String> w) {
+		w.o("SiteUser");
 	}
 
 	@Override

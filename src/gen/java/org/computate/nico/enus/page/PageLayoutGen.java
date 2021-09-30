@@ -128,6 +128,104 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 
 	///////////////////
+	// requestZoneId //
+	///////////////////
+
+	/**	 The entity requestZoneId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String requestZoneId;
+
+	/**	<br/> The entity requestZoneId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:requestZoneId">Find the entity requestZoneId in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _requestZoneId(Wrap<String> w);
+
+	public String getRequestZoneId() {
+		return requestZoneId;
+	}
+	public void setRequestZoneId(String o) {
+		this.requestZoneId = PageLayout.staticSetRequestZoneId(siteRequest_, o);
+	}
+	public static String staticSetRequestZoneId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected PageLayout requestZoneIdInit() {
+		Wrap<String> requestZoneIdWrap = new Wrap<String>().var("requestZoneId");
+		if(requestZoneId == null) {
+			_requestZoneId(requestZoneIdWrap);
+			setRequestZoneId(requestZoneIdWrap.o);
+		}
+		return (PageLayout)this;
+	}
+
+	public static String staticSolrRequestZoneId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrRequestZoneId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqRequestZoneId(SiteRequestEnUS siteRequest_, String o) {
+		return PageLayout.staticSolrStrRequestZoneId(siteRequest_, PageLayout.staticSolrRequestZoneId(siteRequest_, PageLayout.staticSetRequestZoneId(siteRequest_, o)));
+	}
+
+	/////////////////////
+	// requestLocaleId //
+	/////////////////////
+
+	/**	 The entity requestLocaleId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String requestLocaleId;
+
+	/**	<br/> The entity requestLocaleId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:requestLocaleId">Find the entity requestLocaleId in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _requestLocaleId(Wrap<String> w);
+
+	public String getRequestLocaleId() {
+		return requestLocaleId;
+	}
+	public void setRequestLocaleId(String o) {
+		this.requestLocaleId = PageLayout.staticSetRequestLocaleId(siteRequest_, o);
+	}
+	public static String staticSetRequestLocaleId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected PageLayout requestLocaleIdInit() {
+		Wrap<String> requestLocaleIdWrap = new Wrap<String>().var("requestLocaleId");
+		if(requestLocaleId == null) {
+			_requestLocaleId(requestLocaleIdWrap);
+			setRequestLocaleId(requestLocaleIdWrap.o);
+		}
+		return (PageLayout)this;
+	}
+
+	public static String staticSolrRequestLocaleId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrRequestLocaleId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqRequestLocaleId(SiteRequestEnUS siteRequest_, String o) {
+		return PageLayout.staticSolrStrRequestLocaleId(siteRequest_, PageLayout.staticSolrRequestLocaleId(siteRequest_, PageLayout.staticSetRequestLocaleId(siteRequest_, o)));
+	}
+
+	///////////////////
 	// staticBaseUrl //
 	///////////////////
 
@@ -174,22 +272,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static String staticSolrFqStaticBaseUrl(SiteRequestEnUS siteRequest_, String o) {
 		return PageLayout.staticSolrStrStaticBaseUrl(siteRequest_, PageLayout.staticSolrStaticBaseUrl(siteRequest_, PageLayout.staticSetStaticBaseUrl(siteRequest_, o)));
-	}
-
-	public String solrStaticBaseUrl() {
-		return PageLayout.staticSolrStaticBaseUrl(siteRequest_, staticBaseUrl);
-	}
-
-	public String strStaticBaseUrl() {
-		return staticBaseUrl == null ? "" : staticBaseUrl;
-	}
-
-	public String sqlStaticBaseUrl() {
-		return staticBaseUrl;
-	}
-
-	public String jsonStaticBaseUrl() {
-		return staticBaseUrl == null ? "" : staticBaseUrl;
 	}
 
 	/////////////
@@ -241,22 +323,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrPageUri(siteRequest_, PageLayout.staticSolrPageUri(siteRequest_, PageLayout.staticSetPageUri(siteRequest_, o)));
 	}
 
-	public String solrPageUri() {
-		return PageLayout.staticSolrPageUri(siteRequest_, pageUri);
-	}
-
-	public String strPageUri() {
-		return pageUri == null ? "" : pageUri;
-	}
-
-	public String sqlPageUri() {
-		return pageUri;
-	}
-
-	public String jsonPageUri() {
-		return pageUri == null ? "" : pageUri;
-	}
-
 	////////////////
 	// pageMethod //
 	////////////////
@@ -304,22 +370,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static String staticSolrFqPageMethod(SiteRequestEnUS siteRequest_, String o) {
 		return PageLayout.staticSolrStrPageMethod(siteRequest_, PageLayout.staticSolrPageMethod(siteRequest_, PageLayout.staticSetPageMethod(siteRequest_, o)));
-	}
-
-	public String solrPageMethod() {
-		return PageLayout.staticSolrPageMethod(siteRequest_, pageMethod);
-	}
-
-	public String strPageMethod() {
-		return pageMethod == null ? "" : pageMethod;
-	}
-
-	public String sqlPageMethod() {
-		return pageMethod;
-	}
-
-	public String jsonPageMethod() {
-		return pageMethod == null ? "" : pageMethod;
 	}
 
 	////////////
@@ -416,22 +466,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrLong0(siteRequest_, PageLayout.staticSolrLong0(siteRequest_, PageLayout.staticSetLong0(siteRequest_, o)));
 	}
 
-	public Long solrLong0() {
-		return PageLayout.staticSolrLong0(siteRequest_, long0);
-	}
-
-	public String strLong0() {
-		return long0 == null ? "" : long0.toString();
-	}
-
-	public Long sqlLong0() {
-		return long0;
-	}
-
-	public String jsonLong0() {
-		return long0 == null ? "" : long0.toString();
-	}
-
 	///////////
 	// long1 //
 	///////////
@@ -487,22 +521,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static String staticSolrFqLong1(SiteRequestEnUS siteRequest_, String o) {
 		return PageLayout.staticSolrStrLong1(siteRequest_, PageLayout.staticSolrLong1(siteRequest_, PageLayout.staticSetLong1(siteRequest_, o)));
-	}
-
-	public Long solrLong1() {
-		return PageLayout.staticSolrLong1(siteRequest_, long1);
-	}
-
-	public String strLong1() {
-		return long1 == null ? "" : long1.toString();
-	}
-
-	public Long sqlLong1() {
-		return long1;
-	}
-
-	public String jsonLong1() {
-		return long1 == null ? "" : long1.toString();
 	}
 
 	//////////
@@ -562,22 +580,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrInt0(siteRequest_, PageLayout.staticSolrInt0(siteRequest_, PageLayout.staticSetInt0(siteRequest_, o)));
 	}
 
-	public Integer solrInt0() {
-		return PageLayout.staticSolrInt0(siteRequest_, int0);
-	}
-
-	public String strInt0() {
-		return int0 == null ? "" : int0.toString();
-	}
-
-	public Integer sqlInt0() {
-		return int0;
-	}
-
-	public String jsonInt0() {
-		return int0 == null ? "" : int0.toString();
-	}
-
 	//////////
 	// int1 //
 	//////////
@@ -635,22 +637,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrInt1(siteRequest_, PageLayout.staticSolrInt1(siteRequest_, PageLayout.staticSetInt1(siteRequest_, o)));
 	}
 
-	public Integer solrInt1() {
-		return PageLayout.staticSolrInt1(siteRequest_, int1);
-	}
-
-	public String strInt1() {
-		return int1 == null ? "" : int1.toString();
-	}
-
-	public Integer sqlInt1() {
-		return int1;
-	}
-
-	public String jsonInt1() {
-		return int1 == null ? "" : int1.toString();
-	}
-
 	///////////////////
 	// promiseBefore //
 	///////////////////
@@ -693,199 +679,53 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return promise.future();
 	}
 
-	////////////
-	// pageH1 //
-	////////////
+	/////////////////////
+	// classSimpleName //
+	/////////////////////
 
-	/**	 The entity pageH1
+	/**	 The entity classSimpleName
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected String pageH1;
+	protected String classSimpleName;
 
-	/**	<br/> The entity pageH1
+	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _pageH1(Wrap<String> c);
+	protected abstract void _classSimpleName(Wrap<String> c);
 
-	public String getPageH1() {
-		return pageH1;
+	public String getClassSimpleName() {
+		return classSimpleName;
 	}
-	public void setPageH1(String o) {
-		this.pageH1 = PageLayout.staticSetPageH1(siteRequest_, o);
+	public void setClassSimpleName(String o) {
+		this.classSimpleName = PageLayout.staticSetClassSimpleName(siteRequest_, o);
 	}
-	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSetClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected PageLayout pageH1Init() {
-		Wrap<String> pageH1Wrap = new Wrap<String>().var("pageH1");
-		if(pageH1 == null) {
-			_pageH1(pageH1Wrap);
-			setPageH1(pageH1Wrap.o);
+	protected PageLayout classSimpleNameInit() {
+		Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName");
+		if(classSimpleName == null) {
+			_classSimpleName(classSimpleNameWrap);
+			setClassSimpleName(classSimpleNameWrap.o);
 		}
 		return (PageLayout)this;
 	}
 
-	public static String staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrStrClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return PageLayout.staticSolrStrPageH1(siteRequest_, PageLayout.staticSolrPageH1(siteRequest_, PageLayout.staticSetPageH1(siteRequest_, o)));
-	}
-
-	public String solrPageH1() {
-		return PageLayout.staticSolrPageH1(siteRequest_, pageH1);
-	}
-
-	public String strPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String sqlPageH1() {
-		return pageH1;
-	}
-
-	public String jsonPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	////////////
-	// pageH2 //
-	////////////
-
-	/**	 The entity pageH2
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected String pageH2;
-
-	/**	<br/> The entity pageH2
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH2">Find the entity pageH2 in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageH2(Wrap<String> c);
-
-	public String getPageH2() {
-		return pageH2;
-	}
-	public void setPageH2(String o) {
-		this.pageH2 = PageLayout.staticSetPageH2(siteRequest_, o);
-	}
-	public static String staticSetPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected PageLayout pageH2Init() {
-		Wrap<String> pageH2Wrap = new Wrap<String>().var("pageH2");
-		if(pageH2 == null) {
-			_pageH2(pageH2Wrap);
-			setPageH2(pageH2Wrap.o);
-		}
-		return (PageLayout)this;
-	}
-
-	public static String staticSolrPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageH2(SiteRequestEnUS siteRequest_, String o) {
-		return PageLayout.staticSolrStrPageH2(siteRequest_, PageLayout.staticSolrPageH2(siteRequest_, PageLayout.staticSetPageH2(siteRequest_, o)));
-	}
-
-	public String solrPageH2() {
-		return PageLayout.staticSolrPageH2(siteRequest_, pageH2);
-	}
-
-	public String strPageH2() {
-		return pageH2 == null ? "" : pageH2;
-	}
-
-	public String sqlPageH2() {
-		return pageH2;
-	}
-
-	public String jsonPageH2() {
-		return pageH2 == null ? "" : pageH2;
-	}
-
-	////////////
-	// pageH3 //
-	////////////
-
-	/**	 The entity pageH3
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected String pageH3;
-
-	/**	<br/> The entity pageH3
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH3">Find the entity pageH3 in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageH3(Wrap<String> c);
-
-	public String getPageH3() {
-		return pageH3;
-	}
-	public void setPageH3(String o) {
-		this.pageH3 = PageLayout.staticSetPageH3(siteRequest_, o);
-	}
-	public static String staticSetPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected PageLayout pageH3Init() {
-		Wrap<String> pageH3Wrap = new Wrap<String>().var("pageH3");
-		if(pageH3 == null) {
-			_pageH3(pageH3Wrap);
-			setPageH3(pageH3Wrap.o);
-		}
-		return (PageLayout)this;
-	}
-
-	public static String staticSolrPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageH3(SiteRequestEnUS siteRequest_, String o) {
-		return PageLayout.staticSolrStrPageH3(siteRequest_, PageLayout.staticSolrPageH3(siteRequest_, PageLayout.staticSetPageH3(siteRequest_, o)));
-	}
-
-	public String solrPageH3() {
-		return PageLayout.staticSolrPageH3(siteRequest_, pageH3);
-	}
-
-	public String strPageH3() {
-		return pageH3 == null ? "" : pageH3;
-	}
-
-	public String sqlPageH3() {
-		return pageH3;
-	}
-
-	public String jsonPageH3() {
-		return pageH3 == null ? "" : pageH3;
+	public static String staticSolrFqClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
+		return PageLayout.staticSolrStrClassSimpleName(siteRequest_, PageLayout.staticSolrClassSimpleName(siteRequest_, PageLayout.staticSetClassSimpleName(siteRequest_, o)));
 	}
 
 	///////////////
@@ -935,22 +775,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static String staticSolrFqPageTitle(SiteRequestEnUS siteRequest_, String o) {
 		return PageLayout.staticSolrStrPageTitle(siteRequest_, PageLayout.staticSolrPageTitle(siteRequest_, PageLayout.staticSetPageTitle(siteRequest_, o)));
-	}
-
-	public String solrPageTitle() {
-		return PageLayout.staticSolrPageTitle(siteRequest_, pageTitle);
-	}
-
-	public String strPageTitle() {
-		return pageTitle == null ? "" : pageTitle;
-	}
-
-	public String sqlPageTitle() {
-		return pageTitle;
-	}
-
-	public String jsonPageTitle() {
-		return pageTitle == null ? "" : pageTitle;
 	}
 
 	///////////
@@ -1019,26 +843,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrRoles(siteRequest_, PageLayout.staticSolrRoles(siteRequest_, PageLayout.staticSetRoles(siteRequest_, o)));
 	}
 
-	public List<String> solrRoles() {
-		List<String> l = new ArrayList<String>();
-		for(String o : roles) {
-			l.add(PageLayout.staticSolrRoles(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strRoles() {
-		return roles == null ? "" : roles.toString();
-	}
-
-	public List<String> sqlRoles() {
-		return roles;
-	}
-
-	public String jsonRoles() {
-		return roles == null ? "" : roles.toString();
-	}
-
 	///////////////////
 	// rolesRequired //
 	///////////////////
@@ -1105,26 +909,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrRolesRequired(siteRequest_, PageLayout.staticSolrRolesRequired(siteRequest_, PageLayout.staticSetRolesRequired(siteRequest_, o)));
 	}
 
-	public List<String> solrRolesRequired() {
-		List<String> l = new ArrayList<String>();
-		for(String o : rolesRequired) {
-			l.add(PageLayout.staticSolrRolesRequired(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strRolesRequired() {
-		return rolesRequired == null ? "" : rolesRequired.toString();
-	}
-
-	public List<String> sqlRolesRequired() {
-		return rolesRequired;
-	}
-
-	public String jsonRolesRequired() {
-		return rolesRequired == null ? "" : rolesRequired.toString();
-	}
-
 	////////////////////
 	// authRolesAdmin //
 	////////////////////
@@ -1189,26 +973,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static String staticSolrFqAuthRolesAdmin(SiteRequestEnUS siteRequest_, String o) {
 		return PageLayout.staticSolrStrAuthRolesAdmin(siteRequest_, PageLayout.staticSolrAuthRolesAdmin(siteRequest_, PageLayout.staticSetAuthRolesAdmin(siteRequest_, o)));
-	}
-
-	public List<String> solrAuthRolesAdmin() {
-		List<String> l = new ArrayList<String>();
-		for(String o : authRolesAdmin) {
-			l.add(PageLayout.staticSolrAuthRolesAdmin(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strAuthRolesAdmin() {
-		return authRolesAdmin == null ? "" : authRolesAdmin.toString();
-	}
-
-	public List<String> sqlAuthRolesAdmin() {
-		return authRolesAdmin;
-	}
-
-	public String jsonAuthRolesAdmin() {
-		return authRolesAdmin == null ? "" : authRolesAdmin.toString();
 	}
 
 	////////////////
@@ -1368,22 +1132,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrPageImageUri(siteRequest_, PageLayout.staticSolrPageImageUri(siteRequest_, PageLayout.staticSetPageImageUri(siteRequest_, o)));
 	}
 
-	public String solrPageImageUri() {
-		return PageLayout.staticSolrPageImageUri(siteRequest_, pageImageUri);
-	}
-
-	public String strPageImageUri() {
-		return pageImageUri == null ? "" : pageImageUri;
-	}
-
-	public String sqlPageImageUri() {
-		return pageImageUri;
-	}
-
-	public String jsonPageImageUri() {
-		return pageImageUri == null ? "" : pageImageUri;
-	}
-
 	//////////////////////
 	// contextIconGroup //
 	//////////////////////
@@ -1431,22 +1179,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static String staticSolrFqContextIconGroup(SiteRequestEnUS siteRequest_, String o) {
 		return PageLayout.staticSolrStrContextIconGroup(siteRequest_, PageLayout.staticSolrContextIconGroup(siteRequest_, PageLayout.staticSetContextIconGroup(siteRequest_, o)));
-	}
-
-	public String solrContextIconGroup() {
-		return PageLayout.staticSolrContextIconGroup(siteRequest_, contextIconGroup);
-	}
-
-	public String strContextIconGroup() {
-		return contextIconGroup == null ? "" : contextIconGroup;
-	}
-
-	public String sqlContextIconGroup() {
-		return contextIconGroup;
-	}
-
-	public String jsonContextIconGroup() {
-		return contextIconGroup == null ? "" : contextIconGroup;
 	}
 
 	/////////////////////
@@ -1498,22 +1230,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return PageLayout.staticSolrStrContextIconName(siteRequest_, PageLayout.staticSolrContextIconName(siteRequest_, PageLayout.staticSetContextIconName(siteRequest_, o)));
 	}
 
-	public String solrContextIconName() {
-		return PageLayout.staticSolrContextIconName(siteRequest_, contextIconName);
-	}
-
-	public String strContextIconName() {
-		return contextIconName == null ? "" : contextIconName;
-	}
-
-	public String sqlContextIconName() {
-		return contextIconName;
-	}
-
-	public String jsonContextIconName() {
-		return contextIconName == null ? "" : contextIconName;
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -1541,6 +1257,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			try {
 				siteRequest_Init();
 				serviceRequestInit();
+				requestZoneIdInit();
+				requestLocaleIdInit();
 				staticBaseUrlInit();
 				pageUriInit();
 				pageMethodInit();
@@ -1565,9 +1283,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		}).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
-				pageH1Init();
-				pageH2Init();
-				pageH3Init();
+				classSimpleNameInit();
 				pageTitleInit();
 				rolesInit();
 				rolesRequiredInit();
@@ -1649,6 +1365,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				return oPageLayout.siteRequest_;
 			case "serviceRequest":
 				return oPageLayout.serviceRequest;
+			case "requestZoneId":
+				return oPageLayout.requestZoneId;
+			case "requestLocaleId":
+				return oPageLayout.requestLocaleId;
 			case "staticBaseUrl":
 				return oPageLayout.staticBaseUrl;
 			case "pageUri":
@@ -1667,12 +1387,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				return oPageLayout.int1;
 			case "promiseBefore":
 				return oPageLayout.promiseBefore;
-			case "pageH1":
-				return oPageLayout.pageH1;
-			case "pageH2":
-				return oPageLayout.pageH2;
-			case "pageH3":
-				return oPageLayout.pageH3;
+			case "classSimpleName":
+				return oPageLayout.classSimpleName;
 			case "pageTitle":
 				return oPageLayout.pageTitle;
 			case "roles":
@@ -1699,23 +1415,23 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributePageLayout(v, val);
+				o = relatePageLayout(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributePageLayout(String var, Object val) {
+	public Object relatePageLayout(String var, Object val) {
 		PageLayout oPageLayout = (PageLayout)this;
 		switch(var) {
 			default:
@@ -1732,6 +1448,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static Object staticSetPageLayout(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "requestZoneId":
+			return PageLayout.staticSetRequestZoneId(siteRequest_, o);
+		case "requestLocaleId":
+			return PageLayout.staticSetRequestLocaleId(siteRequest_, o);
 		case "staticBaseUrl":
 			return PageLayout.staticSetStaticBaseUrl(siteRequest_, o);
 		case "pageUri":
@@ -1746,12 +1466,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			return PageLayout.staticSetInt0(siteRequest_, o);
 		case "int1":
 			return PageLayout.staticSetInt1(siteRequest_, o);
-		case "pageH1":
-			return PageLayout.staticSetPageH1(siteRequest_, o);
-		case "pageH2":
-			return PageLayout.staticSetPageH2(siteRequest_, o);
-		case "pageH3":
-			return PageLayout.staticSetPageH3(siteRequest_, o);
+		case "classSimpleName":
+			return PageLayout.staticSetClassSimpleName(siteRequest_, o);
 		case "pageTitle":
 			return PageLayout.staticSetPageTitle(siteRequest_, o);
 		case "roles":
@@ -1780,6 +1496,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static Object staticSolrPageLayout(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "requestZoneId":
+			return PageLayout.staticSolrRequestZoneId(siteRequest_, (String)o);
+		case "requestLocaleId":
+			return PageLayout.staticSolrRequestLocaleId(siteRequest_, (String)o);
 		case "staticBaseUrl":
 			return PageLayout.staticSolrStaticBaseUrl(siteRequest_, (String)o);
 		case "pageUri":
@@ -1794,12 +1514,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			return PageLayout.staticSolrInt0(siteRequest_, (Integer)o);
 		case "int1":
 			return PageLayout.staticSolrInt1(siteRequest_, (Integer)o);
-		case "pageH1":
-			return PageLayout.staticSolrPageH1(siteRequest_, (String)o);
-		case "pageH2":
-			return PageLayout.staticSolrPageH2(siteRequest_, (String)o);
-		case "pageH3":
-			return PageLayout.staticSolrPageH3(siteRequest_, (String)o);
+		case "classSimpleName":
+			return PageLayout.staticSolrClassSimpleName(siteRequest_, (String)o);
 		case "pageTitle":
 			return PageLayout.staticSolrPageTitle(siteRequest_, (String)o);
 		case "roles":
@@ -1828,6 +1544,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static String staticSolrStrPageLayout(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "requestZoneId":
+			return PageLayout.staticSolrStrRequestZoneId(siteRequest_, (String)o);
+		case "requestLocaleId":
+			return PageLayout.staticSolrStrRequestLocaleId(siteRequest_, (String)o);
 		case "staticBaseUrl":
 			return PageLayout.staticSolrStrStaticBaseUrl(siteRequest_, (String)o);
 		case "pageUri":
@@ -1842,12 +1562,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			return PageLayout.staticSolrStrInt0(siteRequest_, (Integer)o);
 		case "int1":
 			return PageLayout.staticSolrStrInt1(siteRequest_, (Integer)o);
-		case "pageH1":
-			return PageLayout.staticSolrStrPageH1(siteRequest_, (String)o);
-		case "pageH2":
-			return PageLayout.staticSolrStrPageH2(siteRequest_, (String)o);
-		case "pageH3":
-			return PageLayout.staticSolrStrPageH3(siteRequest_, (String)o);
+		case "classSimpleName":
+			return PageLayout.staticSolrStrClassSimpleName(siteRequest_, (String)o);
 		case "pageTitle":
 			return PageLayout.staticSolrStrPageTitle(siteRequest_, (String)o);
 		case "roles":
@@ -1876,6 +1592,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 	public static String staticSolrFqPageLayout(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "requestZoneId":
+			return PageLayout.staticSolrFqRequestZoneId(siteRequest_, o);
+		case "requestLocaleId":
+			return PageLayout.staticSolrFqRequestLocaleId(siteRequest_, o);
 		case "staticBaseUrl":
 			return PageLayout.staticSolrFqStaticBaseUrl(siteRequest_, o);
 		case "pageUri":
@@ -1890,12 +1610,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			return PageLayout.staticSolrFqInt0(siteRequest_, o);
 		case "int1":
 			return PageLayout.staticSolrFqInt1(siteRequest_, o);
-		case "pageH1":
-			return PageLayout.staticSolrFqPageH1(siteRequest_, o);
-		case "pageH2":
-			return PageLayout.staticSolrFqPageH2(siteRequest_, o);
-		case "pageH3":
-			return PageLayout.staticSolrFqPageH3(siteRequest_, o);
+		case "classSimpleName":
+			return PageLayout.staticSolrFqClassSimpleName(siteRequest_, o);
 		case "pageTitle":
 			return PageLayout.staticSolrFqPageTitle(siteRequest_, o);
 		case "roles":
@@ -1918,28 +1634,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	/////////////
 	// define //
 	/////////////
-
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = definePageLayout(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object definePageLayout(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
 
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
@@ -1976,27 +1670,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 
 	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof PageLayout))
-			return false;
-		PageLayout that = (PageLayout)o;
-		return true;
-	}
-
-	//////////////
 	// toString //
 	//////////////
 
@@ -2009,6 +1682,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public static final String VAR_siteRequest_ = "siteRequest_";
 	public static final String VAR_serviceRequest = "serviceRequest";
+	public static final String VAR_requestZoneId = "requestZoneId";
+	public static final String VAR_requestLocaleId = "requestLocaleId";
 	public static final String VAR_staticBaseUrl = "staticBaseUrl";
 	public static final String VAR_pageUri = "pageUri";
 	public static final String VAR_pageMethod = "pageMethod";
@@ -2018,9 +1693,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	public static final String VAR_int0 = "int0";
 	public static final String VAR_int1 = "int1";
 	public static final String VAR_promiseBefore = "promiseBefore";
-	public static final String VAR_pageH1 = "pageH1";
-	public static final String VAR_pageH2 = "pageH2";
-	public static final String VAR_pageH3 = "pageH3";
+	public static final String VAR_classSimpleName = "classSimpleName";
 	public static final String VAR_pageTitle = "pageTitle";
 	public static final String VAR_roles = "roles";
 	public static final String VAR_rolesRequired = "rolesRequired";

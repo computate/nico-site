@@ -79,12 +79,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 solrClientComputateInit() {
-		Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate").o(solrClientComputate);
+		Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().var("solrClientComputate");
 		if(solrClientComputate == null) {
 			_solrClientComputate(solrClientComputateWrap);
 			setSolrClientComputate(solrClientComputateWrap.o);
 		}
-		solrClientComputateWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -118,12 +117,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -134,7 +132,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
 
@@ -157,12 +154,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 configInit() {
-		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config").o(config);
+		Wrap<JsonObject> configWrap = new Wrap<JsonObject>().var("config");
 		if(config == null) {
 			_config(configWrap);
 			setConfig(configWrap.o);
 		}
-		configWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -195,12 +191,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return o;
 	}
 	protected AppSwagger2 appNameInit() {
-		Wrap<String> appNameWrap = new Wrap<String>().var("appName").o(appName);
+		Wrap<String> appNameWrap = new Wrap<String>().var("appName");
 		if(appName == null) {
 			_appName(appNameWrap);
 			setAppName(appNameWrap.o);
 		}
-		appNameWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -214,22 +209,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqAppName(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrAppName(siteRequest_, AppSwagger2.staticSolrAppName(siteRequest_, AppSwagger2.staticSetAppName(siteRequest_, o)));
-	}
-
-	public String solrAppName() {
-		return AppSwagger2.staticSolrAppName(siteRequest_, appName);
-	}
-
-	public String strAppName() {
-		return appName == null ? "" : appName;
-	}
-
-	public String sqlAppName() {
-		return appName;
-	}
-
-	public String jsonAppName() {
-		return appName == null ? "" : appName;
 	}
 
 	//////////////////
@@ -261,12 +240,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return o;
 	}
 	protected AppSwagger2 languageNameInit() {
-		Wrap<String> languageNameWrap = new Wrap<String>().var("languageName").o(languageName);
+		Wrap<String> languageNameWrap = new Wrap<String>().var("languageName");
 		if(languageName == null) {
 			_languageName(languageNameWrap);
 			setLanguageName(languageNameWrap.o);
 		}
-		languageNameWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -280,22 +258,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqLanguageName(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrLanguageName(siteRequest_, AppSwagger2.staticSolrLanguageName(siteRequest_, AppSwagger2.staticSetLanguageName(siteRequest_, o)));
-	}
-
-	public String solrLanguageName() {
-		return AppSwagger2.staticSolrLanguageName(siteRequest_, languageName);
-	}
-
-	public String strLanguageName() {
-		return languageName == null ? "" : languageName;
-	}
-
-	public String sqlLanguageName() {
-		return languageName;
-	}
-
-	public String jsonLanguageName() {
-		return languageName == null ? "" : languageName;
 	}
 
 	/////////////
@@ -327,12 +289,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return o;
 	}
 	protected AppSwagger2 appPathInit() {
-		Wrap<String> appPathWrap = new Wrap<String>().var("appPath").o(appPath);
+		Wrap<String> appPathWrap = new Wrap<String>().var("appPath");
 		if(appPath == null) {
 			_appPath(appPathWrap);
 			setAppPath(appPathWrap.o);
 		}
-		appPathWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -346,22 +307,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqAppPath(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrAppPath(siteRequest_, AppSwagger2.staticSolrAppPath(siteRequest_, AppSwagger2.staticSetAppPath(siteRequest_, o)));
-	}
-
-	public String solrAppPath() {
-		return AppSwagger2.staticSolrAppPath(siteRequest_, appPath);
-	}
-
-	public String strAppPath() {
-		return appPath == null ? "" : appPath;
-	}
-
-	public String sqlAppPath() {
-		return appPath;
-	}
-
-	public String jsonAppPath() {
-		return appPath == null ? "" : appPath;
 	}
 
 	////////////////////
@@ -393,12 +338,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return o;
 	}
 	protected AppSwagger2 openApiVersionInit() {
-		Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion").o(openApiVersion);
+		Wrap<String> openApiVersionWrap = new Wrap<String>().var("openApiVersion");
 		if(openApiVersion == null) {
 			_openApiVersion(openApiVersionWrap);
 			setOpenApiVersion(openApiVersionWrap.o);
 		}
-		openApiVersionWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -412,22 +356,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrOpenApiVersion(siteRequest_, AppSwagger2.staticSolrOpenApiVersion(siteRequest_, AppSwagger2.staticSetOpenApiVersion(siteRequest_, o)));
-	}
-
-	public String solrOpenApiVersion() {
-		return AppSwagger2.staticSolrOpenApiVersion(siteRequest_, openApiVersion);
-	}
-
-	public String strOpenApiVersion() {
-		return openApiVersion == null ? "" : openApiVersion;
-	}
-
-	public String sqlOpenApiVersion() {
-		return openApiVersion;
-	}
-
-	public String jsonOpenApiVersion() {
-		return openApiVersion == null ? "" : openApiVersion;
 	}
 
 	//////////////////////////
@@ -467,12 +395,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 openApiVersionNumberInit() {
-		Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber").o(openApiVersionNumber);
+		Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().var("openApiVersionNumber");
 		if(openApiVersionNumber == null) {
 			_openApiVersionNumber(openApiVersionNumberWrap);
 			setOpenApiVersionNumber(openApiVersionNumberWrap.o);
 		}
-		openApiVersionNumberWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -486,22 +413,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqOpenApiVersionNumber(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrOpenApiVersionNumber(siteRequest_, AppSwagger2.staticSolrOpenApiVersionNumber(siteRequest_, AppSwagger2.staticSetOpenApiVersionNumber(siteRequest_, o)));
-	}
-
-	public Integer solrOpenApiVersionNumber() {
-		return AppSwagger2.staticSolrOpenApiVersionNumber(siteRequest_, openApiVersionNumber);
-	}
-
-	public String strOpenApiVersionNumber() {
-		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
-	}
-
-	public Integer sqlOpenApiVersionNumber() {
-		return openApiVersionNumber;
-	}
-
-	public String jsonOpenApiVersionNumber() {
-		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
 
 	////////////////
@@ -541,12 +452,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 tabsSchemaInit() {
-		Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema").o(tabsSchema);
+		Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().var("tabsSchema");
 		if(tabsSchema == null) {
 			_tabsSchema(tabsSchemaWrap);
 			setTabsSchema(tabsSchemaWrap.o);
 		}
-		tabsSchemaWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -560,22 +470,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqTabsSchema(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrTabsSchema(siteRequest_, AppSwagger2.staticSolrTabsSchema(siteRequest_, AppSwagger2.staticSetTabsSchema(siteRequest_, o)));
-	}
-
-	public Integer solrTabsSchema() {
-		return AppSwagger2.staticSolrTabsSchema(siteRequest_, tabsSchema);
-	}
-
-	public String strTabsSchema() {
-		return tabsSchema == null ? "" : tabsSchema.toString();
-	}
-
-	public Integer sqlTabsSchema() {
-		return tabsSchema;
-	}
-
-	public String jsonTabsSchema() {
-		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
 	////////////////
@@ -607,12 +501,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return o;
 	}
 	protected AppSwagger2 apiVersionInit() {
-		Wrap<String> apiVersionWrap = new Wrap<String>().var("apiVersion").o(apiVersion);
+		Wrap<String> apiVersionWrap = new Wrap<String>().var("apiVersion");
 		if(apiVersion == null) {
 			_apiVersion(apiVersionWrap);
 			setApiVersion(apiVersionWrap.o);
 		}
-		apiVersionWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -626,22 +519,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqApiVersion(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrApiVersion(siteRequest_, AppSwagger2.staticSolrApiVersion(siteRequest_, AppSwagger2.staticSetApiVersion(siteRequest_, o)));
-	}
-
-	public String solrApiVersion() {
-		return AppSwagger2.staticSolrApiVersion(siteRequest_, apiVersion);
-	}
-
-	public String strApiVersion() {
-		return apiVersion == null ? "" : apiVersion;
-	}
-
-	public String sqlApiVersion() {
-		return apiVersion;
-	}
-
-	public String jsonApiVersion() {
-		return apiVersion == null ? "" : apiVersion;
 	}
 
 	/////////////////////
@@ -673,12 +550,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return o;
 	}
 	protected AppSwagger2 openApiYamlPathInit() {
-		Wrap<String> openApiYamlPathWrap = new Wrap<String>().var("openApiYamlPath").o(openApiYamlPath);
+		Wrap<String> openApiYamlPathWrap = new Wrap<String>().var("openApiYamlPath");
 		if(openApiYamlPath == null) {
 			_openApiYamlPath(openApiYamlPathWrap);
 			setOpenApiYamlPath(openApiYamlPathWrap.o);
 		}
-		openApiYamlPathWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -692,22 +568,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public static String staticSolrFqOpenApiYamlPath(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrOpenApiYamlPath(siteRequest_, AppSwagger2.staticSolrOpenApiYamlPath(siteRequest_, AppSwagger2.staticSetOpenApiYamlPath(siteRequest_, o)));
-	}
-
-	public String solrOpenApiYamlPath() {
-		return AppSwagger2.staticSolrOpenApiYamlPath(siteRequest_, openApiYamlPath);
-	}
-
-	public String strOpenApiYamlPath() {
-		return openApiYamlPath == null ? "" : openApiYamlPath;
-	}
-
-	public String sqlOpenApiYamlPath() {
-		return openApiYamlPath;
-	}
-
-	public String jsonOpenApiYamlPath() {
-		return openApiYamlPath == null ? "" : openApiYamlPath;
 	}
 
 	/////////////////////
@@ -740,12 +600,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 openApiYamlFileInit() {
-		Wrap<File> openApiYamlFileWrap = new Wrap<File>().var("openApiYamlFile").o(openApiYamlFile);
+		Wrap<File> openApiYamlFileWrap = new Wrap<File>().var("openApiYamlFile");
 		if(openApiYamlFile == null) {
 			_openApiYamlFile(openApiYamlFileWrap);
 			setOpenApiYamlFile(openApiYamlFileWrap.o);
 		}
-		openApiYamlFileWrap.o(null);
 		return (AppSwagger2)this;
 	}
 
@@ -779,12 +638,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 wInit() {
-		Wrap<AllWriter> wWrap = new Wrap<AllWriter>().var("w").o(w);
+		Wrap<AllWriter> wWrap = new Wrap<AllWriter>().var("w");
 		if(w == null) {
 			_w(wWrap);
 			setW(wWrap.o);
 		}
-		wWrap.o(null);
 		if(w != null)
 			w.initDeepForClass(siteRequest_);
 		return (AppSwagger2)this;
@@ -820,12 +678,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 wPathsInit() {
-		Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths").o(wPaths);
+		Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().var("wPaths");
 		if(wPaths == null) {
 			_wPaths(wPathsWrap);
 			setWPaths(wPathsWrap.o);
 		}
-		wPathsWrap.o(null);
 		if(wPaths != null)
 			wPaths.initDeepForClass(siteRequest_);
 		return (AppSwagger2)this;
@@ -861,12 +718,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 wRequestBodiesInit() {
-		Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies").o(wRequestBodies);
+		Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().var("wRequestBodies");
 		if(wRequestBodies == null) {
 			_wRequestBodies(wRequestBodiesWrap);
 			setWRequestBodies(wRequestBodiesWrap.o);
 		}
-		wRequestBodiesWrap.o(null);
 		if(wRequestBodies != null)
 			wRequestBodies.initDeepForClass(siteRequest_);
 		return (AppSwagger2)this;
@@ -902,12 +758,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return null;
 	}
 	protected AppSwagger2 wSchemasInit() {
-		Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas").o(wSchemas);
+		Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().var("wSchemas");
 		if(wSchemas == null) {
 			_wSchemas(wSchemasWrap);
 			setWSchemas(wSchemasWrap.o);
 		}
-		wSchemasWrap.o(null);
 		if(wSchemas != null)
 			wSchemas.initDeepForClass(siteRequest_);
 		return (AppSwagger2)this;
@@ -1031,23 +886,23 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeAppSwagger2(v, val);
+				o = relateAppSwagger2(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeAppSwagger2(String var, Object val) {
+	public Object relateAppSwagger2(String var, Object val) {
 		AppSwagger2 oAppSwagger2 = (AppSwagger2)this;
 		switch(var) {
 			default:
@@ -1179,28 +1034,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineAppSwagger2(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineAppSwagger2(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -1233,27 +1066,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		if(o != null && o instanceof AppSwagger2) {
 			AppSwagger2 original = (AppSwagger2)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof AppSwagger2))
-			return false;
-		AppSwagger2 that = (AppSwagger2)o;
-		return true;
 	}
 
 	//////////////

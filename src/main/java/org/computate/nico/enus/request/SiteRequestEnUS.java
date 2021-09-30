@@ -4,17 +4,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrDocument;
-
 import org.computate.nico.enus.request.api.ApiRequest;
+import org.computate.nico.enus.user.SiteUser;
 import org.computate.nico.enus.wrap.Wrap;
-import org.computate.nico.enus.writer.AllWriter;
 
 import io.vertx.core.MultiMap;
 import io.vertx.core.json.JsonArray;
@@ -140,6 +138,17 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 		roles.stream().forEach(r -> {
 			addUserResourceRoles((String)r);
 		});
+	}
+
+	protected void _siteUser_(Wrap<SiteUser> c) { 
+		if(userId != null) {
+			SiteUser o = new SiteUser();
+			o.setUserName(userName);
+			o.setUserFirstName(userFirstName);
+			o.setUserLastName(userLastName);
+			o.setUserId(userId);
+			c.o(o);
+		}
 	}
 
 	protected void _solrDocument(Wrap<SolrDocument> c) {  

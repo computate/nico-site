@@ -9,7 +9,7 @@ import org.computate.nico.enus.wrap.Wrap;
 
 import io.vertx.core.Promise;
 
-/**
+/**  
  * Model: true
  * Api: true
  * Page: true
@@ -47,7 +47,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/                  
+ **/        
 public class SitePet extends SitePetGen<BaseModel> {
 	
 
@@ -180,7 +180,7 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * HtmlRow: 6
 	 * HtmlCell: 1
 	 * DisplayName.enUS: Do you want updates, if you do how many?
-	 */               
+	 */                
 	protected void _sendUpdates(Wrap<Boolean> w) {
 	}
 

@@ -88,12 +88,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest siteRequest_Init() {
-		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
+		Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_");
 		if(siteRequest_ == null) {
 			_siteRequest_(siteRequest_Wrap);
 			setSiteRequest_(siteRequest_Wrap.o);
 		}
-		siteRequest_Wrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -146,12 +145,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 	}
 	protected ApiRequest createdInit() {
-		Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created").o(created);
+		Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created");
 		if(created == null) {
 			_created(createdWrap);
 			setCreated(createdWrap.o);
 		}
-		createdWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -165,22 +163,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqCreated(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrCreated(siteRequest_, ApiRequest.staticSolrCreated(siteRequest_, ApiRequest.staticSetCreated(siteRequest_, o)));
-	}
-
-	public Date solrCreated() {
-		return ApiRequest.staticSolrCreated(siteRequest_, created);
-	}
-
-	public String strCreated() {
-		return created == null ? "" : created.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
-	}
-
-	public OffsetDateTime sqlCreated() {
-		return created == null ? null : created.toOffsetDateTime();
-	}
-
-	public String jsonCreated() {
-		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
 	//////////
@@ -220,12 +202,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest rowsInit() {
-		Wrap<Integer> rowsWrap = new Wrap<Integer>().var("rows").o(rows);
+		Wrap<Integer> rowsWrap = new Wrap<Integer>().var("rows");
 		if(rows == null) {
 			_rows(rowsWrap);
 			setRows(rowsWrap.o);
 		}
-		rowsWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -239,22 +220,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqRows(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrRows(siteRequest_, ApiRequest.staticSolrRows(siteRequest_, ApiRequest.staticSetRows(siteRequest_, o)));
-	}
-
-	public Integer solrRows() {
-		return ApiRequest.staticSolrRows(siteRequest_, rows);
-	}
-
-	public String strRows() {
-		return rows == null ? "" : rows.toString();
-	}
-
-	public Integer sqlRows() {
-		return rows;
-	}
-
-	public String jsonRows() {
-		return rows == null ? "" : rows.toString();
 	}
 
 	//////////////
@@ -294,12 +259,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest numFoundInit() {
-		Wrap<Long> numFoundWrap = new Wrap<Long>().var("numFound").o(numFound);
+		Wrap<Long> numFoundWrap = new Wrap<Long>().var("numFound");
 		if(numFound == null) {
 			_numFound(numFoundWrap);
 			setNumFound(numFoundWrap.o);
 		}
-		numFoundWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -313,22 +277,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqNumFound(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrNumFound(siteRequest_, ApiRequest.staticSolrNumFound(siteRequest_, ApiRequest.staticSetNumFound(siteRequest_, o)));
-	}
-
-	public Long solrNumFound() {
-		return ApiRequest.staticSolrNumFound(siteRequest_, numFound);
-	}
-
-	public String strNumFound() {
-		return numFound == null ? "" : numFound.toString();
-	}
-
-	public Long sqlNumFound() {
-		return numFound;
-	}
-
-	public String jsonNumFound() {
-		return numFound == null ? "" : numFound.toString();
 	}
 
 	//////////////
@@ -368,12 +316,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest numPATCHInit() {
-		Wrap<Long> numPATCHWrap = new Wrap<Long>().var("numPATCH").o(numPATCH);
+		Wrap<Long> numPATCHWrap = new Wrap<Long>().var("numPATCH");
 		if(numPATCH == null) {
 			_numPATCH(numPATCHWrap);
 			setNumPATCH(numPATCHWrap.o);
 		}
-		numPATCHWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -387,22 +334,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqNumPATCH(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrNumPATCH(siteRequest_, ApiRequest.staticSolrNumPATCH(siteRequest_, ApiRequest.staticSetNumPATCH(siteRequest_, o)));
-	}
-
-	public Long solrNumPATCH() {
-		return ApiRequest.staticSolrNumPATCH(siteRequest_, numPATCH);
-	}
-
-	public String strNumPATCH() {
-		return numPATCH == null ? "" : numPATCH.toString();
-	}
-
-	public Long sqlNumPATCH() {
-		return numPATCH;
-	}
-
-	public String jsonNumPATCH() {
-		return numPATCH == null ? "" : numPATCH.toString();
 	}
 
 	//////////
@@ -434,12 +365,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiRequest uuidInit() {
-		Wrap<String> uuidWrap = new Wrap<String>().var("uuid").o(uuid);
+		Wrap<String> uuidWrap = new Wrap<String>().var("uuid");
 		if(uuid == null) {
 			_uuid(uuidWrap);
 			setUuid(uuidWrap.o);
 		}
-		uuidWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -453,22 +383,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqUuid(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrUuid(siteRequest_, ApiRequest.staticSolrUuid(siteRequest_, ApiRequest.staticSetUuid(siteRequest_, o)));
-	}
-
-	public String solrUuid() {
-		return ApiRequest.staticSolrUuid(siteRequest_, uuid);
-	}
-
-	public String strUuid() {
-		return uuid == null ? "" : uuid;
-	}
-
-	public String sqlUuid() {
-		return uuid;
-	}
-
-	public String jsonUuid() {
-		return uuid == null ? "" : uuid;
 	}
 
 	////////
@@ -500,12 +414,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiRequest idInit() {
-		Wrap<String> idWrap = new Wrap<String>().var("id").o(id);
+		Wrap<String> idWrap = new Wrap<String>().var("id");
 		if(id == null) {
 			_id(idWrap);
 			setId(idWrap.o);
 		}
-		idWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -519,22 +432,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqId(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrId(siteRequest_, ApiRequest.staticSolrId(siteRequest_, ApiRequest.staticSetId(siteRequest_, o)));
-	}
-
-	public String solrId() {
-		return ApiRequest.staticSolrId(siteRequest_, id);
-	}
-
-	public String strId() {
-		return id == null ? "" : id;
-	}
-
-	public String sqlId() {
-		return id;
-	}
-
-	public String jsonId() {
-		return id == null ? "" : id;
 	}
 
 	////////
@@ -574,12 +471,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest pkInit() {
-		Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
+		Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
 		if(pk == null) {
 			_pk(pkWrap);
 			setPk(pkWrap.o);
 		}
-		pkWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -593,22 +489,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrPk(siteRequest_, ApiRequest.staticSolrPk(siteRequest_, ApiRequest.staticSetPk(siteRequest_, o)));
-	}
-
-	public Long solrPk() {
-		return ApiRequest.staticSolrPk(siteRequest_, pk);
-	}
-
-	public String strPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public Long sqlPk() {
-		return pk;
-	}
-
-	public String jsonPk() {
-		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
@@ -641,12 +521,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return null;
 	}
 	protected ApiRequest originalInit() {
-		Wrap<Object> originalWrap = new Wrap<Object>().var("original").o(original);
+		Wrap<Object> originalWrap = new Wrap<Object>().var("original");
 		if(original == null) {
 			_original(originalWrap);
 			setOriginal(originalWrap.o);
 		}
-		originalWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -732,26 +611,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return ApiRequest.staticSolrStrPks(siteRequest_, ApiRequest.staticSolrPks(siteRequest_, ApiRequest.staticSetPks(siteRequest_, o)));
 	}
 
-	public List<Long> solrPks() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : pks) {
-			l.add(ApiRequest.staticSolrPks(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strPks() {
-		return pks == null ? "" : pks.toString();
-	}
-
-	public List<Long> sqlPks() {
-		return pks;
-	}
-
-	public String jsonPks() {
-		return pks == null ? "" : pks.toString();
-	}
-
 	/////////////
 	// classes //
 	/////////////
@@ -816,26 +675,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqClasses(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrClasses(siteRequest_, ApiRequest.staticSolrClasses(siteRequest_, ApiRequest.staticSetClasses(siteRequest_, o)));
-	}
-
-	public List<String> solrClasses() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classes) {
-			l.add(ApiRequest.staticSolrClasses(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClasses() {
-		return classes == null ? "" : classes.toString();
-	}
-
-	public List<String> sqlClasses() {
-		return classes;
-	}
-
-	public String jsonClasses() {
-		return classes == null ? "" : classes.toString();
 	}
 
 	//////////
@@ -904,26 +743,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return ApiRequest.staticSolrStrVars(siteRequest_, ApiRequest.staticSolrVars(siteRequest_, ApiRequest.staticSetVars(siteRequest_, o)));
 	}
 
-	public List<String> solrVars() {
-		List<String> l = new ArrayList<String>();
-		for(String o : vars) {
-			l.add(ApiRequest.staticSolrVars(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strVars() {
-		return vars == null ? "" : vars.toString();
-	}
-
-	public List<String> sqlVars() {
-		return vars;
-	}
-
-	public String jsonVars() {
-		return vars == null ? "" : vars.toString();
-	}
-
 	///////////////////
 	// timeRemaining //
 	///////////////////
@@ -953,12 +772,11 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return o;
 	}
 	protected ApiRequest timeRemainingInit() {
-		Wrap<String> timeRemainingWrap = new Wrap<String>().var("timeRemaining").o(timeRemaining);
+		Wrap<String> timeRemainingWrap = new Wrap<String>().var("timeRemaining");
 		if(timeRemaining == null) {
 			_timeRemaining(timeRemainingWrap);
 			setTimeRemaining(timeRemainingWrap.o);
 		}
-		timeRemainingWrap.o(null);
 		return (ApiRequest)this;
 	}
 
@@ -972,22 +790,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public static String staticSolrFqTimeRemaining(SiteRequestEnUS siteRequest_, String o) {
 		return ApiRequest.staticSolrStrTimeRemaining(siteRequest_, ApiRequest.staticSolrTimeRemaining(siteRequest_, ApiRequest.staticSetTimeRemaining(siteRequest_, o)));
-	}
-
-	public String solrTimeRemaining() {
-		return ApiRequest.staticSolrTimeRemaining(siteRequest_, timeRemaining);
-	}
-
-	public String strTimeRemaining() {
-		return timeRemaining == null ? "" : timeRemaining;
-	}
-
-	public String sqlTimeRemaining() {
-		return timeRemaining;
-	}
-
-	public String jsonTimeRemaining() {
-		return timeRemaining == null ? "" : timeRemaining;
 	}
 
 	//////////////
@@ -1091,23 +893,23 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeApiRequest(v, val);
+				o = relateApiRequest(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeApiRequest(String var, Object val) {
+	public Object relateApiRequest(String var, Object val) {
 		ApiRequest oApiRequest = (ApiRequest)this;
 		switch(var) {
 			default:
@@ -1263,28 +1065,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineApiRequest(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineApiRequest(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return null;
-		}
-	}
-
 	public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -1317,27 +1097,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		if(o != null && o instanceof ApiRequest) {
 			ApiRequest original = (ApiRequest)o;
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash();
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof ApiRequest))
-			return false;
-		ApiRequest that = (ApiRequest)o;
-		return true;
 	}
 
 	//////////////

@@ -177,22 +177,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 		return SitePetGenPage.staticSolrStrSitePetCount(siteRequest_, SitePetGenPage.staticSolrSitePetCount(siteRequest_, SitePetGenPage.staticSetSitePetCount(siteRequest_, o)));
 	}
 
-	public Integer solrSitePetCount() {
-		return SitePetGenPage.staticSolrSitePetCount(siteRequest_, sitePetCount);
-	}
-
-	public String strSitePetCount() {
-		return sitePetCount == null ? "" : sitePetCount.toString();
-	}
-
-	public Integer sqlSitePetCount() {
-		return sitePetCount;
-	}
-
-	public String jsonSitePetCount() {
-		return sitePetCount == null ? "" : sitePetCount.toString();
-	}
-
 	//////////////
 	// sitePet_ //
 	//////////////
@@ -286,22 +270,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 
 	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
 		return SitePetGenPage.staticSolrStrPk(siteRequest_, SitePetGenPage.staticSolrPk(siteRequest_, SitePetGenPage.staticSetPk(siteRequest_, o)));
-	}
-
-	public Long solrPk() {
-		return SitePetGenPage.staticSolrPk(siteRequest_, pk);
-	}
-
-	public String strPk() {
-		return pk == null ? "" : pk.toString();
-	}
-
-	public Long sqlPk() {
-		return pk;
-	}
-
-	public String jsonPk() {
-		return pk == null ? "" : pk.toString();
 	}
 
 	//////////////
@@ -407,27 +375,27 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	}
 
 	///////////////
-	// attribute //
+	// relate //
 	///////////////
 
-	@Override public boolean attributeForClass(String var, Object val) {
+	@Override public boolean relateForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeSitePetGenPage(v, val);
+				o = relateSitePetGenPage(v, val);
 			else if(o instanceof BaseModel) {
 				BaseModel baseModel = (BaseModel)o;
-				o = baseModel.attributeForClass(v, val);
+				o = baseModel.relateForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeSitePetGenPage(String var, Object val) {
+	public Object relateSitePetGenPage(String var, Object val) {
 		SitePetGenPage oSitePetGenPage = (SitePetGenPage)this;
 		switch(var) {
 			default:
-				return super.attributeBaseModelPage(var, val);
+				return super.relateBaseModelPage(var, val);
 		}
 	}
 
@@ -507,28 +475,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 	// define //
 	/////////////
 
-	@Override public boolean defineForClass(String var, String val) {
-		String[] vars = StringUtils.split(var, ".");
-		Object o = null;
-		if(val != null) {
-			for(String v : vars) {
-				if(o == null)
-					o = defineSitePetGenPage(v, val);
-				else if(o instanceof BaseModel) {
-					BaseModel oBaseModel = (BaseModel)o;
-					o = oBaseModel.defineForClass(v, val);
-				}
-			}
-		}
-		return o != null;
-	}
-	public Object defineSitePetGenPage(String var, String val) {
-		switch(var.toLowerCase()) {
-			default:
-				return super.defineBaseModelPage(var, val);
-		}
-	}
-
 	@Override public boolean defineForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
@@ -562,27 +508,6 @@ public abstract class SitePetGenPageGen<DEV> extends BaseModelPage {
 			SitePetGenPage original = (SitePetGenPage)o;
 			super.apiRequestBaseModelPage();
 		}
-	}
-
-	//////////////
-	// hashCode //
-	//////////////
-
-	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
-	}
-
-	////////////
-	// equals //
-	////////////
-
-	@Override public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(!(o instanceof SitePetGenPage))
-			return false;
-		SitePetGenPage that = (SitePetGenPage)o;
-		return super.equals(o);
 	}
 
 	//////////////
