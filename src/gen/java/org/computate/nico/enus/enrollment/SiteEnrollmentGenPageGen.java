@@ -13,6 +13,7 @@ import org.computate.nico.enus.java.ZonedDateTimeDeserializer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.computate.nico.enus.request.SiteRequestEnUS;
+import org.computate.nico.enus.base.BaseModelPage;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -34,7 +35,6 @@ import org.computate.nico.enus.search.SearchList;
 import io.vertx.core.Future;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
-import org.computate.nico.enus.page.PageLayout;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.computate.nico.enus.enrollment.SiteEnrollment;
 import java.util.Optional;
@@ -46,7 +46,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.enrollment.SiteEnrollmentGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
+public abstract class SiteEnrollmentGenPageGen<DEV> extends BaseModelPage {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteEnrollmentGenPage.class);
 
 	///////////////////////////////
@@ -286,7 +286,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		Promise<Void> promise2 = Promise.promise();
 		promiseSiteEnrollmentGenPage(promise2);
 		promise2.future().onSuccess(a -> {
-			super.promiseDeepPageLayout(siteRequest_).onSuccess(b -> {
+			super.promiseDeepBaseModelPage(siteRequest_).onSuccess(b -> {
 				promise.complete();
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -328,7 +328,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 	/////////////////
 
 	public void siteRequestSiteEnrollmentGenPage(SiteRequestEnUS siteRequest_) {
-			super.siteRequestPageLayout(siteRequest_);
+			super.siteRequestBaseModelPage(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -370,7 +370,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 			case "pk":
 				return oSiteEnrollmentGenPage.pk;
 			default:
-				return super.obtainPageLayout(var);
+				return super.obtainBaseModelPage(var);
 		}
 	}
 
@@ -395,7 +395,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		SiteEnrollmentGenPage oSiteEnrollmentGenPage = (SiteEnrollmentGenPage)this;
 		switch(var) {
 			default:
-				return super.relatePageLayout(var, val);
+				return super.relateBaseModelPage(var, val);
 		}
 	}
 
@@ -413,7 +413,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		case "pk":
 			return SiteEnrollmentGenPage.staticSetPk(siteRequest_, o);
 			default:
-				return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, o);
+				return BaseModelPage.staticSetBaseModelPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -431,7 +431,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		case "pk":
 			return SiteEnrollmentGenPage.staticSolrPk(siteRequest_, (Long)o);
 			default:
-				return PageLayout.staticSolrPageLayout(entityVar,  siteRequest_, o);
+				return BaseModelPage.staticSolrBaseModelPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -449,7 +449,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		case "pk":
 			return SiteEnrollmentGenPage.staticSolrStrPk(siteRequest_, (Long)o);
 			default:
-				return PageLayout.staticSolrStrPageLayout(entityVar,  siteRequest_, o);
+				return BaseModelPage.staticSolrStrBaseModelPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -467,7 +467,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		case "pk":
 			return SiteEnrollmentGenPage.staticSolrFqPk(siteRequest_, o);
 			default:
-				return PageLayout.staticSolrFqPageLayout(entityVar,  siteRequest_, o);
+				return BaseModelPage.staticSolrFqBaseModelPage(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -493,7 +493,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 	public Object defineSiteEnrollmentGenPage(String var, Object val) {
 		switch(var.toLowerCase()) {
 			default:
-				return super.definePageLayout(var, val);
+				return super.defineBaseModelPage(var, val);
 		}
 	}
 
@@ -506,7 +506,7 @@ public abstract class SiteEnrollmentGenPageGen<DEV> extends PageLayout {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof SiteEnrollmentGenPage) {
 			SiteEnrollmentGenPage original = (SiteEnrollmentGenPage)o;
-			super.apiRequestPageLayout();
+			super.apiRequestBaseModelPage();
 		}
 	}
 

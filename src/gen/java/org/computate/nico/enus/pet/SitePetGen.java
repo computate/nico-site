@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.computate.nico.enus.writer.AllWriter;
 import java.lang.Long;
 import java.util.Map;
+import org.computate.nico.enus.user.SiteUser;
 import io.vertx.core.json.JsonObject;
 import org.computate.nico.enus.base.BaseModel;
 import java.math.RoundingMode;
@@ -58,9 +59,6 @@ import org.computate.nico.enus.config.ConfigKeys;
  **/
 public abstract class SitePetGen<DEV> extends BaseModel {
 	protected static final Logger LOG = LoggerFactory.getLogger(SitePet.class);
-
-	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
-	public static final List<String> ROLE_READS = Arrays.asList("");
 
 	public static final String SitePet_AName = "a pet";
 	public static final String SitePet_This = "this ";
@@ -274,6 +272,10 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 		return SitePet.staticSolrStrUserKeys(siteRequest_, SitePet.staticSolrUserKeys(siteRequest_, SitePet.staticSetUserKeys(siteRequest_, o)));
 	}
 
+	public List<Long> sqlUserKeys() {
+		return userKeys;
+	}
+
 	////////////////////
 	// enrollmentKeys //
 	////////////////////
@@ -354,6 +356,10 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 
 	public static String staticSolrFqEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
 		return SitePet.staticSolrStrEnrollmentKeys(siteRequest_, SitePet.staticSolrEnrollmentKeys(siteRequest_, SitePet.staticSetEnrollmentKeys(siteRequest_, o)));
+	}
+
+	public List<Long> sqlEnrollmentKeys() {
+		return enrollmentKeys;
 	}
 
 	/////////////
@@ -950,6 +956,16 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 	public Object relateSitePet(String var, Object val) {
 		SitePet oSitePet = (SitePet)this;
 		switch(var) {
+			case "userKeys":
+				oSitePet.addUserKeys((Long)val);
+				if(!saves.contains("userKeys"))
+					saves.add("userKeys");
+				return val;
+			case "enrollmentKeys":
+				oSitePet.addEnrollmentKeys((Long)val);
+				if(!saves.contains("enrollmentKeys"))
+					saves.add("enrollmentKeys");
+				return val;
 			default:
 				return super.relateBaseModel(var, val);
 		}
@@ -1183,17 +1199,13 @@ public abstract class SitePetGen<DEV> extends BaseModel {
 					oSitePet.setPetKey(petKey);
 			}
 
-			if(saves.contains("userKeys")) {
-				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_indexedstored_longs");
-				if(userKeys != null)
-					oSitePet.userKeys.addAll(userKeys);
-			}
+			List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_indexedstored_longs");
+			if(userKeys != null)
+				oSitePet.userKeys.addAll(userKeys);
 
-			if(saves.contains("enrollmentKeys")) {
-				List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
-				if(enrollmentKeys != null)
-					oSitePet.enrollmentKeys.addAll(enrollmentKeys);
-			}
+			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
+			if(enrollmentKeys != null)
+				oSitePet.enrollmentKeys.addAll(enrollmentKeys);
 
 			if(saves.contains("petName")) {
 				String petName = (String)solrDocument.get("petName_indexedstored_string");

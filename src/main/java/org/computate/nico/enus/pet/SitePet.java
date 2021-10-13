@@ -1,4 +1,4 @@
-package org.computate.nico.enus.pet;                 
+package org.computate.nico.enus.pet;                          
 
 import java.util.List;
 
@@ -66,11 +66,11 @@ public class SitePet extends SitePetGen<BaseModel> {
 	protected void _enrollmentSearch(Promise<SearchList<SiteEnrollment>> promise) {
 		SearchList<SiteEnrollment> l = new SearchList<SiteEnrollment>();
 		l.setQuery("*:*");
-		l.addFilterQuery("petKey_indexed_long:" + pk);
+		l.addFilterQuery("petKey_indexedstored_long:" + pk);
 		l.setC(SiteEnrollment.class);
 		l.setStore(true);
 		l.setFacet(true);
-		l.addFacetField("userKeys_indexed_longs");
+		l.addFacetField("userKeys_indexedstored_longs");
 		promise.complete(l);
 	}
 
@@ -78,18 +78,18 @@ public class SitePet extends SitePetGen<BaseModel> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: SiteUser.petKeys
+	 * Relate: SiteUser.petKeys
 	 * HtmlRow: 8
 	 * HtmlCell: 1
 	 * DisplayName.enUS: users
-	 */                    
+	 */        
 	protected void _userKeys(List<Long> c) {}
 
 	/**  
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: SiteEnrollment.petKeys
+	 * Relate: SiteEnrollment.petKeys
 	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * DisplayName.enUS: enrollments

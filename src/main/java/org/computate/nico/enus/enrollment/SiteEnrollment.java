@@ -1,4 +1,4 @@
-package org.computate.nico.enus.enrollment;                    
+package org.computate.nico.enus.enrollment;                      
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import io.vertx.core.Promise;
  * Model: true
  * Api: true
  * Page: true
+ * SuperPage.enUS: BaseModelPage
  * Indexed: true
  * Saved: true
  * 
@@ -33,7 +34,7 @@ import io.vertx.core.Promise;
  * RoleUtilisateurAdminSearch.enUS: true
  * 
  * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: EnrollmentPage
+ * PageSearchPage.enUS: SiteEnrollmentPage
  * ApiUriSearchPage.enUS: /enrollment
  * 
  * AName.enUS: an enrollment
@@ -47,7 +48,7 @@ import io.vertx.core.Promise;
  * RoleUser: true
  * 
  * Rows: 100
- **/          
+ **/            
 public class SiteEnrollment extends SiteEnrollmentGen<BaseModel> {
 
 	/**
@@ -63,7 +64,7 @@ public class SiteEnrollment extends SiteEnrollmentGen<BaseModel> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: SiteUser.enrollmentKeys
+	 * Relate: SiteUser.enrollmentKeys
 	 * HtmlRow: 8
 	 * HtmlCell: 1
 	 * DisplayName.enUS: users
@@ -74,7 +75,7 @@ public class SiteEnrollment extends SiteEnrollmentGen<BaseModel> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: SitePet.enrollmentKeys
+	 * Relate: SitePet.enrollmentKeys
 	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * DisplayName.enUS: pets
@@ -87,7 +88,7 @@ public class SiteEnrollment extends SiteEnrollmentGen<BaseModel> {
 	protected void _petSearch(Promise<SearchList<SitePet>> promise) {
 		SearchList<SitePet> l = new SearchList<>();
 		l.setQuery("*:*");
-		l.addFilterQuery("enrollmentKey_indexed_long:" + pk);
+		l.addFilterQuery("enrollmentKey_indexedstored_long:" + pk);
 		l.setC(SitePet.class);
 		l.setStore(true);
 		promise.complete(l);

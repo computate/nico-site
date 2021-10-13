@@ -1,5 +1,7 @@
 package org.computate.nico.enus.user;
 
+import org.computate.nico.enus.request.SiteRequestEnUS;
+
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
@@ -18,4 +20,11 @@ public class SiteUserEnUSApiServiceImpl extends SiteUserEnUSGenApiServiceImpl {
 		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, templateEngine);
 	}
 
+	@Override
+	public Boolean userDefine(SiteRequestEnUS siteRequest, JsonObject jsonObject, Boolean patch) {
+		if("/user".equals(siteRequest.getRequestUri()))
+			return true;
+		else
+			return super.userDefine(siteRequest, jsonObject, patch);
+	}
 }

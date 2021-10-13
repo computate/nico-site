@@ -738,59 +738,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return sessionId;
 	}
 
-	////////////
-	// userId //
-	////////////
-
-	/**	 The entity userId
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected String userId;
-
-	/**	<br/> The entity userId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userId">Find the entity userId in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _userId(Wrap<String> c);
-
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String o) {
-		this.userId = BaseModel.staticSetUserId(siteRequest_, o);
-	}
-	public static String staticSetUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected BaseModel userIdInit() {
-		Wrap<String> userIdWrap = new Wrap<String>().var("userId");
-		if(userId == null) {
-			_userId(userIdWrap);
-			setUserId(userIdWrap.o);
-		}
-		return (BaseModel)this;
-	}
-
-	public static String staticSolrUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqUserId(SiteRequestEnUS siteRequest_, String o) {
-		return BaseModel.staticSolrStrUserId(siteRequest_, BaseModel.staticSolrUserId(siteRequest_, BaseModel.staticSetUserId(siteRequest_, o)));
-	}
-
-	public String sqlUserId() {
-		return userId;
-	}
-
 	/////////////
 	// userKey //
 	/////////////
@@ -1396,7 +1343,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				classSimpleNameInit();
 				classCanonicalNamesInit();
 				sessionIdInit();
-				userIdInit();
 				userKeyInit();
 				savesInit();
 				objectTitleInit();
@@ -1484,8 +1430,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				return oBaseModel.classCanonicalNames;
 			case "sessionId":
 				return oBaseModel.sessionId;
-			case "userId":
-				return oBaseModel.userId;
 			case "userKey":
 				return oBaseModel.userKey;
 			case "saves":
@@ -1569,8 +1513,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSetClassCanonicalNames(siteRequest_, o);
 		case "sessionId":
 			return BaseModel.staticSetSessionId(siteRequest_, o);
-		case "userId":
-			return BaseModel.staticSetUserId(siteRequest_, o);
 		case "userKey":
 			return BaseModel.staticSetUserKey(siteRequest_, o);
 		case "saves":
@@ -1629,8 +1571,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSolrClassCanonicalNames(siteRequest_, (String)o);
 		case "sessionId":
 			return BaseModel.staticSolrSessionId(siteRequest_, (String)o);
-		case "userId":
-			return BaseModel.staticSolrUserId(siteRequest_, (String)o);
 		case "userKey":
 			return BaseModel.staticSolrUserKey(siteRequest_, (Long)o);
 		case "saves":
@@ -1689,8 +1629,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, (String)o);
 		case "sessionId":
 			return BaseModel.staticSolrStrSessionId(siteRequest_, (String)o);
-		case "userId":
-			return BaseModel.staticSolrStrUserId(siteRequest_, (String)o);
 		case "userKey":
 			return BaseModel.staticSolrStrUserKey(siteRequest_, (Long)o);
 		case "saves":
@@ -1749,8 +1687,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSolrFqClassCanonicalNames(siteRequest_, o);
 		case "sessionId":
 			return BaseModel.staticSolrFqSessionId(siteRequest_, o);
-		case "userId":
-			return BaseModel.staticSolrFqUserId(siteRequest_, o);
 		case "userKey":
 			return BaseModel.staticSolrFqUserKey(siteRequest_, o);
 		case "saves":
@@ -1826,11 +1762,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 					setSessionId((String)val);
 				saves.add("sessionId");
 				return val;
-			case "userid":
-				if(val instanceof String)
-					setUserId((String)val);
-				saves.add("userId");
-				return val;
 			case "userkey":
 				if(val instanceof Long)
 					setUserKey((Long)val);
@@ -1891,9 +1822,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		if(sessionId != null) {
 			document.addField("sessionId_indexedstored_string", sessionId);
 		}
-		if(userId != null) {
-			document.addField("userId_indexedstored_string", userId);
-		}
 		if(userKey != null) {
 			document.addField("userKey_indexedstored_long", userKey);
 		}
@@ -1947,8 +1875,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				return "classCanonicalNames_indexedstored_strings";
 			case "sessionId":
 				return "sessionId_indexedstored_string";
-			case "userId":
-				return "userId_indexedstored_string";
 			case "userKey":
 				return "userKey_indexedstored_long";
 			case "saves":
@@ -2014,7 +1940,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			oBaseModel.addClassCanonicalNames(v.toString());
 		});
 		oBaseModel.setSessionId(Optional.ofNullable(solrDocument.get("sessionId_indexedstored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setUserId(Optional.ofNullable(solrDocument.get("userId_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		oBaseModel.setUserKey(Optional.ofNullable(solrDocument.get("userKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
 		Optional.ofNullable((List<?>)solrDocument.get("saves_indexedstored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oBaseModel.addSaves(v.toString());
@@ -2059,8 +1984,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				apiRequest.addVars("classCanonicalNames");
 			if(!Objects.equals(sessionId, original.getSessionId()))
 				apiRequest.addVars("sessionId");
-			if(!Objects.equals(userId, original.getUserId()))
-				apiRequest.addVars("userId");
 			if(!Objects.equals(userKey, original.getUserKey()))
 				apiRequest.addVars("userKey");
 			if(!Objects.equals(saves, original.getSaves()))
@@ -2098,7 +2021,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		sb.append( ", classSimpleName: \"" ).append(classSimpleName).append( "\"" );
 		sb.append( ", classCanonicalNames: " ).append(classCanonicalNames);
 		sb.append( ", sessionId: \"" ).append(sessionId).append( "\"" );
-		sb.append( ", userId: \"" ).append(userId).append( "\"" );
 		sb.append( ", userKey: " ).append(userKey);
 		sb.append( ", saves: " ).append(saves);
 		sb.append( ", objectTitle: \"" ).append(objectTitle).append( "\"" );
@@ -2123,7 +2045,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	public static final String VAR_classSimpleName = "classSimpleName";
 	public static final String VAR_classCanonicalNames = "classCanonicalNames";
 	public static final String VAR_sessionId = "sessionId";
-	public static final String VAR_userId = "userId";
 	public static final String VAR_userKey = "userKey";
 	public static final String VAR_saves = "saves";
 	public static final String VAR_objectTitle = "objectTitle";

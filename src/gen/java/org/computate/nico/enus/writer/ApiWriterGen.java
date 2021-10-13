@@ -1732,6 +1732,60 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return ApiWriter.staticSolrStrClassApiOperationIdMethodResponse(siteRequest_, ApiWriter.staticSolrClassApiOperationIdMethodResponse(siteRequest_, ApiWriter.staticSetClassApiOperationIdMethodResponse(siteRequest_, o)));
 	}
 
+	/////////////////////
+	// classApiInterne //
+	/////////////////////
+
+	/**	 The entity classApiInterne
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected Boolean classApiInterne;
+
+	/**	<br/> The entity classApiInterne
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classApiInterne">Find the entity classApiInterne in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _classApiInterne(Wrap<Boolean> c);
+
+	public Boolean getClassApiInterne() {
+		return classApiInterne;
+	}
+
+	public void setClassApiInterne(Boolean classApiInterne) {
+		this.classApiInterne = classApiInterne;
+	}
+	@JsonIgnore
+	public void setClassApiInterne(String o) {
+		this.classApiInterne = ApiWriter.staticSetClassApiInterne(siteRequest_, o);
+	}
+	public static Boolean staticSetClassApiInterne(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
+	}
+	protected ApiWriter classApiInterneInit() {
+		Wrap<Boolean> classApiInterneWrap = new Wrap<Boolean>().var("classApiInterne");
+		if(classApiInterne == null) {
+			_classApiInterne(classApiInterneWrap);
+			setClassApiInterne(classApiInterneWrap.o);
+		}
+		return (ApiWriter)this;
+	}
+
+	public static Boolean staticSolrClassApiInterne(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrClassApiInterne(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqClassApiInterne(SiteRequestEnUS siteRequest_, String o) {
+		return ApiWriter.staticSolrStrClassApiInterne(siteRequest_, ApiWriter.staticSolrClassApiInterne(siteRequest_, ApiWriter.staticSetClassApiInterne(siteRequest_, o)));
+	}
+
 	///////////////////////////////////////////
 	// classSuperApiOperationIdMethodRequest //
 	///////////////////////////////////////////
@@ -2551,6 +2605,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 				classApiOperationIdMethodInit();
 				classApiOperationIdMethodRequestInit();
 				classApiOperationIdMethodResponseInit();
+				classApiInterneInit();
 				classSuperApiOperationIdMethodRequestInit();
 				classSuperApiOperationIdMethodResponseInit();
 				classPageCanonicalNameMethodInit();
@@ -2702,6 +2757,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 				return oApiWriter.classApiOperationIdMethodRequest;
 			case "classApiOperationIdMethodResponse":
 				return oApiWriter.classApiOperationIdMethodResponse;
+			case "classApiInterne":
+				return oApiWriter.classApiInterne;
 			case "classSuperApiOperationIdMethodRequest":
 				return oApiWriter.classSuperApiOperationIdMethodRequest;
 			case "classSuperApiOperationIdMethodResponse":
@@ -2809,6 +2866,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSetClassApiOperationIdMethodRequest(siteRequest_, o);
 		case "classApiOperationIdMethodResponse":
 			return ApiWriter.staticSetClassApiOperationIdMethodResponse(siteRequest_, o);
+		case "classApiInterne":
+			return ApiWriter.staticSetClassApiInterne(siteRequest_, o);
 		case "classSuperApiOperationIdMethodRequest":
 			return ApiWriter.staticSetClassSuperApiOperationIdMethodRequest(siteRequest_, o);
 		case "classSuperApiOperationIdMethodResponse":
@@ -2889,6 +2948,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrClassApiOperationIdMethodRequest(siteRequest_, (String)o);
 		case "classApiOperationIdMethodResponse":
 			return ApiWriter.staticSolrClassApiOperationIdMethodResponse(siteRequest_, (String)o);
+		case "classApiInterne":
+			return ApiWriter.staticSolrClassApiInterne(siteRequest_, (Boolean)o);
 		case "classSuperApiOperationIdMethodRequest":
 			return ApiWriter.staticSolrClassSuperApiOperationIdMethodRequest(siteRequest_, (String)o);
 		case "classSuperApiOperationIdMethodResponse":
@@ -2969,6 +3030,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrStrClassApiOperationIdMethodRequest(siteRequest_, (String)o);
 		case "classApiOperationIdMethodResponse":
 			return ApiWriter.staticSolrStrClassApiOperationIdMethodResponse(siteRequest_, (String)o);
+		case "classApiInterne":
+			return ApiWriter.staticSolrStrClassApiInterne(siteRequest_, (Boolean)o);
 		case "classSuperApiOperationIdMethodRequest":
 			return ApiWriter.staticSolrStrClassSuperApiOperationIdMethodRequest(siteRequest_, (String)o);
 		case "classSuperApiOperationIdMethodResponse":
@@ -3049,6 +3112,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrFqClassApiOperationIdMethodRequest(siteRequest_, o);
 		case "classApiOperationIdMethodResponse":
 			return ApiWriter.staticSolrFqClassApiOperationIdMethodResponse(siteRequest_, o);
+		case "classApiInterne":
+			return ApiWriter.staticSolrFqClassApiInterne(siteRequest_, o);
 		case "classSuperApiOperationIdMethodRequest":
 			return ApiWriter.staticSolrFqClassSuperApiOperationIdMethodRequest(siteRequest_, o);
 		case "classSuperApiOperationIdMethodResponse":
@@ -3165,6 +3230,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	public static final String VAR_classApiOperationIdMethod = "classApiOperationIdMethod";
 	public static final String VAR_classApiOperationIdMethodRequest = "classApiOperationIdMethodRequest";
 	public static final String VAR_classApiOperationIdMethodResponse = "classApiOperationIdMethodResponse";
+	public static final String VAR_classApiInterne = "classApiInterne";
 	public static final String VAR_classSuperApiOperationIdMethodRequest = "classSuperApiOperationIdMethodRequest";
 	public static final String VAR_classSuperApiOperationIdMethodResponse = "classSuperApiOperationIdMethodResponse";
 	public static final String VAR_classPageCanonicalNameMethod = "classPageCanonicalNameMethod";

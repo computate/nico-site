@@ -19,14 +19,14 @@ public enum AuthHelpers implements Helper<Object> {
 	ifContainsKeysAnyRolesOrSessionId {
 		@Override
 		public Object apply(final Object a, final Options options) throws IOException {
+			Long userKey = Long.parseLong((String)a);
 			List<Long> expectedUserKeys = options.param(0, null);
-			Long userKey = options.param(1, null);
-			String expectedSessionId = options.param(2, null);
+			List<String> userRoles = options.param(1, null);
+			List<String> requiredRoles = Optional.ofNullable(options.param(2, null)).map(o -> o instanceof List ? (List<String>)o : Arrays.asList(o.toString())).orElse(Arrays.asList());
 			String sessionId = options.param(3, null);
-			List<String> userRoles = options.param(4, null);
-			List<String> requiredRoles = Optional.ofNullable(options.param(5, null)).map(o -> o instanceof List ? (List<String>)o : Arrays.asList(o.toString())).orElse(Arrays.asList());
+			String expectedSessionId = options.param(4, null);
 
-			Boolean result = expectedUserKeys.contains(userKey) 
+			Boolean result = userKey != null && expectedUserKeys.contains(userKey) 
 					|| Objects.equals(sessionId, expectedSessionId)
 					|| CollectionUtils.containsAny(userRoles, requiredRoles)
 					;
@@ -62,7 +62,7 @@ public enum AuthHelpers implements Helper<Object> {
 			List<Long> expectedUserKeys = options.param(0, null);
 			Long userKey = options.param(1, null);
 
-			Boolean result = expectedUserKeys.contains(userKey) 
+			Boolean result = userKey != null && expectedUserKeys.contains(userKey) 
 					;
 			if (options.tagType == TagType.SECTION) {
 				return result ? options.fn() : options.inverse();

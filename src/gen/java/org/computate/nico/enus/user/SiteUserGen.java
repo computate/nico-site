@@ -11,6 +11,7 @@ import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import org.computate.nico.enus.base.BaseModel;
 import java.math.RoundingMode;
+import org.computate.nico.enus.pet.SitePet;
 import java.math.MathContext;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,6 +19,7 @@ import io.vertx.core.Future;
 import java.util.Objects;
 import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.computate.nico.enus.enrollment.SiteEnrollment;
 import java.util.Optional;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -57,9 +59,6 @@ import org.computate.nico.enus.config.ConfigKeys;
 public abstract class SiteUserGen<DEV> extends BaseModel {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteUser.class);
 
-	public static final List<String> ROLES = Arrays.asList("SiteAdmin", "SiteAdmin");
-	public static final List<String> ROLE_READS = Arrays.asList("");
-
 	public static final String SiteUser_AName = "a site user";
 	public static final String SiteUser_This = "this ";
 	public static final String SiteUser_ThisName = "this site user";
@@ -73,7 +72,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public static final String SiteUser_Title = "site users";
 	public static final String SiteUser_ThePluralName = "the site users";
 	public static final String SiteUser_NoNameFound = "no site user found";
-	public static final String SiteUser_NameVar = "siteUser";
+	public static final String SiteUser_NameVar = "user";
 	public static final String SiteUser_OfName = "of site user";
 	public static final String SiteUser_ANameAdjective = "a site user";
 	public static final String SiteUser_NameAdjectiveSingular = "site user";
@@ -162,6 +161,59 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	public static String staticSolrFqUserKeys(SiteRequestEnUS siteRequest_, String o) {
 		return SiteUser.staticSolrStrUserKeys(siteRequest_, SiteUser.staticSolrUserKeys(siteRequest_, SiteUser.staticSetUserKeys(siteRequest_, o)));
+	}
+
+	////////////
+	// userId //
+	////////////
+
+	/**	 The entity userId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String userId;
+
+	/**	<br/> The entity userId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userId">Find the entity userId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _userId(Wrap<String> c);
+
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String o) {
+		this.userId = SiteUser.staticSetUserId(siteRequest_, o);
+	}
+	public static String staticSetUserId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected SiteUser userIdInit() {
+		Wrap<String> userIdWrap = new Wrap<String>().var("userId");
+		if(userId == null) {
+			_userId(userIdWrap);
+			setUserId(userIdWrap.o);
+		}
+		return (SiteUser)this;
+	}
+
+	public static String staticSolrUserId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrUserId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqUserId(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUser.staticSolrStrUserId(siteRequest_, SiteUser.staticSolrUserId(siteRequest_, SiteUser.staticSetUserId(siteRequest_, o)));
+	}
+
+	public String sqlUserId() {
+		return userId;
 	}
 
 	//////////////
@@ -603,6 +655,178 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		return seeDeleted;
 	}
 
+	/////////////
+	// petKeys //
+	/////////////
+
+	/**	 The entity petKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> petKeys = new ArrayList<Long>();
+
+	/**	<br/> The entity petKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:petKeys">Find the entity petKeys in Solr</a>
+	 * <br/>
+	 * @param petKeys is the entity already constructed. 
+	 **/
+	protected abstract void _petKeys(List<Long> c);
+
+	public List<Long> getPetKeys() {
+		return petKeys;
+	}
+
+	public void setPetKeys(List<Long> petKeys) {
+		this.petKeys = petKeys;
+	}
+	@JsonIgnore
+	public void setPetKeys(String o) {
+		Long l = SiteUser.staticSetPetKeys(siteRequest_, o);
+		if(l != null)
+			addPetKeys(l);
+	}
+	public static Long staticSetPetKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SiteUser addPetKeys(Long...objets) {
+		for(Long o : objets) {
+			addPetKeys(o);
+		}
+		return (SiteUser)this;
+	}
+	public SiteUser addPetKeys(Long o) {
+		if(o != null && !petKeys.contains(o))
+			this.petKeys.add(o);
+		return (SiteUser)this;
+	}
+	@JsonIgnore
+	public void setPetKeys(JsonArray objets) {
+		petKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addPetKeys(o);
+		}
+	}
+	public SiteUser addPetKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addPetKeys(p);
+		}
+		return (SiteUser)this;
+	}
+	protected SiteUser petKeysInit() {
+		_petKeys(petKeys);
+		return (SiteUser)this;
+	}
+
+	public static Long staticSolrPetKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrPetKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPetKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUser.staticSolrStrPetKeys(siteRequest_, SiteUser.staticSolrPetKeys(siteRequest_, SiteUser.staticSetPetKeys(siteRequest_, o)));
+	}
+
+	public List<Long> sqlPetKeys() {
+		return petKeys;
+	}
+
+	////////////////////
+	// enrollmentKeys //
+	////////////////////
+
+	/**	 The entity enrollmentKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+	@JsonSerialize(contentUsing = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected List<Long> enrollmentKeys = new ArrayList<Long>();
+
+	/**	<br/> The entity enrollmentKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.nico.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:enrollmentKeys">Find the entity enrollmentKeys in Solr</a>
+	 * <br/>
+	 * @param enrollmentKeys is the entity already constructed. 
+	 **/
+	protected abstract void _enrollmentKeys(List<Long> c);
+
+	public List<Long> getEnrollmentKeys() {
+		return enrollmentKeys;
+	}
+
+	public void setEnrollmentKeys(List<Long> enrollmentKeys) {
+		this.enrollmentKeys = enrollmentKeys;
+	}
+	@JsonIgnore
+	public void setEnrollmentKeys(String o) {
+		Long l = SiteUser.staticSetEnrollmentKeys(siteRequest_, o);
+		if(l != null)
+			addEnrollmentKeys(l);
+	}
+	public static Long staticSetEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	public SiteUser addEnrollmentKeys(Long...objets) {
+		for(Long o : objets) {
+			addEnrollmentKeys(o);
+		}
+		return (SiteUser)this;
+	}
+	public SiteUser addEnrollmentKeys(Long o) {
+		if(o != null && !enrollmentKeys.contains(o))
+			this.enrollmentKeys.add(o);
+		return (SiteUser)this;
+	}
+	@JsonIgnore
+	public void setEnrollmentKeys(JsonArray objets) {
+		enrollmentKeys.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			Long o = objets.getLong(i);
+			addEnrollmentKeys(o);
+		}
+	}
+	public SiteUser addEnrollmentKeys(String o) {
+		if(NumberUtils.isParsable(o)) {
+			Long p = Long.parseLong(o);
+			addEnrollmentKeys(p);
+		}
+		return (SiteUser)this;
+	}
+	protected SiteUser enrollmentKeysInit() {
+		_enrollmentKeys(enrollmentKeys);
+		return (SiteUser)this;
+	}
+
+	public static Long staticSolrEnrollmentKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrEnrollmentKeys(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqEnrollmentKeys(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUser.staticSolrStrEnrollmentKeys(siteRequest_, SiteUser.staticSolrEnrollmentKeys(siteRequest_, SiteUser.staticSetEnrollmentKeys(siteRequest_, o)));
+	}
+
+	public List<Long> sqlEnrollmentKeys() {
+		return enrollmentKeys;
+	}
+
 	//////////////
 	// initDeep //
 	//////////////
@@ -633,6 +857,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				userKeysInit();
+				userIdInit();
 				userNameInit();
 				userEmailInit();
 				userFirstNameInit();
@@ -641,6 +866,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 				userReceiveEmailsInit();
 				seeArchivedInit();
 				seeDeletedInit();
+				petKeysInit();
+				enrollmentKeysInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -696,6 +923,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		switch(var) {
 			case "userKeys":
 				return oSiteUser.userKeys;
+			case "userId":
+				return oSiteUser.userId;
 			case "userName":
 				return oSiteUser.userName;
 			case "userEmail":
@@ -712,6 +941,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 				return oSiteUser.seeArchived;
 			case "seeDeleted":
 				return oSiteUser.seeDeleted;
+			case "petKeys":
+				return oSiteUser.petKeys;
+			case "enrollmentKeys":
+				return oSiteUser.enrollmentKeys;
 			default:
 				return super.obtainBaseModel(var);
 		}
@@ -737,6 +970,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public Object relateSiteUser(String var, Object val) {
 		SiteUser oSiteUser = (SiteUser)this;
 		switch(var) {
+			case "petKeys":
+				oSiteUser.addPetKeys((Long)val);
+				if(!saves.contains("petKeys"))
+					saves.add("petKeys");
+				return val;
+			case "enrollmentKeys":
+				oSiteUser.addEnrollmentKeys((Long)val);
+				if(!saves.contains("enrollmentKeys"))
+					saves.add("enrollmentKeys");
+				return val;
 			default:
 				return super.relateBaseModel(var, val);
 		}
@@ -753,6 +996,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSetUserKeys(siteRequest_, o);
+		case "userId":
+			return SiteUser.staticSetUserId(siteRequest_, o);
 		case "userName":
 			return SiteUser.staticSetUserName(siteRequest_, o);
 		case "userEmail":
@@ -769,6 +1014,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			return SiteUser.staticSetSeeArchived(siteRequest_, o);
 		case "seeDeleted":
 			return SiteUser.staticSetSeeDeleted(siteRequest_, o);
+		case "petKeys":
+			return SiteUser.staticSetPetKeys(siteRequest_, o);
+		case "enrollmentKeys":
+			return SiteUser.staticSetEnrollmentKeys(siteRequest_, o);
 			default:
 				return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -785,6 +1034,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSolrUserKeys(siteRequest_, (Long)o);
+		case "userId":
+			return SiteUser.staticSolrUserId(siteRequest_, (String)o);
 		case "userName":
 			return SiteUser.staticSolrUserName(siteRequest_, (String)o);
 		case "userEmail":
@@ -801,6 +1052,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			return SiteUser.staticSolrSeeArchived(siteRequest_, (Boolean)o);
 		case "seeDeleted":
 			return SiteUser.staticSolrSeeDeleted(siteRequest_, (Boolean)o);
+		case "petKeys":
+			return SiteUser.staticSolrPetKeys(siteRequest_, (Long)o);
+		case "enrollmentKeys":
+			return SiteUser.staticSolrEnrollmentKeys(siteRequest_, (Long)o);
 			default:
 				return BaseModel.staticSolrBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -817,6 +1072,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSolrStrUserKeys(siteRequest_, (Long)o);
+		case "userId":
+			return SiteUser.staticSolrStrUserId(siteRequest_, (String)o);
 		case "userName":
 			return SiteUser.staticSolrStrUserName(siteRequest_, (String)o);
 		case "userEmail":
@@ -833,6 +1090,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			return SiteUser.staticSolrStrSeeArchived(siteRequest_, (Boolean)o);
 		case "seeDeleted":
 			return SiteUser.staticSolrStrSeeDeleted(siteRequest_, (Boolean)o);
+		case "petKeys":
+			return SiteUser.staticSolrStrPetKeys(siteRequest_, (Long)o);
+		case "enrollmentKeys":
+			return SiteUser.staticSolrStrEnrollmentKeys(siteRequest_, (Long)o);
 			default:
 				return BaseModel.staticSolrStrBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -849,6 +1110,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "userKeys":
 			return SiteUser.staticSolrFqUserKeys(siteRequest_, o);
+		case "userId":
+			return SiteUser.staticSolrFqUserId(siteRequest_, o);
 		case "userName":
 			return SiteUser.staticSolrFqUserName(siteRequest_, o);
 		case "userEmail":
@@ -865,6 +1128,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			return SiteUser.staticSolrFqSeeArchived(siteRequest_, o);
 		case "seeDeleted":
 			return SiteUser.staticSolrFqSeeDeleted(siteRequest_, o);
+		case "petKeys":
+			return SiteUser.staticSolrFqPetKeys(siteRequest_, o);
+		case "enrollmentKeys":
+			return SiteUser.staticSolrFqEnrollmentKeys(siteRequest_, o);
 			default:
 				return BaseModel.staticSolrFqBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -891,6 +1158,11 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public Object defineSiteUser(String var, Object val) {
 		switch(var.toLowerCase()) {
+			case "userid":
+				if(val instanceof String)
+					setUserId((String)val);
+				saves.add("userId");
+				return val;
 			case "username":
 				if(val instanceof String)
 					setUserName((String)val);
@@ -954,6 +1226,12 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 					oSiteUser.userKeys.addAll(userKeys);
 			}
 
+			if(saves.contains("userId")) {
+				String userId = (String)solrDocument.get("userId_indexedstored_string");
+				if(userId != null)
+					oSiteUser.setUserId(userId);
+			}
+
 			if(saves.contains("userName")) {
 				String userName = (String)solrDocument.get("userName_indexedstored_string");
 				if(userName != null)
@@ -1001,6 +1279,14 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 				if(seeDeleted != null)
 					oSiteUser.setSeeDeleted(seeDeleted);
 			}
+
+			List<Long> petKeys = (List<Long>)solrDocument.get("petKeys_indexedstored_longs");
+			if(petKeys != null)
+				oSiteUser.petKeys.addAll(petKeys);
+
+			List<Long> enrollmentKeys = (List<Long>)solrDocument.get("enrollmentKeys_indexedstored_longs");
+			if(enrollmentKeys != null)
+				oSiteUser.enrollmentKeys.addAll(enrollmentKeys);
 		}
 
 		super.populateBaseModel(solrDocument);
@@ -1011,6 +1297,9 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			for(java.lang.Long o : userKeys) {
 				document.addField("userKeys_indexedstored_longs", o);
 			}
+		}
+		if(userId != null) {
+			document.addField("userId_indexedstored_string", userId);
 		}
 		if(userName != null) {
 			document.addField("userName_indexedstored_string", userName);
@@ -1036,6 +1325,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		if(seeDeleted != null) {
 			document.addField("seeDeleted_indexedstored_boolean", seeDeleted);
 		}
+		if(petKeys != null) {
+			for(java.lang.Long o : petKeys) {
+				document.addField("petKeys_indexedstored_longs", o);
+			}
+		}
+		if(enrollmentKeys != null) {
+			for(java.lang.Long o : enrollmentKeys) {
+				document.addField("enrollmentKeys_indexedstored_longs", o);
+			}
+		}
 		super.indexBaseModel(document);
 
 	}
@@ -1044,6 +1343,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		switch(entityVar) {
 			case "userKeys":
 				return "userKeys_indexedstored_longs";
+			case "userId":
+				return "userId_indexedstored_string";
 			case "userName":
 				return "userName_indexedstored_string";
 			case "userEmail":
@@ -1060,6 +1361,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 				return "seeArchived_indexedstored_boolean";
 			case "seeDeleted":
 				return "seeDeleted_indexedstored_boolean";
+			case "petKeys":
+				return "petKeys_indexedstored_longs";
+			case "enrollmentKeys":
+				return "enrollmentKeys_indexedstored_longs";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -1092,6 +1397,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		Optional.ofNullable((List<?>)solrDocument.get("userKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSiteUser.addUserKeys(v.toString());
 		});
+		oSiteUser.setUserId(Optional.ofNullable(solrDocument.get("userId_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setUserFirstName(Optional.ofNullable(solrDocument.get("userFirstName_indexedstored_string")).map(v -> v.toString()).orElse(null));
@@ -1100,6 +1406,12 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		oSiteUser.setUserReceiveEmails(Optional.ofNullable(solrDocument.get("userReceiveEmails_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setSeeArchived(Optional.ofNullable(solrDocument.get("seeArchived_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setSeeDeleted(Optional.ofNullable(solrDocument.get("seeDeleted_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("petKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oSiteUser.addPetKeys(v.toString());
+		});
+		Optional.ofNullable((List<?>)solrDocument.get("enrollmentKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oSiteUser.addEnrollmentKeys(v.toString());
+		});
 
 		super.storeBaseModel(solrDocument);
 	}
@@ -1115,6 +1427,8 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 			SiteUser original = (SiteUser)o;
 			if(!Objects.equals(userKeys, original.getUserKeys()))
 				apiRequest.addVars("userKeys");
+			if(!Objects.equals(userId, original.getUserId()))
+				apiRequest.addVars("userId");
 			if(!Objects.equals(userName, original.getUserName()))
 				apiRequest.addVars("userName");
 			if(!Objects.equals(userEmail, original.getUserEmail()))
@@ -1131,6 +1445,10 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 				apiRequest.addVars("seeArchived");
 			if(!Objects.equals(seeDeleted, original.getSeeDeleted()))
 				apiRequest.addVars("seeDeleted");
+			if(!Objects.equals(petKeys, original.getPetKeys()))
+				apiRequest.addVars("petKeys");
+			if(!Objects.equals(enrollmentKeys, original.getEnrollmentKeys()))
+				apiRequest.addVars("enrollmentKeys");
 			super.apiRequestBaseModel();
 		}
 	}
@@ -1144,6 +1462,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		sb.append(super.toString() + "\n");
 		sb.append("SiteUser { ");
 		sb.append( "userKeys: " ).append(userKeys);
+		sb.append( ", userId: \"" ).append(userId).append( "\"" );
 		sb.append( ", userName: \"" ).append(userName).append( "\"" );
 		sb.append( ", userEmail: \"" ).append(userEmail).append( "\"" );
 		sb.append( ", userFirstName: \"" ).append(userFirstName).append( "\"" );
@@ -1152,11 +1471,14 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 		sb.append( ", userReceiveEmails: " ).append(userReceiveEmails);
 		sb.append( ", seeArchived: " ).append(seeArchived);
 		sb.append( ", seeDeleted: " ).append(seeDeleted);
+		sb.append( ", petKeys: " ).append(petKeys);
+		sb.append( ", enrollmentKeys: " ).append(enrollmentKeys);
 		sb.append(" }");
 		return sb.toString();
 	}
 
 	public static final String VAR_userKeys = "userKeys";
+	public static final String VAR_userId = "userId";
 	public static final String VAR_userName = "userName";
 	public static final String VAR_userEmail = "userEmail";
 	public static final String VAR_userFirstName = "userFirstName";
@@ -1165,4 +1487,6 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public static final String VAR_userReceiveEmails = "userReceiveEmails";
 	public static final String VAR_seeArchived = "seeArchived";
 	public static final String VAR_seeDeleted = "seeDeleted";
+	public static final String VAR_petKeys = "petKeys";
+	public static final String VAR_enrollmentKeys = "enrollmentKeys";
 }

@@ -177,7 +177,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> implements Iterable<DEV>
 				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
-				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString() + "&suggest=true&terms=true&terms.fl=stopPurposeTitle_indexed_string");
+				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
 				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
 					try {
 						JsonObject json = a.bodyAsJsonObject();

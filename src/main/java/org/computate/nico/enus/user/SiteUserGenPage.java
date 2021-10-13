@@ -4,7 +4,7 @@ import java.util.List;
 import java.lang.Long;
 import java.lang.String;
 import java.lang.Boolean;
-import org.computate.nico.enus.page.PageLayout;
+import org.computate.nico.enus.base.BaseModelPage;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.user.SiteUser;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import org.computate.nico.enus.search.SearchList;
 import org.computate.nico.enus.wrap.Wrap;
+import org.computate.nico.enus.page.PageLayout;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -44,7 +45,7 @@ import org.computate.nico.enus.config.ConfigKeys;
 /**
  * Translate: false
  **/
-public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
+public class SiteUserGenPage extends SiteUserGenPageGen<BaseModelPage> {
 
 	/**
 	 * {@inheritDoc}

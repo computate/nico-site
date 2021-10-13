@@ -62,16 +62,6 @@ CREATE TABLE SiteUser(
 	, seeArchived boolean
 	, seeDeleted boolean
 	);
-CREATE TABLE SiteEnrollment(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, sessionId text
-	, userId text
-	, userKey bigint
-	);
 CREATE TABLE SitePet(
 	pk bigserial primary key
 	, inheritPk text
@@ -90,10 +80,38 @@ CREATE TABLE SitePet(
 	, sendUpdates boolean
 	, petAmount text
 	);
+CREATE TABLE SiteEnrollment(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, sessionId text
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteUserPetKeys_SitePetUserKeys(
+	pk bigserial primary key
+	, pk1 bigint references SiteUser(pk)
+	, pk2 bigint references SitePet(pk)
+	);
+CREATE TABLE SiteUserEnrollmentKeys_SiteEnrollmentUserKeys(
+	pk bigserial primary key
+	, pk1 bigint references SiteUser(pk)
+	, pk2 bigint references SiteEnrollment(pk)
+	);
+CREATE TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys(
+	pk bigserial primary key
+	, pk1 bigint references SitePet(pk)
+	, pk2 bigint references SiteEnrollment(pk)
+	);
 
 DROP TABLE SiteUser CASCADE;
-DROP TABLE SiteEnrollment CASCADE;
 DROP TABLE SitePet CASCADE;
+DROP TABLE SiteEnrollment CASCADE;
+DROP TABLE SiteUserPetKeys_SitePetUserKeys CASCADE;
+DROP TABLE SiteUserEnrollmentKeys_SiteEnrollmentUserKeys CASCADE;
+DROP TABLE SitePetEnrollmentKeys_SiteEnrollmentPetKeys CASCADE;
 */
 
 	protected static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);

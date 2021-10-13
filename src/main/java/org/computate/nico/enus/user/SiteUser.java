@@ -1,4 +1,4 @@
-package org.computate.nico.enus.user;             
+package org.computate.nico.enus.user;                          
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * Model: true
  * Api: true
  * Page: true
+ * SuperPage.enUS: BaseModelPage
  * Indexed: true
  * Map.Integer.sqlSort: 3
  * 
@@ -34,6 +35,7 @@ import org.computate.nico.enus.wrap.Wrap;
  * Color: gray
  * IconGroup: regular
  * IconName: user-cog
+ * NameVar.enUS: user
  * 
  * RoleUser: true
  * Role.enUS: SiteAdmin
@@ -47,6 +49,16 @@ public class SiteUser extends SiteUserGen<BaseModel> {
 	 */
 	protected void _userKeys(List<Long> l) {
 		l.add(pk);
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * Modify: false
+	 */                 
+	protected void _userId(Wrap<String> c) {
 	}
 
 	/**
@@ -131,5 +143,32 @@ public class SiteUser extends SiteUserGen<BaseModel> {
 	 */
 	protected void _seeDeleted(Wrap<Boolean> c) {
 		c.o(false);
+	}
+
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Relate: SitePet.userKeys
+	 * HtmlRow: 4
+	 * HtmlCell: 1
+	 * DisplayName.enUS: pets
+	 */                            
+	protected void _petKeys(List<Long> c) {}
+
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Relate: SiteEnrollment.userKeys
+	 * HtmlRow: 4
+	 * HtmlCell: 1
+	 * DisplayName.enUS: enrollments
+	 */                             
+	protected void _enrollmentKeys(List<Long> c) {}
+
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(String.format("%s (%s) <%s>", userFullName, userName, userEmail));
 	}
 }

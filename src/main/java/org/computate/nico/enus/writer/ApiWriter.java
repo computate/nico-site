@@ -2,6 +2,7 @@ package org.computate.nico.enus.writer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -13,7 +14,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-
 import org.computate.nico.enus.config.ConfigKeys;
 import org.computate.nico.enus.request.SiteRequestEnUS;
 import org.computate.nico.enus.vertx.AppSwagger2;
@@ -159,6 +159,10 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 
 	protected void _classApiOperationIdMethodResponse(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiOperationId" + classApiMethod + "Reponse_enUS_stored_string"));
+	}
+
+	protected void _classApiInterne(Wrap<Boolean> c) {
+		c.o(Optional.ofNullable((Boolean)classSolrDocument.get("classeApiInterne" + classApiMethod + "_stored_boolean")).orElse(false));
 	}
 
 	protected void _classSuperApiOperationIdMethodRequest(Wrap<String> c) {
@@ -572,6 +576,9 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 	}
 
 	public void  writeApi(Boolean id) throws Exception, Exception {
+
+		if(classApiInterne)
+			return;
 
 		if(id || !classUris.contains(classApiUriMethod)) {
 			wPaths.tl(1, classApiUriMethod, (id ? "/{id}" : ""), ":");
