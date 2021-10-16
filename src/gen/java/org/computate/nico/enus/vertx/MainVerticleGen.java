@@ -51,8 +51,8 @@ CREATE TABLE SiteUser(
 	, archived boolean
 	, deleted boolean
 	, sessionId text
-	, userId text
 	, userKey bigint
+	, userId text
 	, userName text
 	, userEmail text
 	, userFirstName text
@@ -69,7 +69,6 @@ CREATE TABLE SitePet(
 	, archived boolean
 	, deleted boolean
 	, sessionId text
-	, userId text
 	, userKey bigint
 	, petName text
 	, petFoodAmount text
@@ -87,7 +86,6 @@ CREATE TABLE SiteEnrollment(
 	, archived boolean
 	, deleted boolean
 	, sessionId text
-	, userId text
 	, userKey bigint
 	);
 CREATE TABLE SiteUserPetKeys_SitePetUserKeys(

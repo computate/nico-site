@@ -683,8 +683,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			});
 
 			router.get("/template/*").handler(ctx -> {
-				ctx.put(ConfigKeys.STATIC_BASE_URL, staticBaseUrl);
-				ctx.put(ConfigKeys.SITE_BASE_URL, siteBaseUrl);
+				ctx.put("staticBaseUrl", staticBaseUrl);
+				ctx.put("siteBaseUrl", siteBaseUrl);
 				ctx.next();
 			});
 
